@@ -1,17 +1,10 @@
+Files = new Meteor.Collection("files")
 
 class File
   constructor: (@name, @isDirectory, @path) ->
 
-getFileTree = ->
-  dir1 = new File "dir1", true, []
-  file1 = new File "file1", false, ["dir1"]
-  file2 = new File "file2", false, []
-
-  return [dir1, file1, file2]
-
 if Meteor.is_client
   FileTree = new Meteor.Collection(null)
-  console.log("Found FileTree collection ", FileTree)
   Meteor.startup ->
     files = getFileTree()
     FileTree.insert(file) for file in files
@@ -46,5 +39,34 @@ if Meteor.is_client
           Session.set("user", {username:username})
   )
 
+  Template.hello.greeting = "Hello apogee!"
 
+if Meteor.is_server
+  ServerFiles = new Meteor.Collection(null)
+  require = __meteor_bootstrap__.require;
+  fs = require("fs");
+
+  Meteor.startup(->
+    projectId = "1e694e3c-9e6c-4118-a600-0ce1652c7564"
+    dir = "/tmp/bolide/repoClones/#{projectId}"
+
+    walk(dir, dir, (err, results)->
+      results.forEach (result)->
+        selector = {name: result.name, projectId: projectId}
+        file = undefined
+        ServerFiles.insert(
+          name: result.name,
+          projectId: projectId,
+          isDir: result.isDir
+        ) 
+    )
+  )
+
+#  Meteor.autosubscribe(->
+#    while ServerFiles.find().count()
+#      newFile = ServerFiles.findOne()
+#      ServerFiles.remove(newFile._id)
+#      delete(newFile._id)
+#      Files.insert(newFile) unless Files.findOne({name: newFile.name, projectId: newFile.projectId})
+#  )
 
