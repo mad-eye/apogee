@@ -8,6 +8,15 @@
 
 <template name="hello">
   <h1>Hello World!</h1>
-  {{greeting}}
-  <input type="button" value="Click" />
+  {{greeting}}<br/>
+  {{> filetree}}
 </template>
+
+<template name="filetree">
+<ul>
+    {{#each files}}
+    <li>{{this.name}}</li>
+    {{/each}}
+</ul>
+</template>
+
