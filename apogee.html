@@ -9,14 +9,19 @@
     <div id="container" class="container">
     {{> navbar}}
     {{> signinModal}}
-    {{> filetree}}
+    <div class="row">
+        <div class="span4">
+            {{> filetree}}
+        </div>
+        <div class="span8">
+        </div>
     </div>
 </body>
 
 <template name="navbar">
     <div class="navbar">
         <div class="navbar-inner">
-            <a class="brand" href="#">Asteroid</a>
+            <a class="brand" href="#">Apogee</a>
             <ul class="nav pull-right">
                 <li class="dropdown">
                 {{#if account}}
@@ -60,8 +65,16 @@
 <template name="filetree">
 <ul>
     {{#each files}}
-    <li>{{this.name}}</li>
+      {{>fileEntry}}
     {{/each}}
 </ul>
+</template>
+
+<template name="fileEntry">
+    <li>{{this.name}} ({{this.path}})
+    {{#if this.contents.length}}
+         [Contents: {{this.contents}}]
+     {{/if}}
+    </li>
 </template>
 

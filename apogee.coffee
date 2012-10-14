@@ -1,13 +1,48 @@
 
 class File
   constructor: (@name, @isDirectory, @path) ->
+    @contents = [] #Directory contents.  To be completed client-side.
+
+  dir_path: -> @path.join "/"
+  file_path: ->
+    if @path && @path.length
+      return this.dir_path() + "/" + @name
+    else
+      return @name
 
 getFileTree = ->
-  dir1 = new File "dir1", true, []
-  file1 = new File "file1", false, ["dir1"]
-  file2 = new File "file2", false, []
+  files = []
+  files.push new File "dir1", true, []
+  files.push new File "file1", false, ["dir1"]
+  files.push new File "file2", false, []
+  files.push new File "dir2", true, []
+  files.push new File "dir3", true, ["dir2"]
+  files.push new File "file3", true, ["dir2", "dir3"]
 
-  return [dir1, file1, file2]
+  return files
+
+constructFileTree = (files) ->
+  files.sort (f1, f2) ->
+    if f1.path.length != f2.path.length
+      return f1.path.length - f2.path.length
+    for i in [0..f1.path.length]
+      if f1.path[i] != f2.path[i]
+        return f1.path[i] < f2.path[i] ? 1 : -1
+    return f1.name < f2.name ? 1 : -1
+
+  fileTree = []
+  fileTreeMap = {}
+  for file in files
+    fileTreeMap[file.file_path()] = file
+    console.log("Storing ", file.file_path())
+    parent = fileTreeMap[file.dir_path()]
+    console.log("Found parent for path " + file.dir_path() + ":", parent)
+    if parent
+      parent.contents.push(file)
+    else
+      fileTree.push(file)
+    
+  return fileTree
 
 if Meteor.is_client
   FileTree = new Meteor.Collection(null)
@@ -17,7 +52,7 @@ if Meteor.is_client
     FileTree.insert(file) for file in files
 
   Template.filetree.files = ->
-    return FileTree.find().fetch()
+    constructFileTree FileTree.find().fetch()
 
   Template.navbar.account = ->
     return Session.get("user")
