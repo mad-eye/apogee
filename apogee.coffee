@@ -23,16 +23,14 @@ getFileTree = ->
 
 constructFileTree = (files) ->
   files.sort (f1, f2) ->
-    if f1.path.length != f2.path.length
-      return f1.path.length - f2.path.length
+    return f1.path.length - f2.path.length if f1.path.length != f2.path.length
     for i in [0..f1.path.length]
-      if f1.path[i] != f2.path[i]
-        return f1.path[i] < f2.path[i] ? 1 : -1
+      return f1.path[i] < f2.path[i] ? 1 : -1 if f1.path[i] != f2.path[i]
     return f1.name < f2.name ? 1 : -1
 
   fileTree = []
   fileTreeMap = {}
-  for file in files
+  files.forEach (file) ->
     fileTreeMap[file.file_path()] = file
     console.log("Storing ", file.file_path())
     parent = fileTreeMap[file.dir_path()]
