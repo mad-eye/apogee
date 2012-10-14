@@ -1,16 +1,61 @@
 <head>
-  <title>apogee</title>
+  <title>Apogee</title>
+  <link href="css/bootstrap.min.css" rel="stylesheet">  
 </head>
 
 <body>
-  {{> hello}}
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <div id="container" class="container">
+    {{> navbar}}
+    {{> signinModal}}
+    {{> filetree}}
+    </div>
 </body>
 
-<template name="hello">
-  <h1>Hello World!</h1>
-  {{greeting}}<br/>
-  {{> filetree}}
+<template name="navbar">
+    <div class="navbar">
+        <div class="navbar-inner">
+            <a class="brand" href="#">Asteroid</a>
+            <ul class="nav pull-right">
+                <li class="dropdown">
+                {{#if account}}
+                    <a id="accountDropdown" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">{{account.username}} <b class="caret"></b></a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="accountDropdown">
+                        <li><a tabindex="-1" href="#">Settings</a></li>
+                        <li class="divider"></li>
+                        <li><a id="logoutButton" tabindex="-1" href="#">Logout</a></li>
+                    </ul>
+                {{else}}
+                    <a id="signinLink" href="#myModal" role="button" data-toggle="modal">Sign in</a> 
+                {{/if}}
+                </li>
+            </ul>
+        </div>
+    </div>
 </template>
+
+<template name="signinModal">
+    <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none; ">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">Sign in</h3>
+        </div>
+        <form id="signInForm">
+            <div class="modal-body">
+                <label>Name:</label>
+                <input type="text" name="username" placeholder="Enter your name..." />
+                <label>Password:</label>
+                <input type="password" name="password" placeholder="Ignored for now..." />
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal">Close</button>
+                <button id="signInButton" class="btn btn-primary">Sign in</button>
+            </div>
+        </form>
+    </div>
+</template>
+
 
 <template name="filetree">
 <ul>
