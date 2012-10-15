@@ -79,12 +79,10 @@ if Meteor.is_client
           Session.set("user", {username:username})
   )
 
-  Template.hello.greeting = "Hello apogee!"
-
 if Meteor.is_server
   ServerFiles = new Meteor.Collection(null)
-  require = __meteor_bootstrap__.require;
-  fs = require("fs");
+  require = __meteor_bootstrap__.require
+  fs = require("fs")
 
   Meteor.startup(->
     projectId = "1e694e3c-9e6c-4118-a600-0ce1652c7564"
@@ -99,7 +97,7 @@ if Meteor.is_server
           name: result.name,
           projectId: projectId,
           isDir: result.isDir
-        ) 
+        )
     )
   )
 
