@@ -1,7 +1,7 @@
 Files = new Meteor.Collection("files")
 
 class File
-  constructor: (@name, @isDir, @path, @projectId) ->
+  constructor: (@name, @body, @isDir, @path, @projectId) ->
     @contents = [] #Directory contents.  To be completed client-side.
 
   dir_path: -> @path.join "/"
@@ -22,7 +22,7 @@ constructFileTree = (files) ->
   fileTreeMap = {}
   files.forEach (file) ->
     if ! (file instanceof File)
-      file = new File(file.name, file.isDir, file.path, file.projectId)
+      file = new File(file.name, file.body, file.isDir, file.path, file.projectId)
     fileTreeMap[file.file_path()] = file
     console.log("Storing ", file.file_path())
     parent = fileTreeMap[file.dir_path()]
@@ -82,7 +82,7 @@ if Meteor.is_server
     pathStr = rawName.substring(0,lastSlashIdx)
     name = rawName.substring(lastSlashIdx+1, rawName.length)
     path = pathStr.split('/')
-    return new File(name, rawResult.isDir, path, rawResult.projectId)
+    return new File(name, rawResult.body, rawResult.isDir, path, rawResult.projectId)
 
   Meteor.startup(->
     Files.remove({})
@@ -95,14 +95,17 @@ if Meteor.is_server
     walk(dir, dir, (err, results)->
       results ?= []
       results.forEach (result)->
-        selector = {name: result.name, projectId: projectId}
-        file = undefined
-        realResults.push(
-          name: result.name,
-          projectId: projectId,
-          isDir: result.isDir
+        fs.readFile("#{dir}#{result.name}", "utf8", (err, data)->
+          selector = {name: result.name, projectId: projectId}
+          file = undefined
+          realResults.push(
+            name: result.name,
+            projectId: projectId,
+            isDir: result.isDir,
+            body: data
+          )
+          needToProcessResults = true
         )
-      needToProcessResults = true
     )
 
     #XXX: Need to ditch this kludge for something less embarassing.
@@ -114,13 +117,3 @@ if Meteor.is_server
         needToProcessResults = false
     , 100)
   )
-  
-
-#  Meteor.autosubscribe(->
-#    while ServerFiles.find().count()
-#      newFile = ServerFiles.findOne()
-#      ServerFiles.remove(newFile._id)
-#      delete(newFile._id)
-#      Files.insert(newFile) unless Files.findOne({name: newFile.name, projectId: newFile.projectId})
-#  )
-
