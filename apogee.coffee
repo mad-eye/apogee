@@ -1,7 +1,7 @@
 Files = new Meteor.Collection("files")
 
 class File
-  constructor: (@name, @isDirectory, @path) ->
+  constructor: (@name, @isDir, @path, @projectId) ->
     @contents = [] #Directory contents.  To be completed client-side.
 
   dir_path: -> @path.join "/"
@@ -10,17 +10,6 @@ class File
       return this.dir_path() + "/" + @name
     else
       return @name
-
-getFileTree = ->
-  files = []
-  files.push new File "dir1", true, []
-  files.push new File "file1", false, ["dir1"]
-  files.push new File "file2", false, []
-  files.push new File "dir2", true, []
-  files.push new File "dir3", true, ["dir2"]
-  files.push new File "file3", true, ["dir2", "dir3"]
-
-  return files
 
 constructFileTree = (files) ->
   files.sort (f1, f2) ->
@@ -32,6 +21,8 @@ constructFileTree = (files) ->
   fileTree = []
   fileTreeMap = {}
   files.forEach (file) ->
+    if ! (file instanceof File)
+      file = new File(file.name, file.isDir, file.path, file.projectId)
     fileTreeMap[file.file_path()] = file
     console.log("Storing ", file.file_path())
     parent = fileTreeMap[file.dir_path()]
@@ -44,13 +35,9 @@ constructFileTree = (files) ->
   return fileTree
 
 if Meteor.is_client
-  FileTree = new Meteor.Collection(null)
-  Meteor.startup ->
-    files = getFileTree()
-    FileTree.insert(file) for file in files
 
   Template.filetree.files = ->
-    constructFileTree FileTree.find().fetch()
+    constructFileTree Files.find().fetch()
 
   Template.navbar.account = ->
     return Session.get("user")
@@ -79,10 +66,24 @@ if Meteor.is_client
         Session.set("user", username)
   )
 
+
 if Meteor.is_server
   ServerFiles = new Meteor.Collection(null)
   require = __meteor_bootstrap__.require
   fs = require("fs")
+
+  processResult = (rawResult) ->
+    rawName = rawResult.name
+    if rawName.charAt(0) == '/'
+      rawName = rawName.substring(1,rawName.length)
+    if rawName.charAt(rawName.length) == '/'
+      rawName = rawName.substring(0,rawName.length-1)
+
+    lastSlashIdx = rawName.lastIndexOf('/')
+    pathStr = rawName.substring(0,lastSlashIdx)
+    name = rawName.substring(lastSlashIdx+1, rawName.length)
+    path = pathStr.split('/')
+    return new File(name, rawResult.isDir, path, rawResult.projectId)
 
   Meteor.startup(->
     projectId = "1e694e3c-9e6c-4118-a600-0ce1652c7564"
@@ -90,6 +91,7 @@ if Meteor.is_server
 
     console.log("Using dir", dir)
     realResults = []
+    needToProcessResults = false
     walk(dir, dir, (err, results)->
       results ?= []
       results.forEach (result)->
@@ -100,13 +102,16 @@ if Meteor.is_server
           projectId: projectId,
           isDir: result.isDir
         )
+      needToProcessResults = true
     )
 
-    Meteor.setTimeout( ->
-      for result in realResults
-        console.log("Result:", result)
-        Files.insert(result)
-    , 500)
+    Meteor.setInterval( ->
+      if needToProcessResults
+        while realResults.length
+          result = realResults.pop()
+          Files.insert(processResult(result))
+        needToProcessResults = false
+    , 100)
   )
   
 
