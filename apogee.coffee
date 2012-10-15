@@ -74,9 +74,9 @@ if Meteor.is_client
         if (field['name'] == 'username')
           username = field['value']
           break
-        if username
-          console.log("Found username " + username)
-          Session.set("user", {username:username})
+      if username
+        console.log("Found username " + username)
+        Session.set("user", username)
   )
 
 if Meteor.is_server
