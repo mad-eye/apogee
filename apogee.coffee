@@ -20,6 +20,7 @@ constructFileTree = (files) ->
   files.forEach (file) ->
     #XXX should probably not have to do this for every file object..
     _.extend(file, filePrototype)
+    file.contents ?= []
     fileTreeMap[file.file_path()] = file
     console.log("Storing ", file.file_path())
     parent = fileTreeMap[file.dir_path()]
