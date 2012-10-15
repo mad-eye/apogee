@@ -88,18 +88,27 @@ if Meteor.is_server
     projectId = "1e694e3c-9e6c-4118-a600-0ce1652c7564"
     dir = "/tmp/bolide/repoClones/#{projectId}"
 
+    console.log("Using dir", dir)
+    realResults = []
     walk(dir, dir, (err, results)->
       results ?= []
       results.forEach (result)->
         selector = {name: result.name, projectId: projectId}
         file = undefined
-        ServerFiles.insert(
+        realResults.push(
           name: result.name,
           projectId: projectId,
           isDir: result.isDir
         )
     )
+
+    Meteor.setTimeout( ->
+      for result in realResults
+        console.log("Result:", result)
+        Files.insert(result)
+    , 500)
   )
+  
 
 #  Meteor.autosubscribe(->
 #    while ServerFiles.find().count()
