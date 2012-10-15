@@ -15,6 +15,10 @@ walk = (dir, root, done)->
       file = dir + "/" + file
       fs.stat(file, (err,stat)->
         if (stat and stat.isDirectory())
+          results.push(
+            name: file.replace(root, "")
+            isDir: stat.isDirectory()
+          )
           walk(file, root, (err,res)->
             results = results.concat(res)
             done(null, results) if (!--pending)
