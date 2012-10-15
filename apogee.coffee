@@ -9,7 +9,7 @@ constructFileTree = (files) ->
 
   fileTree = []
   fileTreeMap = {}
-  filePrototype = 
+  filePrototype =
     dir_path: -> @path.join "/"
     file_path: ->
       if @path && @path.length
@@ -22,9 +22,8 @@ constructFileTree = (files) ->
     _.extend(file, filePrototype)
     file.contents ?= []
     fileTreeMap[file.file_path()] = file
-    console.log("Storing ", file.file_path())
     parent = fileTreeMap[file.dir_path()]
-    console.log("Found parent for path " + file.dir_path() + ":", parent)
+    #console.log("Found parent for path " + file.dir_path() + ":", parent)
     if parent
       parent.contents.push(file)
     else
@@ -79,7 +78,10 @@ if Meteor.is_server
     lastSlashIdx = rawName.lastIndexOf('/')
     pathStr = rawName.substring(0,lastSlashIdx)
     name = rawName.substring(lastSlashIdx+1, rawName.length)
-    path = pathStr.split('/')
+    if pathStr == ''
+      path = []
+    else
+      path = pathStr.split('/')
     return {name: name, body: rawResult.body, isDir: rawResult.isDir, path: path, projectId: rawResult.projectId}
 
   Meteor.startup(->
