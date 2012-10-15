@@ -2,8 +2,8 @@
 
 fs = undefined
 if Meteor.is_server
-  require = __meteor_bootstrap__.require;
-  fs = require("fs");
+  require = __meteor_bootstrap__.require
+  fs = require("fs")
 
 walk = (dir, root, done)->
   results = []
