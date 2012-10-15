@@ -1,16 +1,5 @@
 Files = new Meteor.Collection("files")
 
-class File
-  constructor: (@name, @body, @isDir, @path, @projectId) ->
-    @contents = [] #Directory contents.  To be completed client-side.
-
-  dir_path: -> @path.join "/"
-  file_path: ->
-    if @path && @path.length
-      return this.dir_path() + "/" + @name
-    else
-      return @name
-
 constructFileTree = (files) ->
   files.sort (f1, f2) ->
     return f1.path.length - f2.path.length if f1.path.length != f2.path.length
@@ -20,9 +9,17 @@ constructFileTree = (files) ->
 
   fileTree = []
   fileTreeMap = {}
+  filePrototype = 
+    dir_path: -> @path.join "/"
+    file_path: ->
+      if @path && @path.length
+        return this.dir_path() + "/" + @name
+      else
+        return @name
+
   files.forEach (file) ->
-    if ! (file instanceof File)
-      file = new File(file.name, file.body, file.isDir, file.path, file.projectId)
+    #XXX should probably not have to do this for every file object..
+    _.extend(file, filePrototype)
     fileTreeMap[file.file_path()] = file
     console.log("Storing ", file.file_path())
     parent = fileTreeMap[file.dir_path()]
@@ -82,7 +79,7 @@ if Meteor.is_server
     pathStr = rawName.substring(0,lastSlashIdx)
     name = rawName.substring(lastSlashIdx+1, rawName.length)
     path = pathStr.split('/')
-    return new File(name, rawResult.body, rawResult.isDir, path, rawResult.projectId)
+    return {name: name, body: rawResult.body, isDir: rawResult.isDir, path: path, projectId: rawResult.projectId}
 
   Meteor.startup(->
     Files.remove({})

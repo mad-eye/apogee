@@ -71,11 +71,11 @@
 </template>
 
 <template name="fileEntry">
-    <li>{{this.name}} ({{this.path}})
+    <li id="{{this.id}}">{{this.name}} ({{this.path}})
     {{#if this.contents.length}}
       <ul> 
         {{#each this.contents}}
-           <li>{{>fileEntry this}}</li>
+           {{>fileEntry this}}
         {{/each}}
         </ul>
      {{/if}}
