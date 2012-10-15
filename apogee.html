@@ -71,7 +71,7 @@
 </template>
 
 <template name="fileEntry">
-    <li id="{{this.id}}">{{this.name}} ({{this.path}})
+    <li class="{{#if this.isDir}}directory{{else}}file{{/if}} {{#if isSelected}}selected{{/if}}" id="{{this._id}}">{{this.name}} ({{this.path}})
     {{#if this.contents.length}}
       <ul> 
         {{#each this.contents}}

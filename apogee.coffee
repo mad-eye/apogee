@@ -39,6 +39,9 @@ if Meteor.is_client
   Template.navbar.account = ->
     return Session.get("user")
 
+  Template.fileEntry.isSelected = ->
+    return Session.equals("currentFileId", this._id)
+
   Template.navbar.events(
     'click #logoutButton' : (event) ->
       event.preventDefault()
@@ -63,6 +66,12 @@ if Meteor.is_client
         Session.set("user", username)
   )
 
+  Template.fileEntry.events(
+    'click li.file' : (event) ->
+      event.preventDefault()
+      event.stopPropagation()
+      Session.set("currentFileId", event.currentTarget.id)
+    )
 
 if Meteor.is_server
   require = __meteor_bootstrap__.require

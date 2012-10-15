@@ -4,3 +4,6 @@ body {
     padding: 8px;
 }
 
+.selected {
+	font-weight: bold;
+}
