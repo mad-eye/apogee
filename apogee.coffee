@@ -68,7 +68,6 @@ if Meteor.is_client
 
 
 if Meteor.is_server
-  ServerFiles = new Meteor.Collection(null)
   require = __meteor_bootstrap__.require
   fs = require("fs")
 
@@ -86,6 +85,7 @@ if Meteor.is_server
     return new File(name, rawResult.isDir, path, rawResult.projectId)
 
   Meteor.startup(->
+    Files.remove({})
     projectId = "1e694e3c-9e6c-4118-a600-0ce1652c7564"
     dir = "/tmp/bolide/repoClones/#{projectId}"
 
@@ -105,6 +105,7 @@ if Meteor.is_server
       needToProcessResults = true
     )
 
+    #XXX: Need to ditch this kludge for something less embarassing.
     Meteor.setInterval( ->
       if needToProcessResults
         while realResults.length
