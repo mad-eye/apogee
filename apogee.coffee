@@ -98,31 +98,23 @@ if Meteor.is_server
     projectId = "1e694e3c-9e6c-4118-a600-0ce1652c7564"
     dir = "/tmp/bolide/repoClones/#{projectId}"
 
-    console.log("Using dir", dir)
-    realResults = []
-    needToProcessResults = false
     walk(dir, dir, (err, results)->
       results ?= []
       results.forEach (result)->
         fs.readFile("#{dir}#{result.name}", "utf8", (err, data)->
-          selector = {name: result.name, projectId: projectId}
-          file = undefined
-          realResults.push(
-            name: result.name,
-            projectId: projectId,
-            isDir: result.isDir,
-            body: data
-          )
-          needToProcessResults = true
+          Fiber(->
+            Meteor.setTimeout(->
+              selector = {name: result.name, projectId: projectId}
+              file = undefined
+              console.log("adding file", result.name)
+              Files.insert(processResult(
+                 name: result.name,
+                 projectId: projectId,
+                 isDir: result.isDir,
+                 body: data
+              ))
+            ,0)
+          ).run()
         )
     )
-
-    #XXX: Need to ditch this kludge for something less embarassing.
-    Meteor.setInterval( ->
-      if needToProcessResults
-        while realResults.length
-          result = realResults.pop()
-          Files.insert(processResult(result))
-        needToProcessResults = false
-    , 100)
   )
