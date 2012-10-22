@@ -71,14 +71,14 @@
 </template>
 
 <template name="fileEntry">
-    <li class="{{#if this.isDir}}directory{{else}}file{{/if}} {{#if isSelected}}selected{{/if}}" id="{{this._id}}">{{this.name}} ({{this.parents}})
+  <li class="{{#if this.isDir}}directory{{else}}file{{/if}} {{#if isSelected}}selected{{/if}}" id="{{this._id}}">{{this.name}} ({{this.parents}})
     {{#if this.children.length}}
       <ul> 
         {{#each this.children}}
-           {{>fileEntry this}}
+          {{>fileEntry this}}
         {{/each}}
-        </ul>
-     {{/if}}
-    </li>
+      </ul>
+    {{/if}}
+  </li>
 </template>
 
