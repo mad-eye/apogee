@@ -1,31 +1,28 @@
 Files = new Meteor.Collection("files")
 
 constructFileTree = (files) ->
+  console.log "Constructing file tree"
   files.sort (f1, f2) ->
-    return f1.path.length - f2.path.length if f1.path.length != f2.path.length
-    for i in [0..f1.path.length]
-      return f1.path[i] < f2.path[i] ? 1 : -1 if f1.path[i] != f2.path[i]
+    return f1.parents.length - f2.parents.length if f1.parents.length != f2.parents.length
+    for i in [0..f1.parents.length]
+      return f1.parents[i] < f2.parents[i] ? 1 : -1 if f1.parents[i] != f2.parents[i]
     return f1.name < f2.name ? 1 : -1
 
   fileTree = []
   fileTreeMap = {}
   filePrototype =
-    dir_path: -> @path.join "/"
-    file_path: ->
-      if @path && @path.length
-        return this.dir_path() + "/" + @name
-      else
-        return @name
+    parent_path: -> @parents.join "/"
 
   files.forEach (file) ->
     #XXX should probably not have to do this for every file object..
     _.extend(file, filePrototype)
-    file.contents ?= []
-    fileTreeMap[file.file_path()] = file
-    parent = fileTreeMap[file.dir_path()]
-    #console.log("Found parent for path " + file.dir_path() + ":", parent)
+    file.children ?= []
+    console.log("Storing file", file.path)
+    fileTreeMap[file.path] = file
+    parent = fileTreeMap[file.parent_path()]
+    console.log("Found parent for path " + file.parent_path() + ":", parent)
     if parent
-      parent.contents.push(file)
+      parent.children.push(file)
     else
       fileTree.push(file)
     
@@ -79,21 +76,27 @@ if Meteor.is_server
 
   ProcessQueue = new Meteor.Collection(null)
 
-  processResult = (rawResult) ->
-    rawName = rawResult.name
-    if rawName.charAt(0) == '/'
-      rawName = rawName.substring(1,rawName.length)
-    if rawName.charAt(rawName.length) == '/'
-      rawName = rawName.substring(0,rawName.length-1)
+  processResult = (result) ->
+    path = result.path
+    console.log("Found path " + JSON.stringify(path) )
+    if path.charAt(0) == '/'
+      path = path.substring(1,path.length)
+    if path.charAt(path.length) == '/'
+      path = path.substring(0,path.length-1)
+    result.path = path
 
-    lastSlashIdx = rawName.lastIndexOf('/')
-    pathStr = rawName.substring(0,lastSlashIdx)
-    name = rawName.substring(lastSlashIdx+1, rawName.length)
-    if pathStr == ''
-      path = []
+    lastSlashIdx = path.lastIndexOf('/')
+    result.name = path.substring(lastSlashIdx+1, path.length)
+
+    parentPathStr = path.substring(0,lastSlashIdx)
+    if parentPathStr == ''
+      result.parents = []
     else
-      path = pathStr.split('/')
-    return {name: name, body: rawResult.body, isDir: rawResult.isDir, path: path, projectId: rawResult.projectId}
+      result.parents = parentPathStr.split('/')
+
+    #Clear out initial _id
+    delete result._id
+    return result
 
   Meteor.startup(->
     Files.remove({})
@@ -104,11 +107,9 @@ if Meteor.is_server
       results ?= []
       results.forEach (result)->
         fs.readFile("#{dir}#{result.name}", "utf8", (err, data)->
-              selector = {name: result.name, projectId: projectId}
-              file = undefined
               console.log("adding file", result.name)
               ProcessQueue.insert(processResult(
-                 name: result.name,
+                 path: result.name,
                  projectId: projectId,
                  isDir: result.isDir,
                  body: data
@@ -121,8 +122,8 @@ if Meteor.is_server
         console.log "Processing queue"
         while ProcessQueue.find().count()
           rawResult = ProcessQueue.findOne()
+          ProcessQueue.remove rawResult._id
           console.log("Processing", rawResult)
           Files.insert processResult(rawResult)
-          ProcessQueue.remove rawResult._id
       ).run()
   )

@@ -71,10 +71,10 @@
 </template>
 
 <template name="fileEntry">
-    <li class="{{#if this.isDir}}directory{{else}}file{{/if}} {{#if isSelected}}selected{{/if}}" id="{{this._id}}">{{this.name}} ({{this.path}})
-    {{#if this.contents.length}}
+    <li class="{{#if this.isDir}}directory{{else}}file{{/if}} {{#if isSelected}}selected{{/if}}" id="{{this._id}}">{{this.name}} ({{this.parents}})
+    {{#if this.children.length}}
       <ul> 
-        {{#each this.contents}}
+        {{#each this.children}}
            {{>fileEntry this}}
         {{/each}}
         </ul>
