@@ -77,6 +77,8 @@ if Meteor.is_server
   require = __meteor_bootstrap__.require
   fs = require("fs")
 
+  ProcessQueue = new Meteor.Collection(null)
+
   processResult = (rawResult) ->
     rawName = rawResult.name
     if rawName.charAt(0) == '/'
@@ -102,19 +104,25 @@ if Meteor.is_server
       results ?= []
       results.forEach (result)->
         fs.readFile("#{dir}#{result.name}", "utf8", (err, data)->
-          Fiber(->
-            Meteor.setTimeout(->
               selector = {name: result.name, projectId: projectId}
               file = undefined
               console.log("adding file", result.name)
-              Files.insert(processResult(
+              ProcessQueue.insert(processResult(
                  name: result.name,
                  projectId: projectId,
                  isDir: result.isDir,
                  body: data
               ))
-            ,0)
-          ).run()
         )
     )
+
+    Meteor.autorun ->
+      Fiber(->
+        console.log "Processing queue"
+        while ProcessQueue.find().count()
+          rawResult = ProcessQueue.findOne()
+          console.log("Processing", rawResult)
+          Files.insert processResult(rawResult)
+          ProcessQueue.remove rawResult._id
+      ).run()
   )
