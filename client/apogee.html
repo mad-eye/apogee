@@ -63,7 +63,7 @@
 
 
 <template name="filetree">
-<ul>
+<ul class="filetree">
     {{#each files}}
       {{>fileEntry}}
     {{/each}}
@@ -71,9 +71,10 @@
 </template>
 
 <template name="fileEntry">
-  <li class="{{#if this.isDir}}directory{{else}}file{{/if}} {{#if isSelected}}selected{{/if}}" id="{{this._id}}">{{this.name}} ({{this.parents}})
+  <li class="filetree-item {{#if this.isDir}}directory open{{else}}file{{/if}} {{#if isSelected}}selected{{/if}}" id="{{this._id}}">
+    {{this.name}} 
     {{#if this.children.length}}
-      <ul> 
+      <ul class="filetree"> 
         {{#each this.children}}
           {{>fileEntry this}}
         {{/each}}

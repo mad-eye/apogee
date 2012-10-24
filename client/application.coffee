@@ -32,7 +32,7 @@ Template.signinModal.events(
 )
 
 Template.fileEntry.events(
-  'click li.file' : (event) ->
+  'click li.filetree-item' : (event) ->
     event.preventDefault()
     event.stopPropagation()
     Session.set("currentFileId", event.currentTarget.id)
