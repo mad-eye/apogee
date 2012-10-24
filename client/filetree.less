@@ -1,7 +1,24 @@
-/*@backgroundColorDefault: #FFF;*/
-/*@backgroundColorAlt: #F9F9F9;*/
-/*@backgroundColorHover: #F5F5F5;*/
-/*@backgroundColorSelected: rgb(125, 176, 217);*/
+@backgroundColorDefault: #FFF;
+@backgroundColorAlt: #F9F9F9;
+@backgroundColorHover: #F5F5F5;
+@backgroundColorSelected: rgb(125, 176, 217);
+
+@textColorDefault: #333;
+@textColorSelected: #fff;
+
+@borderRadius: 4px;
+
+.rounded-corners (@radius: 5px) {
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+  -ms-border-radius: @radius;
+  -o-border-radius: @radius;
+  border-radius: @radius;
+}
+
+.li-indent(@numIndents) {
+  padding-left: (32px * @numIndents);
+}
 
 ul.filetree-top {
   margin-left: 0px;
@@ -9,37 +26,36 @@ ul.filetree-top {
   border: 1px solid #dddddd;
   border-collapse: separate;
   *border-collapse: collapse;
-  -webkit-border-radius: 4px;
-     -moz-border-radius: 4px;
-          border-radius: 4px;
+  .rounded-corners(@borderRadius);
 }
 
 ul.filetree {
+    span {
+        font-size: 12px;
+    }
+
     li {
         list-style-type: none;
+        background-color: @backgroundColorDefault;
+        color: @textColorDefault;
     }
 
     li:nth-child(odd) {
-        background-color: #f9f9f9;
+        background-color: @backgroundColorAlt;
     }
 
     li:hover {
-        background-color: #f5f5f5;
+        background-color: @backgroundColorHover;
     }
 
     li.selected {
-        background-color: rgb(125, 176, 217);
-        color: #fff;
+        background-color: @backgroundColorSelected;
+        color: @textColorSelected;
     }
 
     li.selected ul.filetree {
-        background-color: #fff;
-        color: #333;
-    }
-
-
-    span {
-        font-size: 12px;
+        background-color: @backgroundColorDefault;
+        color: @textColorDefault;
     }
 
     li.file:before {
@@ -47,37 +63,37 @@ ul.filetree {
     }
 
     li.directory.open:before {
-        /*content: url('/images/folder_full.png');*/
         content: url('/images/add_to_folder.png');
     }
 
     li.directory.closed:before {
         content: url('/images/folder.png');
     }
+    
+    li.level1 {
+        .li-indent(1);
+    }
+
+    li.level2 {
+        .li-indent(2);
+    }
+
+    li.level3 {
+        .li-indent(3);
+    }
+
+    li.level4 {
+        .li-indent(4);
+    }
+
+    li.level5 {
+        .li-indent(5);
+    }
+
+    li.level6 {
+        .li-indent(6);
+    }
+
 }
 
-
-/*li.file {*/
-    /*list-style-image: url('/images/full_page.png');*/
-/*}*/
-
-/*li.directory.open {*/
-    /*[>list-style-image: url('/images/folder_full.png');<]*/
-    /*list-style-image: url('/images/add_to_folder.png');*/
-/*}*/
-
-/*li.directory.closed {*/
-    /*list-style-image: url('/images/folder.png');*/
-/*}*/
-
-/*li.selected span {*/
-	/*font-weight: bold;*/
-    /*background-color: #9DF;*/
-/*}*/
-
-/*[> Don't select the selected's children <]*/
-/*li.selected ul span {*/
-    /*font-weight: normal;*/
-    /*background-color: #FFF;*/
-/*}*/
 
