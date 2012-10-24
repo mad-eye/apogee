@@ -16,20 +16,17 @@
   border-radius: @radius;
 }
 
-.li-indent(@numIndents) {
+.filetree-indent(@numIndents) {
   padding-left: (16px * @numIndents);
 }
 
-ul.filetree-top {
-  margin-left: 0px;
-
-  border: 1px solid #dddddd;
-  border-collapse: separate;
-  *border-collapse: collapse;
-  .rounded-corners(@borderRadius);
-}
-
 ul.filetree {
+    margin-left: 0px;
+    border: 1px solid #dddddd;
+    border-collapse: separate;
+    *border-collapse: collapse;
+    .rounded-corners(@borderRadius);
+
     span {
         font-size: 12px;
     }
@@ -38,60 +35,39 @@ ul.filetree {
         list-style-type: none;
         background-color: @backgroundColorDefault;
         color: @textColorDefault;
-    }
 
-    li:nth-child(odd) {
-        background-color: @backgroundColorAlt;
-    }
+        &:nth-child(odd) {
+            background-color: @backgroundColorAlt;
+        }
 
-    li:hover {
-        background-color: @backgroundColorHover;
-    }
+        &:hover {
+            background-color: @backgroundColorHover;
+        }
 
-    li.selected {
-        background-color: @backgroundColorSelected;
-        color: @textColorSelected;
-    }
+        &.selected {
+            background-color: @backgroundColorSelected;
+            color: @textColorSelected;
+        }
 
-    li.selected ul.filetree {
-        background-color: @backgroundColorDefault;
-        color: @textColorDefault;
-    }
+        &.file:before {
+            content: url('/images/full_page.png');
+        }
 
-    li.file:before {
-        content: url('/images/full_page.png');
-    }
+        &.directory.open:before {
+            content: url('/images/add_to_folder.png');
+        }
 
-    li.directory.open:before {
-        content: url('/images/add_to_folder.png');
-    }
+        &.directory.closed:before {
+            content: url('/images/folder.png');
+        }
 
-    li.directory.closed:before {
-        content: url('/images/folder.png');
-    }
-    
-    li.level1 {
-        .li-indent(1);
-    }
-
-    li.level2 {
-        .li-indent(2);
-    }
-
-    li.level3 {
-        .li-indent(3);
-    }
-
-    li.level4 {
-        .li-indent(4);
-    }
-
-    li.level5 {
-        .li-indent(5);
-    }
-
-    li.level6 {
-        .li-indent(6);
+        // TODO: Surely there is a way to match regexs?
+        &.level1 { .filetree-indent(1); } 
+        &.level2 { .filetree-indent(2); } 
+        &.level3 { .filetree-indent(3); } 
+        &.level4 { .filetree-indent(4); } 
+        &.level5 { .filetree-indent(5); } 
+        &.level6 { .filetree-indent(6); }
     }
 
 }
