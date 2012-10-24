@@ -4,24 +4,3 @@ body {
     padding: 8px;
 }
 
-li.selected {
-	font-weight: bold;
-}
-
-/* Don't select the selected's children */
-li.selected ul {
-    font-weight: normal;
-}
-
-li.file {
-    list-style-image: url('/images/full_page.png');
-}
-
-li.directory.open {
-    /*list-style-image: url('/images/folder_full.png');*/
-    list-style-image: url('/images/add_to_folder.png');
-}
-
-li.directory.closed {
-    list-style-image: url('/images/folder.png');
-}
