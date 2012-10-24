@@ -18,7 +18,8 @@ li.file {
 }
 
 li.directory.open {
-    list-style-image: url('/images/folder_full.png');
+    /*list-style-image: url('/images/folder_full.png');*/
+    list-style-image: url('/images/add_to_folder.png');
 }
 
 li.directory.closed {

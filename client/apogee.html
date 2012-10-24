@@ -71,9 +71,9 @@
 </template>
 
 <template name="fileEntry">
-  <li class="filetree-item {{#if this.isDir}}directory open{{else}}file{{/if}} {{#if isSelected}}selected{{/if}}" id="{{this._id}}">
+<li class="filetree-item {{#if this.isDir}}directory {{#if isOpen}}open{{else}}closed{{/if}}{{else}}file{{/if}} {{#if isSelected}}selected{{/if}}" id="{{this._id}}">
     {{this.name}} 
-    {{#if this.children.length}}
+    {{#if isOpen and this.children.length}}
       <ul class="filetree"> 
         {{#each this.children}}
           {{>fileEntry this}}

@@ -4,9 +4,6 @@ Template.filetree.files = ->
 Template.navbar.account = ->
   return Session.get("user")
 
-Template.fileEntry.isSelected = ->
-  return Session.equals("currentFileId", this._id)
-
 Template.navbar.events(
   'click #logoutButton' : (event) ->
     event.preventDefault()
@@ -31,11 +28,24 @@ Template.signinModal.events(
       Session.set("user", username)
 )
 
+Template.fileEntry.isSelected = ->
+  return Session.equals("currentFileId", this._id)
+
+Template.fileEntry.isOpen = ->
+  console.log("Checking isOpen for", this)
+  return this.isDir && isDirOpen(this._id)
+
 Template.fileEntry.events(
   'click li.filetree-item' : (event) ->
+    console.log "Got click event", event
     event.preventDefault()
     event.stopPropagation()
-    Session.set("currentFileId", event.currentTarget.id)
+    event.stopImmediatePropagation()
+    fileId = event.currentTarget.id
+    Session.set("currentFileId", fileId)
+    file = Files.findOne(_id:fileId)
+    if file.isDir
+      toggleDir fileId
   )
 
 
