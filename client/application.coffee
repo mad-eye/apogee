@@ -35,6 +35,18 @@ Template.fileEntry.isOpen = ->
   console.log("Checking isOpen for", this)
   return this.isDir && isDirOpen(this._id)
 
+Template.fileEntry.fileEntryClass = ->
+  clazz = "filetree-item"
+  if this.isDir
+    clazz += " directory " + if isDirOpen(this._id) then "open" else "closed"
+  else
+    clazz += " file"
+  if this.parents.length
+    clazz += " level" + this.parents.length
+  clazz += " selected" if Session.equals("currentFileId", this._id)
+  return clazz
+
+
 Template.fileEntry.events(
   'click li.filetree-item' : (event) ->
     console.log "Got click event", event
