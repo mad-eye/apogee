@@ -1,4 +1,5 @@
 #inspired by http://stackoverflow.com/questions/5827612/node-js-fs-readdir-recursive-directory-search
+# TODO: Clean up using https://github.com/possibilities/meteor-node-modules
 
 fs = undefined
 if Meteor.is_server
