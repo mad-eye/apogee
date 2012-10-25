@@ -1,3 +1,5 @@
+DEFAULT_FILE_NAME = "Select a file"
+
 Template.filetree.files = ->
   constructFileTree Files.find().fetch()
 
@@ -59,6 +61,7 @@ Template.fileEntry.events(
     if file.isDir
       toggleDir fileId
     else
+      Session.set("lastTextFileId", fileId)
       sharejs.open(fileId, 'text', 'http://localhost:3003/sjs', (error, doc) ->
         doc.attach_ace(editor)
       )
@@ -67,4 +70,11 @@ Template.fileEntry.events(
 Template.editor.rendered = ->
   editor = ace.edit("editor")
 
+Template.editor.fileName = ->
+  fileId = Session.get("lastTextFileId")
+  name = null
+  if fileId
+    name = Files.findOne(fileId)?.name if fileId
+  name ?= DEFAULT_FILE_NAME
+  return name
 
