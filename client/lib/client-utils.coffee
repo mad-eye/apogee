@@ -15,10 +15,10 @@ constructFileTree = (files) ->
     #XXX should probably not have to do this for every file object..
     _.extend(file, filePrototype)
     file.children ?= []
-    console.log("Storing file", file.path)
+    #console.log("Storing file", file.path)
     fileTreeMap[file.path] = file
     parent = fileTreeMap[file.parent_path()]
-    console.log("Found parent for path " + file.parent_path() + ":", parent)
+    #console.log("Found parent for path " + file.parent_path() + ":", parent)
     if parent
       parent.children.push(file)
     else
