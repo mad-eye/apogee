@@ -26,6 +26,7 @@ processResult = (result) ->
   return result
 
 Meteor.startup(->
+  console.log("Starting up server.")
   Files.remove({})
   projectId = "1e694e3c-9e6c-4118-a600-0ce1652c7564"
   dir = "/tmp/bolide/repoClones/#{projectId}"
@@ -34,7 +35,7 @@ Meteor.startup(->
     results ?= []
     results.forEach (result)->
       fs.readFile("#{dir}#{result.name}", "utf8", (err, data)->
-            console.log("adding file", result.name)
+            #console.log("adding file", result.name)
             ProcessQueue.insert(processResult(
                path: result.name,
                projectId: projectId,
@@ -46,7 +47,7 @@ Meteor.startup(->
 
   Meteor.autorun ->
     Fiber(->
-      console.log "Processing queue"
+      #console.log "Processing queue"
       while ProcessQueue.find().count()
         rawResult = ProcessQueue.findOne()
         ProcessQueue.remove rawResult._id
