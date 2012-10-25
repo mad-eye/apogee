@@ -58,6 +58,13 @@ Template.fileEntry.events(
     file = Files.findOne(_id:fileId)
     if file.isDir
       toggleDir fileId
+    else
+      sharejs.open(fileId, 'text', 'http://localhost:3003/sjs', (error, doc) ->
+        doc.attach_ace(editor)
+      )
   )
+
+Template.editor.rendered = ->
+  editor = ace.edit("editor")
 
 

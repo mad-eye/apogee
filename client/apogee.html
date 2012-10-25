@@ -6,6 +6,7 @@
 <body>
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="http://ajaxorg.github.com/ace/build/src/ace.js"></script>
     <div id="container" class="container">
     {{> navbar}}
     {{> signinModal}}
@@ -14,6 +15,7 @@
             {{> filetree}}
         </div>
         <div class="span8">
+            {{> editor}}
         </div>
     </div>
 </body>
@@ -81,3 +83,6 @@
   {{/if}}
 </template>
 
+<template name="editor">
+  <div id="editor" style="position: absolute; width: 500px; height: 400px"></div>
+</template>
