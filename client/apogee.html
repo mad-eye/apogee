@@ -9,6 +9,18 @@
     <div id="container" class="container">
     {{> navbar}}
     {{> signinModal}}
+    {{{render currentPage}}}
+</body>
+
+<template name="home">
+  <h2>This is the welcome screen!</h2>
+</template>
+
+<template name="missing">
+  <h2>Missing page!  Did you type the path correctly?</h2>
+</template>
+
+<template name="edit">
     <div class="row">
         <div class="span4">
             {{> filetree}}
@@ -17,7 +29,7 @@
             {{> editor}}
         </div>
     </div>
-</body>
+</template>
 
 <template name="navbar">
     <div class="navbar">
