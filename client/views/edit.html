@@ -1,0 +1,35 @@
+<template name="edit">
+    <div class="row">
+        <div class="span4">
+            {{> filetree}}
+        </div>
+        <div class="span8">
+            {{> editor}}
+        </div>
+    </div>
+</template>
+
+<template name="filetree">
+<ul class="filetree">
+    {{#each files}}
+      {{>fileEntry}}
+    {{/each}}
+</ul>
+</template>
+
+<template name="fileEntry">
+  <li class="{{fileEntryClass}}" id="{{this._id}}">
+    <span>{{this.name}}</span> 
+  </li>
+  {{#if isOpen and this.children.length}}
+    {{#each this.children}}
+      {{>fileEntry this}}
+    {{/each}}
+  {{/if}}
+</template>
+
+<template name="editor">
+<div id="editorFileName"><h4>{{fileName}}</h4></div>
+      <div id="editor" ></div>
+</template>
+

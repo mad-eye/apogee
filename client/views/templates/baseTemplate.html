@@ -12,29 +12,10 @@
     {{{render currentPage}}}
 </body>
 
-<template name="home">
-  <h2>This is the welcome screen!</h2>
-</template>
-
-<template name="missing">
-  <h2>Missing page!  Did you type the path correctly?</h2>
-</template>
-
-<template name="edit">
-    <div class="row">
-        <div class="span4">
-            {{> filetree}}
-        </div>
-        <div class="span8">
-            {{> editor}}
-        </div>
-    </div>
-</template>
-
 <template name="navbar">
     <div class="navbar">
         <div class="navbar-inner">
-            <a class="brand" href="#">Apogee</a>
+            <a class="brand" href="/">Apogee</a>
             <ul class="nav pull-right">
                 <li class="dropdown">
                 {{#if account}}
@@ -75,26 +56,3 @@
 </template>
 
 
-<template name="filetree">
-<ul class="filetree">
-    {{#each files}}
-      {{>fileEntry}}
-    {{/each}}
-</ul>
-</template>
-
-<template name="fileEntry">
-  <li class="{{fileEntryClass}}" id="{{this._id}}">
-    <span>{{this.name}}</span> 
-  </li>
-  {{#if isOpen and this.children.length}}
-    {{#each this.children}}
-      {{>fileEntry this}}
-    {{/each}}
-  {{/if}}
-</template>
-
-<template name="editor">
-<div id="editorFileName"><h4>{{fileName}}</h4></div>
-      <div id="editor" ></div>
-</template>
