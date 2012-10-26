@@ -46,9 +46,7 @@ Template.editor.rendered = ->
 
 Template.editor.fileName = ->
   fileId = Session.get("lastTextFileId")
-  name = null
-  if fileId
-    name = Files.findOne(fileId)?.name if fileId
+  name = if fileId then Files.findOne(fileId)?.name else null
   name ?= DEFAULT_FILE_NAME
   return name
 

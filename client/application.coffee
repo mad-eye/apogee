@@ -20,8 +20,6 @@ class Router
     Meteor.deps.add_reactive_variable(this, 'page', 'home')
 
   goto: (location) ->
-    page = @routing(location)
-    console.log("Setting page to", page)
     @page.set(@routing(location))
 
 router = new Router( (location) ->
