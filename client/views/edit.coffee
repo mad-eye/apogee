@@ -1,8 +1,12 @@
 DEFAULT_FILE_NAME = "Select a file"
+DEFAULT_PROJECT_NAME = "New Project"
 
 
 Template.filetree.files = ->
   constructFileTree Files.find().fetch()
+
+Template.filetree.projectName = ->
+  return Session.get('projectId') ? DEFAULT_PROJECT_NAME
 
 Template.fileEntry.isSelected = ->
   return Session.equals("currentFileId", this._id)
