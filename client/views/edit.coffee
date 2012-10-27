@@ -41,19 +41,17 @@ Template.fileEntry.events(
       toggleDir fileId
     else
       Session.set("lastTextFileId", fileId)
-      sharejs.open(fileId, 'text', 'http://localhost:3003/sjs', (error, doc) ->
-        doc.attach_ace(editor)
-      )
-  )
-
-Template.editor.rendered = ->
-  editor = ace.edit("editor")
+)
 
 Template.editor.fileName = ->
   fileId = Session.get("lastTextFileId")
   name = if fileId then Files.findOne(fileId)?.name else null
   name ?= DEFAULT_FILE_NAME
   return name
+
+Template.editor.rendered = ->
+  iFrame = $("#editor_iframe")[0]
+  iFrame.src = "http://localhost:3003/editor.html?id=" + Session.get("currentFileId")
 
 Template.filetree.rendered = ->
   $("#addButton").tooltip()
