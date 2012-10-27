@@ -1,5 +1,6 @@
 DEFAULT_FILE_NAME = "Select a file"
 DEFAULT_PROJECT_NAME = "New Project"
+ROOT_DIR_NAME = "the root directory."
 
 
 Template.filetree.files = ->
@@ -54,3 +55,44 @@ Template.editor.fileName = ->
   name ?= DEFAULT_FILE_NAME
   return name
 
+Template.filetree.rendered = ->
+  $("#addButton").tooltip()
+  $("#deleteButton").tooltip()
+
+Template.filetree.currentFileName = ->
+  fileId = Session.get("currentFileId")
+  name = if fileId then Files.findOne(fileId)?.name else null
+  name ?= "selected file."
+  return name
+
+Template.filetree.currentDirName = ->
+  fileId = Session.get("currentFileId")
+  file = if fileId then Files.findOne(fileId) else null
+  name = null
+  if file?
+    if file.isDir
+      name = file.name
+    else if file.parents.length
+      name = file.parents[file.parents.length-1]
+  name ?= ROOT_DIR_NAME
+  return name
+
+Template.addFileModal.dirList = ->
+  file for file in constructFileTree(Files.find().fetch()) when file.isDir
+
+Template.signinModal.events(
+  'click #addFileSubmit' : (event) ->
+    event.preventDefault()
+    event.stopPropagation()
+    $('#addFileModal').modal('hide')
+    #TODO: Sign in to github.
+    #paramArray = $('#signInForm').serializeArray()
+    #username = null
+    #for field in paramArray
+      #if (field['name'] == 'username')
+        #username = field['value']
+        #break
+    #if username
+      #console.log("Found username " + username)
+      #Session.set("user", username)
+)

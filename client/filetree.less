@@ -7,6 +7,7 @@
 @textColorSelected: #fff;
 
 @borderRadius: 4px;
+@baseFontSize: 12px;
 
 .rounded-border (@radius: 4px) {
   border: 1px solid #dddddd;
@@ -28,7 +29,7 @@ ul.filetree {
     .rounded-border(@borderRadius);
 
     span {
-        font-size: 12px;
+        font-size: @baseFontSize;
     }
 
     li {
@@ -103,3 +104,11 @@ ul.filetree {
       padding-left: 38px;
   }
 }
+
+#addFiles {
+  span {
+    font-size: @baseFontSize;
+  }
+}
+
+    
