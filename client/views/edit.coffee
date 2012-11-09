@@ -13,7 +13,7 @@ Template.fileEntry.isSelected = ->
   return Session.equals("currentFileId", this._id)
 
 Template.fileEntry.isOpen = ->
-  console.log("Checking isOpen for", this)
+  #console.log("Checking isOpen for", this)
   return this.isDir && isDirOpen(this._id)
 
 Template.fileEntry.fileEntryClass = ->
