@@ -32,8 +32,10 @@ Meteor.startup(->
   walk(dir, dir, (err, results)->
     results ?= []
     results.forEach (result)->
-      fs.readFile("#{dir}#{result.name}", "utf8", (err, data)->
-            ProcessQueue.insert result
+      result.projectId = projectId
+      fs.readFile("#{dir}#{result.body}", "utf8", (err, data)->
+        result.body = data
+        ProcessQueue.insert result
       )
   )
 

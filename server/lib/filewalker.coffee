@@ -16,7 +16,6 @@ stripSlash = (str) ->
 
 cleanPath = (str, root) ->
   str = str.replace(root, "")
-  str = stripSlash(str)
   return str
 
 walk = (dir, root, done)->
