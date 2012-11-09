@@ -14,6 +14,11 @@ stripSlash = (str) ->
     str = str.substring(0,str.length-1)
   return str
 
+cleanPath = (str, root) ->
+  str = str.replace(root, "")
+  str = stripSlash(str)
+  return str
+
 walk = (dir, root, done)->
   results = []
   fs.readdir(dir, (err, list)->
@@ -24,9 +29,9 @@ walk = (dir, root, done)->
       file = dir + "/" + file
       fs.stat(file, (err,stat)->
         results.push(
-          path: file.replace(root, "")
+          path: cleanPath(file)
           isDir: stat.isDirectory()
-          parentPath: dir.replace(root, "")
+          parentPath: cleanPath(dir)
         )
         if (stat and stat.isDirectory())
           walk(file, root, (err,res)->
