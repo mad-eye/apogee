@@ -106,7 +106,7 @@ Template.editor.rendered = ->
   editor = ace.edit("editor")
   currentFileId = Session.get("currentFileId")
   if currentFileId
-    sharejs.open(lastTextFileId, 'text', "http://localhost:3003/channel", (error, doc) ->
+    sharejs.open(currentFileId, 'text', "http://localhost:3003/channel", (error, doc) ->
       doc.attach_ace(editor)
     )
 
