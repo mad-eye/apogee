@@ -41,13 +41,15 @@ Template.fileEntry.events(
       toggleDir fileId
     else
       Session.set("lastTextFileId", fileId)
-      sharejs.open("helloWorld", 'text', "http://localhost:3003/channel", (error, doc) ->
-        doc.attach_ace(editor)
-      )
   )
 
 Template.editor.rendered = ->
   editor = ace.edit("editor")
+  lastTextFileId = Session.get("lastTextFileId")
+  if lastTextFileId
+    sharejs.open(lastTextFileId, 'text', "http://localhost:3003/channel", (error, doc) ->
+      doc.attach_ace(editor)
+    )
 
 Template.editor.fileName = ->
   fileId = Session.get("lastTextFileId")
