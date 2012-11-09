@@ -41,7 +41,7 @@ Template.fileEntry.events(
       toggleDir fileId
     else
       Session.set("lastTextFileId", fileId)
-      sharejs.open(fileId, 'text', 'http://localhost:3003/sjs', (error, doc) ->
+      sharejs.open("helloWorld", 'text', "http://localhost:3003/channel", (error, doc) ->
         doc.attach_ace(editor)
       )
   )
