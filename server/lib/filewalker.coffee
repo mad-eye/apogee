@@ -6,6 +6,14 @@ if Meteor.is_server
   require = __meteor_bootstrap__.require
   fs = require("fs")
 
+stripSlash = (str) ->
+  return str unless str?
+  if str.charAt(0) == '/'
+    str = str.substring(1,str.length)
+  if str.charAt(str.length) == '/'
+    str = str.substring(0,str.length-1)
+  return str
+
 walk = (dir, root, done)->
   results = []
   fs.readdir(dir, (err, list)->
@@ -15,22 +23,17 @@ walk = (dir, root, done)->
     list.forEach((file)->
       file = dir + "/" + file
       fs.stat(file, (err,stat)->
+        results.push(
+          path: file.replace(root, "")
+          isDir: stat.isDirectory()
+          parentPath: dir.replace(root, "")
+        )
         if (stat and stat.isDirectory())
-          results.push(
-            name: file.replace(root, "")
-            isDir: stat.isDirectory()
-            parent: dir
-          )
           walk(file, root, (err,res)->
             results = results.concat(res)
             done(null, results) if (!--pending)
           )
         else
-          results.push(
-            name: file.replace(root, "")
-            isDir: stat.isDirectory()
-            parent: dir
-          )
           done(null, results) if (!--pending)
       )
     )

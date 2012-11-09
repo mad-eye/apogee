@@ -20,7 +20,6 @@ fileAndId = (file) ->
     console.error "Called setFileId with incorrect argument", file
     console.log "typeof:", typeof(file)
     return
-  completeFile(file)
   return [file, fileId]
 
 openParents = (file) ->

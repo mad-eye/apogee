@@ -1,9 +1,3 @@
-filePrototype =
-  parent_path: -> @parents.join "/"
-
-completeFile = (file) ->
-  _.extend(file, filePrototype)
-
 constructFileTree = (files) ->
   console.log "Constructing file tree"
   files.sort (f1, f2) ->
@@ -14,17 +8,11 @@ constructFileTree = (files) ->
 
   fileTree = []
   fileTreeMap = {}
-  filePrototype =
-    parent_path: -> @parents.join "/"
-
   files.forEach (file) ->
-    #XXX should probably not have to do this for every file object..
-    _.extend(file, filePrototype)
-    file.children ?= []
     #console.log("Storing file", file.path)
     fileTreeMap[file.path] = file
-    parent = fileTreeMap[file.parent_path()]
-    #console.log("Found parent for path " + file.parent_path() + ":", parent)
+    parent = fileTreeMap[file.parentPath]
+    #console.log("Found parent for path " + file.parentPath + ":", parent)
     if parent
       parent.children.push(file)
     else
