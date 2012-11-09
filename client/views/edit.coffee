@@ -1,9 +1,4 @@
 DEFAULT_FILE_NAME = "Select a file"
-DEFAULT_PROJECT_NAME = "New Project"
-ROOT_DIR_NAME = "the root directory."
-
-
-DEFAULT_FILE_NAME = "Select a file"
 DEFAULT_FILE_BODY = "Empty File"
 DEFAULT_PROJECT_NAME = "New Project"
 ROOT_DIR_NAME = "the root directory."
