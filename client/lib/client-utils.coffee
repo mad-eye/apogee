@@ -1,3 +1,9 @@
+filePrototype =
+  parent_path: -> @parents.join "/"
+
+completeFile = (file) ->
+  _.extend(file, filePrototype)
+
 constructFileTree = (files) ->
   console.log "Constructing file tree"
   files.sort (f1, f2) ->

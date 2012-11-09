@@ -2,7 +2,7 @@
     <div class="row">
         <div class="span4">
             {{> addFileModal}}
-            {{> filetree}}
+            {{> fileTree}}
         </div>
         <div class="span8">
             {{> editor}}
@@ -10,9 +10,9 @@
     </div>
 </template>
 
-<template name="filetree">
-<div id="filetreeProjectName"><h4>{{projectName}}</h4></div>
-<ul class="filetree">
+<template name="fileTree">
+<div id="fileTreeProjectName"><h4>{{projectName}}</h4></div>
+<ul class="fileTree">
     {{#each files}}
       {{>fileEntry}}
     {{/each}}
@@ -36,7 +36,7 @@
 
 <template name="editor">
 <div id="editorFileName"><h4>{{fileName}}</h4></div>
-      <div id="editor" ></div>
+      <iframe id="editor_iframe" seamless="seamless" height=440px width=600px></iframe>
 </template>
 
 <template name="addFileModal">
