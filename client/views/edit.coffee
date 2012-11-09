@@ -10,10 +10,10 @@ ROOT_DIR_NAME = "the root directory."
 
 fileAndId = (file) ->
   if typeof(file) == 'object'
-    console.log "Found object."
+    #console.log "Found object."
     fileId = file._id
   else if typeof(file) == 'string'
-    console.log "Found string."
+    #console.log "Found string."
     fileId = file
     file = Files.findOne(fileId)
   else
@@ -111,6 +111,7 @@ Template.editor.rendered = ->
 
 Template.editor.fileBody = ->
   fileId = Session.get("lastTextFileId")
+  console.log("Found body for #{fileId}: #{body}")
   body = if fileId then Files.findOne(fileId)?.body else null
   return body
 
