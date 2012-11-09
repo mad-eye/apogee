@@ -19,6 +19,7 @@ walk = (dir, root, done)->
           results.push(
             name: file.replace(root, "")
             isDir: stat.isDirectory()
+            parent: dir
           )
           walk(file, root, (err,res)->
             results = results.concat(res)
@@ -28,6 +29,7 @@ walk = (dir, root, done)->
           results.push(
             name: file.replace(root, "")
             isDir: stat.isDirectory()
+            parent: dir
           )
           done(null, results) if (!--pending)
       )

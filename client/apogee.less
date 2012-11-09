@@ -27,11 +27,11 @@ body {
   border-radius: @radius;
 }
 
-.filetree-indent(@numIndents) {
+.fileTree-indent(@numIndents) {
   padding-left: (16px * @numIndents);
 }
 
-ul.filetree {
+ul.fileTree {
     margin-left: 0px;
     .rounded-border(@borderRadius);
 
@@ -70,23 +70,23 @@ ul.filetree {
         }
 
         // TODO: Surely there is a way to match regexs?
-        &.level1 { .filetree-indent(1); } 
-        &.level2 { .filetree-indent(2); } 
-        &.level3 { .filetree-indent(3); } 
-        &.level4 { .filetree-indent(4); } 
-        &.level5 { .filetree-indent(5); } 
-        &.level6 { .filetree-indent(6); }
-        &.level7 { .filetree-indent(7); }
-        &.level8 { .filetree-indent(8); }
-        &.level9 { .filetree-indent(9); }
-        &.level10 { .filetree-indent(10); }
-        &.level11 { .filetree-indent(11); }
-        &.level12 { .filetree-indent(12); }
+        &.level1 { .fileTree-indent(1); } 
+        &.level2 { .fileTree-indent(2); } 
+        &.level3 { .fileTree-indent(3); } 
+        &.level4 { .fileTree-indent(4); } 
+        &.level5 { .fileTree-indent(5); } 
+        &.level6 { .fileTree-indent(6); }
+        &.level7 { .fileTree-indent(7); }
+        &.level8 { .fileTree-indent(8); }
+        &.level9 { .fileTree-indent(9); }
+        &.level10 { .fileTree-indent(10); }
+        &.level11 { .fileTree-indent(11); }
+        &.level12 { .fileTree-indent(12); }
     }
 
 }
 
-#filetreeProjectName {
+#fileTreeProjectName {
   margin-bottom: 12px;
   .rounded-border();
 
