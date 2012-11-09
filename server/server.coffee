@@ -5,7 +5,7 @@ ProcessQueue = new Meteor.Collection(null)
 
 processResult = (result) ->
   path = result.path
-  #console.log("Found path " + JSON.stringify(path) )
+  console.log("Found path " + JSON.stringify(path) )
   if path.charAt(0) == '/'
     path = path.substring(1,path.length)
   if path.charAt(path.length) == '/'
