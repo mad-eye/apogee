@@ -111,8 +111,8 @@ Template.editor.rendered = ->
 
 Template.editor.fileBody = ->
   fileId = Session.get("lastTextFileId")
-  console.log("Found body for #{fileId}: #{body}")
   body = if fileId then Files.findOne(fileId)?.body else null
+  console.log("Found body for #{fileId}: #{body}")
   return body
 
 Template.editor.fileName = ->

@@ -33,10 +33,15 @@ Meteor.startup(->
     results ?= []
     results.forEach (result)->
       result.projectId = projectId
-      fs.readFile("#{dir}#{result.body}", "utf8", (err, data)->
-        result.body = data
+      if result.isDir
         ProcessQueue.insert result
-      )
+      else
+        fs.readFile("#{dir}#{result.path}", "utf8", (err, data)->
+          #console.log "Found body for #{dir}#{result.path}: #{data?}"
+          console.log "Error for #{dir}#{result.path}: #{error}" if err
+          result.body = data
+          ProcessQueue.insert result
+        )
   )
 
   Meteor.autorun ->
