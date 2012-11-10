@@ -23,6 +23,12 @@ processResult = (result) ->
   delete result._id
   return result
 
+Files.allow(
+  insert: (userId, doc) -> true
+  update: (userId, docs, fields, modifier) -> true
+  remove: (userId, docs) -> true
+)
+
 Meteor.startup(->
   console.log("Starting up server.")
   Files.remove({})
@@ -34,7 +40,7 @@ Meteor.startup(->
 
   walk(dir, dir, filter, (err, results)->
     results ?= []
-    console.log "Have #{results.length} results"
+    #console.log "Have #{results.length} results"
     results.forEach (result)->
       result.projectId = projectId
       if result.isDir
