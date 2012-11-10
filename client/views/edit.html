@@ -36,7 +36,10 @@
 
 <template name="editor">
 <div id="editorFileName"><h4>{{fileName}}</h4></div>
-      <div id="editor" ></div>
+    {{#constant}}
+    {{debug}}
+    <div id="editor" ></div>
+    {{/constant}}
       <!-- {{fileBody}} -->
 </template>
 

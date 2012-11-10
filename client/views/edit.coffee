@@ -8,17 +8,18 @@ DEFAULT_FILE_BODY = "Empty File"
 DEFAULT_PROJECT_NAME = "New Project"
 ROOT_DIR_NAME = "the root directory."
 
+editor = null
+
 fileAndId = (file) ->
+  return [null, null] unless file?
   if typeof(file) == 'object'
-    #console.log "Found object."
     fileId = file._id
   else if typeof(file) == 'string'
-    #console.log "Found string."
     fileId = file
     file = Files.findOne(fileId)
   else
     console.error "Called setFileId with incorrect argument", file
-    console.log "typeof:", typeof(file)
+    #console.log "typeof:", typeof(file)
     return
   return [file, fileId]
 
@@ -29,8 +30,6 @@ openParents = (file) ->
     if parent
       openDir(parent._id)
       openParents(parent)
-
-
 
 setFileId = (file) ->
   [file, fileId] = fileAndId file
@@ -98,21 +97,41 @@ Template.fileEntry.events(
     if file.isDir
       toggleDir fileId
     else
+      #console.log "Setting lastTextFileId to " + fileId
       Session.set("lastTextFileId", fileId)
   )
 
 Template.editor.rendered = ->
   editor = ace.edit("editor")
-  currentFileId = Session.get("currentFileId")
+
+#Set the file body
+Meteor.autorun(->
+  Session.get("lastTextFileId") #Dummy hack to initialize dependency.
+  unless editor
+    console.log "Editor not yet initialized; waiting."
+    return
+  [currentFile, currentFileId] = fileAndId Session.get("lastTextFileId")
+  console.log "Setting up sharejs editor for #{currentFileId}"
   if currentFileId
     sharejs.open(currentFileId, 'text', "http://localhost:3003/channel", (error, doc) ->
       doc.attach_ace(editor)
+      if ! currentFile.opened
+        console.log "Opening file #{currentFileId} for the first time."
+        currentFile.opened = true
+        Files.update(currentFileId, {$set: {opened:true}}, {}, (err) ->
+          console.error "Found error trying to mark #{currentFileId} as opened:", err if err
+        )
+        editor.setValue(currentFile.body)
     )
+)
+
+Template.editor.debug = ->
+  console.log "Rerendering editor."
 
 Template.editor.fileBody = ->
   fileId = Session.get("lastTextFileId")
   body = if fileId then Files.findOne(fileId)?.body else null
-  console.log("Found body for #{fileId}: #{body}")
+  #console.log("Found body for #{fileId}: #{body}")
   return body
 
 Template.editor.fileName = ->
