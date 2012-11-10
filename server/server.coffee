@@ -29,8 +29,12 @@ Meteor.startup(->
   projectId = "1e694e3c-9e6c-4118-a600-0ce1652c7564"
   dir = "/tmp/bolide/repoClones/#{projectId}"
 
-  walk(dir, dir, (err, results)->
+  filter = (file) ->
+    return file != '.git'
+
+  walk(dir, dir, filter, (err, results)->
     results ?= []
+    console.log "Have #{results.length} results"
     results.forEach (result)->
       result.projectId = projectId
       if result.isDir

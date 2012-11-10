@@ -14,10 +14,12 @@ stripSlash = (str) ->
     str = str.substring(0,str.length-1)
   return str
 
-walk = (dir, root, done)->
+walk = (dir, root, filter, done)->
   results = []
   fs.readdir(dir, (err, list)->
     return done(err) if (err)
+    if filter
+      list = _.filter(list, filter)
     pending = list.length
     return done(null, results) unless pending
     list.forEach((file)->
@@ -29,7 +31,7 @@ walk = (dir, root, done)->
           parentPath: dir.replace(root, "")
         )
         if (stat and stat.isDirectory())
-          walk(file, root, (err,res)->
+          walk(file, root, filter, (err,res)->
             results = results.concat(res)
             done(null, results) if (!--pending)
           )
