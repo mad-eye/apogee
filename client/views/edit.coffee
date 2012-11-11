@@ -97,28 +97,43 @@ Template.fileEntry.events(
   )
 
 Template.editor.rendered = ->
-  editor = ace.edit("editor")
-
-#Set the file body
-Meteor.autorun(->
-  Session.get("lastTextFileId") #Dummy hack to initialize dependency.
-  unless editor
-    console.log "Editor not yet initialized; waiting."
-    return
   [currentFile, currentFileId] = fileAndId Session.get("lastTextFileId")
-  console.log "Setting up sharejs editor for #{currentFileId}"
   if currentFileId
+    editor = ace.edit("editor")
+    console.log "Setting up sharejs editor for #{currentFileId}"
     sharejs.open(currentFileId, 'text', "http://localhost:3003/channel", (error, doc) ->
-      doc.attach_ace(editor)
+      editor.setValue(currentFile.body)
+      if currentFile.opened
+        doc.attach_ace(editor)
       if ! currentFile.opened
+        doc.attach_ace(editor, true)
         console.log "Opening file #{currentFileId} for the first time."
         currentFile.opened = true
         Files.update(currentFileId, {$set: {opened:true}}, {}, (err) ->
           console.error "Found error trying to mark #{currentFileId} as opened:", err if err
         )
-        editor.setValue(currentFile.body)
     )
-)
+
+# #Set the file body
+# Meteor.autorun(->
+#   Session.get("lastTextFileId") #Dummy hack to initialize dependency.
+#   unless editor
+#     console.log "Editor not yet initialized; waiting."
+#     return
+#   [currentFile, currentFileId] = fileAndId Session.get("lastTextFileId")
+#   console.log "Setting up sharejs editor for #{currentFileId}"
+#   if currentFileId
+#     sharejs.open(currentFileId, 'text', "http://localhost:3003/channel", (error, doc) ->
+#       editor.setValue(currentFile.body)
+#       doc.attach_ace(editor, true)
+#       if ! currentFile.opened
+#         console.log "Opening file #{currentFileId} for the first time."
+#         currentFile.opened = true
+#         Files.update(currentFileId, {$set: {opened:true}}, {}, (err) ->
+#           console.error "Found error trying to mark #{currentFileId} as opened:", err if err
+#         )
+#     )
+# )
 
 Template.editor.debug = ->
   console.log "Rerendering editor."
