@@ -12,3 +12,4 @@ less
 deps-extensions
 accounts-ui
 accounts-github
+router
