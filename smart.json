@@ -1,5 +1,8 @@
 {
   "packages": {
-    "router": {}
+    "router": {},
+    "madeye-common": {
+      "git":"git@github.com:jagill/madeye-common.git"
+    }
   }
 }
