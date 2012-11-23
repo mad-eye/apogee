@@ -8,7 +8,6 @@
 #TODO write tests that all these cases (no settings, one settings, multiple) are handled
 Meteor.startup ->
   allSettings = Settings.find().fetch()
-  console.log "all settings", allSettings
   if allSettings.length == 0
     Settings.insert Madeye.Settings
   else if allSettings.length == 1
