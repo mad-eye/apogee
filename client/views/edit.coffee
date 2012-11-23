@@ -87,22 +87,11 @@ Template.editor.rendered = ->
   [currentFile, currentFileId] = fileAndId Session.get("lastTextFileId")
   if currentFileId
     editor = ace.edit("editor")
-    console.log "Setting up sharejs editor for #{currentFileId}"
-    sharejs.open(currentFileId, 'text', "http://localhost:3003/channel", (error, doc) ->
-      editor.setValue(currentFile.body)
-      if currentFile.opened
-        doc.attach_ace(editor)
-      if ! currentFile.opened
-        doc.attach_ace(editor, true)
-        console.log "Opening file #{currentFileId} for the first time."
-        currentFile.opened = true
-        Files.update(currentFileId, {$set: {opened:true}}, {}, (err) ->
-          console.error "Found error trying to mark #{currentFileId} as opened:", err if err
-        )
-    )
+    sharejs.open currentFileId, 'text', "http://localhost:3003/channel", (error, doc) ->
+      doc.attach_ace editor
 
 Template.editor.fileName = ->
-  fileId = Session.get("lastTextFileId")
+  fileId = Session.get "lastTextFileId"
   name = if fileId then Files.findOne(fileId)?.name else null
   name ?= DEFAULT_FILE_NAME
   return name
