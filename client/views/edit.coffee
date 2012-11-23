@@ -45,7 +45,6 @@ setFileId = (file) ->
 
 Template.fileTree.files = ->
   fileTree = new Madeye.FileTree(Files.find().fetch())
-  console.log "files are ", fileTree.files
   return fileTree.files
 
 Template.fileEntry.isSelected = ->
