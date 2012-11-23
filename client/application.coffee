@@ -9,3 +9,5 @@ Meteor.Router.add
 
 Meteor.autosubscribe ->
   Meteor.subscribe "files", Session.get "projectId"
+
+Meteor.subscribe "settings"
