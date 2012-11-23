@@ -1,7 +1,18 @@
+# TODO either figure out why meteor's stopping coffeescript from doing the usual
+# (function(){//code})() thing or be more careful letting everything leak into the global
+# namespace
+# https://github.com/meteor/meteor/pull/85
+
+
 DEFAULT_FILE_NAME = "Select a file"
 DEFAULT_FILE_BODY = "Empty File"
-DEFAULT_PROJECT_NAME = "New Project"
 ROOT_DIR_NAME = "the root directory."
+
+#TODO replace variable names w/
+#methods for getting/setting
+#selectedFileId
+#displayedFileId
+#method for currentDirectory
 
 editor = null
 
@@ -32,34 +43,10 @@ setFileId = (file) ->
   if !file.isDir
     Session.set("lastTextFileId", fileId)
 
-Template.fileTree.rendered = ->
-  $("#addButton").tooltip()
-  $("#deleteButton").tooltip()
-
 Template.fileTree.files = ->
-  constructFileTree Files.find().fetch()
-
-Template.fileTree.currentFileName = ->
-  fileId = Session.get("currentFileId")
-  name = if fileId then Files.findOne(fileId)?.name else null
-  name ?= "selected file."
-  return name
-
-Template.fileTree.projectName = ->
-  return Session.get('projectId') ? DEFAULT_PROJECT_NAME
-
-Template.fileTree.currentDirName = ->
-  fileId = Session.get("currentFileId")
-  file = if fileId then Files.findOne(fileId) else null
-  name = null
-  if file?
-    if file.isDir
-      name = file.name
-    else if file.parents.length
-      name = file.parents[file.parents.length-1]
-  name ?= ROOT_DIR_NAME
-  return name
-
+  fileTree = new Madeye.FileTree(Files.find().fetch())
+  console.log "files are ", fileTree.files
+  return fileTree.files
 
 Template.fileEntry.isSelected = ->
   return Session.equals("currentFileId", this._id)
@@ -74,8 +61,8 @@ Template.fileEntry.fileEntryClass = ->
     clazz += " directory " + if isDirOpen(this._id) then "open" else "closed"
   else
     clazz += " file"
-  if this.parents.length
-    clazz += " level" + this.parents.length
+#  if this.parents.length
+#    clazz += " level" + this.parents.length
   clazz += " selected" if Session.equals("currentFileId", this._id)
   return clazz
 
@@ -114,58 +101,8 @@ Template.editor.rendered = ->
         )
     )
 
-# #Set the file body
-# Meteor.autorun(->
-#   Session.get("lastTextFileId") #Dummy hack to initialize dependency.
-#   unless editor
-#     console.log "Editor not yet initialized; waiting."
-#     return
-#   [currentFile, currentFileId] = fileAndId Session.get("lastTextFileId")
-#   console.log "Setting up sharejs editor for #{currentFileId}"
-#   if currentFileId
-#     sharejs.open(currentFileId, 'text', "http://localhost:3003/channel", (error, doc) ->
-#       editor.setValue(currentFile.body)
-#       doc.attach_ace(editor, true)
-#       if ! currentFile.opened
-#         console.log "Opening file #{currentFileId} for the first time."
-#         currentFile.opened = true
-#         Files.update(currentFileId, {$set: {opened:true}}, {}, (err) ->
-#           console.error "Found error trying to mark #{currentFileId} as opened:", err if err
-#         )
-#     )
-# )
-
-Template.editor.debug = ->
-  console.log "Rerendering editor."
-
-Template.editor.fileBody = ->
-  fileId = Session.get("lastTextFileId")
-  body = if fileId then Files.findOne(fileId)?.body else null
-  #console.log("Found body for #{fileId}: #{body}")
-  return body
-
 Template.editor.fileName = ->
   fileId = Session.get("lastTextFileId")
   name = if fileId then Files.findOne(fileId)?.name else null
   name ?= DEFAULT_FILE_NAME
   return name
-
-Template.addFileModal.dirList = ->
-  file for file in constructFileTree(Files.find().fetch()) when file.isDir
-
-Template.signinModal.events(
-  'click #addFileSubmit' : (event) ->
-    event.preventDefault()
-    event.stopPropagation()
-    $('#addFileModal').modal('hide')
-    #TODO: Sign in to github.
-    #paramArray = $('#signInForm').serializeArray()
-    #username = null
-    #for field in paramArray
-      #if (field['name'] == 'username')
-        #username = field['value']
-        #break
-    #if username
-      #console.log("Found username " + username)
-      #Session.set("user", username)
-)
