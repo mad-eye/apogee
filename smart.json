@@ -2,7 +2,7 @@
   "packages": {
     "router": {},
     "madeye-common": {
-      "git":"git@github.com:jagill/madeye-common.git"
+      "path":"../madeye-common"
     }
   }
 }

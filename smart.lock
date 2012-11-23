@@ -8,8 +8,7 @@
     "basePackages": {
       "router": {},
       "madeye-common": {
-        "git": "git@github.com:jagill/madeye-common.git",
-        "branch": "master"
+        "path": "/Users/mike/madeye-common"
       }
     },
     "packages": {
@@ -19,9 +18,7 @@
         "commit": "edd0ad39c66a94536859bd322ea13135afebef0b"
       },
       "madeye-common": {
-        "git": "git@github.com:jagill/madeye-common.git",
-        "branch": "master",
-        "commit": "334636bebb3d2561fac66dd29b158f1168969c1b"
+        "path": "/Users/mike/madeye-common"
       },
       "page-js": {
         "git": "https://github.com/tmeasday/meteor-page-js.git",
