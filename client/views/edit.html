@@ -20,7 +20,7 @@
 
 <template name="fileEntry">
   <li class="{{fileEntryClass}}" id="{{this._id}}">
-    <span>{{this.name}}</span> 
+    <span>{{this.filename}}</span> 
   </li>
   {{#if isOpen and this.children.length}}
     {{#each this.children}}

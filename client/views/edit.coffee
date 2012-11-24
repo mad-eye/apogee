@@ -3,10 +3,8 @@
 # namespace
 # https://github.com/meteor/meteor/pull/85
 
-
 DEFAULT_FILE_NAME = "Select a file"
 DEFAULT_FILE_BODY = "Empty File"
-ROOT_DIR_NAME = "the root directory."
 
 #TODO replace variable names w/
 #methods for getting/setting
@@ -29,14 +27,6 @@ fileAndId = (file) ->
     return
   return [file, fileId]
 
-openParents = (file) ->
-  [file, fileId] = fileAndId file
-  if file.parents.length
-    parent = Files.findOne({path:file.parent_path()})
-    if parent
-      openDir(parent._id)
-      openParents(parent)
-
 setFileId = (file) ->
   [file, fileId] = fileAndId file
   Session.set("currentFileId", fileId)
@@ -45,6 +35,7 @@ setFileId = (file) ->
 
 Template.fileTree.files = ->
   fileTree = new Madeye.FileTree(Files.find().fetch())
+  fileTree.sort()
   return fileTree.files
 
 Template.fileEntry.isSelected = ->
@@ -60,8 +51,7 @@ Template.fileEntry.fileEntryClass = ->
     clazz += " directory " + if isDirOpen(this._id) then "open" else "closed"
   else
     clazz += " file"
-#  if this.parents.length
-#    clazz += " level" + this.parents.length
+  clazz += " level" + this.depth
   clazz += " selected" if Session.equals("currentFileId", this._id)
   return clazz
 
