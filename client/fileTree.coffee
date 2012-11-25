@@ -33,4 +33,4 @@ _.extend Madeye.FileTree.prototype,
     parentPath = /(.*)\//.exec(file.path)[1]
     parent = @findByPath(parentPath)
     return true unless parent
-    return parent.isOpen()
+    return parent.isOpen() and @isVisible(parent)
