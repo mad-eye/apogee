@@ -22,11 +22,6 @@
   <li class="{{fileEntryClass}}" id="{{this._id}}">
     <span>{{this.filename}}</span> 
   </li>
-  {{#if isOpen and this.children.length}}
-    {{#each this.children}}
-      {{>fileEntry this}}
-    {{/each}}
-  {{/if}}
 </template>
 
 <template name="editor">
