@@ -1,17 +1,12 @@
 <head>
   <title>Apogee</title>
-  <link href="css/bootstrap.min.css" rel="stylesheet">  
-  <script src="http://ajaxorg.github.com/ace/build/src/ace.js"></script>
-  <script src="http://localhost:3003/channel/bcsocket.js"></script>
-  <script src="http://localhost:3003/share/share.uncompressed.js"></script>
-  <script src="http://localhost:3003/share/ace.js"></script>
 </head>
 
 <body>
     <div id="container" class="container">
     {{> navbar}}
     {{> signinModal}}
-    {{{render currentPage}}}
+    {{{renderPage}}}
 </body>
 
 <template name="navbar">

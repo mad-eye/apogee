@@ -1,7 +1,6 @@
 <template name="edit">
     <div class="row">
         <div class="span4">
-            {{> addFileModal}}
             {{> fileTree}}
         </div>
         <div class="span8">
@@ -11,58 +10,21 @@
 </template>
 
 <template name="fileTree">
-<div id="fileTreeProjectName"><h4>{{projectName}}</h4></div>
 <ul class="fileTree">
     {{#each files}}
       {{>fileEntry}}
     {{/each}}
 </ul>
-<div id="addDeleteFiles">
-    <a role="button" data-toggle="modal" href="#addFileModal"><img src="/images/add.png" id="addButton" rel="tooltip" title="Add file or directory" data-placement="bottom"/></a>
-    <a role="button" data-toggle="modal" href="#deleteFileModal"><img src="/images/delete.png" id="deleteButton" rel="tooltip" title="Delete file or directory" data-placement="bottom" /></a>
-</div>
+
 </template>
 
 <template name="fileEntry">
   <li class="{{fileEntryClass}}" id="{{this._id}}">
-    <span>{{this.name}}</span> 
+    <span>{{this.filename}}</span> 
   </li>
-  {{#if isOpen and this.children.length}}
-    {{#each this.children}}
-      {{>fileEntry this}}
-    {{/each}}
-  {{/if}}
 </template>
 
 <template name="editor">
 <div id="editorFileName"><h4>{{fileName}}</h4></div>
-    {{debug}}
     <div id="editor" ></div>
-      <!-- {{fileBody}} -->
-</template>
-
-<template name="addFileModal">
-    <div id="addFileModal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="addFileModalLabel" aria-hidden="true" style="display: none; ">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3 id="addFileModalLabel">Add File or Directory</h3>
-        </div>
-        <form id="addFileForm">
-            <div class="modal-body">
-                <label>Name:</label>
-                <input type="text" name="filename" placeholder="Filename" />
-                <label>Directory:</label>
-                <select name="addFileDir">
-                    <option value="">-</option>
-                    {{#each dirList}}
-                    <option value="{{this._id}}">{{this.name}}</option>
-                    {{/each}}
-                </select>
-            </div>
-            <div class="modal-footer">
-                <button class="btn" data-dismiss="modal">Close</button>
-                <button id="addFileSubmit" class="btn btn-primary">Add</button>
-            </div>
-        </form>
-    </div>
 </template>

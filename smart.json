@@ -1,5 +1,12 @@
 {
   "packages": {
-    "router": {}
+    "router": {},
+    "madeye-common": {
+      "path": "../madeye-common"
+    },
+    "meteor-sharejs": {
+      "path": "../meteor-sharejs"
+    },
+    "deps-extensions": {}
   }
 }
