@@ -9,8 +9,8 @@ jquery
 underscore
 less
 deps-extensions
-accounts-ui
 accounts-github
 router
 madeye-common
 meteor-sharejs
+accounts-ui-unstyled

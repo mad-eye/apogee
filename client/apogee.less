@@ -6,14 +6,26 @@
 @backgroundColorSelected: rgb(125, 176, 217);
 
 @textColorDefault: #333;
+@textColorSub: #888;
 @textColorSelected: #fff;
 
 @borderRadius: 4px;
 @baseFontSize: 12px;
+@smallFontSize: 10px;
+@bigFontSize: 16px;
+@reallyBigFontSize: 24px;
 
 body {
     padding: 8px;
     font-size: @baseFontSize;
+}
+
+span.code {
+    font-family:"Courier New", Courier, monospace;
+}
+
+.small {
+  font-size: @smallFontSize;
 }
 
 .rounded-border (@radius: 4px) {
@@ -25,6 +37,48 @@ body {
   -ms-border-radius: @radius;
   -o-border-radius: @radius;
   border-radius: @radius;
+}
+
+.navbar-inner .logo {
+  font-size: 32px;
+  margin-top: 24px;
+  padding-left: 24px;
+  color: @textColorDefault;
+}
+
+.navbar-inner .login-button {
+    padding-top: 8px;
+}
+
+.sell {
+    /*margin-left: 0px;*/
+}
+
+.sellPoint {
+  h4 {
+    font-size: @reallyBigFontSize;
+  }
+
+  p {
+    color: @textColorSub;
+  }
+  height: 112px;
+  font-size: @bigFontSize;
+
+}
+
+.sellPic {
+  img {
+    padding: 16px 0;
+  }
+
+  input {
+    margin: 32px 0;
+  }
+}
+
+.comingSoon {
+    margin-left: 16px;
 }
 
 .fileTree-indent(@numIndents) {
