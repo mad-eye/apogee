@@ -21,3 +21,7 @@ Meteor.publish "files", (projectId)->
 
 Meteor.publish "settings", ->
   settings = Settings.find()
+
+Meteor.publish "projects", (projectId)->
+  Projects.find
+    _id: projectId
