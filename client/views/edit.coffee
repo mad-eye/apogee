@@ -32,6 +32,8 @@
       editor = ace.edit("editor")
       sharejs.open editorFileId, 'text', "http://localhost:3003/channel", (error, doc) ->
         doc.attach_ace editor
+      file = fileTree.findById editorFileId
+      file.fetchBody() if file
 
   Template.editor.fileName = ->
     fileId = Session.get "editorFileId"
