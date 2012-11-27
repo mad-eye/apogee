@@ -1,11 +1,14 @@
 <head>
   <title>MadEye</title>
+  <link href="http://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
 </head>
 
 <body>
     <div id="container" class="container">
-    {{> navbar}}
-    {{> signinModal}}
+    {{#unless isHomePage}}
+      {{> navbar}}
+      {{> signinModal}}
+    {{/unless}}
     {{{renderPage}}}
 </body>
 
