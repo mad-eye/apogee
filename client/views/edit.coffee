@@ -20,19 +20,37 @@ do ->
     clazz += " selected" if this.isSelected()
     return clazz
 
+  Template.edit.events
+    'click button#saveButton' : (event) ->
+      console.log "clicked save button"
+
   Template.fileEntry.events
     'click li.fileTree-item' : (event) ->
       fileId = event.currentTarget.id
       file = fileTree.findById fileId
       file.select()
 
-  fetchBody = (fileId, callback) ->
+  fileUrl = (fileId)->
     settings = Settings.findOne()
     url = "http://#{settings.httpHost}:#{settings.httpPort}"
     url = "#{url}/project/#{Projects.findOne()._id}/file/#{fileId}"
-    Meteor.http.get url, (error,result)->
-      console.log result, result.content.body
+    console.log url
+    url
+
+  fetchBody = (fileId, callback) ->
+    console.log "fetching body"
+    Meteor.http.get fileUrl(fileId), (error,result)->
       callback JSON.parse(result.content).body
+
+  #this is a bit dangerous as it relies on the contents of bolide not changing before
+  #this http call reaches it
+  #we should figure out how to send a snapshot id or something like that
+  save = (fileId)->
+    Meteor.http.post fileUrl(fileId), (error,result)->
+      if error
+        console.error(error)
+      else
+        console.log "save successful"
 
   Template.editor.rendered = ->
     editorFileId = Session.get "editorFileId"
@@ -42,6 +60,7 @@ do ->
         if doc?
           doc.attach_ace editor
         else
+          console.log "docless"
           fetchBody editorFileId, (body)->
             sharejs.open editorFileId, 'text', "http://localhost:3003/channel", (error, doc) ->
               doc.attach_ace editor
