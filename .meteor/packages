@@ -14,3 +14,4 @@ router
 madeye-common
 meteor-sharejs
 accounts-ui-unstyled
+http

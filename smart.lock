@@ -2,7 +2,7 @@
   "meteor": {
     "git": "https://github.com/meteor/meteor.git",
     "branch": "master",
-    "commit": "16cf8a26218ae4650eb36b25ee55c2b5f6a71a31"
+    "commit": "067113a37dd4e7824db1a16d5f7a90c3739eed9c"
   },
   "dependencies": {
     "basePackages": {
@@ -18,8 +18,8 @@
     "packages": {
       "router": {
         "git": "https://github.com/tmeasday/meteor-router.git",
-        "tag": "v0.2.6",
-        "commit": "a1866908a9fb6d287bb877c6583cee93f89e378e"
+        "tag": "v0.3.2",
+        "commit": "bfa1cb328b94278f19fd6cec270f649cbedd5555"
       },
       "madeye-common": {
         "path": "../madeye-common"
