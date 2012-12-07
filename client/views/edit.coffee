@@ -43,12 +43,11 @@ do ->
     Meteor.http.get fileUrl(fileId), (error,result)->
       callback JSON.parse(result.content).body
 
-  #this is a bit dangerous as it relies on the contents of bolide not changing before
-  #this http call reaches it
-  #we should figure out how to send a snapshot id or something like that
+  getEditorBody = ->
+    ace.edit("editor")?.getValue()
+
   save = (fileId)->
-    contents = 'a cat is here!'
-    #Meteor.http.post fileUrl(fileId), {params: {contents: contents}}, (error,result)->
+    contents = getEditorBody()
     Meteor.http.call "PUT", fileUrl(fileId), {
       data: {contents: contents}
       headers: {'Content-Type':'application/json'}
@@ -62,6 +61,7 @@ do ->
     editorFileId = Session.get "editorFileId"
     if editorFileId
       editor = ace.edit("editor")
+      #TODO: Switch to using sharejs.openExisting
       sharejs.open editorFileId, 'text', "http://localhost:3003/channel", (error, doc) ->
         if doc?
           doc.attach_ace editor
