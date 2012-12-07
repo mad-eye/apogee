@@ -23,6 +23,7 @@ do ->
   Template.edit.events
     'click button#saveButton' : (event) ->
       console.log "clicked save button"
+      save Session.get "editorFileId"
 
   Template.fileEntry.events
     'click li.fileTree-item' : (event) ->
@@ -46,7 +47,12 @@ do ->
   #this http call reaches it
   #we should figure out how to send a snapshot id or something like that
   save = (fileId)->
-    Meteor.http.post fileUrl(fileId), (error,result)->
+    contents = 'a cat is here!'
+    #Meteor.http.post fileUrl(fileId), {params: {contents: contents}}, (error,result)->
+    Meteor.http.call "PUT", fileUrl(fileId), {
+      data: {contents: contents}
+      headers: {'Content-Type':'application/json'}
+    }, (error,result)->
       if error
         console.error(error)
       else
