@@ -2,10 +2,10 @@
   "packages": {
     "router": {},
     "madeye-common": {
-      "path": "../madeye-common"
+      "git": "https://github.com/jagill/madeye-common.git"
     },
     "meteor-sharejs": {
-      "path": "../meteor-sharejs"
+      "git": "https://github.com/rissem/meteor-sharejs.git"
     },
     "deps-extensions": {}
   }
