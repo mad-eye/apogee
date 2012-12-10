@@ -5,47 +5,25 @@
 
 <body>
     <div id="container" class="container">
-    {{#unless isHomePage}}
-      {{> navbar}}
-      {{> signinModal}}
-    {{/unless}}
+    {{> topnav}}
     {{{renderPage}}}
 </body>
 
-<template name="navbar">
-    <div class="navbar navbar-static-top">
-        <div class="navbar-inner">
-            <img src="/images/eye1.gif" style="float:left" />
-            <a class="brand" href="/">MadEye</a>
-            <ul class="nav pull-right">
-                {{!Sign in/up}}
-                <li>
-                    {{loginButtons align="right"}}
-                </li>
-            </ul>
-        </div>
-    </div>
-</template>
-
-<template name="signinModal">
-    <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none; ">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3 id="myModalLabel">Sign in</h3>
-        </div>
-        <form id="signInForm">
-            <div class="modal-body">
-                <label>Name:</label>
-                <input type="text" name="username" placeholder="Enter your name..." />
-                <label>Password:</label>
-                <input type="password" name="password" placeholder="Ignored for now..." />
-            </div>
-            <div class="modal-footer">
-                <button class="btn" data-dismiss="modal">Close</button>
-                <button id="signInButton" class="btn btn-primary">Sign in</button>
-            </div>
-        </form>
-    </div>
+<template name="topnav">
+<div class="row topnav">
+  <div class="span6"> 
+    <h1>MadEye <small>A new way to code together</small>
+    </h1>
+  </div>
+  <div class="span6">
+    <ul class="nav login pull-right">
+      {{!Sign in/up}}
+      <li>
+      {{loginButtons align="right"}}
+      </li>
+    </ul>
+  </div>
+</div>
 </template>
 
 
