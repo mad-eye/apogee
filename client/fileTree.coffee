@@ -1,5 +1,21 @@
 #extends FileTree from madeye-common (is there a more coffeescriptish way to do this?)
 
+openedDirs = new Meteor.Collection(null)
+
+isOpen = (dirId) ->
+  dir = openedDirs.findOne {dirId: dirId}
+  return dir?.opened
+
+openDir = (dirId) ->
+  dir = openedDirs.findOne {dirId: dirId}
+  if dir
+    openedDirs.update {dirId: dirId}, {$set: {opened: true}}
+  else
+    openedDirs.insert {dirId: dirId, opened: true}
+
+closeDir = (dirId) ->
+  openedDirs.remove {dirId: dirId}
+
 _.extend Madeye.File.prototype,
   select: ->
     Session.set("selectedFileId", @_id)
@@ -9,8 +25,7 @@ _.extend Madeye.File.prototype,
       @toggle()
 
   isOpen: ->
-    openDirs = Session.get("openDirs") || {}
-    openDirs[@_id]
+    isOpen @_id
 
   isSelected: ->
     Session.equals("selectedFileId", @_id)
@@ -19,18 +34,15 @@ _.extend Madeye.File.prototype,
     if @isOpen() then @close() else @open()
 
   open: ->
-    openDirs = Session.get("openDirs") || {}
-    openDirs[@_id] = true
-    Session.set "openDirs", openDirs
+    openDir @_id
 
   close: ->
-    openDirs = Session.get("openDirs") || {}
-    delete openDirs[@_id]
-    Session.set "openDirs", openDirs
+    closeDir @_id
 
 _.extend Madeye.FileTree.prototype,
   isVisible: (file)->
     parentPath = /(.*)\//.exec(file.path)[1]
     parent = @findByPath(parentPath)
     return true unless parent
+    return false
     return parent.isOpen() and @isVisible(parent)
