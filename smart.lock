@@ -26,7 +26,7 @@
       "madeye-common": {
         "git": "git@github.com:jagill/madeye-common.git",
         "branch": "master",
-        "commit": "374e3cd94fc4f29929d810eb0172e0551ff95fb7"
+        "commit": "adeb9c1794117269dbc31757ff24f74f7a997ff1"
       },
       "meteor-sharejs": {
         "git": "git@github.com:rissem/meteor-sharejs.git",

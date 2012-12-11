@@ -1,5 +1,6 @@
 <template name="edit">
-    <div class="row project">
+  <button id="saveButton">Save</button>
+    <div class="row">
         <div class="span4">
             {{> fileTree}}
         </div>
@@ -12,23 +13,18 @@
 <template name="fileTree">
 <ul class="fileTree">
     {{#each files}}
-      {{>fileEntry}}
+      <li class="{{fileEntryClass}}" id="{{_id}}">
+        <span>{{filename}}</span> 
+      </li>
     {{/each}}
 </ul>
 
 </template>
 
 <template name="fileEntry">
-  <li class="{{fileEntryClass}}" id="{{this._id}}">
-    <span>{{this.filename}}</span> 
-  </li>
 </template>
 
 <template name="editor">
-<div id="editorFileName">
-  <h4>{{fileName}}</h4>
-  <button id="saveButton">Save</button>
-</div>
+<div id="editorFileName"><h4>{{fileName}}</h4></div>
     <div id="editor" ></div>
-    
 </template>

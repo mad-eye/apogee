@@ -1,16 +1,17 @@
-# TODO figure out why meteor's stopping coffeescript from doing the usual
-# (function(){//code})() thing
+# TODO Eliminate need to wrap this in do ->
 # https://github.com/meteor/meteor/pull/85
 
 do ->
   fileTree = new Madeye.FileTree()
+
+  Meteor.autorun ->
 
   Template.fileTree.files = ->
     fileTree.setFiles Files.find().fetch()
     _.filter fileTree.files, (file)->
       fileTree.isVisible(file)
 
-  Template.fileEntry.fileEntryClass = ->
+  Template.fileTree.fileEntryClass = ->
     clazz = "fileTree-item"
     if @isDir
       clazz += " directory " + if @isOpen() then "open" else "closed"
@@ -25,7 +26,7 @@ do ->
       console.log "clicked save button"
       save Session.get "editorFileId"
 
-  Template.fileEntry.events
+  Template.fileTree.events
     'click li.fileTree-item' : (event) ->
       fileId = event.currentTarget.id
       file = fileTree.findById fileId

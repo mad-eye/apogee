@@ -44,7 +44,7 @@ _.extend Madeye.FileTree.prototype,
     parentPath = findParentPath file.path
     parent = @findByPath(parentPath) if parentPath?
     return true unless parent
-    return parent.isOpen() #and @isVisible(parent)
+    return parent.isOpen() and @isVisible(parent)
 
 findParentPath = (path) ->
   rightSlash = path.lastIndexOf('/')
