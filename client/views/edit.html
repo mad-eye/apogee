@@ -1,5 +1,4 @@
 <template name="edit">
-  <button id="saveButton">Save</button>
     <div class="row">
         <div class="span4">
             {{> fileTree}}
@@ -25,6 +24,9 @@
 </template>
 
 <template name="editor">
-<div id="editorFileName"><h4>{{fileName}}</h4></div>
-    <div id="editor" ></div>
+  <div id="editorFileName"><h4>{{fileName}}</h4></div>
+  <div id="buttonRow">
+    <button id="saveButton" class="btn btn-primary">Save</button>
+  </div>
+  <div id="editor" ></div>
 </template>

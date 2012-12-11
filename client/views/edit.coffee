@@ -21,7 +21,7 @@ do ->
     clazz += " selected" if this.isSelected()
     return clazz
 
-  Template.edit.events
+  Template.editor.events
     'click button#saveButton' : (event) ->
       console.log "clicked save button"
       save Session.get "editorFileId"
