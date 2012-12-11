@@ -75,6 +75,6 @@ do ->
               editor.setValue body
               editor.clearSelection()
 
-  Template.editor.fileName = ->
+  Template.editor.editorFileName = ->
     fileId = Session.get "editorFileId"
     if fileId then Files.findOne(fileId)?.path else "Select file..."
