@@ -41,8 +41,14 @@ _.extend Madeye.File.prototype,
 
 _.extend Madeye.FileTree.prototype,
   isVisible: (file)->
-    parentPath = /(.*)\//.exec(file.path)[1]
-    parent = @findByPath(parentPath)
+    parentPath = findParentPath file.path
+    parent = @findByPath(parentPath) if parentPath?
     return true unless parent
-    return false
-    return parent.isOpen() and @isVisible(parent)
+    return parent.isOpen() #and @isVisible(parent)
+
+findParentPath = (path) ->
+  rightSlash = path.lastIndexOf('/')
+  if rightSlash > 0
+    return path.substring 0, rightSlash
+  else
+    return null
