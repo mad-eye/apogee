@@ -77,4 +77,4 @@ do ->
 
   Template.editor.fileName = ->
     fileId = Session.get "editorFileId"
-    if fileId then Files.findOne(fileId)?.path else ""
+    if fileId then Files.findOne(fileId)?.path else "Select file..."
