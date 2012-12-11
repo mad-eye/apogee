@@ -8,7 +8,7 @@
     "basePackages": {
       "router": {},
       "madeye-common": {
-        "git": "git@github.com:jagill/madeye-common.git",
+        "git": "git@github.com:mad-eye/madeye-common.git",
         "branch": "master"
       },
       "meteor-sharejs": {
@@ -24,9 +24,9 @@
         "commit": "1bb2182407892e9b95f0cf4f15a9a55e0a301c20"
       },
       "madeye-common": {
-        "git": "git@github.com:jagill/madeye-common.git",
+        "git": "git@github.com:mad-eye/madeye-common.git",
         "branch": "master",
-        "commit": "adeb9c1794117269dbc31757ff24f74f7a997ff1"
+        "commit": "c54bcc4a173032bdb0a768f961661d4bd15c612c"
       },
       "meteor-sharejs": {
         "git": "git@github.com:rissem/meteor-sharejs.git",
