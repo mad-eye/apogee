@@ -12,6 +12,7 @@ deps-extensions
 accounts-github
 router
 madeye-common
-meteor-sharejs
 accounts-ui-unstyled
 http
+meteor-client-tester
+meteor-sharejs
