@@ -4,7 +4,7 @@ openedDirs = new Meteor.Collection(null)
 
 isOpen = (dirId) ->
   dir = openedDirs.findOne {dirId: dirId}
-  return dir?.opened
+  if dir?.opened then return true else return false
 
 openDir = (dirId) ->
   dir = openedDirs.findOne {dirId: dirId}

@@ -4,7 +4,8 @@ Meteor.Router.add
   '/edit/:projectId': (projectId) ->
     Session.set 'projectId', projectId.toString()
     'edit'
-  '/login': "login"
+  '/login': "login",
+  '/tests': "tests",
   '*': "missing"
 
 Meteor.autosubscribe ->
