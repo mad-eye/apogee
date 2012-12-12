@@ -1,5 +1,4 @@
 <template name="edit">
-  <button id="saveButton">Save</button>
     <div class="row">
         <div class="span4">
             {{> fileTree}}
@@ -11,6 +10,7 @@
 </template>
 
 <template name="fileTree">
+<div id="projectName"><h4>{{projectName}}</h4></div>
 <ul class="fileTree">
     {{#each files}}
       <li class="{{fileEntryClass}}" id="{{_id}}">
@@ -25,6 +25,11 @@
 </template>
 
 <template name="editor">
-<div id="editorFileName"><h4>{{fileName}}</h4></div>
-    <div id="editor" ></div>
+  <div id="editorFileName"><h4>{{editorFileName}}</h4></div>
+  {{#if editorFileId}}
+    <div id="buttonRow">
+      <button id="saveButton" class="btn btn-primary {{buttonSaveClass}}">Save</button>
+    </div>
+  {{/if}}
+  <div id="editor" ></div>
 </template>

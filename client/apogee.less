@@ -1,9 +1,9 @@
 /* CSS declarations go here */
 
 @backgroundColorDefault: #FFF;
-@backgroundColorAlt: #F9F9F9;
-@backgroundColorHover: #F5F5F5;
-@backgroundColorSelected: rgb(125, 176, 217);
+@backgroundColorAlt: #EEE;
+@backgroundColorHover: #C3DAED;
+@backgroundColorSelected: #7DB0D9;
 
 @textColorDefault: #333;
 @textColorSub: #999;
@@ -16,6 +16,7 @@
 @reallyBigFontSize: 24px;
 
 @baseLineHeight: 14px;
+@baseSpacing: 16px;
 
 body {
     padding: 8px;
@@ -44,6 +45,7 @@ span.code {
 
 .topnav {
   border-bottom: 1px solid @textColorDefault;
+  margin-bottom: 2*@baseSpacing;
 
   .login {
     margin-top: 30px;
@@ -89,8 +91,13 @@ span.code {
     margin-left: 16px;
 }
 
-.project {
-  margin-top: 16px;
+#projectName {
+  margin-bottom: @baseSpacing;
+  .rounded-border();
+
+  h4 {
+      padding-left: @baseSpacing;
+  }
 
 }
 .fileTree-indent(@numIndents) {
@@ -98,7 +105,7 @@ span.code {
 }
 
 ul.fileTree {
-    margin-left: 0px;
+    margin-left: 0;
     .rounded-border(@borderRadius);
 
     span {
@@ -153,11 +160,11 @@ ul.fileTree {
 }
 
 #fileTreeProjectName {
-  margin-bottom: 12px;
+  margin-bottom: @baseSpacing;
   .rounded-border();
 
   h4 {
-      padding-left: 16px;
+      padding-left: @baseSpacing;
   }
 }
 
@@ -170,12 +177,17 @@ ul.fileTree {
 
 #editorFileName {
   width: 600px;
-  margin-bottom: 12px;
+  margin-bottom: @baseSpacing;
   .rounded-border();
 
   h4 {
-      padding-left: 38px;
+      padding-left: @baseSpacing;
   }
+}
+
+#buttonRow {
+  margin-bottom: @baseSpacing;
+
 }
 
 #addFiles {

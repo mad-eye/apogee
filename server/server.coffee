@@ -19,6 +19,12 @@ Meteor.publish "files", (projectId)->
   Files.find
     projectId: projectId
 
+Files.allow(
+ #insert: (userId, doc) -> true
+ update: (userId, docs, fields, modifier) -> true
+ #remove: (userId, docs) -> true
+)
+
 Meteor.publish "settings", ->
   settings = Settings.find()
 
