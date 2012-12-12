@@ -47,7 +47,10 @@ do ->
   fetchBody = (fileId, callback) ->
     console.log "fetching body"
     Meteor.http.get fileUrl(fileId), (error,result)->
-      callback JSON.parse(result.content).body
+      if error
+        handleError error
+      else
+        callback JSON.parse(result.content).body
 
   getEditorBody = ->
     ace.edit("editor")?.getValue()
@@ -80,12 +83,13 @@ do ->
         else
           console.log "docless"
           fetchBody editorFileId, (body)->
-            sharejs.open editorFileId, 'text', "http://#{settings.bolideHost}:#{settings.bolidePort}/channel", (error, doc) ->
-              doc.attach_ace editor
-              editor.setValue body
-              editor.clearSelection()
-              doc.on 'change', (op) ->
-                Files.update(editorFileId, {$set: {modified: true}})
+            if body?
+              sharejs.open editorFileId, 'text', "http://#{settings.bolideHost}:#{settings.bolidePort}/channel", (error, doc) ->
+                doc.attach_ace editor
+                editor.setValue body
+                editor.clearSelection()
+                doc.on 'change', (op) ->
+                  Files.update(editorFileId, {$set: {modified: true}})
 
   Template.editor.editorFileName = ->
     fileId = Session.get "editorFileId"
