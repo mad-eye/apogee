@@ -6,12 +6,13 @@ describe "FileTree", ->
 
   fileTree = new FileTree(fakeCollection)
   root_folder = fileTree.findByPath "/xylophone/root_folder"
-  sub_file = fileTree.findByPath "/xylophone/root_folder"
+  root_file = fileTree.findByPath "/xylophone/root_file"
+  sub_file = fileTree.findByPath "/xylophone/root_folder/sub_file"
 
   it "starts with root elements visible, but everything else hidden", ->
-    chai.assert.isTrue fileTree.isVisible {path: "/xylophone/root_file"}
-    chai.assert.isTrue fileTree.isVisible {path: "/xylophone/root_folder"}
-    chai.assert.isFalse fileTree.isVisible {path: "/xylophone/root_folder/sub_file"}
+    chai.assert.isTrue fileTree.isVisible root_file
+    chai.assert.isTrue fileTree.isVisible root_folder
+    chai.assert.isFalse fileTree.isVisible sub_file
 
   it "starts with closed folders", ->
     chai.assert.isFalse root_folder.isOpen()
