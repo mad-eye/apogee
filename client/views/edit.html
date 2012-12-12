@@ -10,6 +10,7 @@
 </template>
 
 <template name="fileTree">
+<div id="projectName"><h4>{{projectName}}</h4></div>
 <ul class="fileTree">
     {{#each files}}
       <li class="{{fileEntryClass}}" id="{{_id}}">

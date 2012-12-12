@@ -21,6 +21,9 @@ do ->
     clazz += " selected" if this.isSelected()
     return clazz
 
+  Template.fileTree.projectName = ->
+    Projects.findOne()?.name ? "New project"
+
   Template.editor.events
     'click button#saveButton' : (event) ->
       console.log "clicked save button"
