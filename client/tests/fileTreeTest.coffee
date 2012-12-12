@@ -28,4 +28,4 @@ describe "FileTree", ->
   it "closes an open folder when it is selected", ->
     root_folder.select()
     chai.assert.isTrue root_folder.isSelected()
-    chai.assert.isFalse root_folder.isOpen()        
+    chai.assert.isFalse root_folder.isOpen()

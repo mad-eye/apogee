@@ -1,2 +1,7 @@
 Template.tests.rendered = ->
-  mocha.run();
+  if window.mochaPhantomJS
+    expect = chai.expect
+    mochaPhantomJS.run()
+  else
+    mocha.run();
+  

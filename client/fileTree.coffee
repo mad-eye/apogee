@@ -41,9 +41,7 @@ _.extend Madeye.File.prototype,
 
 _.extend Madeye.FileTree.prototype,
   isVisible: (file)->
-    console.log file.parentPath
     parent = @findByPath(file.parentPath) if file.parentPath?
-    console.log "parent is #{parent}"
     return true unless parent
     return parent.isOpen() and @isVisible(parent)
 
