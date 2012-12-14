@@ -4,10 +4,8 @@
 do ->
   fileTree = new Madeye.FileTree()
 
-  Meteor.autorun ->
-
   Template.fileTree.files = ->
-    fileTree.setFiles Files.find().fetch()
+    fileTree.setFiles Files.find()
     _.filter fileTree.files, (file)->
       fileTree.isVisible(file)
 

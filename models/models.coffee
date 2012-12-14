@@ -1,7 +1,3 @@
-Files = new Meteor.Collection("files")
-Settings = new Meteor.Collection("settings")
-Projects = new Meteor.Collection("projects")
-
 class Meteor.Model
   constructor: (collectionName, @modelClass)->
     @collection = new Meteor.Collection collectionName
@@ -30,3 +26,7 @@ class Meteor.Model
     rawObjects = @collection.find(selector).fetch()
     _.map rawObjects, (rawObject)=>
       new @modelClass rawObject
+
+Files = new Meteor.Model("files", Madeye.File)
+Settings = new Meteor.Collection("settings")
+Projects = new Meteor.Collection("projects")

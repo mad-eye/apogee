@@ -16,10 +16,10 @@ Meteor.startup ->
     throw "Multiple Entries in Singleton Settings Collection!!"
 
 Meteor.publish "files", (projectId)->
-  Files.find
+  Files.collection.find
     projectId: projectId
 
-Files.allow(
+Files.collection.allow(
  #insert: (userId, doc) -> true
  update: (userId, docs, fields, modifier) -> true
  #remove: (userId, docs) -> true
