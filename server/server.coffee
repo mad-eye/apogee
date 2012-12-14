@@ -1,10 +1,3 @@
-#TODO remove insecure package and setup rules for each collection
-# Files.allow(
-#   insert: (userId, doc) -> true
-#   update: (userId, docs, fields, modifier) -> true
-#   remove: (userId, docs) -> true
-# )
-
 #TODO write tests that all these cases (no settings, one settings, multiple) are handled
 Meteor.startup ->
   allSettings = Settings.find().fetch()
@@ -20,9 +13,8 @@ Meteor.publish "files", (projectId)->
     projectId: projectId
 
 Files.collection.allow(
- #insert: (userId, doc) -> true
- update: (userId, docs, fields, modifier) -> true
- #remove: (userId, docs) -> true
+  #TODO make this more restrictive  
+  update: (userId, docs, fields, modifier) -> true
 )
 
 Meteor.publish "settings", ->
