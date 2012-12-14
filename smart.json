@@ -2,7 +2,7 @@
   "packages": {
     "router": {},
     "madeye-common": {
-      "git": "git@github.com:mad-eye/madeye-common.git"
+      "path": "./.madeye-common"
     },
     "meteor-sharejs": {
       "git": "git@github.com:rissem/meteor-sharejs.git"
