@@ -14,14 +14,10 @@
 <ul class="fileTree">
     {{#each files}}
       <li class="{{fileEntryClass}}" id="{{_id}}">
-        <span>{{filename}}</span> 
+        <span>{{filename}} {{#if modified}}*{{/if}}</span> 
       </li>
     {{/each}}
 </ul>
-
-</template>
-
-<template name="fileEntry">
 </template>
 
 <template name="editor">
