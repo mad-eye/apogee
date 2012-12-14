@@ -64,30 +64,29 @@ do ->
       if error
         console.error(error)
       else
-        console.log "save successful"
-        Files.update(fileId, {$set: {modified: false}})
+        file.update {modified: false}
 
   Template.editor.rendered = ->
     settings = Settings.findOne()
-    editorFileId = Session.get "editorFileId"
-    if editorFileId
+    file = Files.findOne {_id: Session.get "editorFileId"}
+    if file
       editor = ace.edit("editor")
       #TODO: Switch to using sharejs.openExisting
-      sharejs.open editorFileId, 'text', "http://#{settings.bolideHost}:#{settings.bolidePort}/channel", (error, doc) ->
+      sharejs.open file._id, 'text', "http://#{settings.bolideHost}:#{settings.bolidePort}/channel", (error, doc) ->
         if doc?
           doc.attach_ace editor
           doc.on 'change', (op) ->
-            Files.update(editorFileId, {$set: {modified: true}})
+            file.update {modified: true}
         else
           console.log "docless"
-          fetchBody editorFileId, (body)->
+          fetchBody file._id, (body)->
             if body?
-              sharejs.open editorFileId, 'text', "http://#{settings.bolideHost}:#{settings.bolidePort}/channel", (error, doc) ->
+              sharejs.open file._id, 'text', "http://#{settings.bolideHost}:#{settings.bolidePort}/channel", (error, doc) ->
                 doc.attach_ace editor
                 editor.setValue body
                 editor.clearSelection()
                 doc.on 'change', (op) ->
-                  Files.update(editorFileId, {$set: {modified: true}})
+                  file.update {modified: true}
 
   Template.editor.editorFileName = ->
     fileId = Session.get "editorFileId"

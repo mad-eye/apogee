@@ -15,6 +15,9 @@ class Meteor.Model
       else
         self.collection.insert @
 
+    @modelClass.prototype.update = (fields)->
+      self.collection.update @_id, {$set: fields}
+
   findOne: (selector={})->
     rawObject = @collection.findOne(selector)
     if rawObject
