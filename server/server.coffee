@@ -1,10 +1,12 @@
 #TODO write tests that all these cases (no settings, one settings, multiple) are handled
 Meteor.startup ->
-  allSettings = Settings.find().fetch()
+  allSettings = Settings.find()
   if allSettings.length == 0
-    Settings.insert Madeye.Settings
+    setting = _.extend new Setting, Madeye.Settings
+    setting.save()
   else if allSettings.length == 1
-    Settings.update allSettings[0]._id, Madeye.Settings
+    setting = _.extend allSettings[0], Madeye.Settings
+    setting.save()
   else
     throw "Multiple Entries in Singleton Settings Collection!!"
 
@@ -18,8 +20,8 @@ Files.collection.allow(
 )
 
 Meteor.publish "settings", ->
-  settings = Settings.find()
+  settings = Settings.collection.find()
 
 Meteor.publish "projects", (projectId)->
-  Projects.find
+  Projects.collection.find
     _id: projectId

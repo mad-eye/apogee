@@ -27,6 +27,14 @@ class Meteor.Model
     _.map rawObjects, (rawObject)=>
       new @modelClass rawObject
 
+class Setting
+  constructor: (rawJSON)->
+    _.extend(@, rawJSON)
+
+class Project
+  constructor: (rawJSON)->
+    _.extend(@, rawJSON)
+
 Files = new Meteor.Model("files", Madeye.File)
-Settings = new Meteor.Collection("settings")
-Projects = new Meteor.Collection("projects")
+Settings = new Meteor.Model("settings", Setting)
+Projects = new Meteor.Model("projects", Project)
