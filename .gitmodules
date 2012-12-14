@@ -1,0 +1,3 @@
+[submodule ".madeye-common"]
+	path = .madeye-common
+	url = git@github.com:mad-eye/madeye-common.git
