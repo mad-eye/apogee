@@ -3,5 +3,5 @@ Template.tests.rendered = ->
     expect = chai.expect
     mochaPhantomJS.run()
   else
-    mocha.run();
+    mocha.run()
   
