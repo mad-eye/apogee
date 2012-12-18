@@ -22,12 +22,6 @@ do ->
   Template.fileTree.projectName = ->
     Projects.findOne()?.name ? "New project"
 
-  # Save file
-  Template.editor.events
-    'click button#saveButton' : (event) ->
-      console.log "clicked save button"
-      save Session.get "editorFileId"
-
   # Select file
   Template.fileTree.events
     'click li.fileTree-item' : (event) ->
@@ -67,6 +61,10 @@ do ->
         file.update {modified: false}
 
   Template.editor.rendered = ->
+    Session.set("editorRendered", true)
+
+  Meteor.autorun ->
+    return unless Session.equals("editorRendered", true)
     settings = Settings.findOne()
     file = Files.findOne {_id: Session.get "editorFileId"}
     if file
@@ -87,6 +85,12 @@ do ->
                 editor.clearSelection()
                 doc.on 'change', (op) ->
                   file.update {modified: true}
+
+  # Save file
+  Template.editor.events
+    'click button#saveButton' : (event) ->
+      console.log "clicked save button"
+      save Session.get "editorFileId"
 
   Template.editor.editorFileName = ->
     fileId = Session.get "editorFileId"
