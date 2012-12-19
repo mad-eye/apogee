@@ -23,7 +23,7 @@ do ->
     Projects.findOne()?.name ? "New project"
 
   # Save file
-  Template.editor.events
+  Template.editorChrome.events
     'click button#saveButton' : (event) ->
       console.log "clicked save button"
       save Session.get "editorFileId"
@@ -66,6 +66,8 @@ do ->
       else
         file.update {modified: false}
 
+  Template.editor.preserve("#editor")
+
   Template.editor.rendered = ->
     settings = Settings.findOne()
     file = Files.findOne {_id: Session.get "editorFileId"}
@@ -88,14 +90,17 @@ do ->
                 doc.on 'change', (op) ->
                   file.update {modified: true}
 
-  Template.editor.editorFileName = ->
+  Template.editorChrome.editorFileName = ->
     fileId = Session.get "editorFileId"
     if fileId then Files.findOne(fileId)?.path else "Select file..."
 
   Template.editor.editorFileId = ->
     Session.get "editorFileId"
 
-  Template.editor.buttonSaveClass = ->
+  Template.editorChrome.editorFileId = ->
+    Session.get "editorFileId"
+
+  Template.editorChrome.buttonSaveClass = ->
     fileId = Session.get "editorFileId"
     file = Files.findOne(fileId) if fileId?
     unless file?.modified then "disabled" else ""
