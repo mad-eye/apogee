@@ -16,7 +16,10 @@ class Meteor.Model
         self.collection.insert @
 
     @modelClass.prototype.update = (fields)->
-      self.collection.update @_id, {$set: fields}
+      dirty = false
+      for key,value of fields
+        dirty = true unless @[key] == value 
+      self.collection.update @_id, {$set: fields} if dirty
 
   findOne: (selector={})->
     rawObject = @collection.findOne(selector)
