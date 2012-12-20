@@ -22,12 +22,6 @@ do ->
   Template.fileTree.projectName = ->
     Projects.findOne()?.name ? "New project"
 
-  # Save file
-  Template.editorChrome.events
-    'click button#saveButton' : (event) ->
-      console.log "clicked save button"
-      save Session.get "editorFileId"
-
   # Select file
   Template.fileTree.events
     'click li.fileTree-item' : (event) ->
@@ -69,6 +63,11 @@ do ->
   Template.editor.preserve("#editor")
 
   Template.editor.rendered = ->
+    Session.set("editorRendered", true)
+
+  Meteor.autorun ->
+    console.log "AUTORUN"
+    return unless Session.equals("editorRendered", true)
     settings = Settings.findOne()
     file = Files.findOne {_id: Session.get "editorFileId"}
     if file
@@ -90,6 +89,11 @@ do ->
                 doc.on 'change', (op) ->
                   file.update {modified: true}
 
+  Template.editorChrome.events
+    'click button#saveButton' : (event) ->
+      console.log "clicked save button"
+      save Session.get "editorFileId"
+
   Template.editorChrome.editorFileName = ->
     fileId = Session.get "editorFileId"
     if fileId then Files.findOne(fileId)?.path else "Select file..."
@@ -104,5 +108,3 @@ do ->
     fileId = Session.get "editorFileId"
     file = Files.findOne(fileId) if fileId?
     unless file?.modified then "disabled" else ""
-
-    
