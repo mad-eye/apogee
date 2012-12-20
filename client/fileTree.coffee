@@ -39,6 +39,13 @@ _.extend Madeye.File.prototype,
   close: ->
     closeDir @_id
 
+  #TODO would be nicer if this was a getter
+  extension: ->
+    @filename.split(".").pop()
+  
+  aceMode: ->
+    Madeye.ACE_MODES[@extension()]
+
 _.extend Madeye.FileTree.prototype,
   isVisible: (file)->
     parent = @findByPath(file.parentPath) if file.parentPath?
