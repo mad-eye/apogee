@@ -65,29 +65,35 @@ do ->
   Template.editor.rendered = ->
     Session.set("editorRendered", true)
 
+  editorState = null
+  Meteor.startup ->
+    editorState = new EditorState
+
   Meteor.autorun ->
     console.log "AUTORUN"
     return unless Session.equals("editorRendered", true)
+    return if Session.equals "editorFileId", editorState?.file?._id
     settings = Settings.findOne()
     file = Files.findOne {_id: Session.get "editorFileId"}
-    if file
-      editor = ace.edit("editor")
-      #TODO: Switch to using sharejs.openExisting
-      sharejs.open file._id, 'text', "http://#{settings.bolideHost}:#{settings.bolidePort}/channel", (error, doc) ->
-        if doc?
-          doc.attach_ace editor
-          doc.on 'change', (op) ->
-            file.update {modified: true}
-        else
-          console.log "docless"
-          fetchBody file._id, (body)->
-            if body?
-              sharejs.open file._id, 'text', "http://#{settings.bolideHost}:#{settings.bolidePort}/channel", (error, doc) ->
-                doc.attach_ace editor
-                editor.setValue body
-                editor.clearSelection()
-                doc.on 'change', (op) ->
-                  file.update {modified: true}
+    return unless file
+    editorState.file = file
+    editor = ace.edit("editor")
+    #TODO: Switch to using sharejs.openExisting
+    sharejs.open file._id, 'text', "http://#{settings.bolideHost}:#{settings.bolidePort}/channel", (error, doc) ->
+      if doc?
+        doc.attach_ace editor
+        doc.on 'change', (op) ->
+          file.update {modified: true}
+      else
+        console.log "docless"
+        fetchBody file._id, (body)->
+          if body?
+            sharejs.open file._id, 'text', "http://#{settings.bolideHost}:#{settings.bolidePort}/channel", (error, doc) ->
+              doc.attach_ace editor
+              editor.setValue body
+              editor.clearSelection()
+              doc.on 'change', (op) ->
+                file.update {modified: true}
 
   Template.editorChrome.events
     'click button#saveButton' : (event) ->

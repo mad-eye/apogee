@@ -1,0 +1,2 @@
+class EditorState
+  constructor: (@file)->
