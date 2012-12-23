@@ -10,6 +10,7 @@
 <body>
   <div id="container" class="container">
     {{> topnav}}
+    {{> alerts}}
     {{{renderPage}}}
   </div>
 </body>
@@ -30,3 +31,13 @@
   </div>
 </div>
 </template>
+
+<template name="alerts">
+{{#each errors}}
+  <div class="alert">
+    <button id="{{_id}}" type="button" class="error-close close" data-dismiss="alert">&times;</button>
+    <strong>{{type}}</strong> {{message}}
+  </div>
+{{/each}}
+</template>
+
