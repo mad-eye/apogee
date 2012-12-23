@@ -5,7 +5,7 @@ do ->
   fileTree = new Madeye.FileTree()
 
   Template.fileTree.files = ->
-    fileTree.setFiles Files.find()
+    fileTree.setFiles Files.collection.find()
     _.filter fileTree.files, (file)->
       fileTree.isVisible(file)
 
