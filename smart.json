@@ -4,9 +4,6 @@
     "madeye-common": {
       "path": "./.madeye-common"
     },
-    "meteor-sharejs": {
-      "git": "git@github.com:rissem/meteor-sharejs.git"
-    },
     "meteor-client-tester": {
       "git": "git@github.com:rissem/meteor-client-tester.git"
     },

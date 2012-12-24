@@ -79,7 +79,14 @@ do ->
     editorState.file = file
     editor = ace.edit("editor")
     #TODO: Switch to using sharejs.openExisting
+    #XXX this relies on a custom hacked version of sharejs.open that is not the same
+    #    as the one documented on the sharejs website
     sharejs.open file._id, 'text', "http://#{settings.bolideHost}:#{settings.bolidePort}/channel", (error, doc) ->
+      if mode = file.aceMode()
+        jQuery.getScript "/ace/mode-#{mode}.js", =>
+          Mode = require("ace/mode/#{mode}").Mode
+          editor.getSession().setMode(new Mode())
+
       if doc?
         doc.attach_ace editor
         doc.on 'change', (op) ->
