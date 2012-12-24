@@ -10,10 +10,6 @@
       "madeye-common": {
         "path": "./.madeye-common"
       },
-      "meteor-sharejs": {
-        "git": "git@github.com:rissem/meteor-sharejs.git",
-        "branch": "master"
-      },
       "meteor-client-tester": {
         "git": "git@github.com:rissem/meteor-client-tester.git",
         "branch": "master"
@@ -28,11 +24,6 @@
       },
       "madeye-common": {
         "path": "./.madeye-common"
-      },
-      "meteor-sharejs": {
-        "git": "git@github.com:rissem/meteor-sharejs.git",
-        "branch": "master",
-        "commit": "9c20c8e824b10e0f51bbd601c8a1cb8d1a060708"
       },
       "meteor-client-tester": {
         "git": "git@github.com:rissem/meteor-client-tester.git",
