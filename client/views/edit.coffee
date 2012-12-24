@@ -40,7 +40,7 @@ do ->
     console.log "fetching body"
     Meteor.http.get fileUrl(fileId), (error,result)->
       if error
-        handleError error
+        handleError error, result
       else
         callback JSON.parse(result.content).body
 
@@ -56,8 +56,9 @@ do ->
       headers: {'Content-Type':'application/json'}
     }, (error,result)->
       if error
-        console.error(error)
+        handleError error, result
       else
+        #XXX: Are we worried about race conditions if there were modifications after the save button was pressed?
         file.update {modified: false}
 
   Template.editor.preserve("#editor")
