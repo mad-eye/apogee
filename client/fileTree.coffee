@@ -41,7 +41,8 @@ _.extend Madeye.File.prototype,
 
   #TODO would be nicer if this was a getter
   extension: ->
-    @filename.split(".").pop()
+    tokens = @filename.split '.'
+    if tokens.length > 1 then tokens.pop() else null
   
   aceMode: ->
     Madeye.ACE_MODES[@extension()]
