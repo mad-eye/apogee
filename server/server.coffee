@@ -25,3 +25,13 @@ Meteor.publish "settings", ->
 Meteor.publish "projects", (projectId)->
   Projects.collection.find
     _id: projectId
+
+Meteor.methods
+  sendNotifyEmail: (emailAddress) ->
+    console.log "sendNotifyEmail #{emailAddress}"
+    this.unblock()
+    Email.send
+      to: 'notify@madeye.io'
+      from: 'notify@madeye.io'
+      subject: 'NotifyMe'
+      text: emailAddress
