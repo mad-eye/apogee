@@ -15,8 +15,10 @@ makeNetworkError = (result) ->
   return null unless result?
   error = JSON.parse(result?.content)?.error
   error ?=
-    level: 'error'
     type: result.statusCode
     message: result.error?.message
-  error
+  error.title = error.type #TODO: for now.  Eventually make it more understandable
+  error.level = 'error'
+  console.log "Made error", error
+  return error
 

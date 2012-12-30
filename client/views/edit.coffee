@@ -2,6 +2,9 @@
 # https://github.com/meteor/meteor/pull/85
 
 do ->
+  handleNetworkError = (error, result) ->
+    displayAlert makeNetworkError(result) ? { level: 'error', message: error.message }
+
   fileTree = new Madeye.FileTree()
 
   Template.fileTree.files = ->
@@ -40,7 +43,7 @@ do ->
     console.log "fetching body"
     Meteor.http.get fileUrl(fileId), (error,result)->
       if error
-        handleError error, result
+        handleNetworkError error, result
       else
         callback JSON.parse(result.content).body
 
@@ -56,7 +59,7 @@ do ->
       headers: {'Content-Type':'application/json'}
     }, (error,result)->
       if error
-        displayAlert makeNetworkError(result) ? { level: 'error', message: error.message }
+        handleNetworkError error, result
       else
         #XXX: Are we worried about race conditions if there were modifications after the save button was pressed?
         file.update {modified: false}
