@@ -56,7 +56,7 @@ do ->
       headers: {'Content-Type':'application/json'}
     }, (error,result)->
       if error
-        handleError error, result
+        displayAlert makeNetworkError(result) ? { level: 'error', message: error.message }
       else
         #XXX: Are we worried about race conditions if there were modifications after the save button was pressed?
         file.update {modified: false}

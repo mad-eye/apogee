@@ -2,19 +2,21 @@ do ->
   Handlebars.registerHelper "isHomePage", ->
     return "home" == Meteor.Router._page
 
-  Template.alerts.errors = ->
-    return Errors.find().fetch()
-
-  Template.alerts.events
-    'click button.error-close' : (event) ->
-      Errors.remove event.currentTarget.id
-
-displayAlert = (level, title, message) ->
+displayAlert = (alert) ->
+  return unless alert?
   html = Template.alert {
-    level: level
-    title: title
-    message: message
+    level: alert.level
+    title: alert.title
+    message: alert.message
   }
   $('#alertBox').append html
 
+makeNetworkError = (result) ->
+  return null unless result?
+  error = JSON.parse(result?.content)?.error
+  error ?=
+    level: 'error'
+    type: result.statusCode
+    message: result.error?.message
+  error
 

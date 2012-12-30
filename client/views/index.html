@@ -10,8 +10,6 @@
 <body>
   <div id="container" class="container">
     {{> topnav}}
-    {{!Messy due to merge, will clean up after commit.}}
-    {{> alerts}}
     <div id="alertBox">{{! Will be populated by displayAlert}}</div>
     {{{renderPage}}}
   </div>
@@ -32,15 +30,6 @@
     </ul>
   </div>
 </div>
-</template>
-
-<template name="alerts">
-{{#each errors}}
-  <div class="alert">
-    <button id="{{_id}}" type="button" class="error-close close" data-dismiss="alert">&times;</button>
-    <strong>{{type}}</strong> {{message}}
-  </div>
-{{/each}}
 </template>
 
 <template name="alert">

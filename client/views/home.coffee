@@ -13,7 +13,10 @@ Template.home.events
       return false
     sendNotifyEmail emailAddr
     $('#emailInput').val('')
-    displayAlert('info', "You're in the loop!", "We'll notify #{emailAddr} as soon as we have news.")
+    displayAlert
+      level:'info'
+      title: "You're in the loop!"
+      message: "We'll notify #{emailAddr} as soon as we have news."
     return false
 
 sendNotifyEmail = (email) ->
