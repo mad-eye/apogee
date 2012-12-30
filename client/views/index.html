@@ -10,7 +10,9 @@
 <body>
   <div id="container" class="container">
     {{> topnav}}
+    {{!Messy due to merge, will clean up after commit.}}
     {{> alerts}}
+    <div id="alertBox">{{! Will be populated by displayAlert}}</div>
     {{{renderPage}}}
   </div>
 </body>
@@ -41,3 +43,9 @@
 {{/each}}
 </template>
 
+<template name="alert">
+<div class="alert alert-{{level}} fade in">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <strong>{{title}}</strong> {{message}}
+</div>
+</template>

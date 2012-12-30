@@ -9,3 +9,12 @@ do ->
     'click button.error-close' : (event) ->
       Errors.remove event.currentTarget.id
 
+displayAlert = (level, title, message) ->
+  html = Template.alert {
+    level: level
+    title: title
+    message: message
+  }
+  $('#alertBox').append html
+
+
