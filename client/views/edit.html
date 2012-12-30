@@ -1,4 +1,5 @@
 <template name="edit">
+  {{> projectStatus}}
     <div class="row">
         <div class="span4">
             {{> fileTree}}
@@ -8,6 +9,12 @@
             {{> editor}}
         </div>
     </div>
+</template>
+
+<template name="projectStatus">
+  {{#unless projectIsOpen}}
+    {{> alert projectClosedError}}
+  {{/unless}}
 </template>
 
 <template name="fileTree">

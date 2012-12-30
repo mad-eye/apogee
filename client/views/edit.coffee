@@ -2,10 +2,34 @@
 # https://github.com/meteor/meteor/pull/85
 
 do ->
+  makeNetworkError = (result) ->
+    return null unless result?
+    error = JSON.parse(result?.content)?.error
+    error ?=
+      type: result.statusCode
+      message: result.error?.message
+    error.title = error.type #TODO: for now.  Eventually make it more understandable
+    error.level = 'error'
+    console.log "Made error", error
+    return error
+
   handleNetworkError = (error, result) ->
     displayAlert makeNetworkError(result) ? { level: 'error', message: error.message }
 
   fileTree = new Madeye.FileTree()
+
+  projectIsOpen = ->
+    Projects.findOne()?.opened
+
+  Template.projectStatus.projectIsOpen = ->
+    projectIsOpen()
+
+  Template.projectStatus.projectClosedError = ->
+    level: 'error'
+    title: 'Project Closed'
+    message: 'The project has been closed on the client.'
+    uncloseable: true
+
 
   Template.fileTree.files = ->
     fileTree.setFiles Files.collection.find()
