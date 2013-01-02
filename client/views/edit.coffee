@@ -2,20 +2,6 @@
 # https://github.com/meteor/meteor/pull/85
 
 do ->
-  makeNetworkError = (result) ->
-    return null unless result?
-    error = JSON.parse(result?.content)?.error
-    error ?=
-      type: result.statusCode
-      message: result.error?.message
-    error.title = error.type #TODO: for now.  Eventually make it more understandable
-    error.level = 'error'
-    console.log "Made error", error
-    return error
-
-  handleNetworkError = (error, result) ->
-    displayAlert makeNetworkError(result) ? { level: 'error', message: error.message }
-
   fileTree = new Madeye.FileTree()
 
   projectIsOpen = ->
@@ -56,38 +42,6 @@ do ->
       file = fileTree.findById fileId
       file.select()
 
-  fileUrl = (fileId)->
-    settings = Settings.findOne()
-    url = "http://#{settings.httpHost}:#{settings.httpPort}"
-    url = "#{url}/project/#{Projects.findOne()._id}/file/#{fileId}"
-    console.log url
-    url
-
-  fetchBody = (fileId, callback) ->
-    console.log "fetching body"
-    Meteor.http.get fileUrl(fileId), (error,result)->
-      if error
-        handleNetworkError error, result
-      else
-        callback JSON.parse(result.content).body
-
-  getEditorBody = ->
-    ace.edit("editor")?.getValue()
-
-  save = (fileId)->
-    contents = getEditorBody()
-    file = Files.findOne fileId
-    return unless file.modified
-    Meteor.http.call "PUT", fileUrl(fileId), {
-      data: {contents: contents}
-      headers: {'Content-Type':'application/json'}
-    }, (error,result)->
-      if error
-        handleNetworkError error, result
-      else
-        #XXX: Are we worried about race conditions if there were modifications after the save button was pressed?
-        file.update {modified: false}
-
   Template.editor.preserve("#editor")
 
   Template.editor.rendered = ->
@@ -95,7 +49,7 @@ do ->
 
   editorState = null
   Meteor.startup ->
-    editorState = new EditorState
+    editorState = new EditorState "editor"
 
   Meteor.autorun ->
     console.log "AUTORUN"
@@ -121,7 +75,7 @@ do ->
           file.update {modified: true}
       else
         console.log "docless"
-        fetchBody file._id, (body)->
+        editorState.fetchBody (body)->
           if body?
             sharejs.open file._id, 'text', "http://#{settings.bolideHost}:#{settings.bolidePort}/channel", (error, doc) ->
               doc.attach_ace editor
@@ -133,7 +87,7 @@ do ->
   Template.editorChrome.events
     'click button#saveButton' : (event) ->
       console.log "clicked save button"
-      save Session.get "editorFileId"
+      editorState.save()
 
   Template.editorChrome.editorFileName = ->
     fileId = Session.get "editorFileId"
