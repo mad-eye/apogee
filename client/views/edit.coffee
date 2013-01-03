@@ -1,7 +1,7 @@
 # TODO Eliminate need to wrap this in do ->
 # https://github.com/meteor/meteor/pull/85
 
-do ->
+#do ->
   fileTree = new Madeye.FileTree()
 
   projectIsOpen = ->
@@ -75,7 +75,7 @@ do ->
           file.update {modified: true}
       else
         console.log "docless"
-        editorState.fetchBody (body)->
+        editorState.fetchBody (body) ->
           if body?
             sharejs.open file._id, 'text', "http://#{settings.bolideHost}:#{settings.bolidePort}/channel", (error, doc) ->
               doc.attach_ace editor
@@ -99,7 +99,7 @@ do ->
   Template.editorChrome.editorFileId = ->
     Session.get "editorFileId"
 
-  Template.editorChrome.buttonSaveClass = ->
+  Template.editorChrome.buttonDisabled = ->
     fileId = Session.get "editorFileId"
     file = Files.findOne(fileId) if fileId?
-    unless file?.modified then "disabled" else ""
+    if file?.modified then "" else "disabled"

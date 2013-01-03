@@ -23,12 +23,12 @@ class EditorState
     ace.edit @editorId
 
   getEditorBody : ->
-    getEditor()?.getValue()
+    @getEditor()?.getValue()
 
-  getFileUrl : ()->
+  getFileUrl : ->
     settings = Settings.findOne()
     url = "http://#{settings.httpHost}:#{settings.httpPort}"
-    url = "#{url}/project/#{Projects.findOne()._id}/file/#{@file._id}"
+    url += "/project/#{Projects.findOne()._id}/file/#{@file._id}"
     console.log url
     url
 
@@ -39,17 +39,18 @@ class EditorState
       else
         callback JSON.parse(result.content).body
 
-  save : ()->
+  save : ->
+    self = this #The => doesn't work for some reason with the PUT callback.
     contents = @getEditorBody()
     return unless @file.modified
     Meteor.http.call "PUT", @getFileUrl(), {
       data: {contents: contents}
       headers: {'Content-Type':'application/json'}
-    }, (error,result)->
+    }, (error,result) ->
       if error
         handleNetworkError error, result
       else
         #XXX: Are we worried about race conditions if there were modifications after the save button was pressed?
-        @file.update {modified: false}
+        self.file.update {modified: false}
 
 
