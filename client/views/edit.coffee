@@ -102,4 +102,4 @@
   Template.editorChrome.buttonDisabled = ->
     fileId = Session.get "editorFileId"
     file = Files.findOne(fileId) if fileId?
-    if file?.modified then "" else "disabled"
+    if file?.modified and projectIsOpen() then "" else "disabled"
