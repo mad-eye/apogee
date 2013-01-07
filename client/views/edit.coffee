@@ -99,6 +99,7 @@
   Template.editorChrome.editorFileId = ->
     Session.get "editorFileId"
 
+  #FIXME: If a connection is re-established, the file is considered modified==false.
   Template.editorChrome.buttonDisabled = ->
     fileId = Session.get "editorFileId"
     file = Files.findOne(fileId) if fileId?
