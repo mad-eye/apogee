@@ -4,6 +4,7 @@
             {{> fileTree}}
         </div>
         <div class="span8">
+            {{> editorChrome }}
             {{> editor}}
         </div>
     </div>
@@ -20,12 +21,16 @@
 </ul>
 </template>
 
-<template name="editor">
+<template name="editorChrome">
   <div id="editorFileName"><h4>{{editorFileName}}</h4></div>
   {{#if editorFileId}}
     <div id="buttonRow">
       <button id="saveButton" class="btn btn-primary {{buttonSaveClass}}">Save</button>
     </div>
   {{/if}}
+</template>
+
+<template name="editor">
+  <!-- this hack exists to force a new div block on file swtich {{editorFileId}} -->
   <div id="editor" ></div>
 </template>
