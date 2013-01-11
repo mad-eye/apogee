@@ -31,7 +31,7 @@ Meteor.methods
     console.log "sendNotifyEmail #{emailAddress}"
     this.unblock()
     Email.send
-      to: 'notify@madeye.io'
-      from: 'notify@madeye.io'
+      to: 'support@madeye.io'
+      from: 'support@madeye.io'
       subject: 'NotifyMe'
       text: emailAddress
