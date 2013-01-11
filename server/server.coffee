@@ -19,19 +19,13 @@ Files.collection.allow(
   update: (userId, docs, fields, modifier) -> true
 )
 
+NewsletterEmails.collection.allow(
+  insert: -> true
+)
+
 Meteor.publish "settings", ->
   settings = Settings.collection.find()
 
 Meteor.publish "projects", (projectId)->
   Projects.collection.find
     _id: projectId
-
-Meteor.methods
-  sendNotifyEmail: (emailAddress) ->
-    console.log "sendNotifyEmail #{emailAddress}"
-    this.unblock()
-    Email.send
-      to: 'support@madeye.io'
-      from: 'noreply@madeye.io'
-      subject: 'NotifyMe'
-      text: emailAddress
