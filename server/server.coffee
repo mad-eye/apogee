@@ -32,6 +32,6 @@ Meteor.methods
     this.unblock()
     Email.send
       to: 'support@madeye.io'
-      from: 'support@madeye.io'
+      from: 'noreply@madeye.io'
       subject: 'NotifyMe'
       text: emailAddress
