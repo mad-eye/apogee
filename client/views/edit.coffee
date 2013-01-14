@@ -1,7 +1,7 @@
 # TODO Eliminate need to wrap this in do ->
 # https://github.com/meteor/meteor/pull/85
 
-#do ->
+do ->
   fileTree = new Madeye.FileTree()
 
   projectIsOpen = ->
