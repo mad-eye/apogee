@@ -42,7 +42,11 @@ class Project
   constructor: (rawJSON)->
     _.extend(@, rawJSON)
 
+class NewsletterEmail
+  constructor: (rawJSON)->
+    _.extend(@, rawJSON)
+
 Files = new Meteor.Model("files", Madeye.File)
 Settings = new Meteor.Model("settings", Setting)
 Projects = new Meteor.Model("projects", Project)
-
+NewsletterEmails = new Meteor.Model("newsletterEmails", NewsletterEmail)

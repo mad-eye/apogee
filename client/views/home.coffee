@@ -11,7 +11,8 @@ Template.home.events
     emailAddr = $('#emailInput').val()
     if emailAddr == ''
       return false
-    sendNotifyEmail emailAddr
+    newsletterEmail = new NewsletterEmail email: emailAddr
+    newsletterEmail.save()
     $('#emailInput').val('')
     displayAlert
       level:'info'
@@ -19,8 +20,4 @@ Template.home.events
       message: "We'll notify #{emailAddr} as soon as we have news."
     return false
 
-sendNotifyEmail = (email) ->
-  console.log "sendNotifyEmail #{email}"
-  Meteor.call 'sendNotifyEmail', email, (error, result) ->
-    return error ? result
   
