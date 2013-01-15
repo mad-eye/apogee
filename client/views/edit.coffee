@@ -4,6 +4,19 @@
 do ->
   fileTree = new Madeye.FileTree()
 
+  projectIsOpen = ->
+    Projects.findOne()?.opened
+
+  Template.projectStatus.projectIsOpen = ->
+    projectIsOpen()
+
+  Template.projectStatus.projectClosedError = ->
+    level: 'error'
+    title: 'Project Closed'
+    message: 'The project has been closed on the client.'
+    uncloseable: true
+
+
   Template.fileTree.files = ->
     fileTree.setFiles Files.collection.find()
     _.filter fileTree.files, (file)->
@@ -29,37 +42,6 @@ do ->
       file = fileTree.findById fileId
       file.select()
 
-  fileUrl = (fileId)->
-    settings = Settings.findOne()
-    url = "http://#{settings.httpHost}:#{settings.httpPort}"
-    url = "#{url}/project/#{Projects.findOne()._id}/file/#{fileId}"
-    console.log url
-    url
-
-  fetchBody = (fileId, callback) ->
-    console.log "fetching body"
-    Meteor.http.get fileUrl(fileId), (error,result)->
-      if error
-        handleError error
-      else
-        callback JSON.parse(result.content).body
-
-  getEditorBody = ->
-    ace.edit("editor")?.getValue()
-
-  save = (fileId)->
-    contents = getEditorBody()
-    file = Files.findOne fileId
-    return unless file.modified
-    Meteor.http.call "PUT", fileUrl(fileId), {
-      data: {contents: contents}
-      headers: {'Content-Type':'application/json'}
-    }, (error,result)->
-      if error
-        console.error(error)
-      else
-        file.update {modified: false}
-
   Template.editor.preserve("#editor")
 
   Template.editor.rendered = ->
@@ -67,7 +49,7 @@ do ->
 
   editorState = null
   Meteor.startup ->
-    editorState = new EditorState
+    editorState = new EditorState "editor"
 
   Meteor.autorun ->
     console.log "AUTORUN"
@@ -93,7 +75,7 @@ do ->
           file.update {modified: true}
       else
         console.log "docless"
-        fetchBody file._id, (body)->
+        editorState.fetchBody (body) ->
           if body?
             sharejs.open file._id, 'text', "http://#{settings.bolideHost}:#{settings.bolidePort}/channel", (error, doc) ->
               doc.attach_ace editor
@@ -105,7 +87,7 @@ do ->
   Template.editorChrome.events
     'click button#saveButton' : (event) ->
       console.log "clicked save button"
-      save Session.get "editorFileId"
+      editorState.save()
 
   Template.editorChrome.editorFileName = ->
     fileId = Session.get "editorFileId"
@@ -117,7 +99,8 @@ do ->
   Template.editorChrome.editorFileId = ->
     Session.get "editorFileId"
 
-  Template.editorChrome.buttonSaveClass = ->
+  #FIXME: If a connection is re-established, the file is considered modified==false.
+  Template.editorChrome.buttonDisabled = ->
     fileId = Session.get "editorFileId"
     file = Files.findOne(fileId) if fileId?
-    unless file?.modified then "disabled" else ""
+    if file?.modified and projectIsOpen() then "" else "disabled"

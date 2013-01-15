@@ -18,7 +18,8 @@ class Meteor.Model
     @modelClass.prototype.update = (fields)->
       dirty = false
       for key,value of fields
-        dirty = true unless @[key] == value 
+        dirty = true unless @[key] == value
+        @[key] = value
       self.collection.update @_id, {$set: fields} if dirty
 
   findOne: (selector={})->
