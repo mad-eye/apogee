@@ -16,7 +16,7 @@ Meteor.autosubscribe ->
 
 Meteor.subscribe "settings"
 
-_kmq = _kmq || [];
+_kmq = _kmq || []
 
 #COPIED FROM https://www.kissmetrics.com/settings
 #maybe this could be replaced w/ a single script tag?
@@ -25,7 +25,7 @@ Meteor.startup ->
     settings = Settings.findOne()
     if settings
       console.log "SETTINGS", settings
-      _kmk = settings.kissMetricsId;
+      _kmk = settings.kissMetricsId
       _kms = (u)->
         setTimeout ->
           d = document
@@ -36,8 +36,8 @@ Meteor.startup ->
           s.src = u
           f.parentNode.insertBefore(s, f)
         , 1
-      _kms('//i.kissmetrics.com/i.js');
-      _kms('//doug1izaerwt3.cloudfront.net/' + _kmk + '.1.js');
+      _kms('//i.kissmetrics.com/i.js')
+      _kms('//doug1izaerwt3.cloudfront.net/' + _kmk + '.1.js')
     else
       console.log "No Settings found"
 
