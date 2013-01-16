@@ -1,4 +1,8 @@
 {
+  "meteor": {
+    "branch": "master"
+  },
+
   "packages": {
     "router": {},
     "madeye-common": {
