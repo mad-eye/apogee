@@ -46,6 +46,7 @@ do ->
 
   Template.editor.rendered = ->
     Session.set("editorRendered", true)
+    resizeEditor()
 
   editorState = null
   Meteor.startup ->
@@ -104,3 +105,19 @@ do ->
     fileId = Session.get "editorFileId"
     file = Files.findOne(fileId) if fileId?
     if file?.modified and projectIsOpen() then "" else "disabled"
+
+  resizeEditor = ->
+    editorTop = $("#editor").position().top
+    editorLeft = $("#editor").position().left
+    windowHeight = $(window).height()
+    windowWidth = $(window).width()
+    newHeight = windowHeight - editorTop - 20
+    newWidth = windowWidth - editorLeft - 20
+    $("#editor").height(newHeight)
+    $("#editor").width(newWidth)
+    ace.edit("editor").resize()
+
+  $(window).resize ->
+    resizeEditor()
+
+
