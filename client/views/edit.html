@@ -12,9 +12,9 @@
 </template>
 
 <template name="projectStatus">
-  {{#unless projectIsOpen}}
+  {{#if projectIsClosed}}
     {{> alert projectClosedError}}
-  {{/unless}}
+  {{/if}}
 </template>
 
 <template name="fileTree">

@@ -10,6 +10,10 @@ Meteor.startup ->
   else
     throw "Multiple Entries in Singleton Settings Collection!!"
 
+Meteor.publish "projects", (projectId)->
+  Projects.collection.find
+    _id: projectId
+
 Meteor.publish "files", (projectId)->
   Files.collection.find
     projectId: projectId
@@ -26,6 +30,3 @@ NewsletterEmails.collection.allow(
 Meteor.publish "settings", ->
   settings = Settings.collection.find()
 
-Meteor.publish "projects", (projectId)->
-  Projects.collection.find
-    _id: projectId
