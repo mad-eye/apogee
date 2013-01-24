@@ -4,11 +4,11 @@
 do ->
   fileTree = new Madeye.FileTree()
 
-  projectIsOpen = ->
-    Projects.findOne()?.opened
+  projectIsClosed = ->
+    Projects.findOne()?.closed
 
-  Template.projectStatus.projectIsOpen = ->
-    projectIsOpen()
+  Template.projectStatus.projectIsClosed = ->
+    projectIsClosed()
 
   Template.projectStatus.projectClosedError = ->
     level: 'error'
@@ -104,7 +104,7 @@ do ->
   Template.editorChrome.buttonDisabled = ->
     fileId = Session.get "editorFileId"
     file = Files.findOne(fileId) if fileId?
-    if file?.modified and projectIsOpen() then "" else "disabled"
+    if file?.modified and not projectIsClosed() then "" else "disabled"
 
   resizeEditor = ->
     editorTop = $("#editor").position().top
