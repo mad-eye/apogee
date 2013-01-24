@@ -104,7 +104,7 @@ do ->
   Template.editorChrome.buttonDisabled = ->
     fileId = Session.get "editorFileId"
     file = Files.findOne(fileId) if fileId?
-    if !file?.modified or projectIsClosed() then "" else "disabled"
+    if file?.modified and not projectIsClosed() then "" else "disabled"
 
   resizeEditor = ->
     editorTop = $("#editor").position().top
