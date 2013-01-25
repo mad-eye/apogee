@@ -1,2 +1,2 @@
 #! /bin/sh
-#Nothing yet.
+git submodule update --recursive --init

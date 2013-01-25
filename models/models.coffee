@@ -18,7 +18,8 @@ class Meteor.Model
     @modelClass.prototype.update = (fields)->
       dirty = false
       for key,value of fields
-        dirty = true unless @[key] == value 
+        dirty = true unless @[key] == value
+        @[key] = value
       self.collection.update @_id, {$set: fields} if dirty
 
   findOne: (selector={})->
@@ -41,6 +42,11 @@ class Project
   constructor: (rawJSON)->
     _.extend(@, rawJSON)
 
+class NewsletterEmail
+  constructor: (rawJSON)->
+    _.extend(@, rawJSON)
+
 Files = new Meteor.Model("files", Madeye.File)
 Settings = new Meteor.Model("settings", Setting)
 Projects = new Meteor.Model("projects", Project)
+NewsletterEmails = new Meteor.Model("newsletterEmails", NewsletterEmail)

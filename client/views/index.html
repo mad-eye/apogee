@@ -5,11 +5,13 @@
   <script src="/ace/bcsocket-uncompressed.js"></script>
   <script src="/ace/share-uncompressed.js"></script>
   <script src="/ace/share-ace.js"></script>
+  <script src="/ace/share-json.js"></script>
 </head>
 
 <body>
   <div id="container" class="container">
     {{> topnav}}
+    <div id="alertBox">{{! Will be populated by displayAlert}}</div>
     {{{renderPage}}}
   </div>
 </body>
@@ -21,12 +23,23 @@
     </h1>
   </div>
   <div class="span3">
+    {{!
     <ul class="nav login pull-right">
-      {{!Sign in/up}}
+      {{!Sign in/up} }
       <li>
-      {{loginButtons align="right"}}
+      {{loginButtons align="right"} }
       </li>
     </ul>
+    }}
   </div>
+</div>
+</template>
+
+<template name="alert">
+<div class="alert alert-{{level}} fade in">
+  {{#unless uncloseable}}
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+  {{/unless}}
+  <strong>{{title}}</strong> {{message}}
 </div>
 </template>
