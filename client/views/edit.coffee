@@ -2,6 +2,7 @@
 # https://github.com/meteor/meteor/pull/85
 
 do ->
+
   fileTree = new Madeye.FileTree()
 
   projectIsClosed = ->
@@ -30,6 +31,7 @@ do ->
       clazz += " file"
     clazz += " level" + this.depth
     clazz += " selected" if this.isSelected()
+    clazz += " modified" if this.modified
     return clazz
 
   Template.fileTree.projectName = ->
@@ -88,11 +90,34 @@ do ->
   Template.editorChrome.events
     'click button#saveButton' : (event) ->
       console.log "clicked save button"
-      editorState.save()
+      Session.set "saving", true
+      editorState.save (err) ->
+        if err
+          #Handle error better.
+          console.error "Error in save request:", err
+        else
+          Session.set "saving", false
 
   Template.editorChrome.editorFileName = ->
     fileId = Session.get "editorFileId"
     if fileId then Files.findOne(fileId)?.path else "Select file..."
+
+  Template.editorChrome.saveButtonMessage = ->
+    fileId = Session.get "editorFileId"
+    file = Files.findOne(fileId) if fileId?
+    unless file?.modified
+      "Saved"
+    else if projectIsClosed()
+      "Offline"
+    else if Session.equals "saving", true
+      "Saving..."
+    else
+      "Save Locally"
+
+
+  Template.editorChrome.showSaveSpinner = ->
+    Session.equals "saving", true
+
 
   Template.editor.editorFileId = ->
     Session.get "editorFileId"
