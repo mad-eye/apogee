@@ -12,6 +12,9 @@
 </template>
 
 <template name="projectStatus">
+  {{#if projectIsLoading}}
+    {{> alert projectLoadingAlert}}
+  {{/if}}
   {{#if projectIsClosed}}
     {{> alert projectClosedError}}
   {{/if}}

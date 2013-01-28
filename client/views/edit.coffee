@@ -17,6 +17,20 @@ do ->
     message: 'The project has been closed on the client.'
     uncloseable: true
 
+  #Find how many files the server things, so we know if we have them all.
+  Meteor.autosubscribe ->
+    Meteor.call 'getFileCount', Session.get('projectId'), (err, count)->
+      if err then console.error err; return
+      Session.set 'fileCount', count
+
+  Template.projectStatus.projectIsLoading = ->
+    return not (Projects.findOne()? || Session.equals 'fileCount', Files.collection.find().count())
+
+  Template.projectStatus.projectLoadingAlert = ->
+    level: 'info'
+    title: 'Project is Loading'
+    message: "...we'll be ready in a moment!"
+    uncloseable: true
 
   Template.fileTree.files = ->
     fileTree.setFiles Files.collection.find()
