@@ -74,27 +74,25 @@ do ->
       settings = Settings.findOne()
       return unless settings?
       return if Session.equals "editorFileId", editorState?.file?._id
-      file = Files.findOne Session.get "editorFileId"
+      file = Files.findOne {_id: Session.get "editorFileId"}
       return unless file
       editorState.file = file
       editor = ace.edit("editor")
-      #TODO: Switch to using sharejs.openExisting
-      #XXX this relies on a custom hacked version of sharejs.open that is not the same
-      #    as the one documented on the sharejs website
-      sharejs.open file._id, 'text', "http://#{settings.bolideHost}:#{settings.bolidePort}/channel", (error, doc) ->
+
+      sharejs.open file._id, 'text2', "http://#{settings.bolideHost}:#{settings.bolidePort}/channel", (error, doc) ->
         if mode = file.aceMode()
           jQuery.getScript "/ace/mode-#{mode}.js", =>
             Mode = require("ace/mode/#{mode}").Mode
             editor.getSession().setMode(new Mode())
-        if doc?
+
+        if doc.version > 0
           doc.attach_ace editor
           doc.on 'change', (op) ->
             file.update {modified: true}
         else
-          console.log "docless"
           editorState.fetchBody (body) ->
             if body?
-              sharejs.open file._id, 'text', "http://#{settings.bolideHost}:#{settings.bolidePort}/channel", (error, doc) ->
+              sharejs.open file._id, 'text2', "http://#{settings.bolideHost}:#{settings.bolidePort}/channel", (error, doc) ->
                 doc.attach_ace editor
                 editor.setValue body
                 editor.clearSelection()
