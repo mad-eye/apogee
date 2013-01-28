@@ -105,7 +105,7 @@
     check();
     suppress = false;
     updateCursors = function() {
-      var cursor, ranges, sessionId, _ref;
+      var colors, cursor, cursorElement, cursorLayer, i, ranges, sessionId, _i, _len, _ref, _ref1, _results;
       ranges = [];
       _ref = this.cursors;
       for (sessionId in _ref) {
@@ -117,7 +117,16 @@
         cursor: null
       });
       editor.session.$selectionMarkers = ranges;
-      return editor.renderer.$cursorLayer.update(editor.renderer.layerConfig);
+      cursorLayer = editor.renderer.$cursorLayer;
+      cursorLayer.update(editor.renderer.layerConfig);
+      colors = ["Brown", "DarkCyan", "DarkGreen", "DarkRed", "DarkSeaGreen", "MediumSlateBlue"];
+      _ref1 = cursorLayer.cursors.slice(1);
+      _results = [];
+      for (i = _i = 0, _len = _ref1.length; _i < _len; i = ++_i) {
+        cursorElement = _ref1[i];
+        _results.push(cursorElement.style.borderColor = colors[i % 6]);
+      }
+      return _results;
     };
     this.on("cursors", updateCursors);
     editorListener = function(change) {
