@@ -89,15 +89,16 @@ do ->
           doc.attach_ace editor
           doc.on 'change', (op) ->
             file.update {modified: true}
+          doc.emit "cursors"
         else
           editorState.fetchBody (body) ->
             if body?
-              sharejs.open file._id, 'text2', "http://#{settings.bolideHost}:#{settings.bolidePort}/channel", (error, doc) ->
-                doc.attach_ace editor
-                editor.setValue body
-                editor.clearSelection()
-                doc.on 'change', (op) ->
-                  file.update {modified: true}
+              doc.attach_ace editor
+              editor.setValue body
+              editor.clearSelection()
+              doc.on 'change', (op) ->
+                file.update {modified: true}
+              doc.emit "cursors"
 
   Template.editorChrome.events
     'click button#saveButton' : (event) ->
