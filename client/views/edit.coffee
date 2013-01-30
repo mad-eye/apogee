@@ -80,6 +80,8 @@ do ->
       editor = ace.edit("editor")
 
       sharejs.open file._id, 'text2', "http://#{settings.bolideHost}:#{settings.bolidePort}/channel", (error, doc) ->
+        editorState.doc?.detach_ace()
+        editorState.doc = doc
         if mode = file.aceMode()
           jQuery.getScript "/ace/mode-#{mode}.js", =>
             Mode = require("ace/mode/#{mode}").Mode
@@ -91,6 +93,8 @@ do ->
             file.update {modified: true}
           doc.emit "cursors"
         else
+          editor.setValue "Loading..."
+          editor.setReadOnly true
           editorState.fetchBody (body) ->
             if body?
               doc.attach_ace editor
