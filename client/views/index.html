@@ -14,6 +14,7 @@
     {{> topnav}}
     <div id="alertBox">{{! Will be populated by displayAlert}}</div>
     {{{renderPage}}}
+    {{> footer}}
   </div>
 </body>
 
@@ -43,4 +44,15 @@
   {{/unless}}
   <strong>{{title}}</strong> {{message}}
 </div>
+</template>
+
+<template name="footer">
+<footer class="row">
+  <div class="pull-right">
+    <ul class="nav nav-footer">
+      <li><a href="http://blog.madeye.io">Blog</a></li>
+      <li><a href="mailto:support@madeye.io">Contact Us</a></li>
+    </ul>
+  </div>
+</footer>
 </template>
