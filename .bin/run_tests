@@ -1,2 +1,2 @@
 which mocha-phantomjs > /dev/null || echo "Please install mocha-phantomjs: 'sudo npm install -g mocha-phantomjs'"
-mocha-phantomjs http://localhost:3000/tests
+mocha-phantomjs $MADEYE_APOGEE_URL/tests

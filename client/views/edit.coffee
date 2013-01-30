@@ -79,7 +79,7 @@ do ->
       editorState.file = file
       editor = ace.edit("editor")
 
-      sharejs.open file._id, 'text2', "http://#{settings.bolideHost}:#{settings.bolidePort}/channel", (error, doc) ->
+      sharejs.open file._id, 'text2', settings.bolideUrl, (error, doc) ->
         editorState.doc?.detach_ace()
         editorState.doc = doc
         if mode = file.aceMode()

@@ -28,8 +28,7 @@ class EditorState
 
   getFileUrl : ->
     settings = Settings.findOne()
-    url = "http://#{settings.httpHost}:#{settings.httpPort}"
-    url += "/project/#{Projects.findOne()._id}/file/#{@file._id}"
+    url = settings.azkabanUrl + "/project/#{Projects.findOne()._id}/file/#{@file._id}"
     console.log url
     url
 
