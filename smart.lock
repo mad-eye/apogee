@@ -28,7 +28,7 @@
       "meteor-mocha-web": {
         "git": "git://github.com/mad-eye/meteor-mocha-web.git#18234a1b62cf1e4b16825d519a1f949ef00e8616",
         "branch": "master",
-        "commit": "1edfc84969fcdd3edc05c4a31668199276594ab5"
+        "commit": "eae1b982016f8acecba79b76a17abe37b0e1957e"
       },
       "deps-extensions": {
         "git": "https://github.com/tmeasday/meteor-deps-extensions.git",
