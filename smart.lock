@@ -11,7 +11,7 @@
         "path": "./.madeye-common"
       },
       "meteor-client-tester": {
-        "git": "git://github.com/rissem/meteor-client-tester.git",
+        "git": "git://github.com/mad-eye/meteor-mocha-web.git",
         "branch": "master"
       },
       "deps-extensions": {}
@@ -26,9 +26,9 @@
         "path": "./.madeye-common"
       },
       "meteor-client-tester": {
-        "git": "git://github.com/rissem/meteor-client-tester.git",
+        "git": "git://github.com/mad-eye/meteor-mocha-web.git",
         "branch": "master",
-        "commit": "18234a1b62cf1e4b16825d519a1f949ef00e8616"
+        "commit": "702d14087e9e8ad21620225689b80011feae4eb3"
       },
       "deps-extensions": {
         "git": "https://github.com/tmeasday/meteor-deps-extensions.git",
