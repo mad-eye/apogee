@@ -94,7 +94,8 @@ do ->
           doc.emit "cursors"
         else
           editor.setValue "Loading..."
-          editor.setReadOnly true
+          #TODO figure out why this sometimes gets stuck on..
+          #editor.setReadOnly true
           editorState.fetchBody (body) ->
             if body?
               doc.attach_ace editor
