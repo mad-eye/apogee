@@ -9,7 +9,7 @@
       "path": "./.madeye-common"
     },
     "meteor-mocha-web": {
-      "git": "git://github.com/mad-eye/meteor-mocha-web.git#18234a1b62cf1e4b16825d519a1f949ef00e8616"
+      "git": "git://github.com/mad-eye/meteor-mocha-web.git"
     },
     "deps-extensions": {}
   }
