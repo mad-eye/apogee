@@ -9,7 +9,7 @@
       "path": "./.madeye-common"
     },
     "meteor-client-tester": {
-      "git": "git://github.com/rissem/meteor-client-tester.git"
+      "git": "git://github.com/mad-eye/meteor-mocha-web.git"
     },
     "deps-extensions": {}
   }
