@@ -14,5 +14,5 @@ router
 madeye-common
 accounts-ui-unstyled
 http
-meteor-client-tester
 email
+meteor-mocha-web
