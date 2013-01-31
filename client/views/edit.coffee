@@ -2,6 +2,7 @@
 # https://github.com/meteor/meteor/pull/85
 
 do ->
+
   fileTree = new Madeye.FileTree()
 
   projectIsClosed = ->
@@ -16,6 +17,20 @@ do ->
     message: 'The project has been closed on the client.'
     uncloseable: true
 
+  #Find how many files the server things, so we know if we have them all.
+  Meteor.autosubscribe ->
+    Meteor.call 'getFileCount', Session.get('projectId'), (err, count)->
+      if err then console.error err; return
+      Session.set 'fileCount', count
+
+  Template.projectStatus.projectIsLoading = ->
+    return not (Projects.findOne()? || Session.equals 'fileCount', Files.collection.find().count())
+
+  Template.projectStatus.projectLoadingAlert = ->
+    level: 'info'
+    title: 'Project is Loading'
+    message: "...we'll be ready in a moment!"
+    uncloseable: true
 
   Template.fileTree.files = ->
     fileTree.setFiles Files.collection.find()
@@ -30,6 +45,7 @@ do ->
       clazz += " file"
     clazz += " level" + this.depth
     clazz += " selected" if this.isSelected()
+    clazz += " modified" if this.modified
     return clazz
 
   Template.fileTree.projectName = ->
@@ -52,47 +68,73 @@ do ->
   Meteor.startup ->
     editorState = new EditorState "editor"
 
-  Meteor.autorun ->
-    console.log "AUTORUN"
-    return unless Session.equals("editorRendered", true)
-    return if Session.equals "editorFileId", editorState?.file?._id
-    settings = Settings.findOne()
-    file = Files.findOne {_id: Session.get "editorFileId"}
-    return unless file
-    editorState.file = file
-    editor = ace.edit("editor")
-    #TODO: Switch to using sharejs.openExisting
-    #XXX this relies on a custom hacked version of sharejs.open that is not the same
-    #    as the one documented on the sharejs website
-    sharejs.open file._id, 'text', "http://#{settings.bolideHost}:#{settings.bolidePort}/channel", (error, doc) ->
-      if mode = file.aceMode()
-        jQuery.getScript "/ace/mode-#{mode}.js", =>
-          Mode = require("ace/mode/#{mode}").Mode
-          editor.getSession().setMode(new Mode())
+    Meteor.autorun ->
+      console.log "AUTORUN"
+      return unless Session.equals("editorRendered", true)
+      settings = Settings.findOne()
+      return unless settings?
+      return if Session.equals "editorFileId", editorState?.file?._id
+      file = Files.findOne {_id: Session.get "editorFileId"}
+      return unless file
+      editorState.file = file
+      editor = ace.edit("editor")
 
-      if doc?
-        doc.attach_ace editor
-        doc.on 'change', (op) ->
-          file.update {modified: true}
-      else
-        console.log "docless"
-        editorState.fetchBody (body) ->
-          if body?
-            sharejs.open file._id, 'text', "http://#{settings.bolideHost}:#{settings.bolidePort}/channel", (error, doc) ->
+      sharejs.open file._id, 'text2', settings.bolideUrl, (error, doc) ->
+        editorState.doc?.detach_ace()
+        editorState.doc = doc
+        if mode = file.aceMode()
+          jQuery.getScript "/ace/mode-#{mode}.js", =>
+            Mode = require("ace/mode/#{mode}").Mode
+            editor.getSession().setMode(new Mode())
+
+        if doc.version > 0
+          doc.attach_ace editor
+          doc.on 'change', (op) ->
+            file.update {modified: true}
+          doc.emit "cursors"
+        else
+          editor.setValue "Loading..."
+          editor.setReadOnly true
+          editorState.fetchBody (body) ->
+            if body?
               doc.attach_ace editor
               editor.setValue body
               editor.clearSelection()
               doc.on 'change', (op) ->
                 file.update {modified: true}
+              doc.emit "cursors"
 
   Template.editorChrome.events
     'click button#saveButton' : (event) ->
       console.log "clicked save button"
-      editorState.save()
+      Session.set "saving", true
+      editorState.save (err) ->
+        if err
+          #Handle error better.
+          console.error "Error in save request:", err
+        else
+          Session.set "saving", false
 
   Template.editorChrome.editorFileName = ->
     fileId = Session.get "editorFileId"
     if fileId then Files.findOne(fileId)?.path else "Select file..."
+
+  Template.editorChrome.saveButtonMessage = ->
+    fileId = Session.get "editorFileId"
+    file = Files.findOne(fileId) if fileId?
+    unless file?.modified
+      "Saved"
+    else if projectIsClosed()
+      "Offline"
+    else if Session.equals "saving", true
+      "Saving..."
+    else
+      "Save Locally"
+
+
+  Template.editorChrome.showSaveSpinner = ->
+    Session.equals "saving", true
+
 
   Template.editor.editorFileId = ->
     Session.get "editorFileId"

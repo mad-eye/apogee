@@ -12,6 +12,9 @@
 </template>
 
 <template name="projectStatus">
+  {{#if projectIsLoading}}
+    {{> alert projectLoadingAlert}}
+  {{/if}}
   {{#if projectIsClosed}}
     {{> alert projectClosedError}}
   {{/if}}
@@ -32,7 +35,10 @@
   <div id="editorFileName"><h4>{{editorFileName}}</h4></div>
   {{#if editorFileId}}
     <div id="buttonRow">
-      <button id="saveButton" class="btn btn-primary {{buttonDisabled}}" {{buttonDisabled}}>Save</button>
+      <button id="saveButton" class="btn btn-primary {{buttonDisabled}}" {{buttonDisabled}}>{{saveButtonMessage}}</button>
+      {{#if showSaveSpinner}}
+        <img id="saveButtonSpinner" src="/images/ajax-loader.gif" alt="Loading..." />
+      {{/if}}
     </div>
   {{/if}}
 </template>

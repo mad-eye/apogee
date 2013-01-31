@@ -28,8 +28,7 @@ class EditorState
 
   getFileUrl : ->
     settings = Settings.findOne()
-    url = "http://#{settings.httpHost}:#{settings.httpPort}"
-    url += "/project/#{Projects.findOne()._id}/file/#{@file._id}"
+    url = settings.azkabanUrl + "/project/#{Projects.findOne()._id}/file/#{@file._id}"
     console.log url
     url
 
@@ -40,7 +39,8 @@ class EditorState
       else
         callback JSON.parse(response.content).body
 
-  save : ->
+  #callback: (err) ->
+  save : (callback) ->
     self = this #The => doesn't work for some reason with the PUT callback.
     contents = @getEditorBody()
     return unless @file.modified
@@ -53,5 +53,6 @@ class EditorState
       else
         #XXX: Are we worried about race conditions if there were modifications after the save button was pressed?
         self.file.update {modified: false}
+      callback(error)
 
 

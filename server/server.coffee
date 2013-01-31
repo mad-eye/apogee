@@ -30,3 +30,8 @@ NewsletterEmails.collection.allow(
 Meteor.publish "settings", ->
   settings = Settings.collection.find()
 
+#Used for loading message.
+Meteor.methods
+  getFileCount: (projectId)->
+    return Files.collection.find(projectId: projectId).count()
+

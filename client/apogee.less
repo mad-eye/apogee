@@ -53,6 +53,18 @@ span.code {
   }
 }
 
+footer {
+  border-top: 1px solid @textColorDefault;
+  margin-top: 2*@baseSpacing;
+
+  ul.nav-footer li {
+    float: left;
+    margin-left: @baseSpacing;
+
+  }
+
+}
+
 .sell {
     /*margin-left: 0px;*/
 }
@@ -188,6 +200,11 @@ ul.fileTree {
 #buttonRow {
   margin-bottom: @baseSpacing;
 
+}
+
+.btn-primary.disabled, .btn-primary[disabled] {
+  background-color: #0044AA;
+  color: #CCCCCC;
 }
 
 #addFiles {
