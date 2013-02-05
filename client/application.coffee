@@ -6,6 +6,7 @@ Meteor.Router.add
     'edit'
   '/login': "login",
   '/tests': "tests",
+  '/tos': 'tos',
   '*': "missing"
 
 Meteor.autosubscribe ->
