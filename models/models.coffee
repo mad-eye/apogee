@@ -13,7 +13,7 @@ class Meteor.Model
       if @_id
         self.collection.update @_id, {$set: @updateJSON()}
       else
-        self.collection.insert @
+        @_id = self.collection.insert @
 
     @modelClass.prototype.update = (fields)->
       dirty = false
