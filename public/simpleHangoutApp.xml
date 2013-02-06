@@ -14,11 +14,11 @@
         src="" style="width:100%;"></iframe>
 <script>var appData = gadgets.views.getParams()['appData'];
 console.log("appData", appData);
-var projectId = appData;
+var projectUrl = appData;
 var theIFrame = document.getElementById("theIFrame");
 if (appData){
-    gapi.hangout.data.setValue("projectId", appData);
-    theIFrame.src = "http://madeye.io/edit/" + appData;
+    gapi.hangout.data.setValue("projectUrl", appData);
+    theIFrame.src = appData;
     $(frames[0].window).ready(function(){
         console.log("setting iframe height", document.height + "px");
 	theIFrame.style.height = document.height + "px";
@@ -30,8 +30,8 @@ else {
         var state = gapi.hangout.data.getState();
         if (state){
             clearInterval(intervalId);
-            projectId = state.projectId
-            theIFrame.src = "http://madeye.io/edit/" + projectId;
+            projectUrl = state.projectUrl
+            theIFrame.src = projectUrl;
             $(frames[0].window).ready(function(){
                 console.log("setting iframe height", document.height + "px");
                 theIFrame.style.height = document.height + "px";
