@@ -79,7 +79,7 @@ do ->
       editorState.file = file
       editor = ace.edit("editor")
 
-      sharejs.open file._id, 'text2', settings.bolideUrl, (error, doc) ->
+      sharejs.open file._id, 'text2', "#{settings.bolideUrl}/channel", (error, doc) ->
         editorState.doc?.detach_ace()
         editorState.doc = doc
         if mode = file.aceMode()
@@ -96,14 +96,13 @@ do ->
           editor.setValue "Loading..."
           #TODO figure out why this sometimes gets stuck on..
           #editor.setReadOnly true
-          editorState.fetchBody (body) ->
-            if body?
-              doc.attach_ace editor
-              editor.setValue body
-              editor.clearSelection()
-              doc.on 'change', (op) ->
-                file.update {modified: true}
-              doc.emit "cursors"
+
+          #TODO handle errors
+          editorState.fetchBody ->
+            doc.attach_ace editor
+            doc.on 'change', (op) ->
+              file.update {modified: true}
+            doc.emit "cursors"
 
   Template.editorChrome.events
     'click button#saveButton' : (event) ->
