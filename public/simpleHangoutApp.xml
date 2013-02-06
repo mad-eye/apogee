@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
         <!-- Copyright 2012 Google Inc. All Rights Reserved -->
     	<Module>
-    	  <ModulePrefs title="Face Movement" height="200" width="550">
+    	  <ModulePrefs title="Face Movement">
     	  <Require feature="rpc"/>
           <Require feature="views" />
     	</ModulePrefs>
@@ -10,21 +10,19 @@
 
 <script src="https://talkgadget.google.com/hangouts/_/api/hangout.js?v=1.2" ></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-<iframe id="theIFrame" frameborder="no" scrolling="yes" 
-        src="" style="width:100%;"></iframe>
+
+<div style="width:100%; height:100%">
+<iframe id="theIFrame" frameborder="no" scrolling="yes" src="" style="width:100%; height:100%"></iframe>
+</div>
+
 <script>var appData = gadgets.views.getParams()['appData'];
-console.log("appData", appData);
 var projectUrl = appData;
 var theIFrame = document.getElementById("theIFrame");
 if (appData){
     gapi.hangout.data.setValue("projectUrl", appData);
     theIFrame.src = appData;
-    $(frames[0].window).ready(function(){
-        console.log("setting iframe height", document.height + "px");
-	theIFrame.style.height = document.height + "px";
-    });
 }
-//this feels really hacky..i hope there's a better way
+//this feels a bit hacky..i hope there's a better way to know when state object is ready
 else {
     var intervalId = setInterval(function(){
         var state = gapi.hangout.data.getState();
@@ -32,10 +30,6 @@ else {
             clearInterval(intervalId);
             projectUrl = state.projectUrl
             theIFrame.src = projectUrl;
-            $(frames[0].window).ready(function(){
-                console.log("setting iframe height", document.height + "px");
-                theIFrame.style.height = document.height + "px";
-            });
         }
     }, 200);
 }
