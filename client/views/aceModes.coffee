@@ -1,12 +1,14 @@
-Madeye.ACE_MODES = 
+Madeye.ACE_MODES =
 #abap
 #asciidoc
 #c9search
-#c
-#clojure
+  c: "c_cpp"
+  cc: "c_cpp"
+  cpp: "c_cpp"
+  clj: "clojure"
   coffee: "coffee"
 #coldfusion
-#csharp
+  cs: "csharp"
   css: "css"
 #dart
 #diff
@@ -14,45 +16,50 @@ Madeye.ACE_MODES =
 #dot
 #glsl
 #golang
-#groovy
-#haml
+  groovy: "groovy"
+  gvy: "groovy"
+  gy: "groovy"
+  gsh: "groovy"
+  haml: "haml"
 #haxe
   html: "html"
-#jade
+  jade: "jade"
   java: "java"
   js: "javascript"
   json: "json"
   jsp: "jsp"
 #jsx
-#latex
+  tex: "latex"
   less: "less"
 #liquid
-#lisp
-#lua
+  lisp: "lisp"
+  lua: "lua"
 #luapage
 #lucene
 #makefile
   md: "markdown"
-#objectivec
-#ocaml
+  m: "objectivec"
+  h: "objectivec"
+  ocaml: "ocaml"
+  ml: "ocaml"
+  mli: "ocaml"
   pl: "perl"
 #pgsql
   php: "php"
 #powershell
-#python
-#r
+  py: "python"
+  r: "r"
 #rdoc
 #rhtml
   rb: "ruby"
 #scad
-#scala
+  scala: "scala"
 #scss
   sh: "sh"
   sql: "sql"
 #stylus
 #svg
 #tcl
-#tex
   txt: "text"
 #textile
 #typescript

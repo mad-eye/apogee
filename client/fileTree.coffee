@@ -45,7 +45,7 @@ _.extend Madeye.File.prototype,
     if tokens.length > 1 then tokens.pop() else null
   
   aceMode: ->
-    Madeye.ACE_MODES[@extension()]
+    Madeye.ACE_MODES[@extension()?.toLowerCase()]
 
 _.extend Madeye.FileTree.prototype,
   isVisible: (file)->
