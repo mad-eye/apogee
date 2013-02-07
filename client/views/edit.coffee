@@ -96,7 +96,6 @@ do ->
           editor.setValue "Loading..."
           #TODO figure out why this sometimes gets stuck on..
           #editor.setReadOnly true
-
           #TODO handle errors
           editorState.fetchBody ->
             doc.attach_ace editor
