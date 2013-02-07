@@ -7,6 +7,7 @@ Meteor.Router.add
   '/login': "login",
   '/tests': "tests",
   '/tos': 'tos',
+  '/faq': 'faq',
   '*': "missing"
 
 Meteor.autosubscribe ->
