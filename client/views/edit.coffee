@@ -69,7 +69,6 @@ do ->
     editorState = new EditorState "editor"
 
     Meteor.autorun ->
-      console.log "AUTORUN"
       return unless Session.equals("editorRendered", true)
       settings = Settings.findOne()
       return unless settings?
@@ -161,7 +160,9 @@ do ->
     $("#editor").width(newWidth)
     ace.edit("editor").resize()
 
-  $(window).resize ->
-    resizeEditor()
+  Meteor.autorun ->
+    return unless Session.equals "editorRendered", true
+    $(window).resize ->
+      resizeEditor()
 
 
