@@ -115,7 +115,7 @@ do ->
 
   Template.editorChrome.editorFileName = ->
     fileId = Session.get "editorFileId"
-    if fileId then Files.findOne(fileId)?.path else "Select file..."
+    if fileId then "#{Files.findOne(fileId)?.path}#{shareJSON.get()}" else "Select file..."
 
   Template.editorChrome.saveButtonMessage = ->
     fileId = Session.get "editorFileId"
