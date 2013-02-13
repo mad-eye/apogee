@@ -1,18 +1,27 @@
 class ShareJSON 
-  constructor: ->
-    @contexts = new Meteor.deps._ContextSet()
+  constructor:(docId) ->
+#    @keyDeps = new Meteor.deps._ContextSet()
+    settings = Settings.findOne()
+    sharejs.open docId, "json", "#{settings.bolideUrl}/channel", (error, doc) =>
+      @doc = doc
+  #      @doc.onChildOp @listener
   
-  get: ->
-    @contexts.addCurrentContext()
-    @value
+  listener: ()->
 
-  set: (value)->
-    if value != @value
-      @value = value
-      @contexts.invalidateAll()
+  get: (key)->
+#    @keyDeps.addCurrentContext()
+    @doc.get()[key]
 
-shareJSON = new ShareJSON
-shareJSON.set "yoyoyo"
+  set: (key, value)->
+    if value != @doc.get()[key]
+      subdoc = @doc.at(key)
+      subdoc.set value
+#      @contexts.invalidateAll()
 
-Meteor.autorun ->
-  console.log shareJSON.get()
+Meteor.startup ->
+  return unless Settings.findOne()
+  shareJSON = new ShareJSON "hello"
+  shareJSON.set "yoyoyo", "fascinating"
+
+  Meteor.autorun ->
+    console.log shareJSON.get("yoyoyo")
