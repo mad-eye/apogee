@@ -32,12 +32,37 @@ class EditorState
     console.log url
     url
 
-  fetchBody : (callback) ->
-    Meteor.http.get @getFileUrl(), (error,response)->
-      if error
-        handleNetworkError error, response
+  loadFile: (file, type, bolideUrl) ->
+    sharejs.open file._id, type, bolideUrl, (error, doc) =>
+      editor = @getEditor()
+      @doc?.detach_ace?()
+      @doc = doc
+      if mode = file.aceMode()
+        jQuery.getScript "/ace/mode-#{mode}.js", =>
+          Mode = require("ace/mode/#{mode}").Mode
+          editor.getSession().setMode(new Mode())
+
+      if doc.version > 0
+        doc.attach_ace editor
+        doc.on 'change', (op) ->
+          file.update {modified: true}
+        doc.emit "cursors"
       else
-        callback JSON.parse(response.content).body
+        editor.setValue "Loading..."
+        #TODO figure out why this sometimes gets stuck on..
+        #editor.setReadOnly true
+        #TODO handle errors
+        @file = file
+        Meteor.http.get @getFileUrl(), (error,response) =>
+          if error
+            handleNetworkError error, response
+          else
+            if doc == @doc #Safety for multiple loadFiles running simultaneously
+              doc.attach_ace @getEditor()
+              doc.on 'change', (op) ->
+                file.update {modified: true}
+              doc.emit "cursors" #TODO: This should be handled in ShareJS
+
 
   #callback: (err) ->
   save : (callback) ->
