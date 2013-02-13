@@ -15,7 +15,8 @@
         "branch": "master"
       },
       "meteor-sharejs": {
-        "path": "../../meteor-sharejs"
+        "git": "https://github.com/mad-eye/meteor-sharejs.git",
+        "branch": "master"
       },
       "deps-extensions": {}
     },
@@ -34,7 +35,9 @@
         "commit": "c534e901f9e5423240ab9c2de121890999d68bbb"
       },
       "meteor-sharejs": {
-        "path": "../../meteor-sharejs"
+        "git": "https://github.com/mad-eye/meteor-sharejs.git",
+        "branch": "master",
+        "commit": "c6fb6b630f8799734d8374a334b49b9094bd9eef"
       },
       "deps-extensions": {
         "git": "https://github.com/tmeasday/meteor-deps-extensions.git",
