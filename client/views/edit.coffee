@@ -75,7 +75,7 @@ do ->
       return if Session.equals "editorFileId", editorState?.file?._id
       file = Files.findOne {_id: Session.get "editorFileId"}
       return unless file
-      editorState.loadFile file, 'text2', "#{settings.bolideUrl}/channel"
+      editorState.loadFile file, "#{settings.bolideUrl}/channel"
 
   Template.editorChrome.events
     'click button#saveButton' : (event) ->

@@ -32,8 +32,8 @@ class EditorState
     console.log url
     url
 
-  loadFile: (file, type, bolideUrl) ->
-    sharejs.open file._id, type, bolideUrl, (error, doc) =>
+  loadFile: (file, bolideUrl) ->
+    sharejs.open file._id, "text2", bolideUrl, (error, doc) =>
       editor = @getEditor()
       @doc?.detach_ace?()
       @doc = doc
