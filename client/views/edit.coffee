@@ -75,32 +75,7 @@ do ->
       return if Session.equals "editorFileId", editorState?.file?._id
       file = Files.findOne {_id: Session.get "editorFileId"}
       return unless file
-      editorState.file = file
-      editor = ace.edit("editor")
-
-      sharejs.open file._id, 'text2', "#{settings.bolideUrl}/channel", (error, doc) ->
-        editorState.doc?.detach_ace()
-        editorState.doc = doc
-        if mode = file.aceMode()
-          jQuery.getScript "/packages/meteor-sharejs/mode-#{mode}.js", =>
-            Mode = require("ace/mode/#{mode}").Mode
-            editor.getSession().setMode(new Mode())
-
-        if doc.version > 0
-          doc.attach_ace editor
-          doc.on 'change', (op) ->
-            file.update {modified: true}
-          doc.emit "cursors"
-        else
-          editor.setValue "Loading..."
-          #TODO figure out why this sometimes gets stuck on..
-          #editor.setReadOnly true
-          #TODO handle errors
-          editorState.fetchBody ->
-            doc.attach_ace editor
-            doc.on 'change', (op) ->
-              file.update {modified: true}
-            doc.emit "cursors"
+      editorState.loadFile file, "#{settings.bolideUrl}/channel"
 
   Template.editorChrome.events
     'click button#saveButton' : (event) ->
