@@ -38,6 +38,7 @@ class EditorState
       editor = @getEditor()
       @doc?.detach_ace?()
       @doc = doc
+      @file = file
       if mode = file.aceMode()
         jQuery.getScript "/packages/meteor-sharejs/mode-#{mode}.js", =>
           Mode = require("ace/mode/#{mode}").Mode
@@ -52,7 +53,6 @@ class EditorState
         editor.setValue "Loading..."
         #TODO figure out why this sometimes gets stuck on..
         #editor.setReadOnly true
-        @file = file
         Meteor.http.get @getFileUrl(), (error,response) =>
           if error
             handleNetworkError error, response
