@@ -34,6 +34,7 @@ class EditorState
 
   loadFile: (file, bolideUrl) ->
     sharejs.open file._id, "text2", bolideUrl, (error, doc) =>
+      console.error error if error?
       editor = @getEditor()
       @doc?.detach_ace?()
       @doc = doc
@@ -51,7 +52,6 @@ class EditorState
         editor.setValue "Loading..."
         #TODO figure out why this sometimes gets stuck on..
         #editor.setReadOnly true
-        #TODO handle errors
         @file = file
         Meteor.http.get @getFileUrl(), (error,response) =>
           if error
