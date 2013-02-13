@@ -11,6 +11,9 @@
     "meteor-mocha-web": {
       "git": "git://github.com/mad-eye/meteor-mocha-web.git"
     },
+    "meteor-sharejs": {
+      "path": "../../meteor-sharejs"
+    },
     "deps-extensions": {}
   }
 }

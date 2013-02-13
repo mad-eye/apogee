@@ -8,27 +8,33 @@
     "basePackages": {
       "router": {},
       "madeye-common": {
-        "path": "./.madeye-common"
+        "path": ".madeye-common"
       },
       "meteor-mocha-web": {
         "git": "git://github.com/mad-eye/meteor-mocha-web.git",
         "branch": "master"
+      },
+      "meteor-sharejs": {
+        "path": "../../meteor-sharejs"
       },
       "deps-extensions": {}
     },
     "packages": {
       "router": {
         "git": "https://github.com/tmeasday/meteor-router.git",
-        "tag": "v0.3.4",
-        "commit": "8f0d5303de5b93771e91f21f818be27358c2fb30"
+        "tag": "v0.3.5",
+        "commit": "e8e63db2411204f0a6589b74dd591babbfb2da1a"
       },
       "madeye-common": {
-        "path": "./.madeye-common"
+        "path": ".madeye-common"
       },
       "meteor-mocha-web": {
         "git": "git://github.com/mad-eye/meteor-mocha-web.git",
         "branch": "master",
-        "commit": "a602378a93c0f2cf3ec0b77ddb78c8bc983e511f"
+        "commit": "c534e901f9e5423240ab9c2de121890999d68bbb"
+      },
+      "meteor-sharejs": {
+        "path": "../../meteor-sharejs"
       },
       "deps-extensions": {
         "git": "https://github.com/tmeasday/meteor-deps-extensions.git",
