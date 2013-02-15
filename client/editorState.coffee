@@ -31,7 +31,6 @@ class EditorState
   getFileUrl : ->
     settings = Settings.findOne()
     url = settings.azkabanUrl + "/project/#{Projects.findOne()._id}/file/#{@file._id}"
-    console.log url
     url
 
   loadFile: (file, bolideUrl) ->
@@ -39,7 +38,7 @@ class EditorState
       console.error error if error?
       editor = @getEditor()
       @doc?.detach_ace?()
-      @doc = doc
+        @doc = doc
       @file = file
       if mode = file.aceMode()
         Mode = undefined
@@ -47,7 +46,6 @@ class EditorState
           Mode = require("ace/mode/#{mode}").Mode
           editor.getSession().setMode(new Mode())
         catch e
-          console.log(e)
           jQuery.getScript "/ace/mode-#{mode}.js", =>
             Mode = require("ace/mode/#{mode}").Mode
             editor.getSession().setMode(new Mode())
