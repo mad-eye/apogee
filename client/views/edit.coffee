@@ -80,6 +80,12 @@ do ->
       return if Session.equals "editorFileId", editorState?.file?._id
       file = Files.findOne {_id: Session.get "editorFileId"}
       return unless file
+      if file.isBinary
+        displayAlert
+          level: "error"
+          title: "Unable to load binary file"
+          message: file.path
+        return 
       editorState.loadFile file, "#{settings.bolideUrl}/channel"
 
   Template.editorChrome.events
