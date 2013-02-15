@@ -38,7 +38,7 @@ class EditorState
       console.error error if error?
       editor = @getEditor()
       @doc?.detach_ace?()
-        @doc = doc
+      @doc = doc
       @file = file
       if mode = file.aceMode()
         Mode = undefined
