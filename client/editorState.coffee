@@ -21,7 +21,9 @@ class EditorState
   constructor: (@editorId)->
 
   getEditor: ->
-    ace.edit @editorId
+    editor = ace.edit @editorId
+    editor.setTheme "ace/theme/eclipse"
+    return editor
 
   getEditorBody : ->
     @getEditor()?.getValue()
@@ -40,9 +42,15 @@ class EditorState
       @doc = doc
       @file = file
       if mode = file.aceMode()
-        jQuery.getScript "/ace/mode-#{mode}.js", =>
+        Mode = undefined
+        try
           Mode = require("ace/mode/#{mode}").Mode
           editor.getSession().setMode(new Mode())
+        catch e
+          console.log(e)
+          jQuery.getScript "/ace/mode-#{mode}.js", =>
+            Mode = require("ace/mode/#{mode}").Mode
+            editor.getSession().setMode(new Mode())
 
       if doc.version > 0
         doc.attach_ace editor
