@@ -40,7 +40,7 @@ class EditorState
       @doc = doc
       @file = file
       if mode = file.aceMode()
-        jQuery.getScript "/packages/meteor-sharejs/mode-#{mode}.js", =>
+        jQuery.getScript "/ace/mode-#{mode}.js", =>
           Mode = require("ace/mode/#{mode}").Mode
           editor.getSession().setMode(new Mode())
 
