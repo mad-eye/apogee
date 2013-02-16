@@ -85,7 +85,7 @@ do ->
           level: "error"
           title: "Unable to load binary file"
           message: file.path
-        return 
+        return
       editorState.loadFile file, "#{settings.bolideUrl}/channel"
 
   Template.editorChrome.events

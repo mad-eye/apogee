@@ -4,13 +4,10 @@
 #Takes httpResponse
 makeNetworkError = (response) ->
   return null unless response?
-  error = JSON.parse(response?.content)?.error
-  error ?=
-    type: response.statusCode
-    message: response.error?.message
-  error.title = error.type #TODO: for now.  Eventually make it more understandable
+  error = JSON.parse(response?.content)?.error ? {}
+  error.message ?= response.error?.message
+  error.title ?= error.type ? response.statusCode #TODO: for now.  Eventually make it more understandable
   error.level = 'error'
-  console.log "Made error", error
   return error
 
 handleNetworkError = (error, response) ->
