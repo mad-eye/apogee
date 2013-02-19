@@ -51,6 +51,7 @@ class EditorState
         doc.attach_ace editor
         doc.on 'change', (op) ->
           file.update {modified: true}
+        editor.navigateFileStart() unless doc.cursor
         doc.emit "cursors"
       else
         editor.setValue "Loading..."
