@@ -81,6 +81,10 @@ do ->
       if Session.get "editorFilePath"
         file = Files.findOne {path: Session.get "editorFilePath"}
       return unless file
+      #TODO less hacky way to do this?
+      #selectedFilePath?
+      Session.set "selectedFileId", file._id
+      file.openParents()
       if file.isBinary
         displayAlert
           level: "error"

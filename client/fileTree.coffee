@@ -47,6 +47,12 @@ _.extend Madeye.File.prototype,
   aceMode: ->
     Madeye.ACE_MODES[@extension()?.toLowerCase()]
 
+  openParents: ->
+    if @parentPath
+      parent = Files.findOne({path: @parentPath})
+      parent.open()
+      parent.openParents()
+
 _.extend Madeye.FileTree.prototype,
   isVisible: (file)->
     parent = @findByPath(file.parentPath) if file.parentPath?
