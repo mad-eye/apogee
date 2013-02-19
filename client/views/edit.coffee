@@ -77,8 +77,9 @@ do ->
       return unless Session.equals("editorRendered", true)
       settings = Settings.findOne()
       return unless settings?
-      return if Session.equals "editorFileId", editorState?.file?._id
-      file = Files.findOne {_id: Session.get "editorFileId"}
+      return if Session.equals "editorFilePath", editorState?.file?.path
+      if Session.get "editorFilePath"
+        file = Files.findOne {path: Session.get "editorFilePath"}
       return unless file
       if file.isBinary
         displayAlert
@@ -100,12 +101,12 @@ do ->
           Session.set "saving", false
 
   Template.editorChrome.editorFileName = ->
-    fileId = Session.get "editorFileId"
-    if fileId then Files.findOne(fileId)?.path else "Select file..."
+    filePath = Session.get "editorFilePath"
+    if filePath then Files.findOne({path: filePath})?.path else "Select file..."
 
   Template.editorChrome.saveButtonMessage = ->
-    fileId = Session.get "editorFileId"
-    file = Files.findOne(fileId) if fileId?
+    filePath = Session.get "editorFilePath"
+    file = Files.findOne(filePath) if filePath?
     unless file?.modified
       "Saved"
     else if projectIsClosed()
@@ -121,15 +122,15 @@ do ->
 
 
   Template.editor.editorFileId = ->
-    Session.get "editorFileId"
+    Files.findOne({path: Session.get "editorFilePath"})?._id
 
   Template.editorChrome.editorFileId = ->
-    Session.get "editorFileId"
+    Files.findOne({path: Session.get "editorFilePath"})?._id
 
   #FIXME: If a connection is re-established, the file is considered modified==false.
   Template.editorChrome.buttonDisabled = ->
-    fileId = Session.get "editorFileId"
-    file = Files.findOne(fileId) if fileId?
+    filePath = Session.get "editorFilePath"
+    file = Files.findOne({path: filePath}) if filePath?
     if !file?.modified or Session.equals("saving", true) or projectIsClosed()
       "disabled"
     else

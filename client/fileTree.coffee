@@ -20,7 +20,7 @@ _.extend Madeye.File.prototype,
   select: ->
     Session.set("selectedFileId", @_id)
     if !@isDir
-      Session.set("editorFileId", @_id)
+      Session.set("editorFilePath", @path)
     else
       @toggle()
 
