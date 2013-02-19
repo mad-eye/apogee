@@ -84,8 +84,8 @@ do ->
       return unless file
       #TODO less hacky way to do this?
       #selectedFilePath?
-#      Session.set "selectedFileId", file._id
-#      file.openParents()
+      Session.set "selectedFileId", file._id
+      file.openParents()
       if file.isBinary
         displayAlert
           level: "error"
@@ -106,8 +106,10 @@ do ->
           Session.set "saving", false
 
   Template.editorChrome.editorFileName = ->
-    filePath = Session.get "editorFilePath"
-    if filePath then Files.findOne({path: filePath})?.path else "Select file..."
+    Session.get "editorFilePath"
+
+  Template.editor.editorFileName = ->
+    Session.get "editorFilePath"
 
   Template.editorChrome.saveButtonMessage = ->
     filePath = Session.get "editorFilePath"
