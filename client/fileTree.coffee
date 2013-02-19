@@ -20,7 +20,7 @@ _.extend Madeye.File.prototype,
   select: ->
     Session.set("selectedFileId", @_id)
     if !@isDir
-      Session.set("editorFilePath", @path)
+      Meteor.Router.to("/edit/#{@projectId}/#{@path}")
     else
       @toggle()
 
