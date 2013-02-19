@@ -5,9 +5,6 @@
 #themes = ["ace/theme/ambiance", "ace/theme/github", "ace/theme/textmate", "ace/theme/chaos", "ace/theme/idle_fingers", "ace/theme/tomorrow", "ace/theme/chrome", "ace/theme/kr", "ace/theme/tomorrow_night", "ace/theme/clouds", "ace/theme/merbivore", "ace/theme/tomorrow_night_blue", "ace/theme/clouds_midnight", "ace/theme/merbivore_soft", "ace/theme/tomorrow_night_bright", "ace/theme/cobalt", "ace/theme/mono_industrial", "ace/theme/tomorrow_night_eighties", "ace/theme/crimson_editor", "ace/theme/monokai", "ace/theme/twilight", "ace/theme/dawn", "ace/theme/pastel_on_dark", "ace/theme/vibrant_ink", "ace/theme/dreamweaver", "ace/theme/solarized_dark", "ace/theme/xcode", "ace/theme/eclipse", "ace/theme/solarized_light"]
 #currentTheme = themes.pop(); ace.edit("editor").setTheme(currentTheme); console.log("current theme is", currentTheme);
 
-
-editorState = null
-
 do ->
 
   fileTree = new Madeye.FileTree()
@@ -71,6 +68,8 @@ do ->
     Session.set("editorRendered", true)
     resizeEditor()
 
+  editorState = null
+
   Meteor.startup ->
     editorState = new EditorState "editor"
 
@@ -105,10 +104,7 @@ do ->
         else
           Session.set "saving", false
 
-  Template.editorChrome.editorFileName = ->
-    Session.get "editorFilePath"
-
-  Template.editor.editorFileName = ->
+  Handlebars.registerHelper "editorFileName", ->
     Session.get "editorFilePath"
 
   Template.editorChrome.saveButtonMessage = ->
@@ -126,13 +122,6 @@ do ->
 
   Template.editorChrome.showSaveSpinner = ->
     Session.equals "saving", true
-
-
-  Template.editor.editorFileId = ->
-    Files.findOne({path: Session.get "editorFilePath"})?._id
-
-  Template.editorChrome.editorFileId = ->
-    Files.findOne({path: Session.get "editorFilePath"})?._id
 
   #FIXME: If a connection is re-established, the file is considered modified==false.
   Template.editorChrome.buttonDisabled = ->

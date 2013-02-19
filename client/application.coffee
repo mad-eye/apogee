@@ -3,7 +3,6 @@
 editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?([0-9]*)?/
 
 Meteor.Router.add editRegex, (projectId, filePath, lineNumber)->
-  console.log projectId, filePath, lineNumber
   Session.set 'projectId', projectId.toString()
   Session.set "editorFilePath", filePath
   Session.set "gotoLine", lineNumber
