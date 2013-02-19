@@ -20,7 +20,7 @@ _.extend Madeye.File.prototype,
   select: ->
     Session.set("selectedFileId", @_id)
     if !@isDir
-      Session.set("editorFileId", @_id)
+      Meteor.Router.to("/edit/#{@projectId}/#{@path}")
     else
       @toggle()
 
@@ -46,6 +46,12 @@ _.extend Madeye.File.prototype,
   
   aceMode: ->
     Madeye.ACE_MODES[@extension()?.toLowerCase()]
+
+  openParents: ->
+    if @parentPath
+      parent = Files.findOne({path: @parentPath})
+      parent.open()
+      parent.openParents()
 
 _.extend Madeye.FileTree.prototype,
   isVisible: (file)->
