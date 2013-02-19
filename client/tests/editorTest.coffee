@@ -1,5 +1,3 @@
-
-
 describe "editorChrome", ->
   assert = chai.assert
   describe "save button", ->
@@ -21,7 +19,7 @@ describe "editorChrome", ->
         modified: true
         isTest: true
       file.save()
-      Session.set "editorFileId", file._id
+      Session.set "editorFilePath", file.path
 
       Meteor.flush()
 
