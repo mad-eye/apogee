@@ -51,6 +51,7 @@ class EditorState
         doc.attach_ace editor
         doc.on 'change', (op) ->
           file.update {modified: true}
+        editor.navigateFileStart() unless doc.cursor
         doc.emit "cursors"
       else
         editor.setValue "Loading..."
@@ -61,7 +62,9 @@ class EditorState
             handleNetworkError error, response
           else
             if doc == @doc #Safety for multiple loadFiles running simultaneously
-              doc.attach_ace @getEditor()
+              editor = @getEditor()
+              doc.attach_ace editor
+              editor.navigateFileStart() unless doc.cursor
               doc.on 'change', (op) ->
                 file.update {modified: true}
               doc.emit "cursors" #TODO: This should be handled in ShareJS

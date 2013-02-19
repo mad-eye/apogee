@@ -33,7 +33,7 @@
 
 <template name="editorChrome">
   <div id="editorFileName"><h4>{{editorFileName}}</h4></div>
-  {{#if editorFileId}}
+  {{#if editorFileName}}
     <div id="buttonRow">
       <button id="saveButton" class="btn btn-primary {{buttonDisabled}}" {{buttonDisabled}}>{{saveButtonMessage}}</button>
       {{#if showSaveSpinner}}
@@ -44,6 +44,6 @@
 </template>
 
 <template name="editor">
-  <!-- this hack exists to force a new div block on file swtich {{editorFileId}} -->
+  <!-- this hack exists to force a new div block on file swtich {{editorFileName}} -->
   <div id="editor" ></div>
 </template>
