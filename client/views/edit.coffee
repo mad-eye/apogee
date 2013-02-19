@@ -6,6 +6,8 @@
 #currentTheme = themes.pop(); ace.edit("editor").setTheme(currentTheme); console.log("current theme is", currentTheme);
 
 
+editorState = null
+
 do ->
 
   fileTree = new Madeye.FileTree()
@@ -69,7 +71,6 @@ do ->
     Session.set("editorRendered", true)
     resizeEditor()
 
-  editorState = null
   Meteor.startup ->
     editorState = new EditorState "editor"
 
@@ -83,8 +84,8 @@ do ->
       return unless file
       #TODO less hacky way to do this?
       #selectedFilePath?
-      Session.set "selectedFileId", file._id
-      file.openParents()
+#      Session.set "selectedFileId", file._id
+#      file.openParents()
       if file.isBinary
         displayAlert
           level: "error"
@@ -110,7 +111,7 @@ do ->
 
   Template.editorChrome.saveButtonMessage = ->
     filePath = Session.get "editorFilePath"
-    file = Files.findOne(filePath) if filePath?
+    file = Files.findOne({path: filePath}) if filePath?
     unless file?.modified
       "Saved"
     else if projectIsClosed()
