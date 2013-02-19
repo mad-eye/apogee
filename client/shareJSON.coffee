@@ -23,10 +23,4 @@ class ShareJSON
       subdoc = @doc.at(key)
       subdoc.set value
 
-shareJSON = null
-
-Meteor.startup ->
-  Meteor.autorun ->
-    return unless Settings.findOne()
-    shareJSON = new ShareJSON "hello"
-
+  #TODO:  Add equals method, a la Session.equals  
