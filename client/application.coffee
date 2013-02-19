@@ -1,13 +1,21 @@
+#for urls of the form /edit/PROJECT_ID/PATH_TO_FILE#LINE_NUMBER
+#PATH_TO_FILE and LINE_NUMBER are optional
+editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?([0-9]*)?/
+
+Meteor.Router.add editRegex, (projectId, filePath, lineNumber)->
+  console.log projectId, filePath, lineNumber
+  Session.set 'projectId', projectId.toString()
+  Session.set "editorFilePath", filePath
+  Session.set "gotoLine", lineNumber
+  'edit'
+
 Meteor.Router.add
   '/': "home"
   '/docs': -> "docs"
-  '/edit/:projectId': (projectId) ->
-    Session.set 'projectId', projectId.toString()
-    'edit'
-  '/login': "login",
-  '/tests': "tests",
-  '/tos': 'tos',
-  '/faq': 'faq',
+  '/login': "login"
+  '/tests': "tests"
+  '/tos': 'tos'
+  '/faq': 'faq'
   '*': "missing"
 
 Meteor.autosubscribe ->
