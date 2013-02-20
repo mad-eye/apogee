@@ -21,6 +21,16 @@ do ->
     message: 'The project has been closed on the client.'
     uncloseable: true
 
+  Template.projectStatus.fileIsDeleted = ->
+    file = Files.findOne path:editorState.getPath()
+    file?.removed
+
+  Template.projectStatus.fileDeletedError = ->
+    level: 'warn'
+    title: 'File Deleted'
+    message: 'The file has been deleted on the client.  If you save it, it will be recreated.'
+    uncloseable: true
+
   #Find how many files the server things, so we know if we have them all.
   Meteor.autosubscribe ->
     Meteor.call 'getFileCount', Session.get('projectId'), (err, count)->
@@ -101,10 +111,10 @@ do ->
           Session.set "saving", false
 
   Handlebars.registerHelper "editorFileName", ->
-    Session.get "editorFilePath"
+    editorState.getPath()
 
   Template.editorChrome.saveButtonMessage = ->
-    filePath = Session.get "editorFilePath"
+    filePath = editorState.getPath()
     file = Files.findOne({path: filePath}) if filePath?
     unless file?.modified
       "Saved"
@@ -121,7 +131,7 @@ do ->
 
   #FIXME: If a connection is re-established, the file is considered modified==false.
   Template.editorChrome.buttonDisabled = ->
-    filePath = Session.get "editorFilePath"
+    filePath = editorState.getPath()
     file = Files.findOne({path: filePath}) if filePath?
     if !file?.modified or Session.equals("saving", true) or projectIsClosed()
       "disabled"

@@ -18,6 +18,9 @@
   {{#if projectIsClosed}}
     {{> alert projectClosedError}}
   {{/if}}
+  {{#if fileIsDeleted}}
+    {{> alert fileDeletedError}}
+  {{/if}}
 </template>
 
 <template name="fileTree">
