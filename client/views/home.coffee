@@ -18,7 +18,6 @@ Template.home.events
       level:'info'
       title: "You're in the loop!"
       message: "We'll notify #{emailAddr} as soon as we have news."
-    _kmq.push ['record', 'subscribed to newsletter']
     return false
 
   
