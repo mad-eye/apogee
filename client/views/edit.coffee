@@ -68,19 +68,14 @@ do ->
     Session.set("editorRendered", true)
     resizeEditor()
 
-  editorState = null
-
   Meteor.startup ->
-    editorState = new EditorState "editor"
-
     Meteor.autorun ->
       return unless Session.equals("editorRendered", true)
       settings = Settings.findOne()
       return unless settings?
-      return if Session.equals "editorFilePath", editorState?.file?.path
-      if Session.get "editorFilePath"
-        file = Files.findOne {path: Session.get "editorFilePath"}
-      return unless file
+      filePath = editorState.getPath()
+      file = Files.findOne path:filePath
+      return unless file and file._id != editorState.file?._id
       #TODO less hacky way to do this?
       #selectedFilePath?
       Session.set "selectedFileId", file._id
@@ -91,6 +86,7 @@ do ->
           title: "Unable to load binary file"
           message: file.path
         return
+      console.log "About to load", file
       editorState.loadFile file, "#{settings.bolideUrl}/channel"
 
   Template.editorChrome.events
@@ -147,5 +143,4 @@ do ->
     return unless Session.equals "editorRendered", true
     $(window).resize ->
       resizeEditor()
-
 

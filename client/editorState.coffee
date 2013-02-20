@@ -16,6 +16,7 @@ handleNetworkError = (error, response) ->
 # Must set editorState.file for fetchBody or save to work.
 class EditorState
   constructor: (@editorId)->
+    @contexts = new Meteor.deps._ContextSet()
 
   getEditor: ->
     editor = ace.edit @editorId
@@ -30,7 +31,20 @@ class EditorState
     url = settings.azkabanUrl + "/project/#{Projects.findOne()._id}/file/#{@file._id}"
     url
 
+  setPath: (filePath) ->
+    return if filePath == @filePath
+    @filePath = filePath
+    @contexts.invalidateAll()
+
+  setLine: (@lineNumber) ->
+
+  getPath: () ->
+    console.log "Getting path"
+    @contexts.addCurrentContext()
+    return @filePath
+
   loadFile: (file, bolideUrl) ->
+    console.log "Loading file", file
     sharejs.open file._id, "text2", bolideUrl, (error, doc) =>
       console.error error if error?
       editor = @getEditor()
@@ -72,6 +86,7 @@ class EditorState
 
   #callback: (err) ->
   save : (callback) ->
+    console.log "Saving file #{@file?._id}"
     self = this #The => doesn't work for some reason with the PUT callback.
     contents = @getEditorBody()
     return unless @file.modified
