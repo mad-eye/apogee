@@ -46,7 +46,7 @@ class EditorState
   loadFile: (file, bolideUrl) ->
     console.log "Loading file", file
     sharejs.open file._id, "text2", bolideUrl, (error, doc) =>
-      console.error error if error?
+      handleShareError error if error?
       editor = @getEditor()
       @doc?.detach_ace?()
       @doc = doc
