@@ -44,12 +44,12 @@ class EditorState
 
   loadFile: (file, bolideUrl) ->
     console.log "Loading file", file
+    @file = file
     sharejs.open file._id, "text2", bolideUrl, (error, doc) =>
       handleShareError error if error?
       editor = @getEditor()
       @doc?.detach_ace?()
       @doc = doc
-      @file = file
       if mode = file.aceMode()
         Mode = undefined
         try
@@ -60,6 +60,10 @@ class EditorState
             Mode = require("ace/mode/#{mode}").Mode
             editor.getSession().setMode(new Mode())
 
+      unless doc.version?
+        #This seems to be a spurious case when the file is opened twice quickly.
+        console.error "Found null doc version for file #{@file._id}"
+        return
       if doc.version > 0
         doc.attach_ace editor
         doc.on 'change', (op) ->

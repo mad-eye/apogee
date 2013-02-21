@@ -99,7 +99,6 @@ do ->
           title: "Unable to load binary file"
           message: file.path
         return
-      console.log "About to load", file
       editorState.loadFile file, "#{settings.bolideUrl}/channel"
 
   Template.editorChrome.events
