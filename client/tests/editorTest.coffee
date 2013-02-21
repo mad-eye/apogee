@@ -1,3 +1,4 @@
+editorState = null
 describe "editorChrome", ->
   assert = chai.assert
   describe "save button", ->
@@ -5,6 +6,7 @@ describe "editorChrome", ->
     projectName = 'fizzik'
     projectId = null
     before ->
+      editorState ?= new EditorState "editor"
       project = new Project
         name: projectName
         closed: false
@@ -19,7 +21,7 @@ describe "editorChrome", ->
         modified: true
         isTest: true
       file.save()
-      Session.set "editorFilePath", file.path
+      editorState.setPath file.path
 
       Meteor.flush()
 
