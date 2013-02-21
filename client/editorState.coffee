@@ -39,7 +39,6 @@ class EditorState
   setLine: (@lineNumber) ->
 
   getPath: () ->
-    console.log "Getting path"
     @contexts.addCurrentContext()
     return @filePath
 
