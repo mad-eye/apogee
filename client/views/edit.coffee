@@ -107,8 +107,7 @@ do ->
         if err
           #Handle error better.
           console.error "Error in save request:", err
-        else
-          Session.set "saving", false
+        Session.set "saving", false
 
   Handlebars.registerHelper "editorFileName", ->
     editorState.getPath()

@@ -4,8 +4,13 @@
 #Takes httpResponse
 makeNetworkError = (response) ->
   return null unless response?
-  error = JSON.parse(response?.content)?.error ? {}
-  error.message ?= response.error?.message
+  error = null
+  if response.content?.error?
+    error = JSON.parse(response.content).error
+  else
+    error =
+      title: "Network Error"
+      message: "We're sorry, but there was trouble with the network.  Please try again later."
   error.title ?= error.type ? response.statusCode #TODO: for now.  Eventually make it more understandable
   error.level = 'error'
   return error
@@ -73,7 +78,7 @@ class EditorState
         editor.setValue "Loading..."
         #TODO figure out why this sometimes gets stuck on..
         #editor.setReadOnly true
-        Meteor.http.get @getFileUrl(), (error,response) =>
+        Meteor.http.get @getFileUrl(), timeout:5*1000, (error,response) =>
           if error
             handleNetworkError error, response
           else
@@ -92,9 +97,10 @@ class EditorState
     self = this #The => doesn't work for some reason with the PUT callback.
     contents = @getEditorBody()
     return unless @file.modified
-    Meteor.http.call "PUT", @getFileUrl(), {
+    Meteor.http.put @getFileUrl(), {
       data: {contents: contents}
       headers: {'Content-Type':'application/json'}
+      timeout: 5*1000
     }, (error,response) ->
       if error
         handleNetworkError error, response
