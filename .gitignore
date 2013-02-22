@@ -1,3 +1,4 @@
 .meteor/meteorite/packages/*
 dump.rdb
 settings.json
+.env
