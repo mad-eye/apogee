@@ -20,7 +20,7 @@ var projectUrl = appData;
 var theIFrame = document.getElementById("theIFrame");
 if (appData){
     gapi.hangout.data.setValue("projectUrl", appData);
-    theIFrame.src = appData;
+    theIFrame.src = appData + "?hangout=true";
 }
 //this feels a bit hacky..i hope there's a better way to know when state object is ready
 else {
@@ -29,7 +29,7 @@ else {
         if (state){
             clearInterval(intervalId);
             projectUrl = state.projectUrl
-            theIFrame.src = projectUrl;
+            theIFrame.src = projectUrl + "?hangout=true";
         }
     }, 200);
 }
