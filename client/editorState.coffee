@@ -69,7 +69,10 @@ class EditorState
         console.error "Found null doc version for file #{@file._id}"
         return
       if doc.version > 0
-        doc.attach_ace editor
+        unless doc.editorAttached
+          doc.attach_ace editor
+        else
+          console.error "EDITOR ALREADY ATTACHED"
         doc.on 'change', (op) ->
           file.update {modified: true}
         editor.navigateFileStart() unless doc.cursor
