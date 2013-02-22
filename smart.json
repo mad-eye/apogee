@@ -1,6 +1,6 @@
 {
   "meteor": {
-    "branch": "master"
+    "tag": "v0.5.7"
   },
 
   "packages": {
