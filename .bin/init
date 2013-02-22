@@ -1,2 +1,5 @@
-#! /bin/sh
+#! /bin/bash
+
+basedir=$(dirname $0)
 git submodule update --recursive --init
+$basedir/makeSettings

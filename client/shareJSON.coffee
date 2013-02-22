@@ -1,8 +1,7 @@
 class ShareJSON
   constructor:(docId) ->
     @keyDeps = {}
-    settings = Settings.findOne()
-    sharejs.open docId, "json", "#{settings.bolideUrl}/channel", (error, doc) =>
+    sharejs.open docId, "json", "#{Meteor.settings.public.bolideUrl}/channel", (error, doc) =>
       return handleShareError error if error
       doc.set {} if doc.version == 0
       @doc = doc

@@ -1,0 +1,11 @@
+#! /usr/bin/env node
+fs = require('fs')
+
+settings = {
+  public: {
+    bolideUrl: process.env.MADEYE_BOLIDE_URL,
+    azkabanUrl: process.env.MADEYE_AZKABAN_URL
+  }
+};
+
+fs.writeFileSync(__dirname + '/../settings.json', JSON.stringify(settings));

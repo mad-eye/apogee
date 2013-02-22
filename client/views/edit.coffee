@@ -84,8 +84,6 @@ do ->
   Meteor.startup ->
     Meteor.autorun ->
       return unless Session.equals("editorRendered", true)
-      settings = Settings.findOne()
-      return unless settings?
       filePath = editorState.getPath()
       file = Files.findOne path:filePath
       return unless file and file._id != editorState.file?._id
@@ -99,7 +97,7 @@ do ->
           title: "Unable to load binary file"
           message: file.path
         return
-      editorState.loadFile file, "#{settings.bolideUrl}/channel"
+      editorState.loadFile file, "#{Meteor.settings.public.bolideUrl}/channel"
 
   Template.editorChrome.events
     'click button#saveButton' : (event) ->

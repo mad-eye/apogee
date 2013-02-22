@@ -27,8 +27,7 @@ class EditorState
     @getEditor()?.getValue()
 
   getFileUrl : ->
-    settings = Settings.findOne()
-    url = settings.azkabanUrl + "/project/#{Projects.findOne()._id}/file/#{@file._id}"
+    url = Meteor.settings.public.azkabanUrl + "/project/#{Projects.findOne()._id}/file/#{@file._id}"
     url
 
   setPath: (filePath) ->
