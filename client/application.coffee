@@ -4,6 +4,8 @@ editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?([0-9]*)?/
 editorState = null
 
 Meteor.Router.add editRegex, (projectId, filePath, lineNumber)->
+  if /hangout=true/.exec(document.location.href.split("?")[1])
+    Session.set "isHangout", true
   Session.set 'projectId', projectId.toString()
   editorState ?= new EditorState "editor"
   editorState.setPath filePath

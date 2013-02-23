@@ -2,9 +2,8 @@ do ->
   Handlebars.registerHelper "isHomePage", ->
     return "home" == Meteor.Router._page
 
-  isHangout = /hangout=true/.exec(document.location.href.split("?")[1])
   Handlebars.registerHelper "isHangout", ->
-    isHangout
+    Session.get "isHangout"
 
 displayAlert = (alert) ->
   return unless alert?
