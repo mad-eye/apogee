@@ -100,7 +100,7 @@ do ->
       editorState.loadFile file, "#{Meteor.settings.public.bolideUrl}/channel"
 
   Template.editorChrome.events
-    'click button#saveButton' : (event) ->
+    'click #saveImage' : (event) ->
       console.log "clicked save button"
       Session.set "saving", true
       editorState.save (err) ->
@@ -122,7 +122,7 @@ do ->
     else if Session.equals "saving", true
       "Saving..."
     else
-      "Save Locally"
+      "Save"
 
 
   Template.editorChrome.showSaveSpinner = ->
