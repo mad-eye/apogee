@@ -56,8 +56,8 @@ describe "editorChrome", ->
         assert.equal Template.editorChrome.buttonDisabled(), ""
       it 'should not show save spinner', ->
         assert.isFalse Template.editorChrome.showSaveSpinner()
-      it 'should have message "Save Locally"', ->
-        assert.equal Template.editorChrome.saveButtonMessage(), "Save Locally"
+      it 'should have message "Save"', ->
+        assert.equal Template.editorChrome.saveButtonMessage(), "Save"
 
 
 
