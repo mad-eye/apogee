@@ -99,6 +99,7 @@ class EditorState
     #console.log "Saving file #{@file?._id}"
     self = this #The => doesn't work for some reason with the PUT callback.
     contents = @getEditorBody()
+    file = @file
     return unless @file.modified
     Meteor.http.put @getFileUrl(), {
       data: {contents: contents}
@@ -109,7 +110,7 @@ class EditorState
         handleNetworkError error, response
       else
         #XXX: Are we worried about race conditions if there were modifications after the save button was pressed?
-        self.file.update {modified: false}
+        file.update {modified: false}
       callback(error)
 
 
