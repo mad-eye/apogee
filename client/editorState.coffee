@@ -47,7 +47,7 @@ class EditorState
     return @filePath
 
   loadFile: (file, bolideUrl) ->
-    console.log "Loading file", file
+    #console.log "Loading file", file
     @file = file
     sharejs.open file._id, "text2", bolideUrl, (error, doc) =>
       handleShareError error if error?
@@ -96,7 +96,7 @@ class EditorState
 
   #callback: (err) ->
   save : (callback) ->
-    console.log "Saving file #{@file?._id}"
+    #console.log "Saving file #{@file?._id}"
     self = this #The => doesn't work for some reason with the PUT callback.
     contents = @getEditorBody()
     return unless @file.modified
