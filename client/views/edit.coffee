@@ -101,7 +101,7 @@ do ->
 
   Template.editorChrome.events
     'click #saveImage' : (event) ->
-      console.log "clicked save button"
+      #console.log "clicked save button"
       Session.set "saving", true
       editorState.save (err) ->
         if err
