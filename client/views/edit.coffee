@@ -97,7 +97,7 @@ do ->
           title: "Unable to load binary file"
           message: file.path
         return
-      editorState.loadFile file, "#{Meteor.settings.public.bolideUrl}/channel"
+      editorState.loadFile file
 
   Template.editorChrome.events
     'click #saveImage' : (event) ->
