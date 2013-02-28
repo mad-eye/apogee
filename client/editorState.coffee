@@ -46,52 +46,60 @@ class EditorState
     @contexts.addCurrentContext()
     return @filePath
 
-  loadFile: (file, bolideUrl) ->
+  loadFile: (file) ->
     #console.log "Loading file", file
     @file = file
-    sharejs.open file._id, "text2", bolideUrl, (error, doc) =>
-      handleShareError error if error?
-      editor = @getEditor()
-      @doc?.detach_ace?()
-      @doc = doc
-      if mode = file.aceMode()
-        Mode = undefined
-        try
-          Mode = require("ace/mode/#{mode}").Mode
-          editor.getSession().setMode(new Mode())
-        catch e
-          jQuery.getScript "/ace/mode-#{mode}.js", =>
+    sharejs.open file._id, "text2", "#{Meteor.settings.public.bolideUrl}/channel", (error, doc) =>
+      try
+        handleShareError error if error?
+        editor = @getEditor()
+        @doc?.detach_ace?()
+        @doc = doc
+        #TODO: Extract this into its own autorun block
+        if mode = file.aceMode()
+          Mode = undefined
+          try
             Mode = require("ace/mode/#{mode}").Mode
             editor.getSession().setMode(new Mode())
+          catch e
+            jQuery.getScript "/ace/mode-#{mode}.js", =>
+              Mode = require("ace/mode/#{mode}").Mode
+              editor.getSession().setMode(new Mode())
 
-      unless doc.version?
-        #This seems to be a spurious case when the file is opened twice quickly.
-        console.error "Found null doc version for file #{@file._id}"
-        return
-      if doc.version > 0
-        unless doc.editorAttached
-          doc.attach_ace editor
-        else
-          console.error "EDITOR ALREADY ATTACHED"
-        doc.on 'change', (op) ->
-          file.update {modified: true}
-        editor.navigateFileStart() unless doc.cursor
-        doc.emit "cursors"
-      else
-        editor.setValue "Loading..."
-        #TODO figure out why this sometimes gets stuck on..
-        #editor.setReadOnly true
-        Meteor.http.get @getFileUrl(), timeout:5*1000, (error,response) =>
-          if error
-            handleNetworkError error, response
+        unless doc.version?
+          #This seems to be a spurious case when the file is opened twice quickly.
+          console.error "Found null doc version for file #{@file._id}"
+          return
+        if doc.version > 0
+          unless doc.editorAttached
+            doc.attach_ace editor
           else
-            if doc == @doc #Safety for multiple loadFiles running simultaneously
-              editor = @getEditor()
-              doc.attach_ace editor
-              editor.navigateFileStart() unless doc.cursor
-              doc.on 'change', (op) ->
-                file.update {modified: true}
-              doc.emit "cursors" #TODO: This should be handled in ShareJS
+            console.error "EDITOR ALREADY ATTACHED"
+          doc.on 'change', (op) ->
+            file.update {modified: true}
+          editor.navigateFileStart() unless doc.cursor
+          doc.emit "cursors"
+        else
+          editor.setValue "Loading..."
+          #TODO figure out why this sometimes gets stuck on..
+          #editor.setReadOnly true
+          Meteor.http.get @getFileUrl(), timeout:5*1000, (error,response) =>
+            x = adsfafdds
+            if error
+              handleNetworkError error, response
+            else
+              if doc == @doc #Safety for multiple loadFiles running simultaneously
+                editor = @getEditor()
+                doc.attach_ace editor
+                editor.navigateFileStart() unless doc.cursor
+                doc.on 'change', (op) ->
+                  file.update {modified: true}
+                  doc.emit "cursors" #TODO: This should be handled in ShareJS
+      catch e
+        #TODO: Handle this better.
+        console.error e
+
+
 
 
   #callback: (err) ->
