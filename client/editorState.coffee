@@ -46,6 +46,16 @@ class EditorState
     @contexts.addCurrentContext()
     return @filePath
 
+  revertFile: (file, bolideUrl) ->
+    @getEditor().setValue("")
+    Meteor.http.get "#{@getFileUrl()}?reset=true", (error,response) =>
+      handleNetworkError error, response if error
+      @file.modified = false
+      @file.save()
+      Meteor.setTimeout =>
+        @getEditor().navigateFileStart()
+      ,0
+
   loadFile: (file, bolideUrl) ->
     #console.log "Loading file", file
     @file = file
