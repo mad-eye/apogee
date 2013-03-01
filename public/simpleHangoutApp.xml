@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
         <!-- Copyright 2012 Google Inc. All Rights Reserved -->
-    	<Module>
+        <Module>
     	  <ModulePrefs title="Face Movement">
     	  <Require feature="rpc"/>
           <Require feature="views" />
@@ -33,8 +33,13 @@ else {
         var state = gapi.hangout.data.getState();
         if (state){
             clearInterval(intervalId);
-            projectUrl = state.projectUrl
-            theIFrame.src = projectUrl + "?hangout=true";
+            if (state.projectUrl){
+                projectUrl = state.projectUrl
+                theIFrame.src = projectUrl + "?hangout=true";
+            }
+            else {
+                theIFrame.src = "http://madeye.io/missing-project";
+            }
         }
     }, 200);
 }

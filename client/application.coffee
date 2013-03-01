@@ -19,6 +19,9 @@ Meteor.Router.add
   '/tests': "tests"
   '/tos': 'tos'
   '/faq': 'faq'
+  '/unlinked-hangout': ->
+      Session.set "isHangout", true
+      'unlinkedHangout'
   '*': "missing"
 
 Meteor.autosubscribe ->
