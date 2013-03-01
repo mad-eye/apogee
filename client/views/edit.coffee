@@ -100,6 +100,11 @@ do ->
       editorState.loadFile file
 
   Template.editorChrome.events
+    'click #revertFile': (event) ->
+      Session.set "reverting", true
+      editorState.revertFile (error)->
+        Session.set "reverting", false
+
     'click #saveImage' : (event) ->
       #console.log "clicked save button"
       Session.set "saving", true

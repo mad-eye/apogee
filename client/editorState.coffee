@@ -46,12 +46,15 @@ class EditorState
     @contexts.addCurrentContext()
     return @filePath
 
-  revertFile: (file, bolideUrl) ->
+  revertFile: (callback) ->
     @getEditor().setValue("")
     Meteor.http.get "#{@getFileUrl()}?reset=true", (error,response) =>
-      handleNetworkError error, response if error
+      if error
+        handleNetworkError error, response 
+        callback(error)
       @file.modified = false
       @file.save()
+      callback()
       Meteor.setTimeout =>
         @getEditor().navigateFileStart()
       ,0
