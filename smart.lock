@@ -23,8 +23,8 @@
     "packages": {
       "router": {
         "git": "https://github.com/tmeasday/meteor-router.git",
-        "tag": "v0.3.5",
-        "commit": "e8e63db2411204f0a6589b74dd591babbfb2da1a"
+        "tag": "v0.4.2",
+        "commit": "82d2895847502b4025370523dba60d597cff4772"
       },
       "madeye-common": {
         "path": ".madeye-common"
@@ -37,17 +37,17 @@
       "meteor-sharejs": {
         "git": "git://github.com/mad-eye/meteor-sharejs.git",
         "branch": "master",
-        "commit": "d1096e1c8dc1fc714c616ea80aa44ae311b78648"
+        "commit": "39abfc4858f05850d6ee0e0098e17a227aa8d6a9"
       },
       "deps-extensions": {
         "git": "https://github.com/tmeasday/meteor-deps-extensions.git",
         "tag": "v0.1.0",
         "commit": "110462c0ba33aaeb35e55069134287325cc453e5"
       },
-      "page-js": {
-        "git": "https://github.com/tmeasday/meteor-page-js.git",
+      "page-js-ie-support": {
+        "git": "https://github.com/tmeasday/meteor-page-js-ie-support.git",
         "tag": "v1.3.5",
-        "commit": "c652f795a86498aa4609ab637a694710421cb218"
+        "commit": "b99ed8380aefd10b2afc8f18d9eed4dd0d8ea9cb"
       }
     }
   }

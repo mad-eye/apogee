@@ -107,37 +107,24 @@ do ->
 
     'click #saveImage' : (event) ->
       #console.log "clicked save button"
-      Session.set "saving", true
+      Session.set "working", true
       editorState.save (err) ->
         if err
           #Handle error better.
           console.error "Error in save request:", err
-        Session.set "saving", false
+        Session.set "working", false
 
   Handlebars.registerHelper "editorFileName", ->
     editorState.getPath()
 
-  Template.editorChrome.saveButtonMessage = ->
-    filePath = editorState.getPath()
-    file = Files.findOne({path: filePath}) if filePath?
-    unless file?.modified
-      "Saved"
-    else if projectIsClosed()
-      "Offline"
-    else if Session.equals "saving", true
-      "Saving..."
-    else
-      "Save"
-
-
   Template.editorChrome.showSaveSpinner = ->
-    Session.equals "saving", true
+    Session.equals "working", true
 
   #FIXME: If a connection is re-established, the file is considered modified==false.
   Template.editorChrome.buttonDisabled = ->
     filePath = editorState.getPath()
     file = Files.findOne({path: filePath}) if filePath?
-    if !file?.modified or Session.equals("saving", true) or projectIsClosed()
+    if !file?.modified or Session.equals("working", true) or projectIsClosed()
       "disabled"
     else
       ""

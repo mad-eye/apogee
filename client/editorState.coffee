@@ -97,7 +97,6 @@ class EditorState
           #TODO figure out why this sometimes gets stuck on..
           #editor.setReadOnly true
           Meteor.http.get @getFileUrl(), timeout:5*1000, (error,response) =>
-            x = adsfafdds
             if error
               handleNetworkError error, response
             else
