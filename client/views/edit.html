@@ -12,15 +12,9 @@
 </template>
 
 <template name="projectStatus">
-  {{#if projectIsLoading}}
-    {{> alert projectLoadingAlert}}
-  {{/if}}
-  {{#if projectIsClosed}}
-    {{> alert projectClosedError}}
-  {{/if}}
-  {{#if fileIsDeleted}}
-    {{> alert fileDeletedError}}
-  {{/if}}
+  {{#each projectAlerts}}
+    {{> alert this}}
+  {{/each}}
 </template>
 
 <template name="fileTree">

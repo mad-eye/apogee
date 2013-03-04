@@ -8,6 +8,30 @@
 handleShareError: (err) ->
   displayAlert { level: 'error', message: error.message }
   
+projectClosedError =
+  level: 'error'
+  title: 'Project Closed'
+  message: 'The project has been closed on the client.'
+  uncloseable: true
+
+fileDeletedWarning =
+  level: 'warn'
+  title: 'File Deleted'
+  message: 'The file has been deleted on the client.  If you save it, it will be recreated.'
+  uncloseable: true
+
+projectLoadingAlert =
+  level: 'info'
+  title: 'Project is Loading'
+  message: "...we'll be ready in a moment!"
+  uncloseable: true
+
+fileModifiedLocallyWarning =
+  level: 'warn'
+  title: 'File Changed'
+  message: 'The file has been changed on the client.  Save it to overwrite the changes, or revert to load the changes.'
+  uncloseable: true
+
 do ->
 
   fileTree = new Madeye.FileTree()
@@ -15,24 +39,14 @@ do ->
   projectIsClosed = ->
     Projects.findOne()?.closed
 
-  Template.projectStatus.projectIsClosed = ->
-    projectIsClosed()
-
-  Template.projectStatus.projectClosedError = ->
-    level: 'error'
-    title: 'Project Closed'
-    message: 'The project has been closed on the client.'
-    uncloseable: true
-
-  Template.projectStatus.fileIsDeleted = ->
-    file = Files.findOne path:editorState.getPath()
-    file?.removed
-
-  Template.projectStatus.fileDeletedError = ->
-    level: 'warn'
-    title: 'File Deleted'
-    message: 'The file has been deleted on the client.  If you save it, it will be recreated.'
-    uncloseable: true
+  Template.projectStatus.projectAlerts = ->
+    alerts = []
+    alerts.push projectClosedError if projectIsClosed()
+    alerts.push fileDeletedWarning if Files.findOne(path:editorState.getPath())?.removed
+    alerts.push fileModifiedLocallyWarning if Files.findOne(path:editorState.getPath())?.modified_locally
+    projectLoaded = Projects.findOne()? && Session.equals 'fileCount', Files.collection.find().count()
+    alerts.push projectLoadingAlert unless projectLoaded
+    return alerts
 
   #Find how many files the server things, so we know if we have them all.
   Meteor.autosubscribe ->
@@ -42,12 +56,6 @@ do ->
 
   Template.projectStatus.projectIsLoading = ->
     return not (Projects.findOne()? || Session.equals 'fileCount', Files.collection.find().count())
-
-  Template.projectStatus.projectLoadingAlert = ->
-    level: 'info'
-    title: 'Project is Loading'
-    message: "...we'll be ready in a moment!"
-    uncloseable: true
 
   Template.fileTree.files = ->
     fileTree.setFiles Files.collection.find()
