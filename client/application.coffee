@@ -2,6 +2,7 @@
 #PATH_TO_FILE and LINE_NUMBER are optional
 editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?([0-9]*)?/
 editorState = null
+transitoryIssues = null
 
 Meteor.Router.add editRegex, (projectId, filePath, lineNumber)->
   if /hangout=true/.exec(document.location.href.split("?")[1])
@@ -28,3 +29,6 @@ Meteor.autosubscribe ->
   Meteor.subscribe "files", Session.get "projectId"
   Meteor.subscribe "projects", Session.get "projectId"
 
+Meteor.startup ->
+  transitoryIssues = new TransitoryIssues
+  
