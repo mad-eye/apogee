@@ -3,7 +3,7 @@ class TransitoryIssues
     @issues = {}
     @contexts = {}
 
-  set: (type, timer) ->
+  set: (type, time) ->
     oldHandle = @issues[type]
     if oldHandle
       clearTimeout oldHandle
@@ -12,7 +12,7 @@ class TransitoryIssues
     @issues[type] = Meteor.setTimeout =>
       delete @issues[type]
       @contexts[type].invalidateAll()
-    , timer
+    , time
 
 
   has: (type) ->
