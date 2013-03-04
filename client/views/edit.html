@@ -41,7 +41,9 @@
         {{editorFileName}}
       </h4>
     </div>
-    <a id="revertFile" class="pull-right {{buttonDisabled}}" href="#">Revert</a>
+    {{#unless fileIsDeleted}}
+      <a id="revertFile" class="pull-right {{buttonDisabled}}" href="#">Revert</a>
+    {{/unless}}
   </div>
 </template>
 

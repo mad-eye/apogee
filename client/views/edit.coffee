@@ -42,6 +42,9 @@ do ->
   fileIsDeleted = ->
     Files.findOne(path:editorState.getPath())?.removed
 
+  Handlebars.registerHelper "fileIsDeleted", ->
+    fileIsDeleted()
+
   fileIsModifiedLocally = ->
     Files.findOne(path:editorState.getPath())?.modified_locally
 
