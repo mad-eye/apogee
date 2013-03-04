@@ -32,6 +32,12 @@ fileModifiedLocallyWarning =
   message: 'The file has been changed on the client.  Save it to overwrite the changes, or revert to load the changes.'
   uncloseable: true
 
+networkIssuesWarning =
+  level: 'warn'
+  title: 'Network Issues'
+  message: "We're having trouble with the network.  We'll try to resolve it automatically, but you may want to try again later."
+  uncloseable: true
+
 do ->
 
   fileTree = new Madeye.FileTree()
@@ -57,6 +63,7 @@ do ->
     alerts.push fileDeletedWarning if fileIsDeleted()
     alerts.push fileModifiedLocallyWarning if fileIsModifiedLocally()
     alerts.push projectLoadingAlert if projectIsLoading()
+    alerts.push networkIssuesWarning if transitoryIssues?.has 'networkIssues'
     return alerts
 
   #Find how many files the server things, so we know if we have them all.

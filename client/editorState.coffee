@@ -2,21 +2,9 @@
 #We should refactor it so that it doesn't have knowlege of DOM ids/etc.
 
 #Takes httpResponse
-makeNetworkError = (response) ->
-  return null unless response?
-  error = null
-  if response.content?.error?
-    error = JSON.parse(response.content).error
-  else
-    error =
-      title: "Network Error"
-      message: "We're sorry, but there was trouble with the network.  Please try again later."
-  error.title ?= error.type ? response.statusCode #TODO: for now.  Eventually make it more understandable
-  error.level = 'error'
-  return error
-
 handleNetworkError = (error, response) ->
-  displayAlert makeNetworkError(response) ? { level: 'error', message: error.message }
+  console.error "Network Error:", (response.content?.error ? error)
+  transitoryIssues.set 'networkIssues', 10*1000
 
 # Must set editorState.file for fetchBody or save to work.
 class EditorState
@@ -50,7 +38,7 @@ class EditorState
     @getEditor().setValue("")
     Meteor.http.get "#{@getFileUrl()}?reset=true", (error,response) =>
       if error
-        handleNetworkError error, response 
+        handleNetworkError error, response
         callback(error)
       @file.modified = false
       @file.save()
