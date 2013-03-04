@@ -38,14 +38,22 @@ do ->
 
   projectIsClosed = ->
     Projects.findOne()?.closed
+  
+  fileIsDeleted = ->
+    Files.findOne(path:editorState.getPath())?.removed
+
+  fileIsModifiedLocally = ->
+    Files.findOne(path:editorState.getPath())?.modified_locally
+
+  projectIsLoading = ->
+    not (Projects.findOne()? || Session.equals 'fileCount', Files.collection.find().count())
 
   Template.projectStatus.projectAlerts = ->
     alerts = []
     alerts.push projectClosedError if projectIsClosed()
-    alerts.push fileDeletedWarning if Files.findOne(path:editorState.getPath())?.removed
-    alerts.push fileModifiedLocallyWarning if Files.findOne(path:editorState.getPath())?.modified_locally
-    projectLoaded = Projects.findOne()? && Session.equals 'fileCount', Files.collection.find().count()
-    alerts.push projectLoadingAlert unless projectLoaded
+    alerts.push fileDeletedWarning if fileIsDeleted()
+    alerts.push fileModifiedLocallyWarning if fileIsModifiedLocally()
+    alerts.push projectLoadingAlert if projectIsLoading()
     return alerts
 
   #Find how many files the server things, so we know if we have them all.
@@ -53,9 +61,6 @@ do ->
     Meteor.call 'getFileCount', Session.get('projectId'), (err, count)->
       if err then console.error err; return
       Session.set 'fileCount', count
-
-  Template.projectStatus.projectIsLoading = ->
-    return not (Projects.findOne()? || Session.equals 'fileCount', Files.collection.find().count())
 
   Template.fileTree.files = ->
     fileTree.setFiles Files.collection.find()
