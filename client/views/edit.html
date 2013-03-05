@@ -42,7 +42,9 @@
       </h4>
     </div>
     {{#unless fileIsDeleted}}
-      <a id="revertFile" class="pull-right {{buttonDisabled}}" href="#">Revert</a>
+      <a id="revertFile" class="pull-right {{buttonDisabled}}" title="Revert the file to the state on the local computer." href="#">Revert</a>
+    {{else}}
+      <a id="discardFile" class="pull-right {{buttonDisabled}}" title="Discard this file, removing it from the project view" href="#">Discard File</a>
     {{/unless}}
   </div>
 </template>

@@ -22,6 +22,9 @@ class Meteor.Model
         @[key] = value
       self.collection.update @_id, {$set: fields} if dirty
 
+    @modelClass.prototype.remove = ->
+      self.collection.remove @_id if @_id
+
   findOne: (selector={})->
     rawObject = @collection.findOne(selector)
     if rawObject

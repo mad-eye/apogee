@@ -124,9 +124,14 @@ do ->
 
   Template.editorChrome.events
     'click #revertFile': (event) ->
-      Session.set "reverting", true
+      Session.set "working", true
       editorState.revertFile (error)->
-        Session.set "reverting", false
+        Session.set "working", false
+
+    'click #discardFile': (event) ->
+      editorState.file.remove()
+      editorState.file = null
+      editorState.setPath ""
 
     'click #saveImage' : (event) ->
       #console.log "clicked save button"

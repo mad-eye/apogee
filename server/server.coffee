@@ -9,7 +9,9 @@ Meteor.publish "files", (projectId)->
 
 Files.collection.allow(
   #TODO make this more restrictive  
+  #For example, restrict by projectId
   update: (userId, docs, fields, modifier) -> true
+  remove: (userId, docs) -> true
 )
 
 NewsletterEmails.collection.allow(
