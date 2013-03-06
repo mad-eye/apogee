@@ -205,6 +205,7 @@ ul.fileTree {
 }
 
 #editorChrome {
+  position:relative;
 }
 
 #editor {
@@ -212,6 +213,27 @@ ul.fileTree {
   width: 600px;
   height: 400px;
   border-top: 1px solid #aaa;
+}
+
+#editorOverlay {
+  position: absolute;
+  /*top: 0px;*/
+  /*left: 0px;*/
+  /*bottom: 0px;*/
+  /*right: 0px;*/
+  width: 600px;
+  height: 200px;
+  background-color:rgba(0,0,0,0.3);
+  z-index: 9999;
+  .rounded-border (@radius: 4px);
+
+  #editorLoadingSpinner {
+    position: absolute;
+    top: (200 - 48)/2px;
+    left: (600 - 48)/2px;
+    height: 48px;
+    width: 48px;
+  }
 }
 
 #editorTitleBar {

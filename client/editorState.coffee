@@ -83,7 +83,7 @@ class EditorState
           editor.navigateFileStart() unless doc.cursor
           doc.emit "cursors"
         else
-          editor.setValue "Loading..."
+          Session.set "editorIsLoading", true
           #TODO figure out why this sometimes gets stuck on..
           #editor.setReadOnly true
           Meteor.http.get @getFileUrl(), timeout:5*1000, (error,response) =>
@@ -91,6 +91,7 @@ class EditorState
               handleNetworkError error, response
             else
               if doc == @doc #Safety for multiple loadFiles running simultaneously
+                Session.set "editorIsLoading", false
                 editor = @getEditor()
                 doc.attach_ace editor
                 editor.navigateFileStart() unless doc.cursor

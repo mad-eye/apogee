@@ -145,6 +145,9 @@ do ->
   Handlebars.registerHelper "editorFileName", ->
     editorState.getPath()
 
+  Handlebars.registerHelper "editorIsLoading", ->
+    Session.equals "editorIsLoading", true
+
   Template.editorChrome.showSaveSpinner = ->
     Session.equals "working", true
 

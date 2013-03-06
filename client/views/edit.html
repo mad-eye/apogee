@@ -6,6 +6,7 @@
         </div>
         <div id="editorChrome" class="span8">
             {{> editorChrome }}
+            {{> editorOverlay }}
             {{> editor}}
         </div>
     </div>
@@ -49,7 +50,16 @@
   </div>
 </template>
 
+<template name="editorOverlay">
+  {{#if editorIsLoading}}
+    <div id="editorOverlay">
+      <img id="editorLoadingSpinner" src="/images/file-loader.gif" alt="Loading..." />
+    </div>
+  {{/if}}
+</template>
+
 <template name="editor">
   <!-- this hack exists to force a new div block on file swtich {{editorFileName}} -->
-  <div id="editor" ></div>
+  <div id="editor" > </div>
+
 </template>
