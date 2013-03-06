@@ -4,26 +4,57 @@ editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?([0-9]*)?/
 editorState = null
 transitoryIssues = null
 
-Meteor.Router.add editRegex, (projectId, filePath, lineNumber)->
-  if /hangout=true/.exec(document.location.href.split("?")[1])
-    Session.set "isHangout", true
-  Session.set 'projectId', projectId.toString()
-  editorState ?= new EditorState "editor"
-  editorState.setPath filePath
-  editorState.setLine lineNumber
-  'edit'
+if Meteor.settings.public.googleAnalyticsId
+  _gaq = _gaq || [];
+  _gaq.push ['_setAccount', Meteor.settings.public.googleAnalyticsId]
 
-Meteor.Router.add
-  '/': "home"
-  '/docs': -> "docs"
-  '/login': "login"
-  '/tests': "tests"
-  '/tos': 'tos'
-  '/faq': 'faq'
-  '/unlinked-hangout': ->
+do ->
+  recordView = ->
+    _gaq.push ['_trackPageview'] if _gaq?
+
+  #TODO figure out how to eliminate all the duplicate recordView calls
+
+  Meteor.Router.add editRegex, (projectId, filePath, lineNumber)->
+    recordView()
+    if /hangout=true/.exec(document.location.href.split("?")[1])
+      Session.set "isHangout", true
+    Session.set 'projectId', projectId.toString()
+    editorState ?= new EditorState "editor"
+    editorState.setPath filePath
+    editorState.setLine lineNumber
+    'edit'
+
+  Meteor.Router.add
+    '/':  ->
+      recordView()
+      "home"
+
+    '/docs': ->
+      recordView()
+      "docs"
+
+    '/login': ->
+
+    '/tests': ->
+      recordView()
+      "tests"
+
+    '/tos': ->
+      recordView()
+      'tos'
+
+    '/faq': ->
+      recordView()
+      'faq'
+
+    '/unlinked-hangout': ->
+      recordView()
       Session.set "isHangout", true
       'unlinkedHangout'
-  '*': "missing"
+
+    '*': ->
+      recordView()
+      "missing"
 
 Meteor.autosubscribe ->
   Meteor.subscribe "files", Session.get "projectId"
