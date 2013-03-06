@@ -215,24 +215,25 @@ ul.fileTree {
   border-top: 1px solid #aaa;
 }
 
+@overlayWidth: 600px;
+@overlayHeight: 200px;
+@overlaySpinnerWidth: 48px;
+@overlaySpinnerHeight: 48px;
+
 #editorOverlay {
   position: absolute;
-  /*top: 0px;*/
-  /*left: 0px;*/
-  /*bottom: 0px;*/
-  /*right: 0px;*/
-  width: 600px;
-  height: 200px;
+  width: @overlayWidth;
+  height: @overlayHeight;
   background-color:rgba(0,0,0,0.3);
   z-index: 9999;
-  .rounded-border (@radius: 4px);
+  .rounded-border;
 
   #editorLoadingSpinner {
     position: absolute;
-    top: (200 - 48)/2px;
-    left: (600 - 48)/2px;
-    height: 48px;
-    width: 48px;
+    top: (@overlayHeight - @overlaySpinnerHeight)/2px;
+    left: (@overlayWidth - @overlaySpinnerWidth)/2px;
+    height: @overlaySpinnerHeight;
+    width: @overlaySpinnerWidth;
   }
 }
 
