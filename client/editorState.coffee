@@ -35,6 +35,7 @@ class EditorState
     return @filePath
 
   revertFile: (callback) ->
+    @doc.detach_ace()
     @getEditor().setValue("")
     Meteor.http.get "#{@getFileUrl()}?reset=true", (error,response) =>
       if error
@@ -44,6 +45,7 @@ class EditorState
       @file.save()
       callback()
       Meteor.setTimeout =>
+        @doc.attach_ace(@getEditor())
         @getEditor().navigateFileStart()
       ,0
 
