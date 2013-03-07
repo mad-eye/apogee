@@ -19,8 +19,8 @@ do ->
     if /hangout=true/.exec(document.location.href.split("?")[1])
       Session.set "isHangout", true
       isHangout = true
-    Metrics.insert {level:'debug', message:'load', projectId, filePath, lineNumber, isHangout}
     Session.set 'projectId', projectId
+    Metrics.add {message:'load', filePath, lineNumber, isHangout}
     editorState ?= new EditorState "editor"
     editorState.setPath filePath
     editorState.setLine lineNumber
@@ -64,4 +64,4 @@ Meteor.autosubscribe ->
 
 Meteor.startup ->
   transitoryIssues = new TransitoryIssues
-  
+

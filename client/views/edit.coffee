@@ -6,10 +6,9 @@
 #currentTheme = themes.pop(); ace.edit("editor").setTheme(currentTheme); console.log("current theme is", currentTheme);
 
 handleShareError: (err) ->
-  Metrics.insert
+  Metrics.add
     level:'error'
     message:'shareJsError'
-    projectId:Session.get('projectId')
     error: err
   displayAlert { level: 'error', message: error.message }
   
@@ -75,10 +74,9 @@ do ->
   Meteor.autosubscribe ->
     Meteor.call 'getFileCount', Session.get('projectId'), (err, count)->
       if err
-        Metrics.insert
+        Metrics.add
           level:'error'
           message:'getFileCount'
-          projectId:Session.get('projectId')
         console.error err
         return
       Session.set 'fileCount', count
@@ -140,10 +138,8 @@ do ->
         Session.set "working", false
 
     'click #discardFile': (event) ->
-      Metrics.insert
-        level:'debug'
+      Metrics.add
         message:'discardFile'
-        projectId:Session.get('projectId')
         fileId: editorState?.file?._id
         filePath: editorState?.file?.path #don't want reactivity
       editorState.file.remove()
