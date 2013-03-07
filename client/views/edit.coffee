@@ -6,6 +6,11 @@
 #currentTheme = themes.pop(); ace.edit("editor").setTheme(currentTheme); console.log("current theme is", currentTheme);
 
 handleShareError: (err) ->
+  Metrics.insert
+    level:'error'
+    message:'shareJsError'
+    projectId:Session.get('projectId')
+    error: err
   displayAlert { level: 'error', message: error.message }
   
 projectClosedError =
@@ -69,7 +74,13 @@ do ->
   #Find how many files the server things, so we know if we have them all.
   Meteor.autosubscribe ->
     Meteor.call 'getFileCount', Session.get('projectId'), (err, count)->
-      if err then console.error err; return
+      if err
+        Metrics.insert
+          level:'error'
+          message:'getFileCount'
+          projectId:Session.get('projectId')
+        console.error err
+        return
       Session.set 'fileCount', count
 
   Template.fileTree.files = ->
@@ -129,6 +140,12 @@ do ->
         Session.set "working", false
 
     'click #discardFile': (event) ->
+      Metrics.insert
+        level:'debug'
+        message:'discardFile'
+        projectId:Session.get('projectId')
+        fileId: editorState?.file?._id
+        filePath: editorState?.file?.path #don't want reactivity
       editorState.file.remove()
       editorState.file = null
       editorState.setPath ""

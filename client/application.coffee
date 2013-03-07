@@ -5,7 +5,7 @@ editorState = null
 transitoryIssues = null
 
 if Meteor.settings.public.googleAnalyticsId
-  _gaq = _gaq || [];
+  _gaq = _gaq || []
   _gaq.push ['_setAccount', Meteor.settings.public.googleAnalyticsId]
 
 do ->
@@ -18,7 +18,9 @@ do ->
     recordView()
     if /hangout=true/.exec(document.location.href.split("?")[1])
       Session.set "isHangout", true
-    Session.set 'projectId', projectId.toString()
+      isHangout = true
+    Metrics.insert {level:'debug', message:'load', projectId, filePath, lineNumber, isHangout}
+    Session.set 'projectId', projectId
     editorState ?= new EditorState "editor"
     editorState.setPath filePath
     editorState.setLine lineNumber

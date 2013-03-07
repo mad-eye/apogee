@@ -3,7 +3,13 @@
 
 #Takes httpResponse
 handleNetworkError = (error, response) ->
-  console.error "Network Error:", (response.content?.error ? error)
+  err = response.content?.error ? error
+  console.error "Network Error:", err
+  Metrics.insert
+    level:'error'
+    message:'networkError'
+    projectId:Session.get('projectId')
+    error: err
   transitoryIssues.set 'networkIssues', 10*1000
 
 # Must set editorState.file for fetchBody or save to work.
@@ -20,8 +26,7 @@ class EditorState
     @getEditor()?.getValue()
 
   getFileUrl : ->
-    url = Meteor.settings.public.azkabanUrl + "/project/#{Projects.findOne()._id}/file/#{@file._id}"
-    url
+    Meteor.settings.public.azkabanUrl + "/project/#{Projects.findOne()._id}/file/#{@file._id}"
 
   setPath: (filePath) ->
     return if filePath == @filePath
@@ -35,6 +40,12 @@ class EditorState
     return @filePath
 
   revertFile: (callback) ->
+    Metrics.insert
+      level:'debug'
+      message:'revertFile'
+      projectId:Session.get('projectId')
+      fileId: @file?._id
+      filePath: @file?.path
     @doc.detach_ace()
     @getEditor().setValue("")
     Meteor.http.get "#{@getFileUrl()}?reset=true", (error,response) =>
@@ -52,6 +63,12 @@ class EditorState
   loadFile: (file) ->
     #console.log "Loading file", file
     @file = file
+    Metrics.insert
+      level:'debug'
+      message:'loadFile'
+      projectId:Session.get('projectId')
+      fileId: @file?._id
+      filePath: @file?.path
     sharejs.open file._id, "text2", "#{Meteor.settings.public.bolideUrl}/channel", (error, doc) =>
       try
         handleShareError error if error?
@@ -71,15 +88,38 @@ class EditorState
 
         unless doc.version?
           #This seems to be a spurious case when the file is opened twice quickly.
+          Metrics.insert
+            level:'warn'
+            message:'shareJsError'
+            projectId:Session.get('projectId')
+            fileId: @file._id
+            filePath: @file?.path
+            error: 'Found null doc version'
           console.error "Found null doc version for file #{@file._id}"
           return
         if doc.version > 0
           unless doc.editorAttached
             doc.attach_ace editor
           else
+            Metrics.insert
+              level:'warn'
+              message:'shareJsError'
+              projectId:Session.get('projectId')
+              fileId: @file._id
+              filePath: @file?.path
+              error: 'Found null doc version'
             console.error "EDITOR ALREADY ATTACHED"
           doc.on 'change', (op) ->
             file.update {modified: true}
+          doc.on 'warn', (data) ->
+            Metrics.insert
+              level:'warn'
+              message:'shareJsError'
+              projectId:Session.get('projectId')
+              fileId: @file._id
+              filePath: @file?.path
+              error: data
+
           editor.navigateFileStart() unless doc.cursor
           doc.emit "cursors"
         else
@@ -98,8 +138,23 @@ class EditorState
                 doc.on 'change', (op) ->
                   file.update {modified: true}
                   doc.emit "cursors" #TODO: This should be handled in ShareJS
+                doc.on 'warn', (data) ->
+                  Metrics.insert
+                    level:'warn'
+                    message:'shareJsError'
+                    projectId:Session.get('projectId')
+                    fileId: @file._id
+                    filePath: @file?.path
+                    error: data
       catch e
         #TODO: Handle this better.
+        Metrics.insert
+          level:'error'
+          message:'shareJsError'
+          projectId:Session.get('projectId')
+          fileId: @file._id
+          filePath: @file?.path
+          error: e.message
         console.error e
 
 
@@ -108,6 +163,12 @@ class EditorState
   #callback: (err) ->
   save : (callback) ->
     #console.log "Saving file #{@file?._id}"
+    Metrics.insert
+      level:'debug'
+      message:'saveFile'
+      projectId:Session.get('projectId')
+      fileId: @file?._id
+      filePath: @file?.path #don't want reactivity
     self = this #The => doesn't work for some reason with the PUT callback.
     contents = @getEditorBody()
     file = @file

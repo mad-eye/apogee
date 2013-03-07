@@ -1,0 +1,3 @@
+Metrics.allow
+  insert: -> true
+
