@@ -37,7 +37,7 @@
       "meteor-sharejs": {
         "git": "git://github.com/mad-eye/meteor-sharejs.git",
         "branch": "master",
-        "commit": "304c6ae178405335ed5441732ac169bcb4801024"
+        "commit": "abf10c27f4f183ba4bc0ad5f6754ad89e29166c7"
       },
       "deps-extensions": {
         "git": "https://github.com/tmeasday/meteor-deps-extensions.git",
