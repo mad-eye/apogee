@@ -104,7 +104,7 @@ class EditorState
             console.error "EDITOR ALREADY ATTACHED"
           doc.on 'change', (op) ->
             file.update {modified: true}
-          doc.on 'warn', (data) ->
+          doc.on 'warn', (data) =>
             Metrics.add
               level:'warn'
               message:'shareJsError'
@@ -130,7 +130,7 @@ class EditorState
                 doc.on 'change', (op) ->
                   file.update {modified: true}
                   doc.emit "cursors" #TODO: This should be handled in ShareJS
-                doc.on 'warn', (data) ->
+                doc.on 'warn', (data) =>
                   Metrics.add
                     level:'warn'
                     message:'shareJsError'
