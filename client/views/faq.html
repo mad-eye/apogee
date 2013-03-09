@@ -6,19 +6,28 @@
 
 <dl>
   <dt>Can I install MadEye on Windows?</dt>
-  <dd>You can install it most easily via Cygwin.  It should also work via command.exe.</dd>
+  <dd>Yes!  It should work just fine on Windows 7+, but it hasn&apos;t been as tested as thoroughly.  
+  You don&apos;t need to use `sudo` for `npm install`, of course.</dd>
 
   <dt>Can I install MadEye on OS X?</dt>
-  <dd>We’ve tested it on 10.8.  It probably works any installation the latest version of NodeJS works on.</dd>
+  <dd>We’ve tested it thoroughly on 10.8.  It should work on any installation the latest version of NodeJS works on.</dd>
 
   <dt>Can I install MadEye on Linux?</dt>
-  <dd>We use it frequently on Ubuntu, but it should work on any standard Linux distribution that NodeJS supports.</dd>
+  <dd>We use it frequently on Ubuntu, but it should work on any standard Linux distribution that NodeJS supports.
+  Note that the default nodejs package on Ubuntu 12.04 is quite out of date (0.6.x); you should consider installing it
+  with the <a href="http://nodejs.org/" target="_blank">executable</a>, or
+  via <a href="https://launchpad.net/~chris-lea/+archive/node.js/" target="_blank">Chris Lea&apos;s apt repo</a>.</dd>
 
   <dt>Can I install NodeJs using Homebrew?</dt>
-  <dd>Yes!  You can install node via Homebrew, just make sure that you include <code>/usr/local/share/npm/bin</code> in your PATH.</dd>
+  <dd>Yes!  You can install node via Homebrew, but sometimes Homebrew doesn&apos;t include the npm modules on its path.
+  Make sure that you include <code>/usr/local/share/npm/bin</code> in your PATH.</dd>
 
   <dt>It says it installed MadEye, but when i type `madeye`, it says “command not found”.</dt>
   <dd>Check to make sure that <code>/usr/local/share/npm/bin</code> is in your PATH.</dd>
+
+  <dt>The online project is acting a little funny, but I haven&apos;t saved the file yet!</dt>
+  <dd>No worries, the unsaved contents of the file are stored behind the scenes.  Just refresh,
+  and you should be fine.</dd>
 
 </dl>
 
