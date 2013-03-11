@@ -70,6 +70,7 @@ class EditorState
         editor = @getEditor()
         @doc?.detach_ace?()
         @doc = doc
+        #TODO something like cursorPositions.setMyPosition(@doc.name)
         #TODO: Extract this into its own autorun block
         if mode = file.aceMode()
           Mode = undefined

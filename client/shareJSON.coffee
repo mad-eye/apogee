@@ -1,7 +1,8 @@
 class ShareJSON
-  constructor:(docId) ->
+  constructor:(@docId) ->
     @keyDeps = {}
-    sharejs.open docId, "json", "#{Meteor.settings.public.bolideUrl}/channel", (error, doc) =>
+    sharejs.open @docId, "json", "#{Meteor.settings.public.bolideUrl}/channel", (error, doc) =>
+      @connectionId = doc.connection.id
       return handleShareError error if error
       doc.set {} if doc.version == 0
       @doc = doc
@@ -24,3 +25,14 @@ class ShareJSON
       subdoc.set value
 
   #TODO:  Add equals method, a la Session.equals  
+
+
+class Cursors extends ShareJSON
+
+cursorPositions = null
+Meteor.startup ->
+  Meteor.autorun ->
+    project = Projects.findOne()
+    return unless project
+    return if cursorPositions and cursorPositions.docId == project._id
+    cursorPositions = new ShareJSON(project._id)
