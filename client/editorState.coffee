@@ -39,28 +39,28 @@ class EditorState
     return @filePath
 
   revertFile: (callback) ->
-    Metrics.add
-      message:'revertFile'
-      fileId: @file?._id
-      filePath: @file?.path
-    @doc.detach_ace()
+    unless @doc and @file
+      Metrics.add
+        level:'warn'
+        message:'revertFile with null @doc'
+        fileId: @file?._id
+        filePath: @file?.path
+      console.warn("revert called, but no doc selected")
+      callback "No doc or no file"
+    @doc.detach_ace?()
     @getEditor().setValue("")
     file = @file
     Meteor.http.get "#{@getFileUrl(file)}?reset=true", (error,response) =>
       if error
         handleNetworkError error, response
         callback(error)
-      file.modified = false
-      file.save()
+      file.update modified:false
+      #TODO this was in the timeout block below, check to make sure there's no problems
+      @doc.attach_ace(@getEditor())
       callback()
       Meteor.setTimeout =>
-        @doc.attach_ace(@getEditor())
         @getEditor().navigateFileStart()
       ,0
-
-  setDoc: (doc)->
-    @doc?.detach_ace?()
-    @doc = doc
 
   #detach any existing docs and load appropriate ace modes
   setupAce: (editor, file)->
@@ -85,7 +85,7 @@ class EditorState
         filePath: @file?.path
         error: 'Found null doc version'
       console.error "Found null doc version for file #{@file._id}"
-    #TODO get this error to be bubled up
+    return doc.version?
 
   attachAce: (doc)->
     unless doc.editorAttached
@@ -110,6 +110,10 @@ class EditorState
         error: 'Editor already attached'
       console.error "EDITOR ALREADY ATTACHED"
 
+  clearDoc: ->
+    @doc?.detach_ace?()
+    @doc = null
+
   loadFile: (@file) ->
     console.log "Loading file", file
     editor = @getEditor()
@@ -118,26 +122,28 @@ class EditorState
       message:'loadFile'
       fileId: file?._id
       filePath: file?.path
+    Session.set "editorIsLoading", true
     sharejs.open file._id, "text2", "#{Meteor.settings.public.bolideUrl}/channel", (error, doc) =>
+      return unless file == @file #abort if we've loaded another file
       try
         handleShareError error if error?
-        @setDoc(doc)
+        @clearDoc()
+        return unless @checkDocValidity(doc)
         @setupAce(editor, file)
-        @checkDocValidity(doc)
         if doc.version > 0
           @attachAce(doc)
+          @doc = doc
+          Session.set "editorIsLoading", false
         else
-          Session.set "editorIsLoading", true
           #TODO figure out why this sometimes gets stuck on..
           #editor.setReadOnly true
           Meteor.http.get @getFileUrl(file), timeout:5*1000, (error,response) =>
-            if error
-              handleNetworkError error, response
-            else
-              if doc == @doc #Safety for multiple loadFiles running simultaneously
-                Session.set "editorIsLoading", false
-                editor = @getEditor()
-                @attachAce(doc)
+            return handleNetworkError error, response if error
+            return unless file == @file #Safety for multiple loadFiles running simultaneously
+            @doc = doc
+            @attachAce(doc)
+            Session.set "editorIsLoading", false
+
       catch e
         #TODO: Handle this better.
         Metrics.add
