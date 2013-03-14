@@ -88,6 +88,7 @@ class EditorState
     return doc.version?
 
   attachAce: (doc)->
+    file = @file
     unless doc.editorAttached
       doc.attach_ace @getEditor()
       doc.on 'change', (op) ->
