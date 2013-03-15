@@ -6,7 +6,9 @@
   },
   "dependencies": {
     "basePackages": {
-      "router": {},
+      "router": {
+        "version": "0.4.2"
+      },
       "madeye-common": {
         "path": ".madeye-common"
       },
