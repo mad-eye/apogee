@@ -34,7 +34,7 @@
       "meteor-mocha-web": {
         "git": "git://github.com/mad-eye/meteor-mocha-web.git",
         "branch": "master",
-        "commit": "aa37d9be6dd90d4abeba6de0b693e2e0297dfe54"
+        "commit": "540fd609af4e4cfa921a1ef1151bee542d2e06a4"
       },
       "meteor-sharejs": {
         "git": "git://github.com/mad-eye/meteor-sharejs.git",
