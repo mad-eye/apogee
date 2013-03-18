@@ -147,13 +147,13 @@ class EditorState
 
       catch e
         #TODO: Handle this better.
+        console.error "Error in loading file: #{e.message}:", e
         Metrics.add
           level:'error'
           message:'shareJsError'
           fileId: @file._id
           filePath: @file?.path
           error: e.message
-        console.error e
 
   #callback: (err) ->
   save : (callback) ->
