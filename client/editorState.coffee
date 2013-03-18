@@ -47,8 +47,6 @@ class EditorState
         filePath: @file?.path
       console.warn("revert called, but no doc selected")
       callback "No doc or no file"
-    @doc.detach_ace?()
-    @getEditor().setValue("")
     file = @file
     Meteor.http.get "#{@getFileUrl(file)}?reset=true", (error,response) =>
       if error
@@ -56,7 +54,6 @@ class EditorState
         callback(error)
       file.update modified:false
       #TODO this was in the timeout block below, check to make sure there's no problems
-      @doc.attach_ace(@getEditor())
       callback()
       Meteor.setTimeout =>
         @getEditor().navigateFileStart()
