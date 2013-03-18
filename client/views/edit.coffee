@@ -6,11 +6,12 @@
 #currentTheme = themes.pop(); ace.edit("editor").setTheme(currentTheme); console.log("current theme is", currentTheme);
 
 handleShareError: (err) ->
+  message = err.message ? err
   Metrics.add
     level:'error'
     message:'shareJsError'
-    error: err
-  displayAlert { level: 'error', message: error.message }
+    error: message
+  displayAlert { level: 'error', message: message }
   
 projectClosedError =
   level: 'error'
