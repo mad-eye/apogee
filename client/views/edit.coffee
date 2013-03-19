@@ -117,7 +117,8 @@ do ->
   Meteor.startup ->
     Meteor.autorun ->
       return unless Session.equals("editorRendered", true)
-      filePath = editorState.getPath()
+      filePath = editorState?.getPath()
+      return unless filePath?
       file = Files.findOne path:filePath
       return unless file and file._id != editorState.file?._id
       #TODO less hacky way to do this?
