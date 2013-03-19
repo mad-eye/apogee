@@ -158,7 +158,7 @@ do ->
         Session.set "working", false
 
   Handlebars.registerHelper "editorFileName", ->
-    editorState.getPath()
+    editorState?.getPath()
 
   Handlebars.registerHelper "editorIsLoading", ->
     Session.equals "editorIsLoading", true

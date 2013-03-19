@@ -10,6 +10,7 @@ handleNetworkError = (error, response) ->
     message:'networkError'
     error: err
   transitoryIssues.set 'networkIssues', 10*1000
+  return err
 
 # Must set editorState.file for fetchBody or save to work.
 class EditorState
@@ -112,7 +113,8 @@ class EditorState
     @doc?.detach_ace?()
     @doc = null
 
-  loadFile: (@file) ->
+  #callback: (error) ->
+  loadFile: (@file, callback) ->
     console.log "Loading file", file
     editor = @getEditor()
     file = @file
@@ -121,12 +123,14 @@ class EditorState
       fileId: file?._id
       filePath: file?.path
     Session.set "editorIsLoading", true
+    console.log "Sending to bolideUrl", Meteor.settings.public.bolideUrl
     sharejs.open file._id, "text2", "#{Meteor.settings.public.bolideUrl}/channel", (error, doc) =>
-      return unless file == @file #abort if we've loaded another file
+      console.log "Returning from sharejs.open"
+      return callback?(true) unless file == @file #abort if we've loaded another file
       try
         handleShareError error if error?
         @clearDoc()
-        return unless @checkDocValidity(doc)
+        return callback?(true) unless @checkDocValidity(doc)
         @setupAce(editor, file)
         if doc.version > 0
           @attachAce(doc)
@@ -136,11 +140,12 @@ class EditorState
           #TODO figure out why this sometimes gets stuck on..
           #editor.setReadOnly true
           Meteor.http.get @getFileUrl(file), timeout:5*1000, (error,response) =>
-            return handleNetworkError error, response if error
-            return unless file == @file #Safety for multiple loadFiles running simultaneously
+            return callback? handleNetworkError error, response if error
+            return callback?(true) unless file == @file #Safety for multiple loadFiles running simultaneously
             @doc = doc
             @attachAce(doc)
             Session.set "editorIsLoading", false
+            callback null
 
       catch e
         #TODO: Handle this better.
@@ -151,6 +156,7 @@ class EditorState
           fileId: @file._id
           filePath: @file?.path
           error: e.message
+        callback e
 
   #callback: (err) ->
   save : (callback) ->
