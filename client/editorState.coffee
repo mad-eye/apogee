@@ -117,7 +117,6 @@ class EditorState
   loadFile: (@file, callback) ->
     console.log "Loading file", file
     editor = @getEditor()
-    file = @file
     Metrics.add
       message:'loadFile'
       fileId: file?._id
@@ -128,7 +127,7 @@ class EditorState
       console.log "Returning from sharejs.open"
       return callback?(true) unless file == @file #abort if we've loaded another file
       try
-        handleShareError error if error?
+        return callback?(handleShareError error) if error?
         @clearDoc()
         return callback?(true) unless @checkDocValidity(doc)
         @setupAce(editor, file)
@@ -136,6 +135,7 @@ class EditorState
           @attachAce(doc)
           @doc = doc
           Session.set "editorIsLoading", false
+          callback?()
         else
           #TODO figure out why this sometimes gets stuck on..
           #editor.setReadOnly true
