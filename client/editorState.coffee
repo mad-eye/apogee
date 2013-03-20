@@ -95,8 +95,8 @@ class EditorState
         Metrics.add
           level:'warn'
           message:'shareJsError'
-          fileId: @file._id
-          filePath: @file?.path
+          fileId: file._id
+          filePath: file?.path
           error: data
       @getEditor().navigateFileStart() unless doc.cursor #why unless doc.cursor
       doc.emit "cursors"
@@ -104,8 +104,8 @@ class EditorState
       Metrics.add
         level:'warn'
         message:'shareJsError'
-        fileId: @file._id
-        filePath: @file?.path
+        fileId: file._id
+        filePath: file?.path
         error: 'Editor already attached'
       console.error "EDITOR ALREADY ATTACHED"
 
@@ -125,7 +125,9 @@ class EditorState
     console.log "Sending to bolideUrl", Meteor.settings.public.bolideUrl
     sharejs.open file._id, "text2", "#{Meteor.settings.public.bolideUrl}/channel", (error, doc) =>
       console.log "Returning from sharejs.open"
-      return callback?(true) unless file == @file #abort if we've loaded another file
+      unless file == @file #abort if we've loaded another file
+        console.log "Loading file #{@file._id} overriding #{file._id}"
+        return callback?(true)
       try
         return callback?(handleShareError error) if error?
         @clearDoc()
@@ -145,7 +147,7 @@ class EditorState
             @doc = doc
             @attachAce(doc)
             Session.set "editorIsLoading", false
-            callback null
+            callback? null
 
       catch e
         #TODO: Handle this better.
@@ -153,10 +155,10 @@ class EditorState
         Metrics.add
           level:'error'
           message:'shareJsError'
-          fileId: @file._id
-          filePath: @file?.path
+          fileId: file._id
+          filePath: file?.path
           error: e.message
-        callback e
+        callback? e
 
   #callback: (err) ->
   save : (callback) ->
