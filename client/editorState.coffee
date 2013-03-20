@@ -115,16 +115,14 @@ class EditorState
 
   #callback: (error) ->
   loadFile: (@file, callback) ->
-    console.log "Loading file", file
+    #console.log "Loading file", file
     editor = @getEditor()
     Metrics.add
       message:'loadFile'
       fileId: file?._id
       filePath: file?.path
     Session.set "editorIsLoading", true
-    console.log "Sending to bolideUrl", Meteor.settings.public.bolideUrl
     sharejs.open file._id, "text2", "#{Meteor.settings.public.bolideUrl}/channel", (error, doc) =>
-      console.log "Returning from sharejs.open"
       unless file == @file #abort if we've loaded another file
         console.log "Loading file #{@file._id} overriding #{file._id}"
         return callback?(true)
