@@ -4,11 +4,11 @@
 #Takes httpResponse
 handleNetworkError = (error, response) ->
   err = response.content?.error ? error
-  console.error "Network Error:", err
+  console.error "Network Error:", err.message
   Metrics.add
     level:'error'
     message:'networkError'
-    error: err
+    error: err.message
   transitoryIssues.set 'networkIssues', 10*1000
   return err
 

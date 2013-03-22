@@ -11,7 +11,7 @@ class TransitoryIssues
       @contexts[type].invalidateAll()
     @issues[type] = Meteor.setTimeout =>
       delete @issues[type]
-      @contexts[type].invalidateAll()
+      @contexts[type]?.invalidateAll()
     , time
 
 
