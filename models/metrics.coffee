@@ -8,4 +8,4 @@ if Meteor.isClient
     metric.message = metric.message?[0..200]
     if 'string' == typeof metric.error
       metric.error = metric.error?[0..200]
-  Metrics.insert metric
+    Metrics.insert metric
