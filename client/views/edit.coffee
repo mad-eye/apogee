@@ -125,6 +125,12 @@ do ->
       #selectedFilePath?
       Session.set "selectedFileId", file._id
       file.openParents()
+      if file.isLink
+        displayAlert
+          level: "error"
+          title: "Unable to load symbolic link"
+          message: file.path
+        return
       if file.isBinary
         displayAlert
           level: "error"
