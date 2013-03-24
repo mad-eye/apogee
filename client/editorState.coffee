@@ -144,6 +144,10 @@ class EditorState
             return callback?(true) unless file == @file #Safety for multiple loadFiles running simultaneously
             @doc = doc
             @attachAce(doc)
+            if response.data?.warning
+              alert = response.data?.warning
+              alert.level = 'warn'
+              displayAlert alert
             Session.set "editorIsLoading", false
             callback? null
 
