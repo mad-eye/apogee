@@ -6,11 +6,12 @@
 #currentTheme = themes.pop(); ace.edit("editor").setTheme(currentTheme); console.log("current theme is", currentTheme);
 
 handleShareError: (err) ->
+  message = err.message ? err
   Metrics.add
     level:'error'
     message:'shareJsError'
-    error: err
-  displayAlert { level: 'error', message: error.message }
+    error: message
+  displayAlert { level: 'error', message: message }
   
 projectClosedError =
   level: 'error'
@@ -116,13 +117,20 @@ do ->
   Meteor.startup ->
     Meteor.autorun ->
       return unless Session.equals("editorRendered", true)
-      filePath = editorState.getPath()
+      filePath = editorState?.getPath()
+      return unless filePath?
       file = Files.findOne path:filePath
       return unless file and file._id != editorState.file?._id
       #TODO less hacky way to do this?
       #selectedFilePath?
       Session.set "selectedFileId", file._id
       file.openParents()
+      if file.isLink
+        displayAlert
+          level: "error"
+          title: "Unable to load symbolic link"
+          message: file.path
+        return
       if file.isBinary
         displayAlert
           level: "error"
@@ -156,7 +164,7 @@ do ->
         Session.set "working", false
 
   Handlebars.registerHelper "editorFileName", ->
-    editorState.getPath()
+    editorState?.getPath()
 
   Handlebars.registerHelper "editorIsLoading", ->
     Session.equals "editorIsLoading", true
