@@ -45,7 +45,7 @@ class ProjectStatus extends ShareJSON
 projectStatus = null
 Meteor.startup ->
   Meteor.autorun ->
-    project = Projects.findOne {_id: Session.get "projectId"}
+    project = Projects.findOne Session.get "projectId"
     return unless project
     return if projectStatus and projectStatus.docId == project._id
     projectStatus = new ProjectStatus(project._id)

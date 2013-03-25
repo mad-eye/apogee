@@ -60,7 +60,7 @@ do ->
     Files.findOne(path:editorState.getPath())?.modified_locally
 
   projectIsLoading = ->
-    not (Projects.findOne()? || Session.equals 'fileCount', Files.collection.find().count())
+    not (Projects.findOne(Session.get "projectId")? || Session.equals 'fileCount', Files.collection.find().count())
 
   Template.projectStatus.projectAlerts = ->
     alerts = []
@@ -99,7 +99,7 @@ do ->
     return clazz
 
   Template.fileTree.projectName = ->
-    Projects.findOne()?.name ? "New project"
+    Projects.findOne(Session.get "projectId")?.name ? "New project"
 
   # Select file
   Template.fileTree.events
