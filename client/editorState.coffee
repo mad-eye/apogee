@@ -89,6 +89,7 @@ class EditorState
     file = @file
     unless doc.editorAttached
       doc.attach_ace @getEditor()
+      @getEditor().getSession().getDocument().setNewLineMode("auto")
       doc.on 'change', (op) ->
         file.update {modified: true}
       doc.on 'warn', (data) =>
@@ -109,14 +110,12 @@ class EditorState
         error: 'Editor already attached'
       console.error "EDITOR ALREADY ATTACHED"
 
-  clearDoc: ->
-    @doc?.detach_ace?()
-    @doc = null
-
   #callback: (error) ->
   loadFile: (@file, callback) ->
     #console.log "Loading file", file
     editor = @getEditor()
+    @doc?.detach_ace?()
+    @doc = null
     Metrics.add
       message:'loadFile'
       fileId: file?._id
@@ -130,7 +129,6 @@ class EditorState
         #TODO something like cursorPositions.setMyPosition(@doc.name)
         #TODO: Extract this into its own autorun block
         return callback?(handleShareError error) if error?
-        @clearDoc()
         return callback?(true) unless @checkDocValidity(doc)
         @setupAce(editor, file)
         if doc.version > 0
@@ -146,6 +144,10 @@ class EditorState
             return callback?(true) unless file == @file #Safety for multiple loadFiles running simultaneously
             @doc = doc
             @attachAce(doc)
+            if response.data?.warning
+              alert = response.data?.warning
+              alert.level = 'warn'
+              displayAlert alert
             Session.set "editorIsLoading", false
             callback? null
 
