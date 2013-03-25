@@ -89,6 +89,7 @@ class EditorState
     file = @file
     unless doc.editorAttached
       doc.attach_ace @getEditor()
+      @getEditor().getSession().getDocument().setNewLineMode("auto")
       doc.on 'change', (op) ->
         file.update {modified: true}
       doc.on 'warn', (data) =>
