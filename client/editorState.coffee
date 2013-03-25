@@ -109,14 +109,12 @@ class EditorState
         error: 'Editor already attached'
       console.error "EDITOR ALREADY ATTACHED"
 
-  clearDoc: ->
-    @doc?.detach_ace?()
-    @doc = null
-
   #callback: (error) ->
   loadFile: (@file, callback) ->
     #console.log "Loading file", file
     editor = @getEditor()
+    @doc?.detach_ace?()
+    @doc = null
     Metrics.add
       message:'loadFile'
       fileId: file?._id
@@ -128,7 +126,6 @@ class EditorState
         return callback?(true)
       try
         return callback?(handleShareError error) if error?
-        @clearDoc()
         return callback?(true) unless @checkDocValidity(doc)
         @setupAce(editor, file)
         if doc.version > 0
