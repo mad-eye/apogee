@@ -39,8 +39,29 @@ class ShareJSON
   #TODO:  Add equals method, a la Session.equals  
 
 class ProjectStatus extends ShareJSON
-  setFilePath: (filePath)->    
-    @set(@connectionId, filePath)
+  constructor: (@docId) ->
+    @heartbeatInterval = 2*1000
+    @heartbeatHandle = Meteor.setInterval =>
+      try
+        @_set 'heartbeat', Date.now()
+        @cleanStaleData()
+      catch err
+        console.error "Heartbeat error:", err.message
+    , @heartbeatInterval
+    super docId
+
+  _set: (field, value) ->
+    data = @doc.get(@connectionId) ? {}
+    data[field] = value
+    @set(@connectionId, data)
+
+  cleanStaleData: ->
+    now = Date.now()
+    for cxnId, {heartbeat} of @doc
+      delete @doc[cxnId] if now - heartbeat > 10*@heartbeatInterval
+
+  setFilePath: (filePath)->
+    @_set('filePath', filePath)
 
 projectStatus = null
 Meteor.startup ->
