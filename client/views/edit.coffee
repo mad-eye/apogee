@@ -138,7 +138,11 @@ do ->
           message: file.path
         return
       editorState.loadFile file
-
+      
+    Meteor.autorun ->
+      return unless Session.equals "projectStatusReady", true
+      projectStatus.setFilePath editorState.getPath()
+        
   Template.editorChrome.events
     'click #revertFile': (event) ->
       Session.set "working", true
