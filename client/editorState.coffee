@@ -16,7 +16,7 @@ handleNetworkError = (error, response) ->
 class EditorState
   constructor: (@editorId)->
     @contexts = new Meteor.deps._ContextSet()
-    @modifiedContexts = new Meteor.deps._ContextSet()
+    @checksumContexts = new Meteor.deps._ContextSet()
 
   getEditor: ->
     editor = ace.edit @editorId
@@ -41,7 +41,7 @@ class EditorState
     return @filePath
 
   getChecksum: ->
-    @modifiedContexts.addCurrentContext()
+    @checksumContexts.addCurrentContext()
     body = @getEditorBody()
     #body = @doc.getText()
     return null unless body?
@@ -62,8 +62,7 @@ class EditorState
         handleNetworkError error, response
         callback(error)
         return
-      #file.update modified:false
-      @modifiedContexts.invalidateAll()
+      @checksumContexts.invalidateAll()
       #TODO this was in the timeout block below, check to make sure there's no problems
       callback()
       Meteor.setTimeout =>
@@ -101,8 +100,7 @@ class EditorState
       doc.attach_ace @getEditor()
       @getEditor().getSession().getDocument().setNewLineMode("auto")
       doc.on 'change', (op) =>
-        #file.update {modified: true}
-        @modifiedContexts.invalidateAll()
+        @checksumContexts.invalidateAll()
       doc.on 'warn', (data) =>
         Metrics.add
           level:'warn'
@@ -143,7 +141,7 @@ class EditorState
         if doc.version > 0
           @attachAce(doc)
           @doc = doc
-          @modifiedContexts.invalidateAll()
+          @checksumContexts.invalidateAll()
           Session.set "editorIsLoading", false
           callback?()
         else
@@ -155,8 +153,8 @@ class EditorState
             @doc = doc
             @attachAce(doc)
             if response.data?.checksum?
-              @modifiedContexts.invalidateAll()
               @file.update {checksum:response.data.checksum}
+              #@checksumContexts.invalidateAll()
             if response.data?.warning
               alert = response.data?.warning
               alert.level = 'warn'
@@ -196,9 +194,8 @@ class EditorState
         handleNetworkError error, response
       else
         #XXX: Are we worried about race conditions if there were modifications after the save button was pressed?
-        #file.update {modified: false}
         file.update {checksum:editorChecksum}
-        @modifiedContexts.invalidateAll()
+        #@checksumContexts.invalidateAll()
       callback(error)
 
 Meteor.startup ->
