@@ -16,6 +16,7 @@ handleNetworkError = (error, response) ->
 class EditorState
   constructor: (@editorId)->
     @contexts = new Meteor.deps._ContextSet()
+    @modifiedContexts = new Meteor.deps._ContextSet()
 
   getEditor: ->
     editor = ace.edit @editorId
@@ -39,6 +40,16 @@ class EditorState
     @contexts.addCurrentContext()
     return @filePath
 
+  isModified: ->
+    console.log "Calling isModified with file", @file
+    @modifiedContexts.addCurrentContext()
+    return false unless @file?
+    checksum = Madeye.crc32 @getEditorBody()
+    console.log "isModified: #{checksum} vs #{@file.checksum}"
+    modified = checksum != @file.checksum
+    @file.update {modified}
+    return @file.modified
+    
   revertFile: (callback) ->
     unless @doc and @file
       Metrics.add
@@ -53,7 +64,7 @@ class EditorState
       if error
         handleNetworkError error, response
         callback(error)
-      file.update modified:false
+      #file.update modified:false
       #TODO this was in the timeout block below, check to make sure there's no problems
       callback()
       Meteor.setTimeout =>
@@ -90,8 +101,9 @@ class EditorState
     unless doc.editorAttached
       doc.attach_ace @getEditor()
       @getEditor().getSession().getDocument().setNewLineMode("auto")
-      doc.on 'change', (op) ->
-        file.update {modified: true}
+      doc.on 'change', (op) =>
+        #file.update {modified: true}
+        @modifiedContexts.invalidateAll()
       doc.on 'warn', (data) =>
         Metrics.add
           level:'warn'
@@ -142,6 +154,8 @@ class EditorState
             return callback?(true) unless file == @file #Safety for multiple loadFiles running simultaneously
             @doc = doc
             @attachAce(doc)
+            if response.data?.checksum?
+              @file.update {checksum:response.data.checksum}
             if response.data?.warning
               alert = response.data?.warning
               alert.level = 'warn'
@@ -170,17 +184,18 @@ class EditorState
     self = this #The => doesn't work for some reason with the PUT callback.
     contents = @getEditorBody()
     file = @file
-    return unless @file.modified
+    return if @file.checksum == Madeye.crc32 @getEditorBody
     Meteor.http.put @getFileUrl(file), {
       data: {contents: contents}
       headers: {'Content-Type':'application/json'}
       timeout: 5*1000
-    }, (error,response) ->
+    }, (error,response) =>
       if error
         handleNetworkError error, response
       else
         #XXX: Are we worried about race conditions if there were modifications after the save button was pressed?
-        file.update {modified: false}
+        #file.update {modified: false}
+        @modifiedContexts.invalidateAll()
       callback(error)
 
 
