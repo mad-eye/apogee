@@ -40,24 +40,13 @@ class EditorState
     @contexts.addCurrentContext()
     return @filePath
 
-  isModified: ->
-    console.log "Calling isModified with file", @file
+  getChecksum: ->
     @modifiedContexts.addCurrentContext()
-    return false unless @file?
-
     body = @getEditorBody()
-    docBody = @doc.getText()
-    console.log "Using body :|#{body}|:"
-    console.log "Document body :|#{docBody}|:"
-    tick = Date.now()
-    checksum = Madeye.crc32 body
-    tock = Date.now()
-    console.log "crc delta: #{tock-tick}"
-    console.log "isModified: #{checksum} vs #{@file.checksum}"
-    modified = checksum != @file.checksum
-    @file.update {modified}
-    return @file.modified
-    
+    #body = @doc.getText()
+    return null unless body?
+    return Madeye.crc32 body
+
   revertFile: (callback) ->
     unless @doc and @file
       Metrics.add
@@ -211,5 +200,15 @@ class EditorState
         file.update {checksum:editorChecksum}
         @modifiedContexts.invalidateAll()
       callback(error)
+
+Meteor.startup ->
+  Meteor.autorun ->
+    file = Files.findOne(path:editorState.getPath())
+    return unless file?.checksum?
+    checksum = editorState.getChecksum()
+    return unless checksum?
+    #console.log "isModified: #{checksum} vs #{file.checksum}"
+    modified = checksum != file.checksum
+    file.update {modified}
 
 

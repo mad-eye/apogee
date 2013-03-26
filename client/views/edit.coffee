@@ -176,7 +176,8 @@ do ->
   Template.editorChrome.buttonDisabled = ->
     filePath = editorState.getPath()
     file = Files.findOne({path: filePath}) if filePath?
-    if !editorState.isModified() or Session.equals("working", true) or projectIsClosed()
+    return true unless file
+    if !file.modified or Session.equals("working", true) or projectIsClosed()
       "disabled"
     else
       ""
