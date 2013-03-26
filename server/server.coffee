@@ -7,6 +7,16 @@ Meteor.publish "files", (projectId)->
   Files.collection.find
     projectId: projectId
 
+Meteor.publish "projectStatuses", (projectId) ->
+  ProjectStatuses.collection.find
+    projectId: projectId
+
+#TODO: Restrict based on userId
+ProjectStatuses.collection.allow
+  insert: (userId, doc) -> true
+  update: (userId, doc, fields, modifier) -> true
+  remove: (userId, doc) -> true
+
 Files.collection.allow(
   #TODO make this more restrictive  
   #For example, restrict by projectId
