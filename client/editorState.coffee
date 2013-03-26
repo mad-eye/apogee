@@ -44,7 +44,15 @@ class EditorState
     console.log "Calling isModified with file", @file
     @modifiedContexts.addCurrentContext()
     return false unless @file?
-    checksum = Madeye.crc32 @getEditorBody()
+
+    body = @getEditorBody()
+    docBody = @doc.getText()
+    console.log "Using body :|#{body}|:"
+    console.log "Document body :|#{docBody}|:"
+    tick = Date.now()
+    checksum = Madeye.crc32 body
+    tock = Date.now()
+    console.log "crc delta: #{tock-tick}"
     console.log "isModified: #{checksum} vs #{@file.checksum}"
     modified = checksum != @file.checksum
     @file.update {modified}
@@ -64,7 +72,9 @@ class EditorState
       if error
         handleNetworkError error, response
         callback(error)
+        return
       #file.update modified:false
+      @modifiedContexts.invalidateAll()
       #TODO this was in the timeout block below, check to make sure there's no problems
       callback()
       Meteor.setTimeout =>
@@ -144,6 +154,7 @@ class EditorState
         if doc.version > 0
           @attachAce(doc)
           @doc = doc
+          @modifiedContexts.invalidateAll()
           Session.set "editorIsLoading", false
           callback?()
         else
@@ -155,6 +166,7 @@ class EditorState
             @doc = doc
             @attachAce(doc)
             if response.data?.checksum?
+              @modifiedContexts.invalidateAll()
               @file.update {checksum:response.data.checksum}
             if response.data?.warning
               alert = response.data?.warning
@@ -183,8 +195,9 @@ class EditorState
       filePath: @file?.path #don't want reactivity
     self = this #The => doesn't work for some reason with the PUT callback.
     contents = @getEditorBody()
+    editorChecksum = Madeye.crc32 contents
     file = @file
-    return if @file.checksum == Madeye.crc32 @getEditorBody
+    return if @file.checksum == editorChecksum
     Meteor.http.put @getFileUrl(file), {
       data: {contents: contents}
       headers: {'Content-Type':'application/json'}
@@ -195,6 +208,7 @@ class EditorState
       else
         #XXX: Are we worried about race conditions if there were modifications after the save button was pressed?
         #file.update {modified: false}
+        file.update {checksum:editorChecksum}
         @modifiedContexts.invalidateAll()
       callback(error)
 
