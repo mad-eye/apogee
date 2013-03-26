@@ -60,23 +60,24 @@ do ->
 Meteor.autosubscribe ->
   Meteor.subscribe "files", Session.get "projectId"
   Meteor.subscribe "projects", Session.get "projectId"
-  Meteor.subscribe "projectStatuses", Session.get "projectId"
+  unless Session.get 'sessionId'
+    Session.set "sessionId", Math.floor(Math.random()*100000000) + 1
+  Meteor.subscribe "projectStatuses", Session.get("projectId"), Session.get('sessionId')
+
 
 Meteor.startup ->
   transitoryIssues = new TransitoryIssues
-  unless Session.get 'sessionId'
-    Session.set "sessionId", Math.floor(Math.random()*100000000) + 1
+  Meteor.setInterval ->
+    return unless Session.get('sessionId')?
+    projectStatus = ProjectStatuses.findOne {sessionId:Session.get('sessionId')}
+    return unless projectStatus?
+    projectStatus.update {heartbeat: Date.now()}
+  , 2*1000
 
 setFilePath = (filePath) ->
   projectId = Session.get 'projectId'
   sessionId = Session.get 'sessionId'
   return unless projectId? and sessionId?
   projectStatus = ProjectStatuses.findOne {sessionId}
-  if projectStatus?
-    console.log "Found existing projectStatus", projectStatus
-    return if projectStatus.filePath == filePath
-    projectStatus.update {filePath:filePath}
-  else
-    console.log "Found no projectStatus for projectId, sessionId", projectId, sessionId
-    projectStatus ?= new ProjectStatus {projectId, sessionId, filePath}
-    projectStatus.save()
+  return unless projectStatus? and projectStatus.filePath != filePath
+  projectStatus.update {filePath:filePath}
