@@ -100,7 +100,7 @@ do ->
     return clazz
 
   isOpenedBySomeone = (filePath) ->
-    ProjectStatuses.findOne(path: filePath)?
+    ProjectStatuses.findOne(filePath: filePath)?
     
 
   Template.fileTree.projectName = ->
