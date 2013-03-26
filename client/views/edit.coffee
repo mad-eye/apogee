@@ -96,11 +96,15 @@ do ->
     clazz += " level" + this.depth
     clazz += " selected" if this.isSelected()
     clazz += " modified" if this.modified
-    clazz += " peeped" if isOpenedBySomeone this.path
     return clazz
 
-  isOpenedBySomeone = (filePath) ->
-    ProjectStatuses.findOne(filePath: filePath)?
+  Template.fileTree.usersInFile = (file) ->
+    statuses = ProjectStatuses.find filePath:file.path
+    users = []
+    for status in statuses
+      iconSource = "/images/#{USER_ICONS[status.iconId]}"
+      users.push {iconSource}
+    return users
     
 
   Template.fileTree.projectName = ->

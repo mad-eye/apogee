@@ -23,7 +23,10 @@
 <ul class="fileTree">
     {{#each files}}
       <li class="{{fileEntryClass}}" id="{{_id}}">
-        <span>{{filename}} {{#if modified}}*{{/if}}</span> 
+        <span>{{filename}} {{#if modified}}*{{/if}}</span>
+        {{#each usersInFile this}}
+          <img class="fileTreeUserIcon" alt="" src="{{iconSource}}"</img>
+        {{/each}}
       </li>
     {{/each}}
 </ul>

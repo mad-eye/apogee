@@ -67,6 +67,8 @@ Meteor.autosubscribe ->
 
 Meteor.startup ->
   transitoryIssues = new TransitoryIssues
+  projectStatus = ProjectStatuses.findOne {sessionId:Session.get('sessionId')}
+  projectStatus?.update {heartbeat: Date.now()}
   Meteor.setInterval ->
     return unless Session.get('sessionId')?
     projectStatus = ProjectStatuses.findOne {sessionId:Session.get('sessionId')}
