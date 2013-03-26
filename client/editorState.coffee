@@ -126,7 +126,6 @@ class EditorState
         console.log "Loading file #{@file._id} overriding #{file._id}"
         return callback?(true)
       try
-        #TODO something like cursorPositions.setMyPosition(@doc.name)
         #TODO: Extract this into its own autorun block
         return callback?(handleShareError error) if error?
         return callback?(true) unless @checkDocValidity(doc)

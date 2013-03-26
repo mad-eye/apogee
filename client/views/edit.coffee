@@ -96,7 +96,12 @@ do ->
     clazz += " level" + this.depth
     clazz += " selected" if this.isSelected()
     clazz += " modified" if this.modified
+    clazz += " peeped" if isOpenedBySomeone this.path
     return clazz
+
+  isOpenedBySomeone = (filePath) ->
+    ProjectStatuses.findOne(filePath: filePath)?
+    
 
   Template.fileTree.projectName = ->
     Projects.findOne(Session.get "projectId")?.name ? "New project"
@@ -140,9 +145,11 @@ do ->
       editorState.loadFile file
       
     Meteor.autorun ->
-      return unless Session.equals "projectStatusReady", true
-      projectStatus.setFilePath editorState.getPath()
-        
+      return unless Session.equals("editorRendered", true)
+      filePath = editorState?.getPath()
+      return unless filePath?
+      setFilePath filePath
+      
   Template.editorChrome.events
     'click #revertFile': (event) ->
       Session.set "working", true

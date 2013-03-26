@@ -23,8 +23,7 @@ do ->
     Metrics.add {message:'load', filePath, lineNumber, isHangout}
     editorState ?= new EditorState "editor"
     editorState.setPath filePath
-    editorState.setLine lineNumber
-    'edit'
+    "edit"
 
   Meteor.Router.add
     '/':  ->
@@ -61,7 +60,24 @@ do ->
 Meteor.autosubscribe ->
   Meteor.subscribe "files", Session.get "projectId"
   Meteor.subscribe "projects", Session.get "projectId"
+  unless Session.get 'sessionId'
+    Session.set "sessionId", Math.floor(Math.random()*100000000) + 1
+  Meteor.subscribe "projectStatuses", Session.get("projectId"), Session.get('sessionId')
+
 
 Meteor.startup ->
   transitoryIssues = new TransitoryIssues
+  Meteor.setInterval ->
+    return unless Session.get('sessionId')?
+    projectStatus = ProjectStatuses.findOne {sessionId:Session.get('sessionId')}
+    return unless projectStatus?
+    projectStatus.update {heartbeat: Date.now()}
+  , 2*1000
 
+setFilePath = (filePath) ->
+  projectId = Session.get 'projectId'
+  sessionId = Session.get 'sessionId'
+  return unless projectId? and sessionId?
+  projectStatus = ProjectStatuses.findOne {sessionId}
+  return unless projectStatus? and projectStatus.filePath != filePath
+  projectStatus.update {filePath:filePath}
