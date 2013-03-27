@@ -200,7 +200,7 @@ class EditorState
 
 Meteor.startup ->
   Meteor.autorun ->
-    file = Files.findOne(path:editorState.getPath())
+    file = Files.findOne(path:editorState?.getPath())
     return unless file?.checksum?
     checksum = editorState.getChecksum()
     return unless checksum?
