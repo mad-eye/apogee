@@ -17,11 +17,12 @@ findIconId = (projectId)->
     return i
 
 Meteor.publish "projectStatuses", (projectId, sessionId) ->
-  #console.log "Subscribing to projectStatuses with prodId, sesId", projectId, sessionId
+  console.log "Subscribing to projectStatuses with prodId, sesId", projectId, sessionId
   projectStatus = new ProjectStatus({projectId, sessionId})
   projectStatus.iconId = findIconId projectId
   projectStatus.save()
   #console.log "Saved projectStatus", projectStatus
+  console.log "found projectStatuses", ProjectStatuses.collection.find({projectId: projectId}).fetch()
   return ProjectStatuses.collection.find projectId: projectId
 
 Meteor.setInterval ->

@@ -44,9 +44,6 @@ networkIssuesWarning =
   uncloseable: true
 
 do ->
-
-  fileTree = new Madeye.FileTree()
-
   projectIsClosed = ->
     Projects.findOne()?.closed
   
@@ -81,41 +78,6 @@ do ->
         console.error err
         return
       Session.set 'fileCount', count
-
-  Template.fileTree.files = ->
-    fileTree.setFiles Files.collection.find()
-    _.filter fileTree.files, (file)->
-      fileTree.isVisible(file)
-
-  Template.fileTree.fileEntryClass = ->
-    clazz = "fileTree-item"
-    if @isDir
-      clazz += " directory " + if @isOpen() then "open" else "closed"
-    else
-      clazz += " file"
-    clazz += " level" + this.depth
-    clazz += " selected" if this.isSelected()
-    clazz += " modified" if this.modified
-    return clazz
-
-  Template.fileTree.usersInFile = (file) ->
-    statuses = ProjectStatuses.find filePath:file.path
-    users = []
-    for status in statuses
-      iconSource = "/images/#{USER_ICONS[status.iconId]}"
-      users.push {iconSource}
-    return users
-    
-
-  Template.fileTree.projectName = ->
-    Projects.findOne(Session.get "projectId")?.name ? "New project"
-
-  # Select file
-  Template.fileTree.events
-    'click li.fileTree-item' : (event) ->
-      fileId = event.currentTarget.id
-      file = fileTree.findById fileId
-      file.select()
 
   Template.editor.preserve("#editor")
 
