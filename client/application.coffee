@@ -57,12 +57,14 @@ do ->
       recordView()
       "missing"
 
-Meteor.autosubscribe ->
-  Meteor.subscribe "files", Session.get "projectId"
-  Meteor.subscribe "projects", Session.get "projectId"
-  unless Session.get 'sessionId'
+Meteor.autorun ->
+  projectId = Session.get "projectId"
+  return unless projectId
+  Meteor.subscribe "files", projectId
+  Meteor.subscribe "projects", projectId
+  unless Session.get "sessionId"
     Session.set "sessionId", Math.floor(Math.random()*100000000) + 1
-  Meteor.subscribe "projectStatuses", Session.get("projectId"), Session.get('sessionId')
+  Meteor.subscribe "projectStatuses", projectId, Session.get('sessionId')
 
 
 Meteor.startup ->
