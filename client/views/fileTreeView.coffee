@@ -2,36 +2,21 @@ IconsForFile = new Meteor.Collection(null)
  
 do ->
   fileTree = new Madeye.FileTree()
-  
-  #not deep equal, not caring about sorting or performance (used for small n)
-  areSetsEqual = (arr1, arr2) ->
-    # null == null as well
-    return true if arr1 == arr2
-    return false unless arr1? and arr2?
-    return false unless arr1.length == arr2.length
-    items1 = {}; items1[e] = true for e in arr1
-    items2 = {}; items2[e] = true for e in arr2
-    return _.isEqual items1, items2
     
-  #fileIcons: {path:, iconIds:[]}
   Meteor.startup ->
     Meteor.autorun ->
-      fileIcons = {}
+      activeSessionIds = []
       for status in ProjectStatuses.find()
-        path = status.filePath
-        continue unless path
-        fileIcons[path] ?= []
-        fileIcons[path].push status.iconId
-
-      #console.log "Found fileIcons from projectStatuses:", fileIcons
-      for path, iconIds of fileIcons
-        iconsForFile = IconsForFile.findOne({path})
-        existingIds = iconsForFile?.iconIds
-        unless areSetsEqual(iconIds, existingIds)
-          if iconsForFile
-            IconsForFile.update {path:path}, {$set: {iconIds:iconIds}}
-          else
-            IconsForFile.insert {path, iconIds}
+        activeSessionIds.push status.sessionId
+        iconForFile = IconsForFile.findOne sessionId:status.sessionId
+        data = {path:status.filePath, sessionId:status.sessionId, iconId:status.iconId}
+        if iconForFile
+          if data.path != iconForFile.path
+            IconsForFile.update iconForFile._id, {$set: data}
+        else
+          IconsForFile.insert data
+      IconsForFile.remove {sessionId: {$nin: activeSessionIds}}  
+        
 
   Template.fileTree.helpers
     files : ->
@@ -51,11 +36,8 @@ do ->
       return clazz
 
     usersInFile: (file) ->
-      iconIds = IconsForFile.findOne({path:file.path})?.iconIds
-      return unless iconIds?
-      console.log "Found icons #{iconIds} for path #{file.path}"
-      icons = ("/images/#{USER_ICONS[iconId]}" for iconId in iconIds)
-      console.log "Found icon paths:", icons
+      iconsForFile = IconsForFile.find({path:file.path}).fetch()
+      icons = ("/images/#{USER_ICONS[iconId]}" for {iconId} in iconsForFile)
       return icons
 
     projectName : ->
