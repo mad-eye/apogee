@@ -18,7 +18,7 @@ findIconId = (projectId)->
 
 Meteor.publish "projectStatuses", (projectId, sessionId) ->
   console.log "Subscribing to projectStatuses with prodId, sesId", projectId, sessionId
-  projectStatus = new ProjectStatus({projectId, sessionId})
+  projectStatus = new ProjectStatus({projectId, sessionId, heartbeat:Date.now()})
   projectStatus.iconId = findIconId projectId
   projectStatus.save()
   #console.log "Saved projectStatus", projectStatus
