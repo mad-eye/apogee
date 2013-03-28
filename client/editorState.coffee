@@ -55,16 +55,16 @@ class EditorState
         fileId: @file?._id
         filePath: @file?.path
       console.warn("revert called, but no doc selected")
-      callback "No doc or no file"
+      callback? "No doc or no file"
     file = @file
     Meteor.http.get "#{@getFileUrl(file)}?reset=true", (error,response) =>
       if error
         handleNetworkError error, response
-        callback(error)
+        callback?(error)
         return
       @checksumContexts.invalidateAll()
       #TODO this was in the timeout block below, check to make sure there's no problems
-      callback()
+      callback?()
       Meteor.setTimeout =>
         @getEditor().navigateFileStart()
       ,0
@@ -142,6 +142,11 @@ class EditorState
           @attachAce(doc)
           @doc = doc
           @checksumContexts.invalidateAll()
+          editorChecksum = Madeye.crc32 doc.getText()
+          # FIXME there's a better way to do this
+          # we need to stop storing a stale file object on the editorState
+          if file.modified_locally and file.checksum == editorChecksum
+            @revertFile()
           Session.set "editorIsLoading", false
           callback?()
         else
