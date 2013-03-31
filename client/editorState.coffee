@@ -15,8 +15,8 @@ handleNetworkError = (error, response) ->
 # Must set editorState.file for fetchBody or save to work.
 class EditorState
   constructor: (@editorId)->
-    @contexts = new Meteor.deps._ContextSet()
-    @checksumContexts = new Meteor.deps._ContextSet()
+    @pathDep = new Deps.Dependency
+    @checksumDep = new Deps.Dependency
 
   getEditor: ->
     editor = ace.edit @editorId
@@ -32,16 +32,18 @@ class EditorState
   setPath: (filePath) ->
     return if filePath == @filePath
     @filePath = filePath
-    @contexts.invalidateAll()
+    @pathDep.changed()
 
   setLine: (@lineNumber) ->
 
   getPath: () ->
-    @contexts.addCurrentContext()
+    # TODO handle the case where this is called and no currnet computation exists
+    # http://docs.meteor.com/#dependency_adddependent
+    Deps.depend @pathDep
     return @filePath
 
   getChecksum: ->
-    @checksumContexts.addCurrentContext()
+    Deps.depend @checksumDep
     body = @getEditorBody()
     #body = @doc.getText()
     return null unless body?
@@ -62,7 +64,7 @@ class EditorState
         handleNetworkError error, response
         callback?(error)
         return
-      @checksumContexts.invalidateAll()
+      @checksumDep.changed()
       #TODO this was in the timeout block below, check to make sure there's no problems
       callback?()
       Meteor.setTimeout =>
@@ -100,7 +102,7 @@ class EditorState
       doc.attach_ace @getEditor()
       @getEditor().getSession().getDocument().setNewLineMode("auto")
       doc.on 'change', (op) =>
-        @checksumContexts.invalidateAll()
+        @checksumDep.changed()
       doc.on 'warn', (data) =>
         Metrics.add
           level:'warn'
@@ -141,7 +143,7 @@ class EditorState
         if doc.version > 0
           @attachAce(doc)
           @doc = doc
-          @checksumContexts.invalidateAll()
+          @checksumDep.changed()
           editorChecksum = Madeye.crc32 doc.getText()
           # FIXME there's a better way to do this
           # we need to stop storing a stale file object on the editorState
@@ -159,7 +161,7 @@ class EditorState
             @attachAce(doc)
             if response.data?.checksum?
               @file.update {checksum:response.data.checksum}
-              #@checksumContexts.invalidateAll()
+              #@checksumDeps.changed()
             if response.data?.warning
               alert = response.data?.warning
               alert.level = 'warn'
@@ -200,7 +202,7 @@ class EditorState
       else
         #XXX: Are we worried about race conditions if there were modifications after the save button was pressed?
         file.update {checksum:editorChecksum}
-        #@checksumContexts.invalidateAll()
+        #@checksumDep.changed()
       callback(error)
 
 Meteor.startup ->
