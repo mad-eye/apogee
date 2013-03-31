@@ -8,7 +8,6 @@ bootstrap
 jquery
 underscore
 less
-deps-extensions
 accounts-github
 router
 madeye-common
