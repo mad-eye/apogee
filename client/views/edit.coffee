@@ -43,8 +43,32 @@ networkIssuesWarning =
   message: "We're having trouble with the network.  We'll try to resolve it automatically, but you may want to try again later."
   uncloseable: true
 
-do ->
 
+#TODO figure out a better way to share this from the ShareJS code
+cursorToRange = (editorDoc, cursor) ->
+  Range = require("ace/range").Range
+  cursor = [cursor, cursor] unless cursor instanceof Array
+  lines = editorDoc.$lines
+  offset = 0
+  [start, end] = [null, null]
+
+  for line, i in lines
+    if offset + line.length >= cursor[0] and not start
+      start = {row:i, column: cursor[0] - offset}
+    if offset + line.length >= cursor[1] and not end
+      end = {row:i, column: cursor[1] - offset}
+    if start and end
+      range = new Range()
+      #location where the cursor will be drawn
+      range.cursor = {row: end.row, column: end.column}
+      range.start = start
+      range.end = end
+      return range
+    #+1 for newline
+    offset += line.length + 1
+
+
+do ->
   fileTree = new Madeye.FileTree()
 
   projectIsClosed = ->
@@ -137,7 +161,12 @@ do ->
           title: "Unable to load binary file"
           message: file.path
         return
-      editorState.loadFile file
+      editorState.loadFile file, ->
+        if editorState.doc.cursor
+          position = cursorToRange(editorState.getEditor().getSession().getDocument(), editorState.doc.cursor)
+          editorState.getEditor().navigateTo(position.start.row, position.start.column)
+          Meteor.setTimeout ->
+            editorState.getEditor().scrollToLine(position.start.row, true)
 
   Template.editorChrome.events
     'click #revertFile': (event) ->
