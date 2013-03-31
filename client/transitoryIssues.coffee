@@ -1,23 +1,21 @@
 class TransitoryIssues
   constructor: ()->
     @issues = {}
-    @contexts = {}
+    @deps = {}
 
   set: (type, time) ->
     oldHandle = @issues[type]
     if oldHandle
       clearTimeout oldHandle
     else
-      @contexts[type].invalidateAll()
+      @deps[type].changed()
     @issues[type] = Meteor.setTimeout =>
       delete @issues[type]
-      @contexts[type]?.invalidateAll()
+      @deps[type]?.changed()
     , time
 
 
   has: (type) ->
-    @contexts[type] ?= new Meteor.deps._ContextSet()
-    @contexts[type].addCurrentContext()
+    @deps[type] ?= new Deps.Dependency
+    Deps.depend @deps[type]
     @issues[type]?
-
-
