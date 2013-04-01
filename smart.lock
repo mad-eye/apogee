@@ -8,14 +8,15 @@
     "basePackages": {
       "router": {},
       "madeye-common": {
-        "path": ""
+        "path": ".madeye-common"
       },
       "meteor-mocha-web": {
         "git": "git://github.com/mad-eye/meteor-mocha-web.git",
         "branch": "master"
       },
       "meteor-sharejs": {
-        "path": "../../../meteor-sharejs"
+        "git": "git://github.com/mad-eye/meteor-sharejs",
+        "branch": "master"
       }
     },
     "packages": {
@@ -25,7 +26,7 @@
         "commit": "0691a6e2c4c249ce7d00cd6dc7ad27e1c7330a31"
       },
       "madeye-common": {
-        "path": ""
+        "path": ".madeye-common"
       },
       "meteor-mocha-web": {
         "git": "git://github.com/mad-eye/meteor-mocha-web.git",
@@ -33,7 +34,9 @@
         "commit": "92678a723f517dd60cc00609842e0177921ca75f"
       },
       "meteor-sharejs": {
-        "path": "../../../meteor-sharejs"
+        "git": "git://github.com/mad-eye/meteor-sharejs",
+        "branch": "master",
+        "commit": "0f3f8cc38665a04e427526c34bdd0ba254bdd88c"
       },
       "page-js-ie-support": {
         "git": "https://github.com/tmeasday/meteor-page-js-ie-support.git",

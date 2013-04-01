@@ -12,7 +12,7 @@
       "git": "git://github.com/mad-eye/meteor-mocha-web.git"
     },
     "meteor-sharejs": {
-      "path": "../../meteor-sharejs"
+      "git": "git://github.com/mad-eye/meteor-sharejs"
     }
   }
 }
