@@ -15,8 +15,7 @@
         "branch": "master"
       },
       "meteor-sharejs": {
-        "git": "git://github.com/mad-eye/meteor-sharejs.git",
-        "branch": "master"
+        "path": "../../../meteor-sharejs"
       }
     },
     "packages": {
@@ -34,9 +33,7 @@
         "commit": "92678a723f517dd60cc00609842e0177921ca75f"
       },
       "meteor-sharejs": {
-        "git": "git://github.com/mad-eye/meteor-sharejs.git",
-        "branch": "master",
-        "commit": "bd6bcb6cc1bcc7c972c8ef166e1ff3bd70da25d7"
+        "path": "../../../meteor-sharejs"
       },
       "page-js-ie-support": {
         "git": "https://github.com/tmeasday/meteor-page-js-ie-support.git",
