@@ -15,8 +15,8 @@ handleNetworkError = (error, response) ->
 # Must set editorState.file for fetchBody or save to work.
 class EditorState
   constructor: (@editorId)->
-    @contexts = new Meteor.deps._ContextSet()
-    @checksumContexts = new Meteor.deps._ContextSet()
+    @pathDep = new Deps.Dependency
+    @checksumDep = new Deps.Dependency
 
   getEditor: ->
     editor = ace.edit @editorId
@@ -32,16 +32,18 @@ class EditorState
   setPath: (filePath) ->
     return if filePath == @filePath
     @filePath = filePath
-    @contexts.invalidateAll()
+    @pathDep.changed()
 
   setLine: (@lineNumber) ->
 
   getPath: () ->
-    @contexts.addCurrentContext()
+    # TODO handle the case where this is called and no currnet computation exists
+    # http://docs.meteor.com/#dependency_adddependent
+    Deps.depend @pathDep
     return @filePath
 
   getChecksum: ->
-    @checksumContexts.addCurrentContext()
+    Deps.depend @checksumDep
     body = @getEditorBody()
     #body = @doc.getText()
     return null unless body?
@@ -55,16 +57,16 @@ class EditorState
         fileId: @file?._id
         filePath: @file?.path
       console.warn("revert called, but no doc selected")
-      callback "No doc or no file"
+      callback? "No doc or no file"
     file = @file
     Meteor.http.get "#{@getFileUrl(file)}?reset=true", (error,response) =>
       if error
         handleNetworkError error, response
-        callback(error)
+        callback?(error)
         return
-      @checksumContexts.invalidateAll()
+      @checksumDep.changed()
       #TODO this was in the timeout block below, check to make sure there's no problems
-      callback()
+      callback?()
       Meteor.setTimeout =>
         @getEditor().navigateFileStart()
       ,0
@@ -100,7 +102,7 @@ class EditorState
       doc.attach_ace @getEditor()
       @getEditor().getSession().getDocument().setNewLineMode("auto")
       doc.on 'change', (op) =>
-        @checksumContexts.invalidateAll()
+        @checksumDep.changed()
       doc.on 'warn', (data) =>
         Metrics.add
           level:'warn'
@@ -142,7 +144,12 @@ class EditorState
         if doc.version > 0
           @attachAce(doc)
           @doc = doc
-          @checksumContexts.invalidateAll()
+          @checksumDep.changed()
+          editorChecksum = Madeye.crc32 doc.getText()
+          # FIXME there's a better way to do this
+          # we need to stop storing a stale file object on the editorState
+          if file.modified_locally and file.checksum == editorChecksum
+            @revertFile()
           Session.set "editorIsLoading", false
           callback?()
         else
@@ -155,7 +162,7 @@ class EditorState
             @attachAce(doc)
             if response.data?.checksum?
               @file.update {checksum:response.data.checksum}
-              #@checksumContexts.invalidateAll()
+              #@checksumDeps.changed()
             if response.data?.warning
               alert = response.data?.warning
               alert.level = 'warn'
@@ -196,12 +203,12 @@ class EditorState
       else
         #XXX: Are we worried about race conditions if there were modifications after the save button was pressed?
         file.update {checksum:editorChecksum}
-        #@checksumContexts.invalidateAll()
+        #@checksumDep.changed()
       callback(error)
 
 Meteor.startup ->
   Meteor.autorun ->
-    file = Files.findOne(path:editorState.getPath())
+    file = Files.findOne(path:editorState?.getPath())
     return unless file?.checksum?
     checksum = editorState.getChecksum()
     return unless checksum?

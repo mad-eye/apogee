@@ -1,4 +1,10 @@
 editorState = null
+Meteor.methods
+  cleanProject: (projectId)->
+    console.log "cleaning project", projectId
+    Projects.collection.remove projectId
+    Files.collection.remove projectId: projectId
+
 describe "editorChrome", ->
   assert = chai.assert
   describe "save button", ->
@@ -26,8 +32,7 @@ describe "editorChrome", ->
       Meteor.flush()
 
     after ->
-      Projects.collection.remove name: projectName
-      Files.collection.remove projectId: projectId
+      Meteor.call "cleanProject", projectId
 
     describe "when project.closed and !file.modified", ->
       before ->

@@ -1,14 +1,12 @@
 {
   "meteor": {
     "git": "https://github.com/meteor/meteor.git",
-    "tag": "v0.5.7",
-    "commit": "7b1bf062b9545466c7adc2d39a82a92994ccd3ba"
+    "tag": "v0.5.9",
+    "commit": "45fef52095bb6726cc1b2f05008ad891c446100a"
   },
   "dependencies": {
     "basePackages": {
-      "router": {
-        "version": "0.4.2"
-      },
+      "router": {},
       "madeye-common": {
         "path": ".madeye-common"
       },
@@ -17,16 +15,15 @@
         "branch": "master"
       },
       "meteor-sharejs": {
-        "git": "git://github.com/mad-eye/meteor-sharejs.git",
+        "git": "git://github.com/mad-eye/meteor-sharejs",
         "branch": "master"
-      },
-      "deps-extensions": {}
+      }
     },
     "packages": {
       "router": {
         "git": "https://github.com/tmeasday/meteor-router.git",
-        "tag": "v0.4.2",
-        "commit": "82d2895847502b4025370523dba60d597cff4772"
+        "tag": "v0.4.3",
+        "commit": "0691a6e2c4c249ce7d00cd6dc7ad27e1c7330a31"
       },
       "madeye-common": {
         "path": ".madeye-common"
@@ -34,17 +31,12 @@
       "meteor-mocha-web": {
         "git": "git://github.com/mad-eye/meteor-mocha-web.git",
         "branch": "master",
-        "commit": "540fd609af4e4cfa921a1ef1151bee542d2e06a4"
+        "commit": "92678a723f517dd60cc00609842e0177921ca75f"
       },
       "meteor-sharejs": {
-        "git": "git://github.com/mad-eye/meteor-sharejs.git",
+        "git": "git://github.com/mad-eye/meteor-sharejs",
         "branch": "master",
-        "commit": "f9bfd04cf8b6a07bdf07b4e1d933961d3d8d5fef"
-      },
-      "deps-extensions": {
-        "git": "https://github.com/tmeasday/meteor-deps-extensions.git",
-        "tag": "v0.1.0",
-        "commit": "110462c0ba33aaeb35e55069134287325cc453e5"
+        "commit": "0f3f8cc38665a04e427526c34bdd0ba254bdd88c"
       },
       "page-js-ie-support": {
         "git": "https://github.com/tmeasday/meteor-page-js-ie-support.git",
