@@ -1,0 +1,58 @@
+<template name="aceBar">
+<div id="aceBar">
+  <form class="form-inline">
+    <label class="checkbox" >
+      <input type="checkbox" id="showInvisibles" {{#if showInvisibles_val}}checked{{/if}} />
+      Show Invisibles
+    </label>
+
+    <label class="select">
+    <select id="fileModeSelect">
+      {{> fileModeOptions}}
+    </select> SyntaxMode
+    </label>
+
+    <label class="select">
+    <select id="themeSelect">
+      {{> themeOptions}}
+    </select> Theme
+    </label>
+
+    {{!
+    Doesn't work yet
+    <label class="select">
+      <select id="keybinding" size="1">
+        <option value="ace">Ace</option>
+        <option value="vim">Vim</option>
+        <option value="emacs">Emacs</option>
+        <!--<option value="custom">Custom</option>-->
+      </select>
+    </label>
+    }}
+
+    <label class="select">
+  </form>
+</div>
+</template>
+
+
+<template name="themeOptions">
+  <option value="">Select theme&hellip;</option>
+  <optgroup label="Bright">
+    {{#each brightThemes}}
+      <option value="{{value}}" {{#if isThemeActive value}}selected{{/if}}>{{name}}</option>
+    {{/each}}
+  </optgroup>
+  <optgroup label="Dark">
+    {{#each darkThemes}}
+      <option value="{{value}}" {{#if isThemeActive value}}selected{{/if}}>{{name}}</option>
+    {{/each}}
+  </optgroup>
+</template>
+
+<template name="fileModeOptions">
+  <option value="">Select mode&hellip;</option>
+  {{#each fileModes}}
+  <option value="{{value}}" {{#if isFileModeActive value}}selected{{/if}}>{{name}}</option>
+  {{/each}}
+</template>

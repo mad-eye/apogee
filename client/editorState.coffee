@@ -71,18 +71,6 @@ class EditorState
         @getEditor().navigateFileStart()
       ,0
 
-  #detach any existing docs and load appropriate ace modes
-  setupAce: (editor, file)->
-    #TODO: Extract this into its own autorun block
-    if mode = file.aceMode()
-      Mode = undefined
-      try
-        Mode = require("ace/mode/#{mode}").Mode
-        editor.getSession().setMode(new Mode())
-      catch e
-        jQuery.getScript "/ace/mode-#{mode}.js", =>
-          Mode = require("ace/mode/#{mode}").Mode
-          editor.getSession().setMode(new Mode())
 
   checkDocValidity: (doc)->
     unless doc.version?
@@ -139,7 +127,6 @@ class EditorState
       try
         return callback?(handleShareError error) if error?
         return callback?(true) unless @checkDocValidity(doc)
-        @setupAce(editor, file)
         if doc.version > 0
           @attachAce(doc)
           @doc = doc
