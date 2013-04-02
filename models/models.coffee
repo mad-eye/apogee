@@ -53,3 +53,62 @@ Files = new Meteor.Model("files", Madeye.File)
 Projects = new Meteor.Model("projects", Project)
 NewsletterEmails = new Meteor.Model("newsletterEmails", NewsletterEmail)
 ProjectStatuses = new Meteor.Model("projectStatus", ProjectStatus)
+
+#return a map between file paths and open sharejs session ids
+if Meteor.isClient
+  do ->
+    sessionsDep = new Deps.Dependency
+    ProjectStatuses.getSessions = ->
+      projectId = Session.get "projectId"
+      Deps.depend sessionsDep
+      result = {}
+      Deps.nonreactive ->
+        statuses = ProjectStatuses.find {projectId}
+        for status in statuses
+          continue unless status.filepath
+          result[status.filepath] ?= []
+          result[status.filepath].push status.iconId
+      return result
+
+    Meteor.setInterval ->
+      sessionId = Session.get "sessionId"
+      projectId = Session.get "projectId"
+      return unless sessionId and projectId
+      status = ProjectStatuses.findOne {sessionId, projectId}
+      status?.update {heartbeat: Date.now()}
+    , 2*1000
+
+    projectStatusLoaded = (projectStatus)->
+      # console.log "project status loaded"
+      Deps.autorun ->
+        if Session.get("editorRendered")?
+          # console.log "editor state path", editorState.getPath()
+          projectStatus.update {filepath: editorState.getPath(), connectionId: editorState.getConnectionId()}
+
+    queryHandle = null
+    Deps.autorun (computation)->
+      return unless Session.get("projectId")?
+      projectId = Session.get("projectId")
+      Deps.nonreactive ->
+        queryHandle?.stop()
+        unless Session.get("sessionId")?
+          Session.set "sessionId", Math.floor(Math.random()*100000000) + 1
+        sessionId = Session.get "sessionId"
+        Meteor.call "createProjectStatus", sessionId, projectId
+
+        cursor = ProjectStatuses.collection.find {projectId}
+        queryHandle = cursor.observeChanges
+          added: (id, fields)->
+            console.log "ADDED", id, fields
+            sessionsDep.changed()
+            if fields.sessionId == Session.get "sessionId"
+              ProjectStatuses.mine = ProjectStatuses.findOne(id)
+              projectStatusLoaded ProjectStatuses.mine
+
+          changed: (id, fields)->
+            console.log "CHANGED", id, fields if fields.filepath?
+            sessionsDep.changed() if fields.filepath?
+
+          removed: (id, fields)->
+            console.log "REMOVED", id, fields
+            sessionsDep.changed()

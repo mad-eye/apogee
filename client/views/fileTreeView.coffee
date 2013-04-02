@@ -1,23 +1,6 @@
-IconsForFile = new Meteor.Collection(null)
- 
 do ->
   fileTree = new Madeye.FileTree()
     
-  Meteor.startup ->
-    Meteor.autorun ->
-      activeSessionIds = []
-      for status in ProjectStatuses.find()
-        activeSessionIds.push status.sessionId
-        iconForFile = IconsForFile.findOne sessionId:status.sessionId
-        data = {path:status.filePath, sessionId:status.sessionId, iconId:status.iconId}
-        if iconForFile
-          if data.path != iconForFile.path
-            IconsForFile.update iconForFile._id, {$set: data}
-        else
-          IconsForFile.insert data
-      IconsForFile.remove {sessionId: {$nin: activeSessionIds}}  
-        
-
   Template.fileTree.helpers
     files : ->
       fileTree.setFiles Files.collection.find()
@@ -36,9 +19,8 @@ do ->
       return clazz
 
     usersInFile: (file) ->
-      iconsForFile = IconsForFile.find({path:file.path}).fetch()
-      icons = ("/images/#{USER_ICONS[iconId]}" for {iconId} in iconsForFile)
-      return icons
+      _.map ProjectStatuses.getSessions()[file.path], (iconId)->
+        "/images/#{USER_ICONS[iconId]}"
 
     projectName : ->
       Projects.findOne(Session.get "projectId")?.name ? "New project"

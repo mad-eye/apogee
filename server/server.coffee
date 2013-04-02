@@ -8,22 +8,10 @@ Meteor.publish "files", (projectId)->
     projectId: projectId
 
 findIconId = (projectId)->
-  statuses = ProjectStatuses.find {projectId}
-  unavailableIcons = {}
-  unavailableIcons[status.iconId] = true for status in statuses
-  console.log "unavailable icons", unavailableIcons
-  for name, i in USER_ICONS
-    continue if unavailableIcons[i]
-    return i
 
-Meteor.publish "projectStatuses", (projectId, sessionId) ->
-  console.log "Subscribing to projectStatuses with prodId, sesId", projectId, sessionId
-  projectStatus = new ProjectStatus({projectId, sessionId, heartbeat:Date.now()})
-  projectStatus.iconId = findIconId projectId
-  projectStatus.save()
-  #console.log "Saved projectStatus", projectStatus
-  console.log "found projectStatuses", ProjectStatuses.collection.find({projectId: projectId}).fetch()
-  return ProjectStatuses.collection.find projectId: projectId
+
+Meteor.publish "projectStatuses", (projectId) ->
+  ProjectStatuses.collection.find projectId: projectId
 
 Meteor.setInterval ->
   before = Date.now() - 20*1000
@@ -48,8 +36,23 @@ NewsletterEmails.collection.allow(
   insert: -> true
 )
 
-#Used for loading message.
-Meteor.methods
-  getFileCount: (projectId)->
-    return Files.collection.find(projectId: projectId).count()
 
+do ->
+  getIcon = (projectId)->
+    statuses = ProjectStatuses.find {projectId}
+    unavailableIcons = {}
+    unavailableIcons[status.iconId] = true for status in statuses
+    for name, i in USER_ICONS
+      continue if unavailableIcons[i]
+      return i
+
+  Meteor.methods
+    #Used for loading message.
+    getFileCount: (projectId)->
+      return Files.collection.find(projectId: projectId).count()
+
+    createProjectStatus: (sessionId, projectId)->
+      status = ProjectStatuses.findOne {sessionId, projectId}
+      return if status
+      ProjectStatuses.collection.insert {sessionId, projectId, iconId: getIcon(projectId), heartbeat: Date.now()}, (err, result)->
+        console.error "ERR", err if err

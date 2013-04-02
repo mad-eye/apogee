@@ -42,6 +42,17 @@ class EditorState
     Deps.depend @pathDep
     return @filePath
 
+  connectionIdDep = new Deps.Dependency
+
+  setConnectionId: (connectionId) ->
+    return if connectionId == @connectionId
+    @connectionId = connectionId
+    connectionIdDep.changed()
+
+  getConnectionId: ()->
+    Deps.depend connectionIdDep
+    @connectionId
+
   getChecksum: ->
     Deps.depend @checksumDep
     body = @getEditorBody()
@@ -133,6 +144,7 @@ class EditorState
       filePath: file?.path
     Session.set "editorIsLoading", true
     sharejs.open file._id, "text2", "#{Meteor.settings.public.bolideUrl}/channel", (error, doc) =>
+      @setConnectionId doc.connection.id
       unless file == @file #abort if we've loaded another file
         console.log "Loading file #{@file._id} overriding #{file._id}"
         return callback?(true)

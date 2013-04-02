@@ -57,31 +57,15 @@ do ->
       recordView()
       "missing"
 
-Meteor.autorun ->
+Deps.autorun ->
   projectId = Session.get "projectId"
   return unless projectId
   Meteor.subscribe "files", projectId
   Meteor.subscribe "projects", projectId
-  unless Session.get "sessionId"
-    Session.set "sessionId", Math.floor(Math.random()*100000000) + 1
-  Meteor.subscribe "projectStatuses", projectId, Session.get('sessionId')
+  Meteor.subscribe "projectStatuses", projectId
 
 
 Meteor.startup ->
   transitoryIssues = new TransitoryIssues
   projectStatus = ProjectStatuses.findOne {sessionId:Session.get('sessionId')}
   projectStatus?.update {heartbeat: Date.now()}
-  Meteor.setInterval ->
-    return unless Session.get('sessionId')?
-    projectStatus = ProjectStatuses.findOne {sessionId:Session.get('sessionId')}
-    return unless projectStatus?
-    projectStatus.update {heartbeat: Date.now()}
-  , 2*1000
-
-setFilePath = (filePath) ->
-  projectId = Session.get 'projectId'
-  sessionId = Session.get 'sessionId'
-  return unless projectId? and sessionId?
-  projectStatus = ProjectStatuses.findOne {sessionId}
-  return unless projectStatus? and projectStatus.filePath != filePath
-  projectStatus.update {filePath:filePath}

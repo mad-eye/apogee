@@ -131,7 +131,6 @@ do ->
           title: "Unable to load binary file"
           message: file.path
         return
-      setFilePath filePath
       editorState.loadFile file, ->
         if editorState.doc.cursor
           position = cursorToRange(editorState.getEditor().getSession().getDocument(), editorState.doc.cursor)
