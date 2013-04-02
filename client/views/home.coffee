@@ -14,10 +14,11 @@ Template.home.events
     newsletterEmail = new NewsletterEmail email: emailAddr
     newsletterEmail.save()
     $('#emailInput').val('')
-    displayAlert
-      level:'info'
-      title: "You're in the loop!"
-      message: "We'll notify #{emailAddr} as soon as we have news."
+    $('#signupFeedback').css('display', 'inline')
+    #displayAlert
+      #level:'info'
+      #title: "You're in the loop!"
+      #message: "We'll notify #{emailAddr} as soon as we have news."
     return false
 
   

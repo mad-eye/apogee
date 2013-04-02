@@ -1,35 +1,27 @@
 <template name="home">
+<div class="row hero">
+  <div class="span3">
+    <div class="row sellPoint">
+      <h4>Code like the Borg&hellip;</h4>
+      <p>Code on the same project at the same time (like Google Docs)
+        inside or outside of a Google Hangout.</p>
+      <p>Syntax highlighting, linting, and key-bindings like your favorite editor.</p>
+      <p>Load the project from your filesystem, and save it straight back.</p>
+    </div>
+    <div class="row sellPoint">
+        <h4>&hellip;but less scary.</h4>
+        <p>Just one command to use.</p>
+        <p>No accounts necessary (like an interactive pastebin).</p>
+        <p>Install with only two steps.</p>
+    </div>
+  </div>
+  <div class="span8"><img src="/images/hangout.png" /></div>
+</div>
+
 <div class="row">
+  <hr>
   {{!Left column}}
   <div class="span6 sell">
-    <div class="row sellPoint">
-      <h4>Code together like the Borg (but less scary)</h4>
-      <p>
-      Share a local project via a URL.&nbsp;  
-      Everyone can edit simultaneously, and everyone&apos;s changes appear immediately.&nbsp;
-      When finished, save the changes back to your local directory with one click.
-      Now also available inside Google Hangouts!
-      </p>
-    </div>
-    <hr>
-    <div class="row sellPoint">
-      <h4>Discover new ways to work</h4>
-      <p>Code reviews and pair programming are just the beginning.&nbsp; 
-      Need to edit on a remote server and don&apos;t want to use&nbsp; <code>nano</code>?&nbsp;
-      Need a designer to look over your CSS?&nbsp;  MadEye&apos;s got you covered.
-      </p>
-    </div>
-    <hr>
-    <div class="row sellPoint">
-      <h4>Easy to use</h4>
-      <p>
-      <ol>
-        <li>Type&nbsp; <code>madeye</code>&nbsp; in the directory to share</li>
-        <li>Send the url to your teammates.</li>
-      </ol>
-      </p>
-    </div>
-    <hr>
     <div class="row sellPoint">
       <h4>Easy to install</h4>
       <ol>
@@ -43,18 +35,12 @@
     </div>
     <hr>
     <div class="row sellPoint">
-      <h4>Almost alpha!</h4>
-      <p>Sign up for the latest updates.&nbsp;  Don&apos;t fret,
-      we hate spam as much as you do.&nbsp;  We will only 
-      use this to send updates.&nbsp;  And possibly cat videos.
-      </p>
-      <form id="signupForm">
-        <input id="emailInput" type="email" placeholder="Email address" />
-        <input type="submit" id="submitEmailButton" class="btn btn-primary" value="Notify me!" />
-      </form>
-      <p>Follow us on twitter for releases, interesting new features, and other information!</p>
+      <h4>Easy to use</h4>
       <p>
-        <a href="https://twitter.com/_madeye" class="twitter-follow-button" data-show-count="false">Follow @_madeye</a>
+      <ol>
+        <li>Type&nbsp; <code>madeye</code>&nbsp; in the directory to share</li>
+        <li>Send the url to your teammates.</li>
+      </ol>
       </p>
     </div>
   </div>
@@ -68,22 +54,28 @@
       <img alt="down" src="images/down_arrow.jpeg" />
     </div>
     <div class="row sellPic">
-      <img alt="terminal view" src="images/madeye-filetree.png" />
-    </div>
-    <div class="row downArrow">
-      <img alt="down" src="images/down_arrow.jpeg" />
-    </div>
-    <div class="row sellPic">
       <img alt="terminal view" src="images/madeye-command.png" />
     </div>
-    <div class="row downArrow">
-      <img alt="down" src="images/down_arrow.jpeg" />
-    </div>
-    <div class="row sellPic">
-      <img alt="terminal view" src="images/madeye-edit.png" />
-    </div>
   </div>
+  <div class="clearfix">&nbsp;</div>
+  <hr>
+</div>
 
+<div class="row signup">
+  <h4>Keep me updated!</h4>
+  <p>Sign up for the latest updates.&nbsp;  Don&apos;t fret,
+  we hate spam as much as you do.&nbsp;  We will only 
+  use this to send updates.&nbsp;  And possibly cat videos.
+  </p>
+  <form id="signupForm">
+    <input id="emailInput" type="email" placeholder="Email address" />
+    <input type="submit" id="submitEmailButton" class="btn btn-primary" value="Notify me!" />
+    <span id="signupFeedback">Received!</span>
+  </form>
+  <p>Follow us on twitter for releases, interesting new features, and other information!</p>
+  <p>
+    <a href="https://twitter.com/_madeye" class="twitter-follow-button" data-show-count="false">Follow @_madeye</a>
+  </p>
 </div>
 
 {{> footer}}
