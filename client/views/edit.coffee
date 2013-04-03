@@ -109,6 +109,14 @@ do ->
     resizeEditor()
 
   Meteor.startup ->
+    gotoPosition = (editor, cursor)->
+      console.error "udnefined cursor" unless cursor
+      position = cursorToRange(editor.getSession().getDocument(), cursor) 
+      editorState.getEditor().navigateTo(position.start.row, position.start.column)
+      Meteor.setTimeout ->
+        editorState.getEditor().scrollToLine(position.start.row, position.start.column)
+      , 0
+
     Meteor.autorun ->
       return unless Session.equals("editorRendered", true)
       filePath = editorState?.getPath()
@@ -131,17 +139,12 @@ do ->
           title: "Unable to load binary file"
           message: file.path
         return
+
       editorState.loadFile file, ->
         if editorState.doc.cursors and editorState.cursorDestination
-          position = cursorToRange(editorState.getEditor().getSession().getDocument(), editorState.doc.cursors[editorState.cursorDestination])
-          editorState.getEditor().navigateTo(position.start.row, position.start.column)
-          Meteor.setTimeout ->
-            editorState.getEditor().scrollToLine(position.start.row, position.start.column)
+          gotoPosition(editorState.getEditor(), editorState.doc.cursors[editorState.cursorDestination])
         else if editorState.doc.cursor
-          position = cursorToRange(editorState.getEditor().getSession().getDocument(), editorState.doc.cursor)
-          editorState.getEditor().navigateTo(position.start.row, position.start.column)
-          Meteor.setTimeout ->
-            editorState.getEditor().scrollToLine(position.start.row, true)
+          gotoPosition(editorState.getEditor(), editorState.doc.cursor)
 
   Template.editorChrome.events
     'click #revertFile': (event) ->
