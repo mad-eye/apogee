@@ -17,7 +17,7 @@ describe "Router", ->
       assert.equal match[2], "e9ee458f-7e0b-4a57-b471"
 
     it 'should find line number from path', ->
-      path = "/edit/1234-abcd-5678-abcd0987/e9ee458f-7e0b-4a57-b471#77"
+      path = "/edit/1234-abcd-5678-abcd0987/e9ee458f-7e0b-4a57-b471#L77"
       match = editRegex.exec path
       assert.ok match
       assert.equal match[1], "1234-abcd-5678-abcd0987"
