@@ -132,7 +132,12 @@ do ->
           message: file.path
         return
       editorState.loadFile file, ->
-        if editorState.doc.cursor
+        if editorState.doc.cursors and editorState.cursorDestination
+          position = cursorToRange(editorState.getEditor().getSession().getDocument(), editorState.doc.cursors[editorState.cursorDestination])
+          editorState.getEditor().navigateTo(position.start.row, position.start.column)
+          Meteor.setTimeout ->
+            editorState.getEditor().scrollToLine(position.start.row, position.start.column)
+        else if editorState.doc.cursor
           position = cursorToRange(editorState.getEditor().getSession().getDocument(), editorState.doc.cursor)
           editorState.getEditor().navigateTo(position.start.row, position.start.column)
           Meteor.setTimeout ->

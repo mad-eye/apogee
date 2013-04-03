@@ -7,9 +7,6 @@ Meteor.publish "files", (projectId)->
   Files.collection.find
     projectId: projectId
 
-findIconId = (projectId)->
-
-
 Meteor.publish "projectStatuses", (projectId) ->
   ProjectStatuses.collection.find projectId: projectId
 

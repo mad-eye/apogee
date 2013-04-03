@@ -67,7 +67,7 @@ if Meteor.isClient
         for status in statuses
           continue unless status.filepath
           result[status.filepath] ?= []
-          result[status.filepath].push status.iconId
+          result[status.filepath].push status
       return result
 
     Meteor.setInterval ->
@@ -81,7 +81,7 @@ if Meteor.isClient
     projectStatusLoaded = (projectStatus)->
       # console.log "project status loaded"
       Deps.autorun ->
-        if Session.get("editorRendered")?
+        if Session.equals("editorRendered", true)
           # console.log "editor state path", editorState.getPath()
           projectStatus.update {filepath: editorState.getPath(), connectionId: editorState.getConnectionId()}
 
@@ -92,7 +92,7 @@ if Meteor.isClient
       Deps.nonreactive ->
         queryHandle?.stop()
         unless Session.get("sessionId")?
-          Session.set "sessionId", Math.floor(Math.random()*100000000) + 1
+          Session.set "sessionId", Meteor.uuid()
         sessionId = Session.get "sessionId"
         Meteor.call "createProjectStatus", sessionId, projectId
 

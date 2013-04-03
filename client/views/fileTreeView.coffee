@@ -19,8 +19,10 @@ do ->
       return clazz
 
     usersInFile: (file) ->
-      _.map ProjectStatuses.getSessions()[file.path], (iconId)->
-        "/images/#{USER_ICONS[iconId]}"
+      _.map ProjectStatuses.getSessions()[file.path], (status)->
+        projectId = Session.get "projectId"
+        destination = "/edit/#{projectId}/#{file.path}#S#{status.connectionId}"
+        {img: "/images/#{USER_ICONS[status.iconId]}", destination}
 
     projectName : ->
       Projects.findOne(Session.get "projectId")?.name ? "New project"
@@ -33,3 +35,6 @@ do ->
       file.select()
 
 
+    'click img.fileTreeUserIcon': (event) ->
+      event.stopPropagation()
+      Meteor.Router.to event.toElement.attributes.destination.value

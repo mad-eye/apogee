@@ -34,6 +34,9 @@ class EditorState
     @filePath = filePath
     @pathDep.changed()
 
+  setCursorDestination: (connectionId)->
+    @cursorDestination = connectionId
+
   setLine: (@lineNumber) ->
 
   getPath: () ->
