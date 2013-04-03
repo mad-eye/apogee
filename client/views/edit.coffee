@@ -189,8 +189,8 @@ do ->
       ""
 
   resizeEditor = ->
-    editorTop = $("#editor").position().top
-    editorLeft = $("#editor").position().left
+    editorTop = $("#editor").offset().top
+    editorLeft = $("#editor").offset().left
     windowHeight = $(window).height()
     windowWidth = $(window).width()
     newHeight = windowHeight - editorTop - 20
