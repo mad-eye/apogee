@@ -182,7 +182,7 @@ Meteor.startup ->
       #'ace' was in the examples, but the method only takes null, 'vim', or 'emacs'
       keybinding = null
     console.log "Setting keybinding", keybinding
-    editorState.getEditor().setKeyboardHandler "keybinding/#{keybinding}"
+    editorState.getEditor().setKeyboardHandler keybinding
 
 
   Deps.autorun ->

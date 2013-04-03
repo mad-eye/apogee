@@ -20,7 +20,6 @@ class EditorState
 
   getEditor: ->
     editor = ace.edit @editorId
-    editor.setTheme "ace/theme/eclipse"
     return editor
 
   getEditorBody : ->
