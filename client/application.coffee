@@ -1,6 +1,7 @@
 #for urls of the form /edit/PROJECT_ID/PATH_TO_FILE#LINE_NUMBER
 #PATH_TO_FILE and LINE_NUMBER are optional
 #editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?([0-9]*)?/
+#TODO should probably OR the line and session fields
 editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?(?:L([0-9]*))?(?:S([0-9a-f-]*))?/
 editorState = null
 transitoryIssues = null
@@ -21,7 +22,7 @@ do ->
       Session.set "isHangout", true
       isHangout = true
     Session.set 'projectId', projectId
-    Metrics.add {message:'load', filePath, lineNumber, isHangout}
+    Metrics.add {message:'load', filePath, lineNumber, connectionId, isHangout}
     editorState ?= new EditorState "editor"
     editorState.setPath filePath
     editorState.setCursorDestination connectionId
