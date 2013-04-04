@@ -1,7 +1,7 @@
 #for urls of the form /edit/PROJECT_ID/PATH_TO_FILE#LINE_NUMBER
 #PATH_TO_FILE and LINE_NUMBER are optional
 #editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?([0-9]*)?/
-editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?(?:L([0-9]*))?(?:S([0-9a-f]*))?/
+editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?(?:L([0-9]*))?(?:S([0-9a-f-]*))?/
 editorState = null
 transitoryIssues = null
 
