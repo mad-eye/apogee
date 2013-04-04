@@ -54,6 +54,7 @@ Projects = new Meteor.Model("projects", Project)
 NewsletterEmails = new Meteor.Model("newsletterEmails", NewsletterEmail)
 ProjectStatuses = new Meteor.Model("projectStatus", ProjectStatus)
 
+
 #return a map between file paths and open sharejs session ids
 if Meteor.isClient
   do ->
@@ -78,12 +79,14 @@ if Meteor.isClient
       status?.update {heartbeat: Date.now()}
     , 2*1000
 
-    projectStatusLoaded = (projectStatus)->
-      # console.log "project status loaded"
-      Deps.autorun ->
-        if Session.equals("editorRendered", true)
-          # console.log "editor state path", editorState.getPath()
-          projectStatus.update {filepath: editorState.getPath(), connectionId: editorState.getConnectionId()}
+    Deps.autorun ->
+      #TODO this seems bolierplatey..
+      sessionId = Session.get("sessionId")
+      projectId = Session.get("projectId")
+      return unless Session.equals("editorRendered", true) and sessionId and projectId
+      projectStatus = ProjectStatuses.findOne {sessionId, projectId}
+      return unless projectStatus
+      projectStatus.update {filepath: editorState.getPath(), connectionId: editorState.getConnectionId()}
 
     queryHandle = null
     Deps.autorun (computation)->
@@ -101,9 +104,6 @@ if Meteor.isClient
           added: (id, fields)->
             console.log "ADDED", id, fields
             sessionsDep.changed()
-            if fields.sessionId == Session.get "sessionId"
-              ProjectStatuses.mine = ProjectStatuses.findOne(id)
-              projectStatusLoaded ProjectStatuses.mine
 
           changed: (id, fields)->
             console.log "CHANGED", id, fields if fields.filepath?
