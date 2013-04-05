@@ -19,7 +19,7 @@ do ->
       return clazz
 
     usersInFile: (file) ->
-      _.map ProjectStatuses.getSessions()[file.path], (status)->
+      _.map ProjectStatuses.getSessions(file.path), (status)->
         projectId = Session.get "projectId"
         destination = "/edit/#{projectId}/#{file.path}#S#{status.connectionId}"
         {img: "/images/#{USER_ICONS[status.iconId]}", destination}

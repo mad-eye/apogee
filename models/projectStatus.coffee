@@ -8,17 +8,18 @@ ProjectStatuses = new Meteor.Model("projectStatus", ProjectStatus)
 if Meteor.isClient
   do ->
     sessionsDep = new Deps.Dependency
-    ProjectStatuses.getSessions = ->
+    ProjectStatuses.getSessions = (filePath) ->
       projectId = Session.get "projectId"
       Deps.depend sessionsDep
-      result = {}
+      results = []
       Deps.nonreactive ->
         statuses = ProjectStatuses.find {projectId}
         for status in statuses
           continue unless status.filepath
-          result[status.filepath] ?= []
-          result[status.filepath].push status
-      return result
+          f = Files.findOne {path: status.filepath}
+          if filePath == f.visibleParent().path
+            results.push status
+      return results
 
     #Set heartbeat
     Meteor.setInterval ->
