@@ -39,6 +39,17 @@ _.extend Madeye.File.prototype,
   close: ->
     closeDir @_id
 
+  visibleParent: ->
+    lastVisible = this
+    parentPath = @parentPath
+    while parentPath
+      parent = Files.findOne({path: @parentPath})
+      lastVisible = parent unless parent.isOpen()
+      parentPath = parent.parentPath
+    console.log "Returning Visible Parent", lastVisible
+    return lastVisible
+
+
   #TODO would be nicer if this was a getter
   extension: ->
     tokens = @filename.split '.'
@@ -58,4 +69,5 @@ _.extend Madeye.FileTree.prototype,
     parent = @findByPath(file.parentPath) if file.parentPath?
     return true unless parent
     return parent.isOpen() and @isVisible(parent)
+
 

@@ -166,6 +166,12 @@ ul.fileTree {
         font-size: @baseFontSize;
     }
 
+    .fileTreeUserIcon {
+      float: right;
+      height: 16px;
+      width: 16px;
+    }
+    
     li {
         list-style-type: none;
         background-color: @backgroundColorDefault;
@@ -187,7 +193,7 @@ ul.fileTree {
         &.modified {
             font-style: italic;
         }
-
+        
         &.file:before {
             content: url('/images/full_page.png');
         }
