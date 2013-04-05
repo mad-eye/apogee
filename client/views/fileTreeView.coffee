@@ -35,6 +35,6 @@ do ->
       file.select()
 
 
-    'click img.fileTreeUserIcon': (event) ->
-      event.stopPropagation()
-      Meteor.Router.to event.toElement.attributes.destination.value
+    #'click img.fileTreeUserIcon': (event) ->
+      #event.stopPropagation()
+      #Meteor.Router.to event.toElement.attributes.destination.value
