@@ -11,8 +11,10 @@ inputs = {
   'keyboardSelect': 'ace'
 }
 
-
 Template.aceBar.events
+  'change #wordWrap': (e) ->
+    Session.set 'wordWrap', e.srcElement.checked
+
   'change #showInvisibles': (e) ->
     Session.set 'showInvisibles', e.srcElement.checked
 
@@ -20,21 +22,21 @@ Template.aceBar.events
     Session.set 'fileMode', e.srcElement.value
 
   'change #keybinding': (e) ->
-    console.log "Changing keybinding to ", e.srcElement.value
-    Session.set 'keybinding', e.srcElement.value
+    keybinding = e.srcElement.value
+    keybinding = null if 'ace' == keybinding
+    Session.set 'keybinding', keybinding
 
   'change #themeSelect': (e) ->
     Session.set 'theme', e.srcElement.value
-
-Template.aceBar.helpers
-  'showInvisibles': ->
-    Session.get 'showInvisibles' ? false
 
 Template.aceBar.rendered = ->
   Session.set 'aceBarRendered', true
 
 
 Template.fileModeOptions.helpers
+  'isFileModeActive': (mode) ->
+    Session.equals 'fileMode', mode
+
   'fileModes': ->
     [
       {value:"abap", name:"ABAP"},
@@ -109,10 +111,10 @@ Template.fileModeOptions.helpers
       {value:"yaml", name:"YAML"}
     ]
 
-  'isFileModeActive': (mode) ->
-    Session.equals 'fileMode', mode
-
 Template.themeOptions.helpers
+  isThemeActive: (theme) ->
+    Session.equals 'theme', theme
+
   brightThemes: ->
     [
       {value: "chrome", name: "Chrome"},
@@ -150,40 +152,55 @@ Template.themeOptions.helpers
       {value: "vibrant_ink", name: "Vibrant Ink"}
     ]
 
-  isThemeActive: (theme) ->
-    Session.equals 'theme', theme
-
 Meteor.startup ->
+
+  Deps.autorun ->
+    #Need to do editorState.getEditor().getSession().setWrapLimitRange(min, max) somewhere
+    #Ideally tied to editor size
+    editorState.getEditor().getSession().setUseWrapMode Session.get 'wordWrap' ? false
+    
 
   Deps.autorun ->
     editorState.getEditor().setShowInvisibles Session.get 'showInvisibles' ? false
 
-  Deps.autorun ->
+  Deps.autorun (computation) ->
     mode = Session.get 'fileMode'
+    console.log "Setting mode with #{mode}"
     return unless mode?
     editorSession = editorState.getEditor().getSession()
     Mode = undefined
-    try
-      Mode = require("ace/mode/#{mode}").Mode
-      editorSession?.setMode(new Mode())
-    catch e
+    module = require("ace/mode/#{mode}")
+    unless module
+      console.log "No module found for #{mode}, retrieving"
       jQuery.getScript "/ace/mode-#{mode}.js", =>
-        Mode = require("ace/mode/#{mode}").Mode
-        editorSession?.setMode(new Mode())
+        console.log "Module found for #{mode}, rerunning"
+        computation.invalidate()
+    else
+      console.log "Found mode module", module
+      Mode = module.Mode
+      editorSession?.setMode(new Mode())
 
   Deps.autorun ->
     file = Files.findOne path: editorState.getPath()
     Session.set 'fileMode', file.aceMode() if file?.aceMode()
 
-  Deps.autorun ->
+  Deps.autorun (computation) ->
     keybinding = Session.get 'keybinding'
-    return unless keybinding
-    if 'ace' == keybinding
-      #'ace' was in the examples, but the method only takes null, 'vim', or 'emacs'
-      keybinding = null
     console.log "Setting keybinding", keybinding
-    editorState.getEditor().setKeyboardHandler keybinding
-
+    unless keybinding
+      #No keybinding means Ace
+      editorState.getEditor().setKeyboardHandler null
+    else #if 'vim' == keybinding
+      module = require("ace/keyboard/#{keybinding}")
+      unless module
+        console.log "Module for #{keybinding} missing, fetching."
+        jQuery.getScript "/ace/keybinding-#{keybinding}.js", =>
+          console.log "Found /ace/keyboard-#{keybinding}.js, rerunning"
+          computation.invalidate()
+      else
+        console.log "Found keyboard module", module
+        handler = module.handler
+        editorState.getEditor().setKeyboardHandler handler
 
   Deps.autorun ->
     theme = Session.get 'theme'

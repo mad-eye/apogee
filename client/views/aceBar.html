@@ -1,9 +1,14 @@
 <template name="aceBar">
 <div id="aceBar">
-  <form class="form-inline">
+  <form class="form">
     <label class="checkbox" >
-      <input type="checkbox" id="showInvisibles" {{#if showInvisibles_val}}checked{{/if}} />
+      <input type="checkbox" id="showInvisibles" {{#if session showInvisibles}}checked{{/if}} />
       Show Invisibles
+    </label>
+
+    <label class="checkbox" >
+      <input type="checkbox" id="wordWrap" {{#if session wordWrap}}checked{{/if}} />
+      Word Wrap
     </label>
 
     <label class="select">
@@ -20,11 +25,11 @@
 
     <label class="select">
       <select id="keybinding" size="1">
-        <option value="ace">Ace</option>
-        <option value="vim">Vim</option>
-        <option value="emacs">Emacs</option>
+        <option value="ace" {{#unless Session keybinding}}selected{{/unless}}>Ace</option>
+        <option value="vim" {{#if SessionEquals keybinding vim}}selected{{/if}}>Vim</option>
+        <option value="emacs" {{#if SessionEquals keybinding emacs}}selected{{/if}}>Emacs</option>
         <!--<option value="custom">Custom</option>-->
-      </select>
+      </select> Keybindings
     </label>
 
     <label class="select">

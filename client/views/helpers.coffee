@@ -1,8 +1,8 @@
 Handlebars.registerHelper "Settings", ->
   Settings.findOne()
 
-Handlebars.registerHelper "session", (key) ->
+Handlebars.registerHelper "Session", (key) ->
   Session.get key
 
-Handlebars.registerHelper "sessionEquals", (key, value) ->
+Handlebars.registerHelper "SessionEquals", (key, value) ->
   Session.equals key, value
