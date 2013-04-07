@@ -34,9 +34,6 @@ Template.aceBar.rendered = ->
 
 
 Template.fileModeOptions.helpers
-  'isFileModeActive': (mode) ->
-    Session.equals 'fileMode', mode
-
   'fileModes': ->
     [
       {value:"abap", name:"ABAP"},
@@ -112,9 +109,6 @@ Template.fileModeOptions.helpers
     ]
 
 Template.themeOptions.helpers
-  isThemeActive: (theme) ->
-    Session.equals 'theme', theme
-
   brightThemes: ->
     [
       {value: "chrome", name: "Chrome"},
@@ -157,26 +151,27 @@ Meteor.startup ->
   Deps.autorun ->
     #Need to do editorState.getEditor().getSession().setWrapLimitRange(min, max) somewhere
     #Ideally tied to editor size
-    editorState.getEditor().getSession().setUseWrapMode Session.get 'wordWrap' ? false
-    
+    session = editorState.getEditor().getSession()
+    editorState.getEditor().renderer.setPrintMarginColumn 80
+    if Session.get 'wordWrap'
+      session.setUseWrapMode true
+      session.setWrapLimitRange null, null
+    else
+      session.setUseWrapMode false
 
   Deps.autorun ->
     editorState.getEditor().setShowInvisibles Session.get 'showInvisibles' ? false
 
   Deps.autorun (computation) ->
     mode = Session.get 'fileMode'
-    console.log "Setting mode with #{mode}"
     return unless mode?
     editorSession = editorState.getEditor().getSession()
     Mode = undefined
     module = require("ace/mode/#{mode}")
     unless module
-      console.log "No module found for #{mode}, retrieving"
       jQuery.getScript "/ace/mode-#{mode}.js", =>
-        console.log "Module found for #{mode}, rerunning"
         computation.invalidate()
     else
-      console.log "Found mode module", module
       Mode = module.Mode
       editorSession?.setMode(new Mode())
 
@@ -186,19 +181,15 @@ Meteor.startup ->
 
   Deps.autorun (computation) ->
     keybinding = Session.get 'keybinding'
-    console.log "Setting keybinding", keybinding
     unless keybinding
       #No keybinding means Ace
       editorState.getEditor().setKeyboardHandler null
-    else #if 'vim' == keybinding
+    else
       module = require("ace/keyboard/#{keybinding}")
       unless module
-        console.log "Module for #{keybinding} missing, fetching."
         jQuery.getScript "/ace/keybinding-#{keybinding}.js", =>
-          console.log "Found /ace/keyboard-#{keybinding}.js, rerunning"
           computation.invalidate()
       else
-        console.log "Found keyboard module", module
         handler = module.handler
         editorState.getEditor().setKeyboardHandler handler
 

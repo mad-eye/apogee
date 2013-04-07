@@ -2,12 +2,12 @@
 <div id="aceBar">
   <form class="form">
     <label class="checkbox" >
-      <input type="checkbox" id="showInvisibles" {{#if session showInvisibles}}checked{{/if}} />
+      <input type="checkbox" id="showInvisibles" {{#if Session 'showInvisibles'}}checked{{/if}} />
       Show Invisibles
     </label>
 
     <label class="checkbox" >
-      <input type="checkbox" id="wordWrap" {{#if session wordWrap}}checked{{/if}} />
+      <input type="checkbox" id="wordWrap" {{#if Session 'wordWrap'}}checked{{/if}} />
       Word Wrap
     </label>
 
@@ -25,9 +25,9 @@
 
     <label class="select">
       <select id="keybinding" size="1">
-        <option value="ace" {{#unless Session keybinding}}selected{{/unless}}>Ace</option>
-        <option value="vim" {{#if SessionEquals keybinding vim}}selected{{/if}}>Vim</option>
-        <option value="emacs" {{#if SessionEquals keybinding emacs}}selected{{/if}}>Emacs</option>
+        <option value="ace" {{#unless Session 'keybinding'}}selected{{/unless}}>Ace</option>
+        <option value="vim" {{#if SessionEquals 'keybinding' 'vim'}}selected{{/if}}>Vim</option>
+        <option value="emacs" {{#if SessionEquals 'keybinding' 'emacs'}}selected{{/if}}>Emacs</option>
         <!--<option value="custom">Custom</option>-->
       </select> Keybindings
     </label>
@@ -42,12 +42,12 @@
   <option value="">Select theme&hellip;</option>
   <optgroup label="Bright">
     {{#each brightThemes}}
-      <option value="{{value}}" {{#if isThemeActive value}}selected{{/if}}>{{name}}</option>
+      <option value="{{value}}" {{#if SessionEquals 'theme' value}}selected{{/if}}>{{name}}</option>
     {{/each}}
   </optgroup>
   <optgroup label="Dark">
     {{#each darkThemes}}
-      <option value="{{value}}" {{#if isThemeActive value}}selected{{/if}}>{{name}}</option>
+      <option value="{{value}}" {{#if SessionEquals 'theme' value}}selected{{/if}}>{{name}}</option>
     {{/each}}
   </optgroup>
 </template>
@@ -55,6 +55,6 @@
 <template name="fileModeOptions">
   <option value="">Select mode&hellip;</option>
   {{#each fileModes}}
-  <option value="{{value}}" {{#if isFileModeActive value}}selected{{/if}}>{{name}}</option>
+  <option value="{{value}}" {{#if SessionEquals 'fileMode' value}}selected{{/if}}>{{name}}</option>
   {{/each}}
 </template>
