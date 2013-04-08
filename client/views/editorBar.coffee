@@ -205,7 +205,6 @@ Meteor.startup ->
   #Syntax Modes from session
   Deps.autorun (computation) ->
     mode = Session.get 'syntaxMode'
-    return unless mode?
     module = require("ace/mode/#{mode}")
     unless module
       jQuery.getScript "/ace/mode-#{mode}.js", ->
@@ -218,7 +217,7 @@ Meteor.startup ->
   #Syntax Modes from file
   Deps.autorun ->
     file = Files.findOne path: editorState.getPath()
-    Session.set 'syntaxMode', file.aceMode() if file?.aceMode()
+    Session.set 'syntaxMode', file?.aceMode()
 
   #Keybinding
   Deps.autorun (computation) ->
