@@ -1,6 +1,6 @@
 <template name="aceBar">
 <div id="aceBar">
-  <form class="form">
+  <form class="form-inline">
     <label class="checkbox" >
       <input type="checkbox" id="showInvisibles" {{#if Session 'showInvisibles'}}checked{{/if}} />
       Show Invisibles
@@ -16,7 +16,9 @@
       {{> fileModeOptions}}
     </select> SyntaxMode
     </label>
+  </form>
 
+  <form class="form-inline">
     <label class="select">
     <select id="themeSelect">
       {{> themeOptions}}
