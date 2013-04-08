@@ -19,8 +19,8 @@ class EditorState
     @checksumDep = new Deps.Dependency
 
   getEditor: ->
+    Deps.depend @pathDep
     editor = ace.edit @editorId
-    editor.setTheme "ace/theme/eclipse"
     return editor
 
   getEditorBody : ->
@@ -71,7 +71,7 @@ class EditorState
         fileId: @file?._id
         filePath: @file?.path
       console.warn("revert called, but no doc selected")
-      callback? "No doc or no file"
+      return callback? "No doc or no file"
     file = @file
     Meteor.http.get "#{@getFileUrl(file)}?reset=true", (error,response) =>
       if error
@@ -85,18 +85,6 @@ class EditorState
         @getEditor().navigateFileStart()
       ,0
 
-  #detach any existing docs and load appropriate ace modes
-  setupAce: (editor, file)->
-    #TODO: Extract this into its own autorun block
-    if mode = file.aceMode()
-      Mode = undefined
-      try
-        Mode = require("ace/mode/#{mode}").Mode
-        editor.getSession().setMode(new Mode())
-      catch e
-        jQuery.getScript "/ace/mode-#{mode}.js", =>
-          Mode = require("ace/mode/#{mode}").Mode
-          editor.getSession().setMode(new Mode())
 
   checkDocValidity: (doc)->
     unless doc.version?
@@ -155,7 +143,6 @@ class EditorState
         #TODO: Extract this into its own autorun block
         return callback?(handleShareError error) if error?
         return callback?(true) unless @checkDocValidity(doc)
-        @setupAce(editor, file)
         if doc.version > 0
           @attachAce(doc)
           @doc = doc
@@ -198,7 +185,7 @@ class EditorState
 
   #callback: (err) ->
   save : (callback) ->
-    #console.log "Saving file #{@file?._id}"
+    console.log "Saving file #{@file?._id}"
     Metrics.add
       message:'saveFile'
       fileId: @file?._id

@@ -1,0 +1,88 @@
+<template name="editorBar">
+  <div id="editorBar" class="clearfix">
+
+    {{! SAVE}}
+    <div id="saveBox" class="editorBarButton pull-left">
+      {{#if showSaveSpinner}}
+        <img id="saveSpinner" src="/images/file-loader.gif" alt="Loading..." />
+      {{else}}
+        <img id="saveImage" src="/images/save-file_32.png" class="{{buttonDisabled}}"  {{buttonDisabled}} alt="Save file to host computer" title="Save file" />
+      {{/if}}
+    </div>
+
+    {{! SYNTAX MODE }}
+    <div id="syntaxMode" class="editorBarButton pull-left">
+      <form>
+        <select id="syntaxModeSelect" class="input-medium">
+          {{> syntaxModeOptions}}
+        </select>
+      </form>
+    </div>
+
+    {{! EDITOR SETTINGS }}
+    <div id="editorSettings" class="editorBarButton pull-left">
+      <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+        <img alt="Settings" src="/images/cog_16.png"/>
+        <span class="caret"></span>
+      </a>
+      <form class="dropdown-menu">
+        <!--<h5>Editor Settings</h5>-->
+        <label class="checkbox" >
+          <input type="checkbox" id="showInvisibles" {{#if Session 'showInvisibles'}}checked{{/if}} />
+          Show Invisibles
+        </label>
+
+        <label class="checkbox" >
+          <input type="checkbox" id="wordWrap" {{#if Session 'wordWrap'}}checked{{/if}} />
+          Word Wrap
+        </label>
+
+        <select id="themeSelect" class="input-medium" size="1">
+          {{> themeOptions}}
+        </select>     
+
+        <!--<label class="select">:</label>-->
+        <select id="keybinding" class="input-small" size="1">
+          <option value="ace" {{#unless Session 'keybinding'}}selected{{/unless}}>Ace Keys</option>
+          <option value="vim" {{#if SessionEquals 'keybinding' 'vim'}}selected{{/if}}>Vim</option>
+          <option value="emacs" {{#if SessionEquals 'keybinding' 'emacs'}}selected{{/if}}>Emacs</option>
+        </select>
+      </form>
+    </div>
+
+    {{! REVERT/DISCARD }}
+    <div id="revertDiscard" class="editorBarButton pull-left">
+      {{#unless fileIsDeleted}}
+        <a id="revertFile" class="btn {{buttonDisabled}}" title="Revert the file to the state on the host computer." href="#">Revert</a>
+      {{else}}
+        <a id="discardFile" class="btn {{buttonDisabled}}" title="Discard this file, removing it from the project view" href="#">Discard File</a>
+      {{/unless}}
+    </div>
+
+  </div>
+
+
+
+</template>
+
+
+<template name="themeOptions">
+  <option value="">Select theme&hellip;</option>
+  <optgroup label="Bright">
+    {{#each brightThemes}}
+      <option value="{{value}}" {{#if SessionEquals 'theme' value}}selected{{/if}}>{{name}}</option>
+    {{/each}}
+  </optgroup>
+  <optgroup label="Dark">
+    {{#each darkThemes}}
+      <option value="{{value}}" {{#if SessionEquals 'theme' value}}selected{{/if}}>{{name}}</option>
+    {{/each}}
+  </optgroup>
+</template>
+
+<template name="syntaxModeOptions">
+  <option value="">Select syntax&hellip;</option>
+  {{#each syntaxModes}}
+  <option value="{{value}}" {{#if SessionEquals 'syntaxMode' value}}selected{{/if}}>{{name}}</option>
+  {{/each}}
+</template>

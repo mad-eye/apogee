@@ -1,9 +1,4 @@
-# TODO Eliminate need to wrap this in do ->
-# https://github.com/meteor/meteor/pull/85
-
-#list of themes and a one liner to try them out one at a time
-#themes = ["ace/theme/ambiance", "ace/theme/github", "ace/theme/textmate", "ace/theme/chaos", "ace/theme/idle_fingers", "ace/theme/tomorrow", "ace/theme/chrome", "ace/theme/kr", "ace/theme/tomorrow_night", "ace/theme/clouds", "ace/theme/merbivore", "ace/theme/tomorrow_night_blue", "ace/theme/clouds_midnight", "ace/theme/merbivore_soft", "ace/theme/tomorrow_night_bright", "ace/theme/cobalt", "ace/theme/mono_industrial", "ace/theme/tomorrow_night_eighties", "ace/theme/crimson_editor", "ace/theme/monokai", "ace/theme/twilight", "ace/theme/dawn", "ace/theme/pastel_on_dark", "ace/theme/vibrant_ink", "ace/theme/dreamweaver", "ace/theme/solarized_dark", "ace/theme/xcode", "ace/theme/eclipse", "ace/theme/solarized_light"]
-#currentTheme = themes.pop(); ace.edit("editor").setTheme(currentTheme); console.log("current theme is", currentTheme);
+# TODO Don't need to wrap this in do-> in Meteor 0.6.0
 
 handleShareError: (err) ->
   message = err.message ? err
@@ -66,15 +61,22 @@ cursorToRange = (editorDoc, cursor) ->
     #+1 for newline
     offset += line.length + 1
 
-do ->
-  projectIsClosed = ->
-    Projects.findOne()?.closed
+projectIsClosed = ->
+  Projects.findOne()?.closed
   
+
+do ->
   fileIsDeleted = ->
     Files.findOne(path:editorState.getPath())?.removed
 
   Handlebars.registerHelper "fileIsDeleted", ->
     fileIsDeleted()
+
+  Handlebars.registerHelper "editorFileName", ->
+    editorState?.getPath()
+
+  Handlebars.registerHelper "editorIsLoading", ->
+    Session.equals "editorIsLoading", true
 
   fileIsModifiedLocally = ->
     Files.findOne(path:editorState.getPath())?.modified_locally
@@ -111,12 +113,13 @@ do ->
   Meteor.startup ->
     gotoPosition = (editor, cursor)->
       console.error "udnefined cursor" unless cursor
-      position = cursorToRange(editor.getSession().getDocument(), cursor) 
+      position = cursorToRange(editor.getSession().getDocument(), cursor)
       editorState.getEditor().navigateTo(position.start.row, position.start.column)
       Meteor.setTimeout ->
         editorState.getEditor().scrollToLine(position.start.row, position.start.column)
       , 0
 
+    #TODO: Move this into internal editorState fns
     Meteor.autorun ->
       return unless Session.equals("editorRendered", true)
       filePath = editorState?.getPath()
@@ -127,6 +130,8 @@ do ->
       #selectedFilePath?
       Session.set "selectedFileId", file._id
       file.openParents()
+      #Display warning/errors about file state.
+      #TODO: Replace this with an overlay.
       if file.isLink
         displayAlert
           level: "error"
@@ -146,47 +151,6 @@ do ->
         else if editorState.doc.cursor
           gotoPosition(editorState.getEditor(), editorState.doc.cursor)
 
-  Template.editorChrome.events
-    'click #revertFile': (event) ->
-      Session.set "working", true
-      editorState.revertFile (error)->
-        Session.set "working", false
-
-    'click #discardFile': (event) ->
-      Metrics.add
-        message:'discardFile'
-        fileId: editorState?.file?._id
-        filePath: editorState?.file?.path #don't want reactivity
-      editorState.file.remove()
-      editorState.file = null
-      editorState.setPath ""
-
-    'click #saveImage' : (event) ->
-      #console.log "clicked save button"
-      Session.set "working", true
-      editorState.save (err) ->
-        if err
-          #Handle error better.
-          console.error "Error in save request:", err
-        Session.set "working", false
-
-  Handlebars.registerHelper "editorFileName", ->
-    editorState?.getPath()
-
-  Handlebars.registerHelper "editorIsLoading", ->
-    Session.equals "editorIsLoading", true
-
-  Template.editorChrome.showSaveSpinner = ->
-    Session.equals "working", true
-
-  #FIXME: If a connection is re-established, the file is considered modified==false.
-  Template.editorChrome.buttonDisabled = ->
-    filePath = editorState.getPath()
-    file = Files.findOne({path: filePath}) if filePath?
-    if !file?.modified or Session.equals("working", true) or projectIsClosed()
-      "disabled"
-    else
-      ""
 
   resizeEditor = ->
     editorTop = $("#editor").offset().top
