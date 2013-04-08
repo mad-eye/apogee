@@ -1,6 +1,8 @@
 #for urls of the form /edit/PROJECT_ID/PATH_TO_FILE#LINE_NUMBER
 #PATH_TO_FILE and LINE_NUMBER are optional
-editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?([0-9]*)?/
+#editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?([0-9]*)?/
+#TODO should probably OR the line and session fields
+editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?(?:L([0-9]*))?(?:S([0-9a-f-]*))?/
 editorState = null
 transitoryIssues = null
 
@@ -14,17 +16,17 @@ do ->
 
   #TODO figure out how to eliminate all the duplicate recordView calls
 
-  Meteor.Router.add editRegex, (projectId, filePath, lineNumber)->
+  Meteor.Router.add editRegex, (projectId, filePath, lineNumber, connectionId)->
     recordView()
     if /hangout=true/.exec(document.location.href.split("?")[1])
       Session.set "isHangout", true
       isHangout = true
     Session.set 'projectId', projectId
-    Metrics.add {message:'load', filePath, lineNumber, isHangout}
+    Metrics.add {message:'load', filePath, lineNumber, connectionId, isHangout}
     editorState ?= new EditorState "editor"
     editorState.setPath filePath
-    editorState.setLine lineNumber
-    'edit'
+    editorState.setCursorDestination connectionId
+    "edit"
 
   Meteor.Router.add
     '/':  ->
@@ -58,10 +60,15 @@ do ->
       recordView()
       "missing"
 
-Meteor.autosubscribe ->
-  Meteor.subscribe "files", Session.get "projectId"
-  Meteor.subscribe "projects", Session.get "projectId"
+Deps.autorun ->
+  projectId = Session.get "projectId"
+  return unless projectId
+  Meteor.subscribe "files", projectId
+  Meteor.subscribe "projects", projectId
+  Meteor.subscribe "projectStatuses", projectId
+
 
 Meteor.startup ->
   transitoryIssues = new TransitoryIssues
-
+  projectStatus = ProjectStatuses.findOne {sessionId:Session.get('sessionId')}
+  projectStatus?.update {heartbeat: Date.now()}

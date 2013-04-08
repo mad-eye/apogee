@@ -38,7 +38,6 @@ networkIssuesWarning =
   message: "We're having trouble with the network.  We'll try to resolve it automatically, but you may want to try again later."
   uncloseable: true
 
-
 #TODO figure out a better way to share this from the ShareJS code
 cursorToRange = (editorDoc, cursor) ->
   Range = require("ace/range").Range
@@ -67,8 +66,6 @@ projectIsClosed = ->
   
 
 do ->
-  fileTree = new Madeye.FileTree()
-
   fileIsDeleted = ->
     Files.findOne(path:editorState.getPath())?.removed
 
@@ -85,7 +82,7 @@ do ->
     Files.findOne(path:editorState.getPath())?.modified_locally
 
   projectIsLoading = ->
-    not (Projects.findOne()? || Session.equals 'fileCount', Files.collection.find().count())
+    not (Projects.findOne(Session.get "projectId")? || Session.equals 'fileCount', Files.collection.find().count())
 
   Template.projectStatus.projectAlerts = ->
     alerts = []
@@ -107,32 +104,6 @@ do ->
         return
       Session.set 'fileCount', count
 
-  Template.fileTree.files = ->
-    fileTree.setFiles Files.collection.find()
-    _.filter fileTree.files, (file)->
-      fileTree.isVisible(file)
-
-  Template.fileTree.fileEntryClass = ->
-    clazz = "fileTree-item"
-    if @isDir
-      clazz += " directory " + if @isOpen() then "open" else "closed"
-    else
-      clazz += " file"
-    clazz += " level" + this.depth
-    clazz += " selected" if this.isSelected()
-    clazz += " modified" if this.modified
-    return clazz
-
-  Template.fileTree.projectName = ->
-    Projects.findOne()?.name ? "New project"
-
-  # Select file
-  Template.fileTree.events
-    'click li.fileTree-item' : (event) ->
-      fileId = event.currentTarget.id
-      file = fileTree.findById fileId
-      file.select()
-
   Template.editor.preserve("#editor")
 
   Template.editor.rendered = ->
@@ -140,6 +111,13 @@ do ->
     resizeEditor()
 
   Meteor.startup ->
+    gotoPosition = (editor, cursor)->
+      console.error "udnefined cursor" unless cursor
+      position = cursorToRange(editor.getSession().getDocument(), cursor)
+      editorState.getEditor().navigateTo(position.start.row, position.start.column)
+      Meteor.setTimeout ->
+        editorState.getEditor().scrollToLine(position.start.row, position.start.column)
+      , 0
 
     #TODO: Move this into internal editorState fns
     Meteor.autorun ->
@@ -166,17 +144,17 @@ do ->
           title: "Unable to load binary file"
           message: file.path
         return
+
       editorState.loadFile file, ->
-        if editorState.doc.cursor
-          position = cursorToRange(editorState.getEditor().getSession().getDocument(), editorState.doc.cursor)
-          editorState.getEditor().navigateTo(position.start.row, position.start.column)
-          Meteor.setTimeout ->
-            editorState.getEditor().scrollToLine(position.start.row, true)
+        if editorState.doc.cursors and editorState.cursorDestination
+          gotoPosition(editorState.getEditor(), editorState.doc.cursors[editorState.cursorDestination])
+        else if editorState.doc.cursor
+          gotoPosition(editorState.getEditor(), editorState.doc.cursor)
 
 
   resizeEditor = ->
-    editorTop = $("#editor").position().top
-    editorLeft = $("#editor").position().left
+    editorTop = $("#editor").offset().top
+    editorLeft = $("#editor").offset().left
     windowHeight = $(window).height()
     windowWidth = $(window).width()
     newHeight = windowHeight - editorTop - 20
