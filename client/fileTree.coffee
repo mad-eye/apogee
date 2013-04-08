@@ -45,7 +45,17 @@ _.extend Madeye.File.prototype,
     if tokens.length > 1 then tokens.pop() else null
   
   aceMode: ->
-    Madeye.ACE_MODES[@extension()?.toLowerCase()]
+    extension = @extension()?.toLowerCase()
+    if extension
+      Madeye.ACE_MODES[extension]
+    else
+      switch @filename
+        when 'Makefile' then 'makefile'
+        when 'Cakefile' then 'coffee'
+        when 'Rakefile', 'Gemfile' then 'ruby'
+        #TODO: Check for #!
+        else null
+        
 
   openParents: ->
     if @parentPath
