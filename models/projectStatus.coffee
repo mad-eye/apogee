@@ -56,14 +56,14 @@ if Meteor.isClient
         cursor = ProjectStatuses.collection.find {projectId}
         queryHandle = cursor.observeChanges
           added: (id, fields)->
-            console.log "ADDED", id, fields
+            # console.log "ADDED", id, fields
             sessionsDep.changed()
 
           changed: (id, fields)->
-            console.log "CHANGED", id, fields if fields.filepath?
+            # console.log "CHANGED", id, fields if fields.filepath?
             sessionsDep.changed() if fields.filepath?
 
           removed: (id, fields)->
-            console.log "REMOVED", id, fields
+            # console.log "REMOVED", id, fields
             sessionsDep.changed()
 

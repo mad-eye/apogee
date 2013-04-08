@@ -46,7 +46,7 @@ _.extend Madeye.File.prototype,
       parent = Files.findOne({path: @parentPath})
       lastVisible = parent unless parent.isOpen()
       parentPath = parent.parentPath
-    console.log "Returning Visible Parent", lastVisible
+    #console.log "Returning Visible Parent", lastVisible
     return lastVisible
 
 
