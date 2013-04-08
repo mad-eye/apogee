@@ -27,6 +27,7 @@ if Meteor.isClient
       projectId = Session.get "projectId"
       return unless sessionId and projectId
       status = ProjectStatuses.findOne {sessionId, projectId}
+      Meteor.call "updateProjectStatusHeartbeat", {sessionId, projectId}
       status?.update {heartbeat: Date.now()}
     , 2*1000
 
