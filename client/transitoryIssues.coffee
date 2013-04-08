@@ -8,7 +8,7 @@ class TransitoryIssues
     if oldHandle
       clearTimeout oldHandle
     else
-      @deps[type].changed()
+      @deps[type]?.changed()
     @issues[type] = Meteor.setTimeout =>
       delete @issues[type]
       @deps[type]?.changed()
