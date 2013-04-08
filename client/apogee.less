@@ -16,10 +16,13 @@
 @reallyBigFontSize: 24px;
 
 @baseLineHeight: 14px;
-@baseSpacing: 16px;
+@baseSpacing: 10px;
+
+@smallImageSize: 16px;
+@bigImageSize: 2*@smallImageSize;
 
 body {
-    padding: 8px;
+    padding: @baseSpacing;
     font-size: @baseFontSize;
     font-family: Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
@@ -45,6 +48,24 @@ body {
   -ms-border-radius: @radius;
   -o-border-radius: @radius;
   border-radius: @radius;
+}
+
+.transparent (@fraction: 0.50) {
+  @pct: 100*@fraction;
+  /* IE 8 */
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=@pct)";
+
+  /* IE 5-7 */
+  filter: alpha(opacity=@pct);
+
+  /* Netscape */
+  -moz-opacity: @fraction;
+
+  /* Safari 1.x */
+  -khtml-opacity: @fraction;
+
+  /* Good browsers */
+  opacity: @fraction;
 }
 
 .hangout .topnav {
@@ -155,7 +176,7 @@ input#emailInput {
 }
 
 .fileTree-indent(@numIndents) {
-  padding-left: (16px * @numIndents);
+  padding-left: (@smallImageSize * @numIndents);
 }
 
 ul.fileTree {
@@ -167,8 +188,8 @@ ul.fileTree {
 
     .fileTreeUserIcon {
       float: right;
-      height: 16px;
-      width: 16px;
+      height: @smallImageSize;
+      width: @smallImageSize;
     }
     
     li {
@@ -274,76 +295,20 @@ ul.fileTree {
   color: #CCCCCC;
 }
 
-#saveBox {
-  /*width: 48px;*/
-  /*min-width: 48px;*/
+/* EDITOR BAR */
+.editorBar {
+
 }
 
 .editorBarButton {
   margin-right: @baseSpacing;
+  margin-bottom: @baseSpacing;
 }
 
-.grey-out {
-  opacity: 0.4;
-  filter: alpha(opacity=40); /* msie */  
-}
-
-.transparent (@fraction: 0.50) {
-  @pct: 100*@fraction;
-  /* IE 8 */
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=@pct)";
-
-  /* IE 5-7 */
-  filter: alpha(opacity=@pct);
-
-  /* Netscape */
-  -moz-opacity: @fraction;
-
-  /* Safari 1.x */
-  -khtml-opacity: @fraction;
-
-  /* Good browsers */
-  opacity: @fraction;
-}
-
-#saveBox img {
-  width: 32px;
-  height: 32px;
-}
-
-#saveImage {
-  cursor: pointer;
-  
-  &.disabled {
-    /*display: none;*/
-    .transparent;
-    cursor: default;
-  }  
-}
-
-#saveButton {
-/*    margin-left: @baseSpacing; */
-}
-
-#addFiles {
-  span {
-    font-size: @baseFontSize;
-  }
-}
-
-#revertFile, #discardFile {
-
-  &.disabled {
-    display: none;
-  }
-}
-
-/* AceBar */
-.editorBar {
-
+#editorSettings {
+  position: relative;
   form.dropdown-menu {
-    padding-left: 8px;
-    padding-right: 8px;
+    padding: @baseSpacing;
 
     label, select  {
       font-size: @baseFontSize;
@@ -354,5 +319,40 @@ ul.fileTree {
   input[type="checkbox"] {
     margin-top: 0;
   }
+
+  
 }
-    
+
+#syntaxMode {
+  form {
+    margin: 0;
+  }
+
+  select {
+    margin: 0;
+  }
+}
+
+#saveBox {
+  img {
+    width: @bigImageSize;
+    height: @bigImageSize;
+  }
+}
+
+#saveImage {
+  cursor: pointer;
+  
+  &.disabled {
+    .transparent;
+    cursor: default;
+  }  
+}
+
+#revertFile, #discardFile {
+
+  &.disabled {
+    display: none;
+  }
+}
+
