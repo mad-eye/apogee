@@ -14,7 +14,7 @@
     <div id="syntaxMode" class="editorBarButton pull-left">
       <form>
         <select id="syntaxModeSelect" class="input-medium">
-          {{> fileModeOptions}}
+          {{> syntaxModeOptions}}
         </select>
       </form>
     </div>
@@ -80,9 +80,9 @@
   </optgroup>
 </template>
 
-<template name="fileModeOptions">
+<template name="syntaxModeOptions">
   <option value="">Select syntax&hellip;</option>
-  {{#each fileModes}}
-  <option value="{{value}}" {{#if SessionEquals 'fileMode' value}}selected{{/if}}>{{name}}</option>
+  {{#each syntaxModes}}
+  <option value="{{value}}" {{#if SessionEquals 'syntaxMode' value}}selected{{/if}}>{{name}}</option>
   {{/each}}
 </template>

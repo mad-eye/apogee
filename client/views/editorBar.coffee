@@ -18,8 +18,8 @@ Template.editorBar.events
   'change #showInvisibles': (e) ->
     Session.set 'showInvisibles', e.srcElement.checked
 
-  'change #fileModeSelect': (e) ->
-    Session.set 'fileMode', e.srcElement.value
+  'change #syntaxModeSelect': (e) ->
+    Session.set 'syntaxMode', e.srcElement.value
 
   'change #keybinding': (e) ->
     keybinding = e.srcElement.value
@@ -71,8 +71,8 @@ Template.editorBar.helpers
       ""
   
 
-Template.fileModeOptions.helpers
-  'fileModes': ->
+Template.syntaxModeOptions.helpers
+  'syntaxModes': ->
     [
       {value:"abap", name:"ABAP"},
       {value:"asciidoc", name:"AsciiDoc"},
@@ -186,6 +186,7 @@ Template.themeOptions.helpers
 
 Meteor.startup ->
 
+  #Word Wrap
   Deps.autorun ->
     #Need to do editorState.getEditor().getSession().setWrapLimitRange(min, max) somewhere
     #Ideally tied to editor size
@@ -197,26 +198,29 @@ Meteor.startup ->
     else
       session.setUseWrapMode false
 
+  #Show Invisibles
   Deps.autorun ->
     editorState.getEditor().setShowInvisibles Session.get 'showInvisibles' ? false
 
+  #Syntax Modes from session
   Deps.autorun (computation) ->
-    mode = Session.get 'fileMode'
+    mode = Session.get 'syntaxMode'
     return unless mode?
-    editorSession = editorState.getEditor().getSession()
-    Mode = undefined
     module = require("ace/mode/#{mode}")
     unless module
-      jQuery.getScript "/ace/mode-#{mode}.js", =>
+      jQuery.getScript "/ace/mode-#{mode}.js", ->
         computation.invalidate()
     else
       Mode = module.Mode
+      editorSession = editorState.getEditor().getSession()
       editorSession?.setMode(new Mode())
 
+  #Syntax Modes from file
   Deps.autorun ->
     file = Files.findOne path: editorState.getPath()
-    Session.set 'fileMode', file.aceMode() if file?.aceMode()
+    Session.set 'syntaxMode', file.aceMode() if file?.aceMode()
 
+  #Keybinding
   Deps.autorun (computation) ->
     keybinding = Session.get 'keybinding'
     unless keybinding
@@ -225,12 +229,13 @@ Meteor.startup ->
     else
       module = require("ace/keyboard/#{keybinding}")
       unless module
-        jQuery.getScript "/ace/keybinding-#{keybinding}.js", =>
+        jQuery.getScript "/ace/keybinding-#{keybinding}.js", ->
           computation.invalidate()
       else
         handler = module.handler
         editorState.getEditor().setKeyboardHandler handler
 
+  #Theme
   Deps.autorun ->
     theme = Session.get 'theme'
     return unless theme
