@@ -8,6 +8,7 @@ Meteor.methods
 describe "editorChrome", ->
   assert = chai.assert
   describe "save button", ->
+    helpers = null
     project = file = null
     projectName = 'fizzik'
     projectId = null
@@ -29,6 +30,8 @@ describe "editorChrome", ->
       file.save()
       editorState.setPath file.path
 
+      helpers = Template.editorBar._tmpl_data.helpers
+
       Meteor.flush()
 
     after ->
@@ -43,9 +46,9 @@ describe "editorChrome", ->
         Meteor.flush()
 
       it "should have a disabled button", ->
-        assert.equal Template.editorChrome.buttonDisabled(), "disabled"
+        assert.equal helpers.buttonDisabled(), "disabled"
       it 'should not show save spinner', ->
-        assert.isFalse Template.editorChrome.showSaveSpinner()
+        assert.isFalse helpers.showSaveSpinner()
 
     describe "when project.closed and file.modified", ->
       before ->
@@ -56,9 +59,9 @@ describe "editorChrome", ->
         Meteor.flush()
 
       it "should not have a disabled button", ->
-        assert.equal Template.editorChrome.buttonDisabled(), ""
+        assert.equal helpers.buttonDisabled(), ""
       it 'should not show save spinner', ->
-        assert.isFalse Template.editorChrome.showSaveSpinner()
+        assert.isFalse helpers.showSaveSpinner()
 
 
 
