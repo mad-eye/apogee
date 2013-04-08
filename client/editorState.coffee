@@ -19,6 +19,7 @@ class EditorState
     @checksumDep = new Deps.Dependency
 
   getEditor: ->
+    Deps.depend @pathDep
     editor = ace.edit @editorId
     return editor
 
