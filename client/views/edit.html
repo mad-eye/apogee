@@ -31,24 +31,13 @@
 
 <template name="editorChrome">
   <div id="editorTitleBar" class="clearfix">
-    <div id="saveBox" class="pull-left">
-      <img id="saveImage" src="/images/save-file2.png" class="{{buttonDisabled}}" alt="Save file" title="Save file" />
-      {{#if showSaveSpinner}}
-        <img id="saveButtonSpinner" src="/images/ajax-loader.gif" alt="Loading..." />
-      {{/if}}
-    </div>
     <div id="editorTitle" class="pull-left">
       <h4>
         {{editorFileName}}
       </h4>
     </div>
-    {{#unless fileIsDeleted}}
-      <a id="revertFile" class="pull-right {{buttonDisabled}}" title="Revert the file to the state on the local computer." href="#">Revert</a>
-    {{else}}
-      <a id="discardFile" class="pull-right {{buttonDisabled}}" title="Discard this file, removing it from the project view" href="#">Discard File</a>
-    {{/unless}}
   </div>
-  {{> aceBar}}
+  {{> editorBar }}
 </template>
 
 <template name="editorOverlay">

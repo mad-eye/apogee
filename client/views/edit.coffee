@@ -62,18 +62,24 @@ cursorToRange = (editorDoc, cursor) ->
     #+1 for newline
     offset += line.length + 1
 
+projectIsClosed = ->
+  Projects.findOne()?.closed
+  
 
 do ->
   fileTree = new Madeye.FileTree()
 
-  projectIsClosed = ->
-    Projects.findOne()?.closed
-  
   fileIsDeleted = ->
     Files.findOne(path:editorState.getPath())?.removed
 
   Handlebars.registerHelper "fileIsDeleted", ->
     fileIsDeleted()
+
+  Handlebars.registerHelper "editorFileName", ->
+    editorState?.getPath()
+
+  Handlebars.registerHelper "editorIsLoading", ->
+    Session.equals "editorIsLoading", true
 
   fileIsModifiedLocally = ->
     Files.findOne(path:editorState.getPath())?.modified_locally
@@ -134,6 +140,8 @@ do ->
     resizeEditor()
 
   Meteor.startup ->
+
+    #TODO: Move this into internal editorState fns
     Meteor.autorun ->
       return unless Session.equals("editorRendered", true)
       filePath = editorState?.getPath()
@@ -144,6 +152,8 @@ do ->
       #selectedFilePath?
       Session.set "selectedFileId", file._id
       file.openParents()
+      #Display warning/errors about file state.
+      #TODO: Replace this with an overlay.
       if file.isLink
         displayAlert
           level: "error"
@@ -163,47 +173,6 @@ do ->
           Meteor.setTimeout ->
             editorState.getEditor().scrollToLine(position.start.row, true)
 
-  Template.editorChrome.events
-    'click #revertFile': (event) ->
-      Session.set "working", true
-      editorState.revertFile (error)->
-        Session.set "working", false
-
-    'click #discardFile': (event) ->
-      Metrics.add
-        message:'discardFile'
-        fileId: editorState?.file?._id
-        filePath: editorState?.file?.path #don't want reactivity
-      editorState.file.remove()
-      editorState.file = null
-      editorState.setPath ""
-
-    'click #saveImage' : (event) ->
-      #console.log "clicked save button"
-      Session.set "working", true
-      editorState.save (err) ->
-        if err
-          #Handle error better.
-          console.error "Error in save request:", err
-        Session.set "working", false
-
-  Handlebars.registerHelper "editorFileName", ->
-    editorState?.getPath()
-
-  Handlebars.registerHelper "editorIsLoading", ->
-    Session.equals "editorIsLoading", true
-
-  Template.editorChrome.showSaveSpinner = ->
-    Session.equals "working", true
-
-  #FIXME: If a connection is re-established, the file is considered modified==false.
-  Template.editorChrome.buttonDisabled = ->
-    filePath = editorState.getPath()
-    file = Files.findOne({path: filePath}) if filePath?
-    if !file?.modified or Session.equals("working", true) or projectIsClosed()
-      "disabled"
-    else
-      ""
 
   resizeEditor = ->
     editorTop = $("#editor").position().top

@@ -56,7 +56,7 @@ class EditorState
         fileId: @file?._id
         filePath: @file?.path
       console.warn("revert called, but no doc selected")
-      callback? "No doc or no file"
+      return callback? "No doc or no file"
     file = @file
     Meteor.http.get "#{@getFileUrl(file)}?reset=true", (error,response) =>
       if error
@@ -168,7 +168,7 @@ class EditorState
 
   #callback: (err) ->
   save : (callback) ->
-    #console.log "Saving file #{@file?._id}"
+    console.log "Saving file #{@file?._id}"
     Metrics.add
       message:'saveFile'
       fileId: @file?._id

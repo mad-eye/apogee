@@ -105,7 +105,6 @@ footer {
     /*letter-spacing: 1px;*/
   }
   font-size: @bigFontSize;
-
 }
 
 
@@ -254,13 +253,6 @@ ul.fileTree {
   max-width: 611px;
   vertical-align: text-bottom;
 
-  a {
-    padding-top: 18px;
-
-    &.disabled {
-      display: none;
-    }
-  }
 }
 
 #editorFileName {
@@ -277,28 +269,50 @@ ul.fileTree {
 }
 
 #saveBox {
-  width: 48px;
-  min-width: 48px;
-  padding-top: 8px;
+  /*width: 48px;*/
+  /*min-width: 48px;*/
+}
+
+.editorBarButton {
+  margin-right: @baseSpacing;
+}
+
+.grey-out {
+  opacity: 0.4;
+  filter: alpha(opacity=40); /* msie */  
+}
+
+.transparent (@fraction: 0.50) {
+  @pct: 100*@fraction;
+  /* IE 8 */
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=@pct)";
+
+  /* IE 5-7 */
+  filter: alpha(opacity=@pct);
+
+  /* Netscape */
+  -moz-opacity: @fraction;
+
+  /* Safari 1.x */
+  -khtml-opacity: @fraction;
+
+  /* Good browsers */
+  opacity: @fraction;
+}
+
+#saveBox img {
+  width: 32px;
+  height: 32px;
 }
 
 #saveImage {
-  width: 24px;
-  height: 24px;
-  margin-left: 12px;
-  margin-right: 12px;
-  cursor:pointer;
+  cursor: pointer;
   
   &.disabled {
-      display: none;
+    /*display: none;*/
+    .transparent;
+    cursor: default;
   }  
-}
-
-#saveButtonSpinner {
-  width: 24px;
-  height: 24px;
-  margin-left: 12px;
-  margin-right: 12px;
 }
 
 #saveButton {
@@ -311,4 +325,28 @@ ul.fileTree {
   }
 }
 
+#revertFile, #discardFile {
+
+  &.disabled {
+    display: none;
+  }
+}
+
+/* AceBar */
+.editorBar {
+
+  form.dropdown-menu {
+    padding-left: 8px;
+    padding-right: 8px;
+
+    label, select  {
+      font-size: @baseFontSize;
+      line-height: @baseLineHeight;
+    }
+  }
+
+  input[type="checkbox"] {
+    margin-top: 0;
+  }
+}
     

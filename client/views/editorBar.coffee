@@ -11,7 +11,7 @@ inputs = {
   'keyboardSelect': 'ace'
 }
 
-Template.aceBar.events
+Template.editorBar.events
   'change #wordWrap': (e) ->
     Session.set 'wordWrap', e.srcElement.checked
 
@@ -29,9 +29,47 @@ Template.aceBar.events
   'change #themeSelect': (e) ->
     Session.set 'theme', e.srcElement.value
 
-Template.aceBar.rendered = ->
-  Session.set 'aceBarRendered', true
+  'click #revertFile': (event) ->
 
+    Session.set "working", true
+    editorState.revertFile (error)->
+      Session.set "working", false
+
+  'click #discardFile': (event) ->
+    Metrics.add
+      message:'discardFile'
+      fileId: editorState?.file?._id
+      filePath: editorState?.file?.path #don't want reactivity
+    editorState.file.remove()
+    editorState.file = null
+    editorState.setPath ""
+
+  'click #saveImage' : (event) ->
+    el = $(event.target)
+    return if el.hasClass 'disabled' or Session.get 'working'
+    console.log "clicked save button"
+    Session.set "working", true
+    editorState.save (err) ->
+      if err
+        #Handle error better.
+        console.error "Error in save request:", err
+      Session.set "working", false
+
+Template.editorBar.rendered = ->
+  Session.set 'editorBarRendered', true
+
+Template.editorBar.helpers
+  showSaveSpinner: ->
+    Session.equals "working", true
+
+  buttonDisabled : ->
+    filePath = editorState.getPath()
+    file = Files.findOne({path: filePath}) if filePath?
+    if !file?.modified or Session.equals("working", true) or projectIsClosed()
+      "disabled"
+    else
+      ""
+  
 
 Template.fileModeOptions.helpers
   'fileModes': ->
