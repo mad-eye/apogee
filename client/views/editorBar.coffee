@@ -205,13 +205,15 @@ Meteor.startup ->
   #Syntax Modes from session
   Deps.autorun (computation) ->
     mode = Session.get 'syntaxMode'
+    editorSession = editorState.getEditor().getSession()
+    unless mode?
+      return editorSession?.setMode null
     module = require("ace/mode/#{mode}")
     unless module
       jQuery.getScript "/ace/mode-#{mode}.js", ->
         computation.invalidate()
     else
       Mode = module.Mode
-      editorSession = editorState.getEditor().getSession()
       editorSession?.setMode(new Mode())
 
   #Syntax Modes from file
