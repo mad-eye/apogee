@@ -71,4 +71,5 @@ Deps.autorun ->
 Meteor.startup ->
   transitoryIssues = new TransitoryIssues
   projectStatus = ProjectStatuses.findOne {sessionId:Session.get('sessionId')}
-  projectStatus?.update {heartbeat: Date.now()}
+  Meteor.call "updateProjectStatusHeartbeat", Session.get("sessionId"), Session.get("projectId")
+

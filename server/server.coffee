@@ -48,6 +48,10 @@ do ->
     getFileCount: (projectId)->
       return Files.collection.find(projectId: projectId).count()
 
+    updateProjectStatusHearbeat: (sessionId, projectId)->
+      status = ProjectStatuses.findOne {sessionId, projectId}
+      status.update {heartbeat: Date.now()}
+
     createProjectStatus: (sessionId, projectId)->
       status = ProjectStatuses.findOne {sessionId, projectId}
       return if status
