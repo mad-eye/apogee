@@ -82,7 +82,7 @@ do ->
     Files.findOne(path:editorState.getPath())?.modified_locally
 
   projectIsLoading = ->
-    not (Projects.findOne(Session.get "projectId")? || Session.equals 'fileCount', Files.collection.find().count())
+    not (Projects.findOne(Session.get "projectId")? || Session.equals 'fileCount', Files.find().count())
 
   Template.projectStatus.projectAlerts = ->
     alerts = []
@@ -129,7 +129,7 @@ do ->
       #TODO less hacky way to do this?
       #selectedFilePath?
       Session.set "selectedFileId", file._id
-      file.openParents()
+      fileTree.open file.path, true
       #Display warning/errors about file state.
       #TODO: Replace this with an overlay.
       if file.isLink

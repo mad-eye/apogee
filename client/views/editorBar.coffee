@@ -219,7 +219,7 @@ Meteor.startup ->
   #Syntax Modes from file
   Deps.autorun ->
     file = Files.findOne path: editorState.getPath()
-    Session.set 'syntaxMode', file?.aceMode()
+    Session.set 'syntaxMode', file?.aceMode
 
   #Keybinding
   Deps.autorun (computation) ->

@@ -4,7 +4,7 @@ Meteor.publish "projects", (projectId)->
     _id: projectId
 
 Meteor.publish "files", (projectId)->
-  Files.collection.find
+  Files.find
     projectId: projectId
 
 Meteor.publish "projectStatuses", (projectId) ->
@@ -22,12 +22,11 @@ ProjectStatuses.collection.allow
   update: (userId, doc, fields, modifier) -> true
   remove: (userId, doc) -> true
 
-Files.collection.allow(
+Files.allow
   #TODO make this more restrictive  
   #For example, restrict by projectId
   update: (userId, docs, fields, modifier) -> true
   remove: (userId, docs) -> true
-)
 
 NewsletterEmails.collection.allow(
   insert: -> true
@@ -46,7 +45,7 @@ do ->
   Meteor.methods
     #Used for loading message.
     getFileCount: (projectId)->
-      return Files.collection.find(projectId: projectId).count()
+      return Files.find(projectId: projectId).count()
 
     updateProjectStatusHearbeat: (sessionId, projectId)->
       status = ProjectStatuses.findOne {sessionId, projectId}
