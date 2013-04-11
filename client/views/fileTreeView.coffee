@@ -23,7 +23,6 @@ do ->
       projectId = Session.get "projectId"
       sessionIds = fileTree.getSessionsInFile file.path
       return unless sessionIds
-      console.log "SessionIds", sessionIds
       users = null
       Deps.nonreactive ->
         users = ProjectStatuses.collection.find(sessionId: {$in: sessionIds}).map (status) ->

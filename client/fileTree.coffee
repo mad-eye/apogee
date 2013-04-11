@@ -34,7 +34,7 @@ class FileTree
   constructor: ()->
     @openedDirs = new ReactiveDict
     @visibleParents = new ReactiveDict
-    @sessionPathsDep = new Deps.Dependency
+    @sessionPathsDeps = {}
     
   getParentPath = (filePath) ->
     filePath.substring 0, filePath.lastIndexOf '/'
@@ -63,6 +63,16 @@ class FileTree
     return true unless parentPath
     return @isOpen(parentPath) and @isVisible(parentPath)
 
+  _dependOnSessionPath: (path) ->
+    @sessionPathsDeps[path] ?= new Deps.Dependency
+    Deps.depend @sessionPathsDeps[path]
+
+  _dependOnSessionPaths: (bottomPath, topPath) ->
+    path = bottomPath
+    while path
+      @_dependOnSessionPath path
+      break if path == topPath
+
   lowestVisiblePath: (filePath) ->
     lowestVisible = filePath
     parentPath = getParentPath filePath
@@ -72,7 +82,6 @@ class FileTree
     return lowestVisible
 
   select: (file) ->
-    console.log "Selecting file", file
     Session.set("selectedFileId", file._id)
     if !file.isDir
       Meteor.Router.to("/edit/#{file.projectId}/#{file.path}")
@@ -81,17 +90,21 @@ class FileTree
 
   #TODO: This invalidates for all filePaths; should just invalidate affected paths
   getSessionsInFile: (filePath) ->
-    Deps.depend @sessionPathsDep
-    sessionsInFile = {}
+    sessions = []
     for sessionId, path of @sessionPaths
-      visiblePath = @lowestVisiblePath path
-      sessionsInFile[visiblePath] ?= []
-      sessionsInFile[visiblePath].push sessionId
+      if filePath == @lowestVisiblePath path
+        @_dependOnSessionPaths path, filePath
+        sessions.push sessionId
+    return sessions
 
-    return sessionsInFile[filePath]
-
-  setSessionPaths: (@sessionPaths) ->
-    @sessionPathsDep.changed()
+  setSessionPaths: (sessionPaths) ->
+    oldPaths = _.values @sessionPaths
+    newPaths = _.values sessionPaths
+    @sessionPaths = sessionPaths
+    _.each oldPaths, (path) =>
+      @sessionPathsDeps[path]?.changed()
+    _.each newPaths, (path) =>
+      @sessionPathsDeps[path]?.changed()
 
         
 
