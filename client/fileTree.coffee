@@ -2,12 +2,12 @@ class ReactiveDict
   constructor: () ->
     @deps = {}
     @keys = {}
-    
+
   get: (key) ->
     @deps[key]  ?= new Deps.Dependency
     Deps.depend @deps[key]
     @keys[key]
-    
+
   set: (key, value) ->
     unless @keys[key] == value
       @deps[key]?.changed()
@@ -35,33 +35,40 @@ class FileTree
     @openedDirs = new ReactiveDict
     @visibleParents = new ReactiveDict
     @sessionPathsDeps = {}
-    
+
   getParentPath = (filePath) ->
     filePath.substring 0, filePath.lastIndexOf '/'
-    
+
   open: (dirPath, withParents=false) ->
     return unless dirPath
     @openedDirs.set dirPath, true
     @open getParentPath(dirPath), true if withParents
-    
+
   close: (dirPath) ->
     return unless dirPath
     @openedDirs.set dirPath, false
-    
+
   toggle: (dirPath) ->
     #Don't want the get to be reactive
     if @openedDirs.keys[dirPath]
       @close dirPath
     else
       @open dirPath
-  
+
   isOpen: (dirPath) ->
     @openedDirs.get dirPath
-    
+
   isVisible: (filePath)->
     parentPath = getParentPath filePath
     return true unless parentPath
     return @isOpen(parentPath) and @isVisible(parentPath)
+
+  select: (file) ->
+    Session.set("selectedFileId", file._id)
+    if !file.isDir
+      Meteor.Router.to("/edit/#{file.projectId}/#{file.path}")
+    else
+      @toggle(file.path)
 
   _dependOnSessionPath: (path) ->
     @sessionPathsDeps[path] ?= new Deps.Dependency
@@ -81,13 +88,6 @@ class FileTree
       parentPath = getParentPath parentPath
     return lowestVisible
 
-  select: (file) ->
-    Session.set("selectedFileId", file._id)
-    if !file.isDir
-      Meteor.Router.to("/edit/#{file.projectId}/#{file.path}")
-    else
-      @toggle(file.path)
-
   #TODO: This invalidates for all filePaths; should just invalidate affected paths
   getSessionsInFile: (filePath) ->
     sessions = []
@@ -106,6 +106,6 @@ class FileTree
     _.each newPaths, (path) =>
       @sessionPathsDeps[path]?.changed()
 
-        
+
 
 
