@@ -78,7 +78,8 @@ class FileTree
     path = bottomPath
     while path
       @_dependOnSessionPath path
-      break if path == topPath
+      break if path == topPath or !path
+      path = getParentPath path
 
   _lowestVisiblePath: (filePath) ->
     lowestVisible = filePath

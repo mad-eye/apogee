@@ -211,6 +211,59 @@ describe "FileTree", ->
       assert.ok !called
       assert.isTrue fileTree.isOpen dir.path
 
+  describe 'sessionPaths', ->
+    sessionPaths = null
+    sessionId = null
+
+    beforeEach ->
+      sessionId = Meteor.uuid()
+      fileTree = new FileTree
+      sessionPaths = {}
+
+    it 'should return empty array for unknown path', ->
+      assert.deepEqual fileTree.getSessionsInFile('ramd.path'), []
+
+    it 'should set a single path', ->
+      path = 'file.txt'
+      sessionPaths[sessionId] = path
+      fileTree.setSessionPaths sessionPaths
+      sessionIds = fileTree.getSessionsInFile path
+      assert.deepEqual sessionIds, [sessionId]
+
+    it 'should show session in parent if parent is closed', ->
+      path = 'parent/file.txt'
+      sessionPaths[sessionId] = path
+      fileTree.setSessionPaths sessionPaths
+      assert.deepEqual fileTree.getSessionsInFile(path), []
+      assert.deepEqual fileTree.getSessionsInFile('parent'), [sessionId]
+
+    it 'should show two sessions in different files', ->
+      path1 = 'file1.txt'
+      sessionId2 = Meteor.uuid()
+      path2 = 'file2.coffee'
+      sessionPaths[sessionId] = path1
+      sessionPaths[sessionId2] = path2
+      fileTree.setSessionPaths sessionPaths
+      assert.deepEqual fileTree.getSessionsInFile(path1), [sessionId]
+      assert.deepEqual fileTree.getSessionsInFile(path2), [sessionId2]
+
+    it 'should show two sessions in the same file', ->
+      path = 'fileA2.txt'
+      sessionId2 = Meteor.uuid()
+      sessionPaths[sessionId] = path
+      sessionPaths[sessionId2] = path
+      fileTree.setSessionPaths sessionPaths
+      assert.deepEqual fileTree.getSessionsInFile(path), [sessionId, sessionId2]
+
+    it 'should show two sessions in the same file if one is in child invisible file', ->
+      path1 = 'dir9'
+      sessionId2 = Meteor.uuid()
+      path2 = 'dir9/file2.coffee'
+      sessionPaths[sessionId] = path1
+      sessionPaths[sessionId2] = path2
+      fileTree.setSessionPaths sessionPaths
+      assert.deepEqual fileTree.getSessionsInFile(path1), [sessionId, sessionId2]
+      assert.deepEqual fileTree.getSessionsInFile(path2), []
 
 ###
   describe "visibleParent", ->
