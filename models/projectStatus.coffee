@@ -24,6 +24,6 @@ if Meteor.isClient
     return unless Session.equals("editorRendered", true) and sessionId and projectId
     projectStatus = ProjectStatuses.findOne {sessionId, projectId}
     return unless projectStatus
-    projectStatus.update {filepath: editorState.getPath(), connectionId: editorState.getConnectionId()}
+    projectStatus.update {filePath: editorState.getPath(), connectionId: editorState.getConnectionId()}
 
 
