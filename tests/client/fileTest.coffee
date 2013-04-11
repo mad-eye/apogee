@@ -71,5 +71,49 @@ describe "Files (MeteorModel)", ->
       savedFile = Files.findOne file._id
       assert.isFalse savedFile?
 
+describe 'Files', ->
+  assert = chai.assert
 
+  coffeeFile = null
+  binFile = null
+  makeFile = null
+  before ->
+    coffeeFile = File.create
+      path: 'a/path/cool.coffee'
+      isDir: false
+    binFile = File.create
+      path: 'a/nother/path/cat.GIF'
+      isDir: false
+    makeFile = File.create
+      path: 'Makefile'
+      isDir: true
 
+  it 'should have filename prop', ->
+    assert.equal coffeeFile.filename, 'cool.coffee'
+    assert.equal binFile.filename, 'cat.GIF'
+    assert.equal makeFile.filename, 'Makefile'
+
+  it 'should have depth prop', ->
+    assert.equal coffeeFile.depth, 2
+    assert.equal binFile.depth, 3
+    assert.equal makeFile.depth, 0
+
+  it 'should have parentPath prop', ->
+    assert.equal coffeeFile.parentPath, 'a/path'
+    assert.equal binFile.parentPath, 'a/nother/path'
+    assert.isNull makeFile.parentPath
+
+  it 'should have extension prop', ->
+    assert.equal coffeeFile.extension, 'coffee'
+    assert.equal binFile.extension, 'GIF'
+    assert.isNull makeFile.extension
+  
+  it 'should have isBinary prop', ->
+    assert.isFalse coffeeFile.isBinary
+    assert.isTrue binFile.isBinary, '.GIF files should be considered binary'
+    assert.isFalse makeFile.isBinary
+
+  it 'should have aceMode prop', ->
+    assert.equal coffeeFile.aceMode, 'coffee'
+    assert.isFalse binFile.aceMode?
+    assert.equal makeFile.aceMode, 'makefile'

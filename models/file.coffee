@@ -27,7 +27,7 @@ Object.defineProperty File.prototype, 'extension',
     if tokens.length > 1 then tokens.pop() else null
 
 Object.defineProperty File.prototype, 'isBinary',
-  get: -> /\.(bmp|gif|jpg|jpeg|png|psd|ai|ps|svg|pdf|exe|jar|dwg|dxf|7z|deb|gz|zip|dmg|iso|avi|mov|mp4|mpg|wmb|vob)$/.test(@path)
+  get: -> /(bmp|gif|jpg|jpeg|png|psd|ai|ps|svg|pdf|exe|jar|dwg|dxf|7z|deb|gz|zip|dmg|iso|avi|mov|mp4|mpg|wmb|vob)$/i.test(@extension)
 
 Object.defineProperty File.prototype, 'aceMode',
   get: ->
