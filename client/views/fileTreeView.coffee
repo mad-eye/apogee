@@ -24,9 +24,12 @@ do ->
       sessionIds = fileTree.getSessionsInFile file.path
       return unless sessionIds
       console.log "SessionIds", sessionIds
-      ProjectStatuses.collection.find(sessionId: {$in: sessionIds}).map (status) ->
-        destination = "/edit/#{projectId}/#{file.path}#S#{status.connectionId}"
-        {img: "/images/#{USER_ICONS[status.iconId]}", destination}
+      users = null
+      Deps.nonreactive ->
+        users = ProjectStatuses.collection.find(sessionId: {$in: sessionIds}).map (status) ->
+          destination = "/edit/#{projectId}/#{file.path}#S#{status.connectionId}"
+          {img: "/images/#{USER_ICONS[status.iconId]}", destination}
+      return users
 
     projectName : ->
       Projects.findOne(Session.get "projectId")?.name ? "New project"
@@ -41,6 +44,9 @@ do ->
     #'click img.fileTreeUserIcon': (event) ->
       #event.stopPropagation()
       #Meteor.Router.to event.toElement.attributes.destination.value
+
+  Template.fileTree.rendered = ->
+    console.log "Rendered fileTree"
 
   Meteor.startup ->
     fileTree = new FileTree
@@ -57,6 +63,7 @@ do ->
         for status in statuses
           continue unless status.filePath
           sessionPaths[status.sessionId] = status.filePath
+      console.log "Setting sessionPaths from autorun", sessionPaths
       fileTree.setSessionPaths sessionPaths
 
     #Invalidate sessionsDep on important changes
