@@ -73,7 +73,7 @@ class FileTree
       @_dependOnSessionPath path
       break if path == topPath
 
-  lowestVisiblePath: (filePath) ->
+  _lowestVisiblePath: (filePath) ->
     lowestVisible = filePath
     parentPath = getParentPath filePath
     while parentPath
@@ -92,7 +92,7 @@ class FileTree
   getSessionsInFile: (filePath) ->
     sessions = []
     for sessionId, path of @sessionPaths
-      if filePath == @lowestVisiblePath path
+      if filePath == @_lowestVisiblePath path
         @_dependOnSessionPaths path, filePath
         sessions.push sessionId
     return sessions
