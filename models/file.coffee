@@ -43,4 +43,6 @@ Object.defineProperty File.prototype, 'aceMode',
         else null
 
 Files = new Meteor.Collection 'files', transform: (doc) ->
-  new File doc, Files
+  new File doc
+
+File.prototype.collection = Files

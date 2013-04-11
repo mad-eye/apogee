@@ -1,8 +1,10 @@
 class MeteorModel
-  constructor: (data, @collection)->
+  constructor: (data)->
     _.extend @, data
+    #@collection needs to be set after creating the Collection.
 
-  updateJSON: ->
+  #Remove circular references and functions and the like.
+  _safeJSON: ->
     #there's got to be a better way to do this
     json = JSON.parse(JSON.stringify(@))
     delete json._id
@@ -10,9 +12,9 @@ class MeteorModel
 
   save: ->
     if @_id
-      @collection.update @_id, {$set: @updateJSON()}
+      @collection.update @_id, {$set: @_safeJSON()}
     else
-      @_id = @collection.insert @
+      @_id = @collection.insert @_safeJSON()
 
   update: (fields)->
     dirty = false
@@ -23,3 +25,9 @@ class MeteorModel
 
   remove: ->
     @collection.remove @_id if @_id
+
+  #TODO: Accept an array
+  @create: (data) ->
+    #Need to use @prototype.collection for class methods
+    id = @prototype.collection.insert data
+    return @prototype.collection.findOne id
