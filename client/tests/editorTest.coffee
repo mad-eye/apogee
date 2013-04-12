@@ -3,7 +3,7 @@ Meteor.methods
   cleanProject: (projectId)->
     console.log "cleaning project", projectId
     Projects.collection.remove projectId
-    Files.collection.remove projectId: projectId
+    Files.remove projectId: projectId
 
 describe "editorChrome", ->
   assert = chai.assert
@@ -22,12 +22,11 @@ describe "editorChrome", ->
       projectId = project._id
       Session.set "projectId", project._id
 
-      file = new File
+      file = File.create
         projectId: projectId
         path: 'a/path/whee.txt'
         modified: true
         isTest: true
-      file.save()
       editorState.setPath file.path
 
       helpers = Template.editorBar._tmpl_data.helpers
