@@ -265,35 +265,172 @@ describe "FileTree", ->
       assert.deepEqual fileTree.getSessionsInFile(path1), [sessionId, sessionId2]
       assert.deepEqual fileTree.getSessionsInFile(path2), []
 
-###
-  describe "visibleParent", ->
-    projectId = Meteor.uuid()
-    dir1 = dir2 = file1 = null
-    before ->
-      dir1 = Files.create {path:'dir1', isDir:true, projectId}
-      dir2 = Files.create {path:'dir1/dir2', isDir:true, projectId}
-      file1 = Files.create {path:'dir1/dir2/file1', isDir:false, projectId}
+  describe 'sessionPaths reactivity', ->
+    sessionPaths = null
+    sessionId1 = null
+    sessionId2 = null
 
-      fileTree = new FileTree(Files.find {projectId} )
+    beforeEach ->
+      sessionId1 = Meteor.uuid()
+      sessionId2 = Meteor.uuid()
+      fileTree = new FileTree
+      sessionPaths = {}
 
-    it 'should give file when all parents are visible', ->
-      dir1.open()
-      dir2.open()
-      assert.deepEqual file1.visibleParent(), file1
+    it 'should react to a single path changing', ->
+      path1 = 'rfile1.txt'
+      path2 = 'rfile2.txt'
+      sessionPaths[sessionId1] = path1
+      fileTree.setSessionPaths sessionPaths
+      inPath1 = null
+      inPath2 = null
+      Deps.autorun ->
+        inPath1 = sessionId1 in fileTree.getSessionsInFile(path1)
+        inPath2 = sessionId1 in fileTree.getSessionsInFile(path2)
+      Deps.flush()
+      assert.isTrue inPath1
+      assert.isFalse inPath2
+      sessionPaths[sessionId1] = path2
+      fileTree.setSessionPaths sessionPaths
+      Deps.flush()
+      assert.isFalse inPath1
+      assert.isTrue inPath2
 
-    it 'should give dir2 when dir2 is closed', ->
-      dir1.open()
-      dir2.close()
-      assert.deepEqual file1.visibleParent(), dir2
+    #Should be in parent when it's closed, and child when open
+    it 'should react to a parent opening/closing', ->
+      path1 = 'dir/rfile1.txt'
+      path2 = 'dir'
+      sessionPaths[sessionId1] = path1
+      fileTree.setSessionPaths sessionPaths
+      inPath1 = null
+      inPath2 = null
+      Deps.autorun ->
+        inPath1 = sessionId1 in fileTree.getSessionsInFile(path1)
+        inPath2 = sessionId1 in fileTree.getSessionsInFile(path2)
+      Deps.flush()
+      assert.isFalse inPath1
+      assert.isTrue inPath2
+      fileTree.open path2
+      Deps.flush()
+      assert.isTrue inPath1
+      assert.isFalse inPath2
+      fileTree.close path2
+      Deps.flush()
+      assert.isFalse inPath1
+      assert.isTrue inPath2
 
-    it 'should give dir1 when dir1 is closed', ->
-      dir1.close()
-      dir2.open()
-      assert.deepEqual file1.visibleParent(), dir1
+    it 'should react to a single path changing to an invisible path', ->
+      path0 = 'file3.txt'
+      path1 = 'dir/rfile1.txt'
+      path2 = 'dir'
+      sessionPaths[sessionId1] = path0
+      fileTree.setSessionPaths sessionPaths
+      inPath0 = null
+      inPath1 = null
+      inPath2 = null
+      Deps.autorun ->
+        inPath0 = sessionId1 in fileTree.getSessionsInFile(path0)
+        inPath1 = sessionId1 in fileTree.getSessionsInFile(path1)
+        inPath2 = sessionId1 in fileTree.getSessionsInFile(path2)
+      Deps.flush()
+      assert.isTrue inPath0
+      assert.isFalse inPath1
+      assert.isFalse inPath2
+      sessionPaths[sessionId1] = path1
+      fileTree.setSessionPaths sessionPaths
+      Deps.flush()
+      assert.isFalse inPath0
+      assert.isFalse inPath1
+      assert.isTrue inPath2
+      fileTree.open path2
+      Deps.flush()
+      assert.isFalse inPath0
+      assert.isTrue inPath1
+      assert.isFalse inPath2
 
-    it 'should give dir1 when both dirs are closed', ->
-      dir1.close()
-      dir2.close()
-      assert.deepEqual file1.visibleParent(), dir1
+    it 'should remove disappearing sessionId', ->
+      path1 = 'oscar'
+      path2 = 'grouch'
+      sessionPaths[sessionId1] = path1
+      sessionPaths[sessionId2] = path2
+      fileTree.setSessionPaths sessionPaths
+      path1Ids = null
+      path2Ids = null
+      Deps.autorun ->
+        path1Ids = fileTree.getSessionsInFile(path1)
+        path2Ids = fileTree.getSessionsInFile(path2)
+      Deps.flush()
+      sessionPaths[sessionId1] = null
+      fileTree.setSessionPaths sessionPaths
+      Deps.flush()
+      assert.deepEqual path1Ids, []
+      assert.deepEqual path2Ids, [sessionId2]
 
-###
+
+    it 'should react to one of two sessions changing', ->
+      path1_1 = 'file1.js'
+      path1_2 = 'anotherJs.js'
+      path2_1 = 'stay.put'
+      sessionPaths[sessionId1] = path1_1
+      sessionPaths[sessionId2] = path2_1
+      fileTree.setSessionPaths sessionPaths
+      path1_1Ids = null
+      path1_2Ids = null
+      path2_1Ids = null
+      Deps.autorun ->
+        path1_1Ids = fileTree.getSessionsInFile(path1_1)
+        path1_2Ids = fileTree.getSessionsInFile(path1_2)
+        path2_1Ids = fileTree.getSessionsInFile(path2_1)
+      Deps.flush()
+      assert.deepEqual path1_1Ids, [sessionId1], "SessionId1 should be in path1_1"
+      assert.deepEqual path1_2Ids, []
+      assert.deepEqual path2_1Ids, [sessionId2], "SessionId2 should be in path2_1"
+
+      sessionPaths[sessionId1] = path1_2
+      fileTree.setSessionPaths sessionPaths
+      Deps.flush()
+      assert.deepEqual path1_1Ids, []
+      assert.deepEqual path1_2Ids, [sessionId1], "SessionId1 should be in path1_2"
+      assert.deepEqual path2_1Ids, [sessionId2], "SessionId2 should be in path2_1"
+
+
+    it 'should react to a session changing to the same path as another session', ->
+      path1 = 'bert'
+      path2 = 'ernie'
+      sessionPaths[sessionId1] = path1
+      sessionPaths[sessionId2] = path2
+      fileTree.setSessionPaths sessionPaths
+      path1Ids = null
+      path2Ids = null
+      Deps.autorun ->
+        path1Ids = fileTree.getSessionsInFile(path1)
+        path2Ids = fileTree.getSessionsInFile(path2)
+      Deps.flush()
+      sessionPaths[sessionId1] = path2
+      fileTree.setSessionPaths sessionPaths
+      Deps.flush()
+      assert.deepEqual path1Ids, []
+      assert.deepEqual path2Ids, [sessionId1, sessionId2]
+
+
+
+    it 'should react to a session leaving the same path as another session', ->
+      path1 = 'bert'
+      path2 = 'ernie'
+      sessionPaths[sessionId1] = path1
+      sessionPaths[sessionId2] = path1
+      fileTree.setSessionPaths sessionPaths
+      path1Ids = null
+      path2Ids = null
+      Deps.autorun ->
+        path1Ids = fileTree.getSessionsInFile(path1)
+        path2Ids = fileTree.getSessionsInFile(path2)
+      Deps.flush()
+      assert.deepEqual path1Ids, [sessionId1, sessionId2]
+      assert.deepEqual path2Ids, []
+
+      sessionPaths[sessionId2] = path2
+      fileTree.setSessionPaths sessionPaths
+      Deps.flush()
+      assert.deepEqual path1Ids, [sessionId1]
+      assert.deepEqual path2Ids, [sessionId2]
+

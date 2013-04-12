@@ -37,6 +37,7 @@ class FileTree
     @sessionPathsDeps = {}
 
   getParentPath = (filePath) ->
+    return null unless filePath
     filePath.substring 0, filePath.lastIndexOf '/'
 
   open: (dirPath, withParents=false) ->
@@ -72,6 +73,7 @@ class FileTree
 
   _dependOnSessionPath: (path) ->
     @sessionPathsDeps[path] ?= new Deps.Dependency
+    console.log "Registering dep for #{path}"
     Deps.depend @sessionPathsDeps[path]
 
   _dependOnSessionPaths: (bottomPath, topPath) ->
@@ -91,11 +93,13 @@ class FileTree
 
   #TODO: This invalidates for all filePaths; should just invalidate affected paths
   getSessionsInFile: (filePath) ->
+    @_dependOnSessionPath filePath
     sessions = []
     for sessionId, path of @sessionPaths
       if filePath == @_lowestVisiblePath path
-        @_dependOnSessionPaths path, filePath
+        #@_dependOnSessionPaths path, filePath
         sessions.push sessionId
+    console.log "Returning sessions for #{filePath}:", sessions
     return sessions
 
   setSessionPaths: (sessionPaths) ->
