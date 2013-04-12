@@ -22,7 +22,7 @@ describe "editorChrome", ->
       projectId = project._id
       Session.set "projectId", project._id
 
-      file = File.create
+      file = MadEye.File.create
         projectId: projectId
         path: 'a/path/whee.txt'
         modified: true

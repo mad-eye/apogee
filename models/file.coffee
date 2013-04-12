@@ -5,15 +5,16 @@ stripSlash = (path) ->
     path = path.substring(0, path.length-1)
   return path
 
-class File extends MeteorModel
+MadEye = {}
+class MadEye.File extends MeteorModel
  
-Object.defineProperty File.prototype, 'filename',
+Object.defineProperty MadEye.File.prototype, 'filename',
   get: -> stripSlash(@path).split('/').pop()
 
-Object.defineProperty File.prototype, 'depth',
+Object.defineProperty MadEye.File.prototype, 'depth',
   get: -> stripSlash(@path).split('/').length - 1 #don't count directory itself or leading /
 
-Object.defineProperty File.prototype, 'parentPath',
+Object.defineProperty MadEye.File.prototype, 'parentPath',
   get: ->
     rightSlash = @path.lastIndexOf('/')
     if rightSlash > 0
@@ -21,15 +22,15 @@ Object.defineProperty File.prototype, 'parentPath',
     else
       return null
 
-Object.defineProperty File.prototype, 'extension',
+Object.defineProperty MadEye.File.prototype, 'extension',
   get: ->
     tokens = @filename.split '.'
     if tokens.length > 1 then tokens.pop() else null
 
-Object.defineProperty File.prototype, 'isBinary',
+Object.defineProperty MadEye.File.prototype, 'isBinary',
   get: -> /(bmp|gif|jpg|jpeg|png|psd|ai|ps|svg|pdf|exe|jar|dwg|dxf|7z|deb|gz|zip|dmg|iso|avi|mov|mp4|mpg|wmb|vob)$/i.test(@extension)
 
-Object.defineProperty File.prototype, 'aceMode',
+Object.defineProperty MadEye.File.prototype, 'aceMode',
   get: ->
     extension = @extension?.toLowerCase()
     if extension
@@ -43,6 +44,6 @@ Object.defineProperty File.prototype, 'aceMode',
         else null
 
 Files = new Meteor.Collection 'files', transform: (doc) ->
-  new File doc
+  new MadEye.File doc
 
-File.prototype.collection = Files
+MadEye.File.prototype.collection = Files

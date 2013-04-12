@@ -4,21 +4,21 @@ describe "Files (MeteorModel)", ->
 
   describe "create", ->
     it 'should create a file', ->
-      file = File.create {a:'b', c:false}
+      file = MadEye.File.create {a:'b', c:false}
       assert.ok file._id
       savedFile = Files.findOne file._id
       assert.deepEqual savedFile, file
 
   describe 'save', ->
     it 'should save a new File', ->
-      file = new File {path:'a/path/1233'}
+      file = new MadEye.File {path:'a/path/1233'}
       file.save()
       assert.ok file._id
       savedFile = Files.findOne file._id
       assert.deepEqual savedFile, file
 
     it 'should update an existing file', ->
-      file = File.create {a:'b', c:false}
+      file = MadEye.File.create {a:'b', c:false}
       file.a = 'Z'
       file.save()
       assert.equal file.a, 'Z'
@@ -27,7 +27,7 @@ describe "Files (MeteorModel)", ->
 
   describe 'update', ->
     it 'should update existing fields', ->
-      file = File.create {a:'b', c:false}
+      file = MadEye.File.create {a:'b', c:false}
       file.update a:'D'
       assert.equal file.a, 'D'
       savedFile = Files.findOne file._id
@@ -35,14 +35,14 @@ describe "Files (MeteorModel)", ->
       
 
     it 'should create new fields', ->
-      file = File.create {a:'b', c:false}
+      file = MadEye.File.create {a:'b', c:false}
       file.update z:'G'
       assert.equal file.z, 'G'
       savedFile = Files.findOne file._id
       assert.deepEqual savedFile, file
 
     it 'should not hit db if field is unchanged', ->
-      file = File.create {a:'b', c:false}
+      file = MadEye.File.create {a:'b', c:false}
       timesHit = 0
       Deps.autorun ->
         Files.findOne file._id
@@ -55,7 +55,7 @@ describe "Files (MeteorModel)", ->
       assert.equal timesHit, 1
 
     it 'should update multiple fields', ->
-      file = File.create {a:'b', c:false}
+      file = MadEye.File.create {a:'b', c:false}
       obj = {}
       file.update a:'b', c:true, z:obj
       assert.equal file.a, 'b'
@@ -66,7 +66,7 @@ describe "Files (MeteorModel)", ->
 
   describe 'remove', ->
     it 'should remove db entry', ->
-      file = File.create {a:'b', c:false}
+      file = MadEye.File.create {a:'b', c:false}
       file.remove()
       savedFile = Files.findOne file._id
       assert.isFalse savedFile?
@@ -78,13 +78,13 @@ describe 'Files', ->
   binFile = null
   makeFile = null
   before ->
-    coffeeFile = File.create
+    coffeeFile = MadEye.File.create
       path: 'a/path/cool.coffee'
       isDir: false
-    binFile = File.create
+    binFile = MadEye.File.create
       path: 'a/nother/path/cat.GIF'
       isDir: false
-    makeFile = File.create
+    makeFile = MadEye.File.create
       path: 'Makefile'
       isDir: true
 

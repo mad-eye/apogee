@@ -187,8 +187,8 @@ describe "FileTree", ->
     before ->
       oldTo = Meteor.Router.to
       Meteor.Router.to = toSpy
-      file = File.create path:'a4/b4/file.txt', isDir:false, projectId:projectId
-      dir = File.create path:'a4/b4', isDir:true, projectId:projectId
+      file = MadEye.File.create path:'a4/b4/file.txt', isDir:false, projectId:projectId
+      dir = MadEye.File.create path:'a4/b4', isDir:true, projectId:projectId
 
     beforeEach ->
       fileTree = new FileTree
