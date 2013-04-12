@@ -285,6 +285,7 @@ describe "FileTree", ->
       inPath2 = null
       Deps.autorun ->
         inPath1 = sessionId1 in fileTree.getSessionsInFile(path1)
+      Deps.autorun ->
         inPath2 = sessionId1 in fileTree.getSessionsInFile(path2)
       Deps.flush()
       assert.isTrue inPath1
@@ -305,6 +306,7 @@ describe "FileTree", ->
       inPath2 = null
       Deps.autorun ->
         inPath1 = sessionId1 in fileTree.getSessionsInFile(path1)
+      Deps.autorun ->
         inPath2 = sessionId1 in fileTree.getSessionsInFile(path2)
       Deps.flush()
       assert.isFalse inPath1
@@ -329,7 +331,9 @@ describe "FileTree", ->
       inPath2 = null
       Deps.autorun ->
         inPath0 = sessionId1 in fileTree.getSessionsInFile(path0)
+      Deps.autorun ->
         inPath1 = sessionId1 in fileTree.getSessionsInFile(path1)
+      Deps.autorun ->
         inPath2 = sessionId1 in fileTree.getSessionsInFile(path2)
       Deps.flush()
       assert.isTrue inPath0
@@ -357,6 +361,7 @@ describe "FileTree", ->
       path2Ids = null
       Deps.autorun ->
         path1Ids = fileTree.getSessionsInFile(path1)
+      Deps.autorun ->
         path2Ids = fileTree.getSessionsInFile(path2)
       Deps.flush()
       sessionPaths[sessionId1] = null
@@ -378,7 +383,9 @@ describe "FileTree", ->
       path2_1Ids = null
       Deps.autorun ->
         path1_1Ids = fileTree.getSessionsInFile(path1_1)
+      Deps.autorun ->
         path1_2Ids = fileTree.getSessionsInFile(path1_2)
+      Deps.autorun ->
         path2_1Ids = fileTree.getSessionsInFile(path2_1)
       Deps.flush()
       assert.deepEqual path1_1Ids, [sessionId1], "SessionId1 should be in path1_1"
@@ -403,6 +410,7 @@ describe "FileTree", ->
       path2Ids = null
       Deps.autorun ->
         path1Ids = fileTree.getSessionsInFile(path1)
+      Deps.autorun ->
         path2Ids = fileTree.getSessionsInFile(path2)
       Deps.flush()
       sessionPaths[sessionId1] = path2
@@ -423,6 +431,7 @@ describe "FileTree", ->
       path2Ids = null
       Deps.autorun ->
         path1Ids = fileTree.getSessionsInFile(path1)
+      Deps.autorun ->
         path2Ids = fileTree.getSessionsInFile(path2)
       Deps.flush()
       assert.deepEqual path1Ids, [sessionId1, sessionId2]
