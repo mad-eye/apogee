@@ -90,7 +90,6 @@ class FileTree
       parentPath = getParentPath parentPath
     return lowestVisible
 
-  #TODO: This invalidates for all filePaths; should just invalidate affected paths
   getSessionsInFile: (filePath) ->
     @_dependOnSessionPath filePath
     sessions = []
