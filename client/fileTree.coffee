@@ -73,7 +73,6 @@ class FileTree
 
   _dependOnSessionPath: (path) ->
     @sessionPathsDeps[path] ?= new Deps.Dependency
-    console.log "Registering dep for #{path}"
     Deps.depend @sessionPathsDeps[path]
 
   _dependOnSessionPaths: (bottomPath, topPath) ->
@@ -99,7 +98,6 @@ class FileTree
       if filePath == @_lowestVisiblePath path
         #@_dependOnSessionPaths path, filePath
         sessions.push sessionId
-    console.log "Returning sessions for #{filePath}:", sessions
     return sessions
 
   setSessionPaths: (sessionPaths) ->
