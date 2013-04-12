@@ -79,7 +79,14 @@ class FileTree
     path = bottomPath
     while path
       @_dependOnSessionPath path
-      break if path == topPath or !path
+      break if path == topPath
+      path = getParentPath path
+
+  _invalidatedSessionPaths: (bottomPath, topPath=null) ->
+    path = bottomPath
+    while path
+      @sessionPathsDeps[path]?.changed()
+      break if path == topPath
       path = getParentPath path
 
   _lowestVisiblePath: (filePath) ->
@@ -102,11 +109,11 @@ class FileTree
   setSessionPaths: (sessionPaths) ->
     oldPaths = _.values @sessionPaths
     newPaths = _.values sessionPaths
-    @sessionPaths = sessionPaths
+    @sessionPaths = _.clone sessionPaths
     _.each oldPaths, (path) =>
-      @sessionPathsDeps[path]?.changed()
+      @_invalidatedSessionPaths path
     _.each newPaths, (path) =>
-      @sessionPathsDeps[path]?.changed()
+      @_invalidatedSessionPaths path
 
 
 

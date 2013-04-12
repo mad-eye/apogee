@@ -339,12 +339,14 @@ describe "FileTree", ->
       assert.isTrue inPath0
       assert.isFalse inPath1
       assert.isFalse inPath2
+
       sessionPaths[sessionId1] = path1
       fileTree.setSessionPaths sessionPaths
       Deps.flush()
       assert.isFalse inPath0
       assert.isFalse inPath1
-      assert.isTrue inPath2
+      assert.isTrue inPath2, "Session should be in closed parent dir"
+
       fileTree.open path2
       Deps.flush()
       assert.isFalse inPath0
