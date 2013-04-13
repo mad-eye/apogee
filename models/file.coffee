@@ -5,8 +5,10 @@ stripSlash = (path) ->
     path = path.substring(0, path.length-1)
   return path
 
-MadEye = {}
 class MadEye.File extends MeteorModel
+  constructor: (data) ->
+    console.log "Constructing file with data", data
+    super data
  
 Object.defineProperty MadEye.File.prototype, 'filename',
   get: -> stripSlash(@path).split('/').pop()
