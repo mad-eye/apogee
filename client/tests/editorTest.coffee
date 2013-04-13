@@ -58,8 +58,12 @@ describe "editorChrome", ->
         Meteor.flush()
 
       it "should not have a disabled button", ->
+        #Hack, but this extra-flushes for mocha-phantomjs, which needs it.
+        Meteor.flush()
         assert.equal helpers.buttonDisabled(), ""
       it 'should not show save spinner', ->
+        #Hack, but this extra-flushes for mocha-phantomjs, which needs it.
+        Meteor.flush()
         assert.isFalse helpers.showSaveSpinner()
 
 
