@@ -7,7 +7,6 @@ stripSlash = (path) ->
 
 class MadEye.File extends MeteorModel
   constructor: (data) ->
-    console.log "Constructing file with data", data
     super data
  
 Object.defineProperty MadEye.File.prototype, 'filename',

@@ -62,7 +62,7 @@ do ->
         for status in statuses
           continue unless status.filePath
           sessionPaths[status.sessionId] = status.filePath
-      console.log "Setting sessionPaths from autorun", sessionPaths
+      #console.log "Setting sessionPaths from autorun", sessionPaths
       fileTree.setSessionPaths sessionPaths
 
     #Invalidate sessionsDep on important changes
