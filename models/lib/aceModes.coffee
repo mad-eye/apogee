@@ -43,6 +43,7 @@ Madeye.ACE_MODES =
 #lucene
 #makefile found by filename
   md: "markdown"
+  mdown: "markdown"
   m: "objectivec"
   h: "objectivec"
   ocaml: "ocaml"
@@ -64,7 +65,7 @@ Madeye.ACE_MODES =
   sql: "sql"
   styl: 'stylus'
   svg: 'svg'
-#tcl
+  tcl: 'tcl'
   txt: "text"
 #textile
   ts: 'typescript'
