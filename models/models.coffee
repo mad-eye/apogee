@@ -46,5 +46,6 @@ class NewsletterEmail
     _.extend(@, rawJSON)
 
 @Projects = new Meteor.Model("projects", Project)
+@Project = Project
 @NewsletterEmails = new Meteor.Model("newsletterEmails", NewsletterEmail)
 
