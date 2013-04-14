@@ -61,7 +61,7 @@ cursorToRange = (editorDoc, cursor) ->
     #+1 for newline
     offset += line.length + 1
 
-projectIsClosed = ->
+@projectIsClosed = ->
   Projects.findOne()?.closed
   
 

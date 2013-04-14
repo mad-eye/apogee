@@ -1,4 +1,4 @@
-Madeye.ACE_MODES =
+MadEye.ACE_MODES =
   abap: 'abap'
 #asciidoc
 #c9search

@@ -3,7 +3,6 @@
 #editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?([0-9]*)?/
 #TODO should probably OR the line and session fields
 editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?(?:L([0-9]*))?(?:S([0-9a-f-]*))?/
-editorState = null
 transitoryIssues = null
 
 if Meteor.settings.public.googleAnalyticsId
@@ -23,7 +22,7 @@ do ->
       isHangout = true
     Session.set 'projectId', projectId
     Metrics.add {message:'load', filePath, lineNumber, connectionId, isHangout}
-    editorState ?= new EditorState "editor"
+    window.editorState ?= new EditorState "editor"
     editorState.setPath filePath
     editorState.setCursorDestination connectionId
     "edit"
