@@ -5,6 +5,8 @@ Madeye.ACE_MODES =
   c: "c_cpp"
   cc: "c_cpp"
   cpp: "c_cpp"
+  cxx: "c_cpp"
+  'c++': "c_cpp"
   clj: "clojure"
   coffee: "coffee"
   cfc: "coldfusion"
