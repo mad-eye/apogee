@@ -44,8 +44,8 @@ do ->
       #event.stopPropagation()
       #Meteor.Router.to event.toElement.attributes.destination.value
 
-  Template.fileTree.rendered = ->
-    console.log "Rendered fileTree"
+  #Template.fileTree.rendered = ->
+    #console.log "Rendered fileTree"
 
   Meteor.startup ->
     fileTree = new FileTree
