@@ -3,7 +3,7 @@
 #editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?([0-9]*)?/
 #TODO should probably OR the line and session fields
 @editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?(?:L([0-9]*))?(?:S([0-9a-f-]*))?/
-transitoryIssues = null
+@transitoryIssues = null
 
 if Meteor.settings.public.googleAnalyticsId
   _gaq = _gaq || []
