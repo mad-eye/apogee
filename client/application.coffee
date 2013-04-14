@@ -9,6 +9,8 @@ if Meteor.settings.public.googleAnalyticsId
   _gaq = _gaq || []
   _gaq.push ['_setAccount', Meteor.settings.public.googleAnalyticsId]
 
+@_kmq = @_kmq || [];
+
 do ->
   recordView = ->
     _gaq.push ['_trackPageview'] if _gaq?
@@ -25,6 +27,7 @@ do ->
     window.editorState ?= new EditorState "editor"
     editorState.setPath filePath
     editorState.setCursorDestination connectionId
+    _kmq.push ['record', 'opened file', {projectId: projectId, filePath: filePath}]
     "edit"
 
   Meteor.Router.add
@@ -72,9 +75,6 @@ Meteor.startup ->
   projectStatus = ProjectStatuses.findOne {sessionId:Session.get('sessionId')}
   Meteor.call "updateProjectStatusHeartbeat", Session.get("sessionId"), Session.get("projectId")
 
-
-
-@_kmq = @_kmq || [];
 
 #COPIED FROM https://www.kissmetrics.com/settings
 #maybe this could be replaced w/ a single script tag?
