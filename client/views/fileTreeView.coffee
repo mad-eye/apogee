@@ -3,7 +3,9 @@ fileTree = null
 do ->
   Template.fileTree.helpers
     files : ->
-      Files.find({}, {sort: {orderingPath:1} } )
+      files = Files.find({}, {sort: {orderingPath:1} } ).fetch()
+      _.filter files, (file)=>
+        fileTree.isVisible @path
 
     isVisible: ->
       fileTree.isVisible @path
