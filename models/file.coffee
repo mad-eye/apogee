@@ -5,7 +5,7 @@ stripSlash = (path) ->
     path = path.substring(0, path.length-1)
   return path
 
-class MadEye.File extends MadEye.MeteorModel
+class MadEye.File extends MadEye.Model
   constructor: (data) ->
     super data
  
@@ -41,7 +41,6 @@ Object.defineProperty MadEye.File.prototype, 'aceMode',
         when 'Makefile' then 'makefile'
         when 'Cakefile' then 'coffee'
         when 'Rakefile', 'Gemfile' then 'ruby'
-        #TODO: Check for #!
         else null
 
 @Files = new Meteor.Collection 'files', transform: (doc) ->
