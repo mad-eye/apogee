@@ -1,9 +1,9 @@
-fileTree = null
-    
 do ->
   Template.fileTree.helpers
     files : ->
-      Files.find({}, {sort: {orderingPath:1} } )
+      files = Files.find({}, {sort: {orderingPath:1} } ).fetch()
+      _.filter files, (file)=>
+        fileTree.isVisible @path
 
     isVisible: ->
       fileTree.isVisible @path
@@ -25,7 +25,7 @@ do ->
       return unless sessionIds
       users = null
       Deps.nonreactive ->
-        users = ProjectStatuses.collection.find(sessionId: {$in: sessionIds}).map (status) ->
+        users = ProjectStatuses.find(sessionId: {$in: sessionIds}).map (status) ->
           destination = "/edit/#{projectId}/#{file.path}#S#{status.connectionId}"
           {img: "/images/#{USER_ICONS[status.iconId]}", destination}
       return users
@@ -44,11 +44,11 @@ do ->
       #event.stopPropagation()
       #Meteor.Router.to event.toElement.attributes.destination.value
 
-  Template.fileTree.rendered = ->
-    console.log "Rendered fileTree"
+  #Template.fileTree.rendered = ->
+    #console.log "Rendered fileTree"
 
   Meteor.startup ->
-    fileTree = new FileTree
+    window.fileTree = new FileTree
 
     #Populate fileTree with ProjectStatuses filePath
     sessionsDep = new Deps.Dependency
@@ -77,7 +77,7 @@ do ->
         sessionId = Session.get "sessionId"
         Meteor.call "createProjectStatus", sessionId, projectId
 
-        cursor = ProjectStatuses.collection.find {projectId}
+        cursor = ProjectStatuses.find {projectId}
         queryHandle = cursor.observeChanges
           added: (id, fields)->
             # console.log "ADDED", id, fields

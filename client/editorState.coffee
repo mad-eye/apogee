@@ -208,6 +208,8 @@ class EditorState
         #@checksumDep.changed()
       callback(error)
 
+@EditorState = EditorState
+
 Meteor.startup ->
   Meteor.autorun ->
     file = Files.findOne(path:editorState?.getPath())

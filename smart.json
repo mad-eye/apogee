@@ -1,6 +1,6 @@
 {
   "meteor": {
-    "tag": "v0.5.9"
+    "tag": "release/0.6.1"
   },
 
   "packages": {

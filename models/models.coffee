@@ -1,51 +1,14 @@
-class Meteor.Model
-  constructor: (collectionName, @modelClass)->
-    @collection = new Meteor.Collection collectionName
+class Project extends MadEye.Model
 
-    @modelClass.prototype.updateJSON = ->
-      #there's got to be a better way to do this
-      json = JSON.parse(JSON.stringify(@))
-      delete json._id
-      return json
+@Projects = new Meteor.Collection 'projects', transform: (doc) ->
+  new Project doc
+Project.prototype.collection = @Projects
+@Project = Project
 
-    self = this
-    @modelClass.prototype.save = ->
-      if @_id
-        self.collection.update @_id, {$set: @updateJSON()}
-      else
-        @_id = self.collection.insert @
 
-    @modelClass.prototype.update = (fields)->
-      dirty = false
-      for key,value of fields
-        dirty = true unless @[key] == value
-        @[key] = value
-      self.collection.update @_id, {$set: fields} if dirty
+class NewsletterEmail extends MadEye.Model
 
-    @modelClass.prototype.remove = ->
-      self.collection.remove @_id if @_id
-
-  findOne: (selector={})->
-    rawObject = @collection.findOne(selector)
-    if rawObject
-      new @modelClass rawObject
-    else
-      undefined
-
-  find: (selector={})->
-    rawObjects = @collection.find(selector).fetch()
-    _.map rawObjects, (rawObject)=>
-      new @modelClass rawObject
-
-class Project
-  constructor: (rawJSON)->
-    _.extend(@, rawJSON)
-
-class NewsletterEmail
-  constructor: (rawJSON)->
-    _.extend(@, rawJSON)
-    
-#Files = new Meteor.Model("files", MadEye.File)
-Projects = new Meteor.Model("projects", Project)
-NewsletterEmails = new Meteor.Model("newsletterEmails", NewsletterEmail)
+@NewsletterEmails = new Meteor.Collection 'newsletterEmails', transform: (doc) ->
+  new NewsletterEmail doc
+NewsletterEmail.prototype.collection = @NewsletterEmails
 

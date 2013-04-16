@@ -115,6 +115,4 @@ class FileTree
     _.each newPaths, (path) =>
       @_invalidatedSessionPaths path
 
-
-
-
+@FileTree = FileTree

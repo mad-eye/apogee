@@ -1,8 +1,7 @@
-editorState = null
 Meteor.methods
   cleanProject: (projectId)->
     console.log "cleaning project", projectId
-    Projects.collection.remove projectId
+    Projects.remove projectId
     Files.remove projectId: projectId
 
 describe "editorChrome", ->
@@ -13,7 +12,7 @@ describe "editorChrome", ->
     projectName = 'fizzik'
     projectId = null
     before ->
-      editorState ?= new EditorState "editor"
+      window.editorState ?= new EditorState "editor"
       project = new Project
         name: projectName
         closed: false

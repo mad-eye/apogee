@@ -19,3 +19,5 @@ class TransitoryIssues
     @deps[type] ?= new Deps.Dependency
     Deps.depend @deps[type]
     @issues[type]?
+
+@TransitoryIssues = TransitoryIssues
