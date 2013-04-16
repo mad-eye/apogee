@@ -40,7 +40,7 @@ Object.defineProperty MadEye.File.prototype, 'aceMode',
       switch @filename
         when 'Makefile' then 'makefile'
         when 'Cakefile' then 'coffee'
-        when 'Rakefile', 'Gemfile' then 'ruby'
+        when 'Rakefile', 'Gemfile', 'Guardfile', 'Vagrantfile' then 'ruby'
         else null
 
 @Files = new Meteor.Collection 'files', transform: (doc) ->

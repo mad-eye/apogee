@@ -22,6 +22,7 @@
 <div id="projectName"><h4>{{projectName}}</h4></div>
 <ul class="fileTree">
     {{#each files}}
+      {{#isolate}}
       {{#if isVisible}}
         <li class="{{fileEntryClass}}" id="{{_id}}">
           <span>{{filename}} {{#if modified}}*{{/if}}</span>
@@ -30,6 +31,7 @@
           {{/each}}
         </li>
       {{/if}}
+      {{/isolate}}
     {{/each}}
 </ul>
 </template>
