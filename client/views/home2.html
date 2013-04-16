@@ -1,56 +1,54 @@
 <template name="home2">
-  <div class="navbar navbar-inverse navbar-fixed-top">
-    <div class="navbar-inner">
-      <div class="container">
-        <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="brand" href="#">MadEye</a>
-        <a href="https://twitter.com/_madeye" class="twitter-follow-button" data-show-count="false">Follow @_madeye</a>
-      </div>
-    </div>
-    <div class="container">
+  {{> topnav }}
 
+
+  <div class="container">
+    
     <!-- Main hero unit for a primary marketing message or call to action -->
     <div class="hero-unit">
-      <h1>Code Together</h1>
+      <h1>Code Together with MadEye</h1>
       <img src="/images/hangout_pic.jpg" style="padding-top:15px"/>
-      <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-      <p><a href="#" class="btn btn-primary btn-large">Check out demo &raquo;</a></p>
+      <h3>A web-based editor designed for remote pair programming.</h3>
+      <p><a href="/get-started" class="btn btn-primary btn-large">Get Started &raquo;</a></p>
     </div>
 
     <!-- Example row of columns -->
     <div class="row">
       <div class="span4">
         <h2>Collaborative</h2>
-        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-        <p><a class="btn" href="#">View details &raquo;</a></p>
+        <ul>
+            <li>Edit simultaneously</li>
+            <li>Unlimited number of editors</li>
+            <li>Run inside a Google Hangout</li>
+        </ul>
       </div>
       <div class="span4">
-        <h2>Powerful Editor</h2>
-        <p>
+        <h2>Powerful</h2>
           <ul>
             <li>Syntax highlighting for major file types</li>
             <li>Vim/Emacs key bindings</li>
-            <li>Over 20 different themes</li>
-            <li>All the other features Ace has to offer</li>
+            <li>Powered by the awesome <a href="http://ajaxorg.github.io/ace/">Ace editor</a></li>
           </ul>
-        </p>
       </div>
       <div class="span4">
-        <h2>A Tool, Not an IDE</h2>
-        <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-        <p><a class="btn" href="#">View details &raquo;</a></p>
+        <h2>Lightweight</h2>
+          <ul>
+            <li>Easy install</li>
+            <li>One command to share your project</li>
+            {{! <li>Syncs your local files</li> }}
+            <li>Augment your existing workflow, don't replace it</li>
+          </ul>
       </div>
     </div>
 
     <hr>
-
-    <footer>
-      <p>&copy; Company 2013</p>
-    </footer>
+    
+    <!-- Hey you, source-reader!  Keeping the design pretty kept us from saying
+    everything we'd like, but since you're looking at the HTML anyway...
+    
+    MadEye 
+    -->
+    {{> footer}}
 
   </div> <!-- /container -->
 </template>

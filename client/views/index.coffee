@@ -1,6 +1,6 @@
 do ->
   Handlebars.registerHelper "isHomePage", ->
-    return "home" == Meteor.Router._page
+    return "home" == Meteor.Router._page or "home2" == Meteor.Router._page
 
   Handlebars.registerHelper "isHangout", ->
     Session.get "isHangout"
