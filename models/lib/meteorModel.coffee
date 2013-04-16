@@ -1,4 +1,4 @@
-class MeteorModel
+class MadEye.MeteorModel
   constructor: (data)->
     _.extend @, data
     #@collection needs to be set after creating the Collection.

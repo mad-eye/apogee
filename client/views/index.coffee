@@ -5,7 +5,7 @@ do ->
   Handlebars.registerHelper "isHangout", ->
     Session.get "isHangout"
 
-displayAlert = (alert) ->
+@displayAlert = (alert) ->
   return unless alert?
   html = Template.alert {
     level: alert.level
