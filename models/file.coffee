@@ -35,7 +35,7 @@ Object.defineProperty MadEye.File.prototype, 'aceMode',
   get: ->
     extension = @extension?.toLowerCase()
     if extension
-      Madeye.ACE_MODES[extension]
+      MadEye.ACE_MODES[extension]
     else
       switch @filename
         when 'Makefile' then 'makefile'

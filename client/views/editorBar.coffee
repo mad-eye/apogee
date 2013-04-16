@@ -246,6 +246,7 @@ Meteor.startup ->
         when 'node' then 'javascript'
         #Other aliases?
         else cmd
+      mode = null unless mode in _.values(MadEye.ACE_MODES)
     Session.set 'syntaxMode', mode
 
   #Keybinding
