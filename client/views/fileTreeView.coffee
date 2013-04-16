@@ -1,5 +1,3 @@
-fileTree = null
-    
 do ->
   Template.fileTree.helpers
     files : ->
@@ -50,7 +48,7 @@ do ->
     #console.log "Rendered fileTree"
 
   Meteor.startup ->
-    fileTree = new FileTree
+    window.fileTree = new FileTree
 
     #Populate fileTree with ProjectStatuses filePath
     sessionsDep = new Deps.Dependency

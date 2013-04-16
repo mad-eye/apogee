@@ -2,7 +2,7 @@ class ProjectStatus
   constructor: (rawJSON) ->
     _.extend(@, rawJSON)
 
-ProjectStatuses = new Meteor.Model("projectStatus", ProjectStatus)
+@ProjectStatuses = new Meteor.Model("projectStatus", ProjectStatus)
 
 #return a map between file paths and open sharejs session ids
 if Meteor.isClient

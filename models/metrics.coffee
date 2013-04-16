@@ -1,4 +1,4 @@
-Metrics = new Meteor.Collection("metrics")
+@Metrics = new Meteor.Collection("metrics")
  
 if Meteor.isClient
   Metrics.add = (metric) ->
