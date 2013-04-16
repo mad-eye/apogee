@@ -112,7 +112,7 @@ do ->
 
   Meteor.startup ->
     gotoPosition = (editor, cursor)->
-      console.error "udnefined cursor" unless cursor
+      console.error "undefined cursor" unless cursor
       position = cursorToRange(editor.getSession().getDocument(), cursor)
       editorState.getEditor().navigateTo(position.start.row, position.start.column)
       Meteor.setTimeout ->
