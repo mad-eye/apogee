@@ -61,7 +61,7 @@ class EditorState
     body = @getEditorBody()
     #body = @doc.getText()
     return null unless body?
-    return Madeye.crc32 body
+    return MadEye.crc32 body
 
   revertFile: (callback) ->
     unless @doc and @file
@@ -147,7 +147,7 @@ class EditorState
           @attachAce(doc)
           @doc = doc
           @checksumDep.changed()
-          editorChecksum = Madeye.crc32 doc.getText()
+          editorChecksum = MadEye.crc32 doc.getText()
           # FIXME there's a better way to do this
           # we need to stop storing a stale file object on the editorState
           if file.modified_locally and file.checksum == editorChecksum
@@ -192,7 +192,7 @@ class EditorState
       filePath: @file?.path #don't want reactivity
     self = this #The => doesn't work for some reason with the PUT callback.
     contents = @getEditorBody()
-    editorChecksum = Madeye.crc32 contents
+    editorChecksum = MadEye.crc32 contents
     file = @file
     return if @file.checksum == editorChecksum
     Meteor.http.put @getFileUrl(file), {
@@ -207,6 +207,8 @@ class EditorState
         file.update {checksum:editorChecksum}
         #@checksumDep.changed()
       callback(error)
+
+@EditorState = EditorState
 
 Meteor.startup ->
   Meteor.autorun ->
