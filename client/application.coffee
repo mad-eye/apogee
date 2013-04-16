@@ -31,7 +31,7 @@ do ->
   Meteor.Router.add
     '/':  ->
       recordView()
-      "home"
+      "home2"
 
     '/docs': ->
       recordView()
