@@ -61,10 +61,8 @@ do ->
       Deps.depend sessionsDep
       sessionPaths = {}
       Deps.nonreactive ->
-        statuses = ProjectStatuses.find {projectId}
-        for status in statuses
-          continue unless status.filePath
-          sessionPaths[status.sessionId] = status.filePath
+        ProjectStatuses.find({projectId}).forEach (status) ->
+          sessionPaths[status.sessionId] = status.filePath if status.filePath
       #console.log "Setting sessionPaths from autorun", sessionPaths
       fileTree.setSessionPaths sessionPaths
 
@@ -83,11 +81,11 @@ do ->
         cursor = ProjectStatuses.find {projectId}
         queryHandle = cursor.observeChanges
           added: (id, fields)->
-            # console.log "ADDED", id, fields
+            #console.log "ADDED", id, fields
             sessionsDep.changed()
 
           changed: (id, fields)->
-            # console.log "CHANGED", id, fields if fields.filePath?
+            #console.log "CHANGED", id, fields if fields.filePath?
             sessionsDep.changed() if fields.filePath?
 
           removed: (id, fields)->
