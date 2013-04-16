@@ -12,4 +12,3 @@ class NewsletterEmail extends MadEye.Model
   new NewsletterEmail doc
 NewsletterEmail.prototype.collection = @NewsletterEmails
 
-

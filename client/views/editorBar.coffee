@@ -210,16 +210,44 @@ Meteor.startup ->
       return editorSession?.setMode null
     module = require("ace/mode/#{mode}")
     unless module
-      jQuery.getScript "/ace/mode-#{mode}.js", ->
-        computation.invalidate()
+      jQuery.getScript("/ace/mode-#{mode}.js").done( ->
+        return computation.invalidate()
+      ).fail(->
+        editorSession?.setMode null
+      )
     else
       Mode = module.Mode
       editorSession?.setMode(new Mode())
 
+  findShbangCmd = (contents) ->
+    if '#!' == contents[0..1]
+      cmd = null
+      firstLine = contents.split('\n', 1)[0]
+      tokens = (firstLine[2..]).replace(/^\s+|\s+$/g,'').split(/\s+/)
+      token = tokens.pop()
+      while token
+        unless '-' == token[0]
+          index = token.lastIndexOf '/'
+          cmd = token[index+1..]
+          break
+        token = tokens.pop()
+      return cmd
+
   #Syntax Modes from file
   Deps.autorun ->
     file = Files.findOne path: editorState.getPath()
-    Session.set 'syntaxMode', file?.aceMode
+    return unless file
+    mode = file.aceMode
+    #Check for shebang. We might have such lines as '#! /bin/env sh -x'
+    unless mode
+      cmd = findShbangCmd editorState.getEditorBody()
+      mode = switch cmd
+        when 'sh', 'ksh', 'csh', 'tcsh', 'bash', 'dash', 'zsh' then 'sh'
+        when 'node' then 'javascript'
+        #Other aliases?
+        else cmd
+      mode = null unless mode in _.values(MadEye.ACE_MODES)
+    Session.set 'syntaxMode', mode
 
   #Keybinding
   Deps.autorun (computation) ->
