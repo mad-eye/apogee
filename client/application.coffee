@@ -32,10 +32,10 @@ do ->
     '/':  ->
       recordView()
       "home2"
-
-    '/docs': ->
+      
+    '/get-started': ->
       recordView()
-      "docs"
+      "getStarted"
 
     '/login': ->
 

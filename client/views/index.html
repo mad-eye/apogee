@@ -12,6 +12,7 @@
 
 <body>
   <div id="container" class="container {{#if isHangout}}hangout{{/if}}">
+    {{> topnav }}
     <div id="alertBox">{{! Will be populated by displayAlert}}</div>
     {{{renderPage}}}
   </div>
