@@ -1,6 +1,6 @@
 
 Meteor.publish "projects", (projectId)->
-  Projects.collection.find
+  Projects.find
     _id: projectId
 
 Meteor.publish "files", (projectId)->
@@ -8,16 +8,16 @@ Meteor.publish "files", (projectId)->
     projectId: projectId
 
 Meteor.publish "projectStatuses", (projectId) ->
-  ProjectStatuses.collection.find projectId: projectId
+  ProjectStatuses.find projectId: projectId
 
 Meteor.setInterval ->
   before = Date.now() - 20*1000
-  ProjectStatuses.collection.remove({heartbeat: {$lt:before}})
-  ProjectStatuses.collection.remove({heartbeat: {$exists:false}})
+  ProjectStatuses.remove({heartbeat: {$lt:before}})
+  ProjectStatuses.remove({heartbeat: {$exists:false}})
 , 5*1000
 
 #TODO: Restrict based on userId
-ProjectStatuses.collection.allow
+ProjectStatuses.allow
   insert: (userId, doc) -> true
   update: (userId, doc, fields, modifier) -> true
   remove: (userId, doc) -> true
@@ -28,7 +28,7 @@ Files.allow
   update: (userId, docs, fields, modifier) -> true
   remove: (userId, docs) -> true
 
-NewsletterEmails.collection.allow(
+NewsletterEmails.allow(
   insert: -> true
 )
 
@@ -54,5 +54,5 @@ do ->
     createProjectStatus: (sessionId, projectId)->
       status = ProjectStatuses.findOne {sessionId, projectId}
       return if status
-      ProjectStatuses.collection.insert {sessionId, projectId, iconId: getIcon(projectId), heartbeat: Date.now()}, (err, result)->
+      ProjectStatuses.insert {sessionId, projectId, iconId: getIcon(projectId), heartbeat: Date.now()}, (err, result)->
         console.error "ERR", err if err

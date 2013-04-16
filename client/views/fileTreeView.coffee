@@ -28,7 +28,7 @@ do ->
       return unless sessionIds
       users = null
       Deps.nonreactive ->
-        users = ProjectStatuses.collection.find(sessionId: {$in: sessionIds}).map (status) ->
+        users = ProjectStatuses.find(sessionId: {$in: sessionIds}).map (status) ->
           destination = "/edit/#{projectId}/#{file.path}#S#{status.connectionId}"
           {img: "/images/#{USER_ICONS[status.iconId]}", destination}
       return users
@@ -80,7 +80,7 @@ do ->
         sessionId = Session.get "sessionId"
         Meteor.call "createProjectStatus", sessionId, projectId
 
-        cursor = ProjectStatuses.collection.find {projectId}
+        cursor = ProjectStatuses.find {projectId}
         queryHandle = cursor.observeChanges
           added: (id, fields)->
             # console.log "ADDED", id, fields

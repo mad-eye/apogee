@@ -1,8 +1,9 @@
-class ProjectStatus
-  constructor: (rawJSON) ->
-    _.extend(@, rawJSON)
+class ProjectStatus extends MadEye.Model
 
-@ProjectStatuses = new Meteor.Model("projectStatus", ProjectStatus)
+@ProjectStatuses = new Meteor.Collection 'projectStatus', transform: (doc) ->
+  new ProjectStatus doc
+
+ProjectStatus.prototype.collection = @ProjectStatuses
 
 #return a map between file paths and open sharejs session ids
 if Meteor.isClient
