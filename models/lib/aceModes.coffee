@@ -5,6 +5,8 @@ MadEye.ACE_MODES =
   c: "c_cpp"
   cc: "c_cpp"
   cpp: "c_cpp"
+  cxx: "c_cpp"
+  'c++': "c_cpp"
   clj: "clojure"
   coffee: "coffee"
   cfc: "coldfusion"
@@ -43,6 +45,7 @@ MadEye.ACE_MODES =
 #lucene
 #makefile found by filename
   md: "markdown"
+  mdown: "markdown"
   m: "objectivec"
   h: "objectivec"
   ocaml: "ocaml"
@@ -64,7 +67,7 @@ MadEye.ACE_MODES =
   sql: "sql"
   styl: 'stylus'
   svg: 'svg'
-#tcl
+  tcl: 'tcl'
   txt: "text"
 #textile
   ts: 'typescript'
