@@ -1,7 +1,7 @@
 Meteor.methods
   cleanProject: (projectId)->
     console.log "cleaning project", projectId
-    Projects.collection.remove projectId
+    Projects.remove projectId
     Files.remove projectId: projectId
 
 describe "editorChrome", ->
