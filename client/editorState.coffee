@@ -17,6 +17,9 @@ class EditorState
   constructor: (@editorId)->
     @pathDep = new Deps.Dependency
     @checksumDep = new Deps.Dependency
+    @renderedDep = new Deps.Dependency
+    @tabsDep = new Deps.Dependency
+
 
   getEditor: ->
     Deps.depend @pathDep
@@ -207,6 +210,43 @@ class EditorState
         file.update {checksum:editorChecksum}
         #@checksumDep.changed()
       callback(error)
+
+
+  ##Reactive Ace fields
+  #IsRendered
+Object.defineProperty EditorState.prototype, 'isRendered',
+  get: ->
+    Deps.depend @renderedDep
+    @_isRendered
+
+  set: (isRendered) ->
+    return if isRendered == @_isRendered
+    @_isRendered = isRendered
+    @renderedDep.changed()
+
+  #Tabs, @tabsDep
+Object.defineProperty EditorState.prototype, 'useSoftTabs',
+  get: ->
+    return unless @isRendered
+    Deps.depend @tabsDep
+    return @getEditor()?.getSession()?.getUseSoftTabs()
+
+  set: (useSoftTabs) ->
+    return if useSoftTabs == @getEditor()?.getSession()?.getUseSoftTabs()
+    @getEditor().getSession().setUseSoftTabs useSoftTabs
+    @tabsDep.changed()
+
+Object.defineProperty EditorState.prototype, 'tabSize',
+  get: ->
+    Deps.depend @tabsDep
+    return @getEditor()?.getSession()?.getTabSize()
+
+  set: (tabSize) ->
+    return if tabSize == @getEditor()?.getSession()?.getTabSize()
+    @getEditor().getSession().setTabSize tabSize
+    @tabsDep.changed()
+
+  
 
 @EditorState = EditorState
 
