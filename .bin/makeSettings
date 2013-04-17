@@ -5,6 +5,7 @@ settings = {
   public: {
     bolideUrl: process.env.MADEYE_BOLIDE_URL,
     azkabanUrl: process.env.MADEYE_AZKABAN_URL,
+    apogeeUrl: process.env.MADEYE_APOGEE_URL,
     googleAnalyticsId: process.env.MADEYE_GOOGLE_ANALYTICS_ID,
     boggartUrl: process.env.MADEYE_BOGGART_URL,
     kissMetricsId: process.env.MADEYE_KISS_METRICS_ID
