@@ -35,9 +35,9 @@ NewsletterEmails.allow(
 
 do ->
   getIcon = (projectId)->
-    statuses = ProjectStatuses.find {projectId}
     unavailableIcons = {}
-    unavailableIcons[status.iconId] = true for status in statuses
+    ProjectStatuses.find({projectId}).forEach (status) ->
+      unavailableIcons[status.iconId] = true
     for name, i in USER_ICONS
       continue if unavailableIcons[i]
       return i
