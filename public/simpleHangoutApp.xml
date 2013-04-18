@@ -17,7 +17,9 @@ $("html").css("height", "100%");
 });
 </script>
 <div style="height:100%">
-<iframe id="theIFrame" frameborder="no" scrolling="yes" src="" style="width:100%; height:100%"></iframe>
+<iframe id="theIFrame" frameborder="no" scrolling="yes" src="" style="width:100%; height:100%">
+Loading your MadEye project.  We'll be done in just a moment!
+</iframe>
 </div>
 
 <script>var appData = gadgets.views.getParams()['appData'];
@@ -26,22 +28,17 @@ var theIFrame = document.getElementById("theIFrame");
 if (appData){
     gapi.hangout.data.setValue("projectUrl", appData);
     theIFrame.src = appData + "?hangout=true";
-}
-//this feels a bit hacky..i hope there's a better way to know when state object is ready
-else {
-    var intervalId = setInterval(function(){
-        var state = gapi.hangout.data.getState();
-        if (state){
-            clearInterval(intervalId);
-            if (state.projectUrl){
-                projectUrl = state.projectUrl
-                theIFrame.src = projectUrl + "?hangout=true";
-            }
-            else {
-                theIFrame.src = "http://madeye.io/missing-project";
-            }
-        }
-    }, 200);
+} else {
+  gapi.hangout.onApiReady.add(function(eventObj) {
+    var state = gapi.hangout.data.getState();
+    if (state.projectUrl){
+      projectUrl = state.projectUrl
+      theIFrame.src = projectUrl + "?hangout=true";
+    }
+    else {
+      theIFrame.src = "http://madeye.io/missing-project";
+    }
+  });
 }
 </script>
 <br/>
