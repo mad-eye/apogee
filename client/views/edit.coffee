@@ -108,6 +108,7 @@ do ->
 
   Template.editor.rendered = ->
     Session.set("editorRendered", true)
+    editorState?.isRendered = true
     resizeEditor()
 
   Meteor.startup ->

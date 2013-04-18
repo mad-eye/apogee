@@ -29,6 +29,12 @@ Template.editorBar.events
   'change #themeSelect': (e) ->
     Session.set 'theme', e.srcElement.value
 
+  'change #useSoftTabs': (e) ->
+    editorState.useSoftTabs = e.srcElement.checked
+
+  'change #tabSize': (e) ->
+    editorState.tabSize = parseInt e.srcElement.value
+
   'click #revertFile': (event) ->
 
     Session.set "working", true
@@ -59,6 +65,13 @@ Template.editorBar.rendered = ->
   Session.set 'editorBarRendered', true
 
 Template.editorBar.helpers
+  editorState: ->
+    editorState
+
+  tabSizeEquals: (size)->
+    return false unless editorState.isRendered
+    editorState?.tabSize == parseInt size
+
   showSaveSpinner: ->
     Session.equals "working", true
 
@@ -72,6 +85,7 @@ Template.editorBar.helpers
   
 
 Template.syntaxModeOptions.helpers
+  #XXX: Clean this and MadEye.ACE_MODES up, into one structure.
   'syntaxModes': ->
     [
       {value:"abap", name:"ABAP"},

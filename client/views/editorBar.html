@@ -37,6 +37,17 @@
           Word Wrap
         </label>
 
+        <label class="checkbox" >
+          <input type="checkbox" id="useSoftTabs"  {{#if editorState.useSoftTabs}}checked{{/if}} />
+          Use Soft Tabs
+        </label>
+
+        <select id="tabSize" class="input-medium" size="1">
+          <option value="2" {{#if tabSizeEquals 2}}selected{{/if}}>Tab Size: 2</option>
+          <option value="4" {{#if tabSizeEquals 4}}selected{{/if}}>Tab Size: 4</option>
+          <option value="8" {{#if tabSizeEquals 8}}selected{{/if}}>Tab Size: 8</option>
+        </select>     
+
         <select id="themeSelect" class="input-medium" size="1">
           {{> themeOptions}}
         </select>     
