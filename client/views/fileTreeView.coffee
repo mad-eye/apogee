@@ -2,11 +2,7 @@ do ->
   theCursor = null
   Template.fileTree.helpers
     files : ->
-      unless theCursor
-        theCursor = Files.find({}, {sort: {orderingPath:1} } )
-        theCursor.fetch()
-        theCursor.rewind()
-      theCursor
+      Files.find {}, {sort: {orderingPath:1} }
 
     isVisible: ->
       fileTree.isVisible @path

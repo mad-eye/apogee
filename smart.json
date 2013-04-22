@@ -1,6 +1,7 @@
 {
   "meteor": {
-    "tag": "release/0.6.2"
+    "git": "git://github.com/mad-eye/meteor.git",
+    "tag": "binary_search_master"
   },
 
   "packages": {
