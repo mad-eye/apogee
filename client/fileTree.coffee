@@ -14,23 +14,6 @@ class ReactiveDict
       @deps[key]?.changed()
       @keys[key] = value
 
-class ReactiveDictList
-  constructor: () ->
-    @deps = {}
-    @keys = {}
-
-  get: (key) ->
-    @deps[key]  ?= new Deps.Dependency
-    Deps.depend @deps[key]
-    @keys[key] ? []
-
-  add: (key, value) ->
-    return unless value?
-    @keys[key] ?= []
-    return if value in @keys[key]
-    @keys[key].push value
-    @deps[key]?.changed()
-
 class FileTree
   constructor: ()->
     @openedDirs = new ReactiveDict
