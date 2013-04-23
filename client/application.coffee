@@ -6,7 +6,7 @@
 @transitoryIssues = null
 
 if Meteor.settings.public.googleAnalyticsId
-  _gaq = _gaq || []
+  window._gaq = window._gaq || []
   _gaq.push ['_setAccount', Meteor.settings.public.googleAnalyticsId]
 
 @_kmq = @_kmq || [];
