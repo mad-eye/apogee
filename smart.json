@@ -14,6 +14,9 @@
     },
     "meteor-sharejs": {
       "git": "git://github.com/mad-eye/meteor-sharejs"
+    },
+    "accounts-anonymous": {
+      "git": "git://github.com/rissem/meteor-accounts-anonymous.git"
     }
   }
 }

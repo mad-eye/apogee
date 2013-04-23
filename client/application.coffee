@@ -69,6 +69,9 @@ Deps.autorun ->
   Meteor.subscribe "projects", projectId
   Meteor.subscribe "projectStatuses", projectId
 
+Deps.autorun ->
+  return if Meteor.loggingIn()
+  Meteor.loginAnonymously() unless Meteor.user()
 
 Meteor.startup ->
   transitoryIssues = new TransitoryIssues

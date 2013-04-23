@@ -17,6 +17,10 @@
       "meteor-sharejs": {
         "git": "git://github.com/mad-eye/meteor-sharejs",
         "branch": "master"
+      },
+      "accounts-anonymous": {
+        "git": "git://github.com/rissem/meteor-accounts-anonymous.git",
+        "branch": "master"
       }
     },
     "packages": {
@@ -37,6 +41,11 @@
         "git": "git://github.com/mad-eye/meteor-sharejs",
         "branch": "master",
         "commit": "a5653600b46b46d4bfc301737536fe7f4f9ec899"
+      },
+      "accounts-anonymous": {
+        "git": "git://github.com/rissem/meteor-accounts-anonymous.git",
+        "branch": "master",
+        "commit": "36f94a7909b0a09e4eb6782bdc316ced96eb4ca4"
       },
       "page-js-ie-support": {
         "git": "https://github.com/tmeasday/meteor-page-js-ie-support.git",
