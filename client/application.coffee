@@ -12,16 +12,23 @@ if Meteor.settings.public.googleAnalyticsId
 @_kmq = @_kmq || [];
 
 do ->
-  recordView = ->
+  recordView = (params)->
+    event = _.extend {name: "pageView"}, params
+    Deps.autorun (computation)->
+      return if Meteor.loggingIn()
+      _.extend event, {userId: Meteor.userId()}
+      Events.insert event
+      computation.stop()
     _gaq.push ['_trackPageview'] if _gaq?
 
   #TODO figure out how to eliminate all the duplicate recordView calls
 
   Meteor.Router.add editRegex, (projectId, filePath, lineNumber, connectionId)->
-    recordView()
+    isHangout = false
     if /hangout=true/.exec(document.location.href.split("?")[1])
       Session.set "isHangout", true
       isHangout = true
+    recordView {page: "editor", projectId: projectId, filePath: filePath, hangout: isHangout}
     Session.set 'projectId', projectId
     Metrics.add {message:'load', filePath, lineNumber, connectionId, isHangout}
     window.editorState ?= new EditorState "editor"
@@ -32,11 +39,11 @@ do ->
 
   Meteor.Router.add
     '/':  ->
-      recordView()
+      recordView page: "home"
       "home2"
       
     '/get-started': ->
-      recordView()
+      recordView page: "get-started"
       "getStarted"
 
     '/login': ->
@@ -46,11 +53,11 @@ do ->
       "tests"
 
     '/tos': ->
-      recordView()
+      recordView page: "tos"
       'tos'
 
     '/faq': ->
-      recordView()
+      recordView page: "faq"
       'faq'
 
     '/unlinked-hangout': ->

@@ -28,10 +28,11 @@ Files.allow
   update: (userId, docs, fields, modifier) -> true
   remove: (userId, docs) -> true
 
-NewsletterEmails.allow(
+NewsletterEmails.allow
   insert: -> true
-)
 
+Events.allow
+  insert: -> true
 
 do ->
   getIcon = (projectId)->
