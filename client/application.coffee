@@ -60,6 +60,12 @@ do ->
       recordView page: "faq"
       'faq'
 
+    '/interview': ->
+      window.editorState ?= new EditorState "editor"
+      #TODO add more info here..
+      recordView page: "interview"
+      "interview"
+
     '/unlinked-hangout': ->
       recordView()
       Session.set "isHangout", true

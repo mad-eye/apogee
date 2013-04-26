@@ -1,0 +1,14 @@
+<template name="interview">
+    <div class="row">
+        <div class="span3">
+          <form action="/file-upload"
+                class="dropzone"
+                id="my-awesome-dropzone"></form>
+        </div>
+        <div id="editorChrome" class="span8">
+            {{> editorChrome }}
+            {{> editorOverlay }}
+            {{> editor}}
+        </div>
+    </div>
+</template>
