@@ -64,6 +64,10 @@ do ->
       window.editorState ?= new EditorState "editor"
       #TODO add more info here..
       recordView page: "interview"
+      project = new Project()
+      project.interview = true
+      project.save()
+      Session.set "projectId", project._id
       "interview"
 
     '/unlinked-hangout': ->

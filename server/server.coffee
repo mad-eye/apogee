@@ -34,6 +34,9 @@ NewsletterEmails.allow
 Events.allow
   insert: -> true
 
+Projects.allow
+  insert: (userId, doc) -> true
+
 do ->
   getIcon = (projectId)->
     unavailableIcons = {}
