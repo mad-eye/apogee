@@ -68,6 +68,10 @@ do ->
       project.interview = true
       project.save()
       Session.set "projectId", project._id
+      scratchPad = new MadEye.ScratchPad
+      scratchPad.projectId = project._id
+      scratchPad.save()
+      #TODO make editor state load this scratch pad
       "interview"
 
     '/unlinked-hangout': ->
@@ -85,6 +89,7 @@ Deps.autorun ->
   Meteor.subscribe "files", projectId
   Meteor.subscribe "projects", projectId
   Meteor.subscribe "projectStatuses", projectId
+  Meteor.subscribe "scratchPads", projectId
 
 Deps.autorun ->
   return if Meteor.loggingIn()

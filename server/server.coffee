@@ -7,6 +7,9 @@ Meteor.publish "files", (projectId)->
   Files.find
     projectId: projectId
 
+Meteor.publish "scratchPads", (projectId)->
+  ScratchPads.find projectId: projectId
+
 Meteor.publish "projectStatuses", (projectId) ->
   ProjectStatuses.find projectId: projectId
 
@@ -35,6 +38,9 @@ Events.allow
   insert: -> true
 
 Projects.allow
+  insert: (userId, doc) -> true
+
+ScratchPads.allow
   insert: (userId, doc) -> true
 
 do ->
