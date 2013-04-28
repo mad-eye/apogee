@@ -3,7 +3,14 @@
         <div class="span3">
           <form action="http://localhost:4004/file-upload/{{projectId}}"
                 class="dropzone"
-                id="my-awesome-dropzone"></form>
+                id="my-awesome-dropzone">
+            <ul>
+              {{#each scratchPads}}
+              <li class="{{selected}}">{{path}}
+              {{/each}}
+            </ul>
+            Drag files here to add!
+          </form>
         </div>
         <div id="editorChrome" class="span8">
             {{> editorChrome }}

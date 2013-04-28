@@ -82,6 +82,7 @@ do ->
         #TODO ensure we don't overwrite changes in the scratch pad..
         editorState.getEditor().setValue """This is the scratch buffer.."""
         editorState.getEditor().clearSelection()
+        computation.stop()
 
       "interview"
 
