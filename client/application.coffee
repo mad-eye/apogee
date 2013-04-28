@@ -70,8 +70,15 @@ do ->
       Session.set "projectId", project._id
       scratchPad = new MadEye.ScratchPad
       scratchPad.projectId = project._id
+
+      scratchPath = "SCRATCH"
+
+      scratchPad.path = scratchPath
       scratchPad.save()
-      #TODO make editor state load this scratch pad
+      editorState.setPath scratchPath
+
+      #TODO put something in the scratch buffer
+
       "interview"
 
     '/unlinked-hangout': ->

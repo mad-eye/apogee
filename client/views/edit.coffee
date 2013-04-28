@@ -125,12 +125,13 @@ do ->
       return unless Session.equals("editorRendered", true)
       filePath = editorState?.getPath()
       return unless filePath?
-      file = Files.findOne path:filePath
+      file = Files.findOne({path:filePath}) or ScratchPads.findOne({path:filePath})
       return unless file and file._id != editorState.file?._id
       #TODO less hacky way to do this?
       #selectedFilePath?
       Session.set "selectedFileId", file._id
-      fileTree.open file.path, true
+      #no file tree exists for interview page
+      fileTree?.open file.path, true
       #Display warning/errors about file state.
       #TODO: Replace this with an overlay.
       if file.isLink

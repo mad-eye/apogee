@@ -1,3 +1,3 @@
 Template.interview.helpers
   projectId: ->
-    Projects.findOne()._id
+    Projects.findOne()?._id
