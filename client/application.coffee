@@ -77,7 +77,11 @@ do ->
       scratchPad.save()
       editorState.setPath scratchPath
 
-      #TODO put something in the scratch buffer
+      Meteor.autorun (computation)->
+        return unless editorState.isRendered and editorState.filePath == scratchPath
+        #TODO ensure we don't overwrite changes in the scratch pad..
+        editorState.getEditor().setValue """This is the scratch buffer.."""
+        editorState.getEditor().clearSelection()
 
       "interview"
 
