@@ -4,9 +4,10 @@
           <form action="http://localhost:4004/file-upload/{{projectId}}"
                 class="dropzone"
                 id="my-awesome-dropzone">
+            <input type="hidden" name="fileId" value="{{fileId}}" />
             <ul>
               {{#each scratchPads}}
-              <li class="{{selected}}">{{path}}
+              <li id="{{path}}" class="{{selected}}">{{path}}
               {{/each}}
             </ul>
             Drag files here to add!

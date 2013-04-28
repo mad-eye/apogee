@@ -10,3 +10,13 @@ Template.interview.helpers
       "selected"
     else
       "unselected"
+
+  path: ->
+    @path
+
+  fileId: ->
+    ScratchPads.findOne(path: editorState.getPath())._id
+
+Template.interview.events
+  "click li": (event)->
+    editorState.setPath event.toElement.id

@@ -176,7 +176,10 @@ class EditorState
             Session.set "editorIsLoading", false
             callback? null
         else #its a scratchPad
+          @doc = doc
+          @attachAce(doc)
           Session.set "editorIsLoading", false
+          callback?()
 
       catch e
         #TODO: Handle this better.
