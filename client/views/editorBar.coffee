@@ -12,6 +12,14 @@ inputs = {
 }
 
 Template.editorBar.events
+  'click #runButton': (e)->
+    editorBody = editorState.getEditor().getValue()
+    Meteor.http.post "#{Meteor.settings.public.nurmengardUrl}/run", {data: {contents: editorBody, language: "javascript"}, headers: {"Content-Type":"application/json"}}, (error, result)->
+      if error
+        console.error "something went wrong", error
+      if result
+        console.log "RESULT:", result
+
   'change #wordWrap': (e) ->
     Session.set 'wordWrap', e.srcElement.checked
 
@@ -82,6 +90,9 @@ Template.editorBar.helpers
       "disabled"
     else
       ""
+  showRunButton: ->
+    project = Projects.findOne(Session.get("projectId"))
+    return false unless project and project.interview
   
 
 Template.syntaxModeOptions.helpers

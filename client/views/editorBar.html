@@ -61,6 +61,10 @@
       </form>
     </div>
 
+    {{#if showRunButton}}
+    <input type="button" value="RUN!" id="runButton" />
+    {{/if}}
+
     {{! REVERT/DISCARD }}
     <div id="revertDiscard" class="editorBarButton pull-left">
       {{#unless fileIsDeleted}}

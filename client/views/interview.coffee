@@ -26,7 +26,6 @@ Template.interview.helpers
     Deps.nonreactive ->
       users = ProjectStatuses.find(sessionId: {$in: sessionIds}).map (status) ->
         {img: "/images/#{USER_ICONS[status.iconId]}"}
-    console.log "USERS", users
     return users
 
 
