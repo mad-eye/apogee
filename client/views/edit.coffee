@@ -164,8 +164,8 @@ do ->
     $("#editor").width(newWidth)
     ace.edit("editor").resize()
 
-  Meteor.autorun ->
+  Deps.autorun (computation) ->
     return unless Session.equals "editorRendered", true
     $(window).resize ->
       resizeEditor()
-
+    computation.stop()
