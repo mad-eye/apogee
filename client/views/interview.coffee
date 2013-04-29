@@ -31,7 +31,8 @@ Template.interview.helpers
 
 Template.interview.events
   "click li": (event)->
-    editorState.setPath event.toElement.id
+    console.log "HOLLER", event
+    editorState.setPath event.currentTarget.id
 
 Template.interview.rendered = ->
   return if Dropzone.forElement "#dropzone"
