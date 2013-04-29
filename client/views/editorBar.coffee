@@ -249,7 +249,7 @@ Meteor.startup ->
 
   #Syntax Modes from file
   Deps.autorun ->
-    file = Files.findOne path: editorState.getPath()
+    file = Files.findOne(path: editorState.getPath()) or ScratchPads.findOne(path: editorState.getPath())
     return unless file
     mode = file.aceMode
     #Check for shebang. We might have such lines as '#! /bin/env sh -x'

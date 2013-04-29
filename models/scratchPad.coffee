@@ -1,6 +1,4 @@
-class MadEye.ScratchPad extends MadEye.Model
-  constructor: (data) ->
-    super data
+class MadEye.ScratchPad extends MadEye.File
 
 @ScratchPads = new Meteor.Collection 'scratchPads', transform: (doc) ->
   new MadEye.ScratchPad doc
