@@ -100,3 +100,4 @@ class FileTree
       @_invalidatedSessionPaths path
 
 @FileTree = FileTree
+window.fileTree = new FileTree

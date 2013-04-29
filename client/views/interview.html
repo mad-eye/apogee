@@ -5,15 +5,18 @@
             <ul>
               {{#each scratchPads}}
               <li id="{{path}}" class="{{selected}}">{{path}}
+                {{#each usersInFile this}}
+                  <img class="fileTreeUserIcon" alt="" src="{{this.img}}" />
+                {{/each}}
               {{/each}}
             </ul>
             Drag files here to add!
           </div>
         </div>
         <div id="editorChrome" class="span8">
-            {{> editorChrome }}
-            {{> editorOverlay }}
-            {{> editor}}
+          {{> editorChrome }}
+          {{> editorOverlay }}
+          {{> editor}}
         </div>
     </div>
 </template>

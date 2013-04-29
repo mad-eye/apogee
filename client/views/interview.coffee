@@ -17,6 +17,19 @@ Template.interview.helpers
   fileId: ->
     ScratchPads.findOne(path: editorState.getPath())._id
 
+  #XXX TODO copied w/ shame from fileTreeView.coffee
+  usersInFile: (file)->
+    projectId = Session.get "projectId"
+    sessionIds = fileTree.getSessionsInFile file.path
+    return unless sessionIds
+    users = null
+    Deps.nonreactive ->
+      users = ProjectStatuses.find(sessionId: {$in: sessionIds}).map (status) ->
+        {img: "/images/#{USER_ICONS[status.iconId]}"}
+    console.log "USERS", users
+    return users
+
+
 Template.interview.events
   "click li": (event)->
     editorState.setPath event.toElement.id
