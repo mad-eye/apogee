@@ -371,9 +371,17 @@ ul.fileTree {
 }
 
 #dropzone {
+  height: 600px;
+  background-color: #ddd;
+  padding-left: 10px;
+
   li.selected {
     /* TODO make this more obvious */
-    font-weight: bold;
+    font-size: 130%;
+  }
+
+  li.unselected {
+    cursor: pointer;
   }
 
   .file-preview {

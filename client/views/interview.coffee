@@ -6,7 +6,7 @@ Template.interview.helpers
     ScratchPads.find()
 
   selected: ->
-    if editorState.filePath == @path
+    if editorState.getPath() == @path
       "selected"
     else
       "unselected"
