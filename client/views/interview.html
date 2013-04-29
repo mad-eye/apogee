@@ -1,17 +1,14 @@
 <template name="interview">
     <div class="row">
         <div class="span3">
-          <form action="http://localhost:4004/file-upload/{{projectId}}"
-                class="dropzone"
-                id="my-awesome-dropzone">
-            <input type="hidden" name="fileId" value="{{fileId}}" />
+          <div id="dropzone">
             <ul>
               {{#each scratchPads}}
               <li id="{{path}}" class="{{selected}}">{{path}}
               {{/each}}
             </ul>
             Drag files here to add!
-          </form>
+          </div>
         </div>
         <div id="editorChrome" class="span8">
             {{> editorChrome }}
