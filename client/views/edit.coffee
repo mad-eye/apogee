@@ -106,6 +106,10 @@ do ->
 
   Template.editor.preserve("#editor")
 
+  Template.edit.helpers
+    isInterview: ->
+      Projects.findOne(Session.get "projectId")?.interview
+
   Template.editor.rendered = ->
     Session.set("editorRendered", true)
     editorState?.isRendered = true

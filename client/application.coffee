@@ -84,7 +84,7 @@ do ->
         editorState.getEditor().clearSelection()
         computation.stop()
 
-      "interview"
+      "edit"
 
     '/unlinked-hangout': ->
       recordView()
