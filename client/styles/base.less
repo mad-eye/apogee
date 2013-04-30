@@ -1,0 +1,111 @@
+@backgroundColorDefault: #FFF;
+@backgroundColorAlt: #EEE;
+@backgroundColorHover: #C3DAED;
+@backgroundColorSelected: #7DB0D9;
+
+@textColorDefault: #333;
+@textColorSub: #999;
+@textColorSelected: #fff;
+
+@borderRadius: 4px;
+@baseFontSize: 12px;
+@smallFontSize: 10px;
+@bigFontSize: 16px;
+@reallyBigFontSize: 24px;
+
+@baseLineHeight: 14px;
+@baseSpacing: 10px;
+
+@smallImageSize: 16px;
+@bigImageSize: 2*@smallImageSize;
+
+body {
+    padding: @baseSpacing;
+    font-size: @baseFontSize;
+    font-family: Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.small {
+  font-size: @smallFontSize;
+}
+
+.rounded-border (@radius: 4px) {
+  border: 1px solid #dddddd;
+  border-collapse: separate;
+  *border-collapse: collapse;
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+  -ms-border-radius: @radius;
+  -o-border-radius: @radius;
+  border-radius: @radius;
+}
+
+.transparent (@fraction: 0.50) {
+  @pct: 100*@fraction;
+  /* IE 8 */
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=@pct)";
+
+  /* IE 5-7 */
+  filter: alpha(opacity=@pct);
+
+  /* Netscape */
+  -moz-opacity: @fraction;
+
+  /* Safari 1.x */
+  -khtml-opacity: @fraction;
+
+  /* Good browsers */
+  opacity: @fraction;
+}
+
+#container.hangout {
+    width: auto;
+}
+
+.advice {
+  font-size: @bigFontSize;
+}
+
+.hangout .topnav {
+  display: none;
+}
+
+.topnav {
+  border-bottom: 1px solid @textColorDefault;
+  margin-bottom: 2*@baseSpacing;
+
+  .title {
+    margin-left: @baseSpacing;
+
+    h1 {
+      margin-top: 0;
+    }
+  }
+  
+  .login {
+    margin-top: 30px;
+    margin-bottom: 0;
+  }
+
+  .top-right {
+    text-align: right;
+    padding-top: 26px;
+  }
+}
+
+footer {
+  border-top: 1px solid @textColorDefault;
+  margin-top: 2*@baseSpacing;
+
+  ul.nav-footer li {
+    float: left;
+    margin-left: @baseSpacing;
+  }
+
+}
+
+/* This is unused? */
+div.foreign_selection {
+  background-color: #99cc99 !important;
+}
+
