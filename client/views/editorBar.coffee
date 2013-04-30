@@ -14,7 +14,7 @@ inputs = {
 Template.editorBar.events
   'click #runButton': (e)->
     editorBody = editorState.getEditor().getValue()
-    Meteor.http.post "#{Meteor.settings.public.nurmengardUrl}/run", {data: {contents: editorBody, language: "javascript"}, headers: {"Content-Type":"application/json"}}, (error, result)->
+    Meteor.http.post "#{Meteor.settings.public.nurmengardUrl}/run", {data: {contents: editorBody, language: Session.get "syntaxMode"}, headers: {"Content-Type":"application/json"}}, (error, result)->
       if error
         console.error "MADEYE ERROR", error
       if result
