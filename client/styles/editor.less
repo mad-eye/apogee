@@ -59,7 +59,21 @@
 
 .editorBarButton {
   margin-right: @baseSpacing;
-  margin-bottom: @baseSpacing;
+  margin-bottom: @baseSpacing/2;
+  .btn {
+    height: 21px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+
+    &.dropdown-toggle {
+      height: 19px;
+    }
+  }
+
+}
+
+#hangoutLink img {
+  padding-top: 1px;
 }
 
 #editorSettings {
@@ -92,8 +106,8 @@
 
 #saveBox {
   img {
-    width: @bigImageSize;
-    height: @bigImageSize;
+    width: @mediumImageSize;
+    height: @mediumImageSize;
   }
 }
 

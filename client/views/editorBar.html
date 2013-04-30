@@ -13,7 +13,7 @@
     {{! SYNTAX MODE }}
     <div id="syntaxMode" class="editorBarButton pull-left">
       <form>
-        <select id="syntaxModeSelect" class="input-medium">
+        <select id="syntaxModeSelect" class="input-medium" size="1">
           {{> syntaxModeOptions}}
         </select>
       </form>
@@ -61,16 +61,23 @@
       </form>
     </div>
 
+    {{! RUN }}
     {{#if showRunButton}}
-    <input type="button" value="RUN!" id="runButton" />
+      <div id="runCode" class="editorBarButton pull-left">
+        <input type="button" class="btn" title="Run the code, and return the result." value="Run" id="runButton" />
+      </div>
     {{/if}}
 
+    {{! HANGOUT }}
     {{#unless isHangout}}
-      <a href="{{hangoutLink}}" style="text-decoration:none;">
-        <img src="https://ssl.gstatic.com/s2/oz/images/stars/hangout/1/gplus-hangout-20x86-normal.png"
-             alt="Start a Hangout"
-             style="border:0;width:86px;height:20px;"/>
-      </a>
+      <div id="startHangout" class="editorBarButton pull-left">
+        <a id="hangoutLink" href="{{hangoutLink}}" style="text-decoration:none;">
+          <img src="https://ssl.gstatic.com/s2/oz/images/stars/hangout/1/gplus-hangout-20x86-normal.png"
+               alt="Start a new Hangout"
+               title="Start a new Hangout"
+               style="border:0;width:86px;height:20px;"/>
+        </a>
+      </div>
     {{/unless}}
 
     {{! REVERT/DISCARD }}
