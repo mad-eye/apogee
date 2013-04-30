@@ -37,6 +37,8 @@ do ->
     _kmq.push ['record', 'opened file', {projectId: projectId, filePath: filePath}]
     "edit"
 
+  scratchPath = "SCRATCH"
+
   Meteor.Router.add
     '/':  ->
       recordView page: "home"
@@ -60,31 +62,27 @@ do ->
       recordView page: "faq"
       'faq'
 
+    '/interview/:id': (id)->
+      recordView page: "interview"
+      window.editorState ?= new EditorState "editor"
+      Session.set "projectId", id
+      editorState.setPath scratchPath
+      "edit"
+
     '/interview': ->
       window.editorState ?= new EditorState "editor"
       #TODO add more info here..
-      recordView page: "interview"
+      recordView page: "create interview"
       project = new Project()
       project.interview = true
       project.save()
-      Session.set "projectId", project._id
+
       scratchPad = new MadEye.ScratchPad
       scratchPad.projectId = project._id
-
-      scratchPath = "SCRATCH"
-
       scratchPad.path = scratchPath
       scratchPad.save()
-      editorState.setPath scratchPath
-
-      Meteor.autorun (computation)->
-        return unless editorState.isRendered and editorState.filePath == scratchPath
-        #TODO ensure we don't overwrite changes in the scratch pad..
-        editorState.getEditor().setValue """This is the scratch buffer.."""
-        editorState.getEditor().clearSelection()
-        computation.stop()
-
-      "edit"
+      Meteor.setTimeout ->
+        Meteor.Router.to "/interview/#{project._id}"
 
     '/unlinked-hangout': ->
       recordView()

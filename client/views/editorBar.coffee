@@ -92,8 +92,11 @@ Template.editorBar.helpers
       ""
   showRunButton: ->
     project = Projects.findOne(Session.get("projectId"))
-    return false unless project and project.interview
-  
+    unless project and project.interview
+      return false
+    else
+      return Session.get("syntaxMode") in ["javascript", "python", "ruby", "coffeescript"] 
+
 
 Template.syntaxModeOptions.helpers
   #XXX: Clean this and MadEye.ACE_MODES up, into one structure.
