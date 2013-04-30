@@ -97,6 +97,12 @@ Template.editorBar.helpers
     else
       return Session.get("syntaxMode") in ["javascript", "python", "ruby", "coffeescript"] 
 
+  hangoutLink: ->
+    "#{Meteor.settings.public.hangoutUrl}#{document.location}"
+
+  isHangout: ->
+    Session.get "isHangout"
+
 
 Template.syntaxModeOptions.helpers
   #XXX: Clean this and MadEye.ACE_MODES up, into one structure.

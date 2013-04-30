@@ -63,6 +63,10 @@ do ->
       'faq'
 
     '/interview/:id': (id)->
+      if /hangout=true/.exec(document.location.href.split("?")[1])
+        Session.set "isHangout", true
+        isHangout = true
+
       recordView page: "interview"
       window.editorState ?= new EditorState "editor"
       Session.set "projectId", id
