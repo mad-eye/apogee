@@ -32,8 +32,16 @@ Template.interview.helpers
 #XXX TODO: Copied from fileTreeView.coffee
 Template.interview.events
   "click li": (event)->
-    console.log "HOLLER", event
     editorState.setPath event.currentTarget.id
+
+  "click #addFileButton": (event)->
+    filename = prompt "Enter a filename"
+    scratchPad = new MadEye.ScratchPad
+    scratchPad.projectId = Session.get "projectId"
+    scratchPad.path = filename
+    scratchPad.save()
+    #TODO properly reroute
+    editorState.setPath scratchPath
 
 Template.interview.rendered = ->
   return if Dropzone.forElement "#dropzone"
