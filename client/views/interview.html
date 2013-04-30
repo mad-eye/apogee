@@ -1,13 +1,14 @@
 <template name="interview">
-  <div id="dropzone">
-    <ul>
+  <div id="projectName"><h4>Files</h4></div>
+    <ul class="fileTree interview">
       {{#each scratchPads}}
-      <li id="{{path}}" class="{{selected}}">{{path}}
+      <li id="{{path}}" class="file {{selected}}"><span>{{path}}</span>
         {{#each usersInFile this}}
         <img class="fileTreeUserIcon" alt="" src="{{this.img}}" />
         {{/each}}
       {{/each}}
     </ul>
-    Drag files here to add!
+  <div id="dropzone" class="dropzone">
+    <span>Drop a file here to add (or you can click to upload)!</span>
   </div>
 </template>

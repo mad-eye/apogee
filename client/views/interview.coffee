@@ -29,6 +29,7 @@ Template.interview.helpers
     return users
 
 
+#XXX TODO: Copied from fileTreeView.coffee
 Template.interview.events
   "click li": (event)->
     console.log "HOLLER", event
