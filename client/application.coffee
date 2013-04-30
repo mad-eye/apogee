@@ -62,7 +62,7 @@ do ->
       recordView page: "faq"
       'faq'
 
-    '/interview/:id': (id)->
+    '/interview/:id/:filepath': (id, filepath)->
       if /hangout=true/.exec(document.location.href.split("?")[1])
         Session.set "isHangout", true
         isHangout = true
@@ -70,7 +70,7 @@ do ->
       recordView page: "interview"
       window.editorState ?= new EditorState "editor"
       Session.set "projectId", id
-      editorState.setPath scratchPath
+      editorState.setPath filepath
       "edit"
 
     '/interview': ->
@@ -86,7 +86,7 @@ do ->
       scratchPad.path = scratchPath
       scratchPad.save()
       Meteor.setTimeout ->
-        Meteor.Router.to "/interview/#{project._id}"
+        Meteor.Router.to "/interview/#{project._id}/#{scratchPath}"
 
     '/unlinked-hangout': ->
       recordView()

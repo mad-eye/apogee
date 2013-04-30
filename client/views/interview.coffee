@@ -32,16 +32,18 @@ Template.interview.helpers
 #XXX TODO: Copied from fileTreeView.coffee
 Template.interview.events
   "click li": (event)->
-    editorState.setPath event.currentTarget.id
+    projectId = Session.get "projectId"
+    filename = event.currentTarget.id
+    Meteor.Router.to "/interview/#{projectId}/#{filename}"
 
   "click #addFileButton": (event)->
     filename = prompt "Enter a filename"
     scratchPad = new MadEye.ScratchPad
-    scratchPad.projectId = Session.get "projectId"
+    projectId = Session.get "projectId"
+    scratchPad.projectId = projectId
     scratchPad.path = filename
     scratchPad.save()
-    #TODO properly reroute
-    editorState.setPath scratchPad.path
+    Meteor.Router.to "/interview/#{projectId}/#{filename}"
 
 Template.interview.rendered = ->
   return if Dropzone.forElement "#dropzone"
