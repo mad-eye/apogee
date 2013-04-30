@@ -16,9 +16,12 @@ Template.editorBar.events
     editorBody = editorState.getEditor().getValue()
     Meteor.http.post "#{Meteor.settings.public.nurmengardUrl}/run", {data: {contents: editorBody, language: "javascript"}, headers: {"Content-Type":"application/json"}}, (error, result)->
       if error
-        console.error "something went wrong", error
+        console.error "MADEYE ERROR", error
       if result
-        console.log "RESULT:", result
+        response = JSON.parse(result.content)
+        $("#stdout").find(".filler").remove()
+        $("#stdout").prepend("#{response.stderr}\n") if response.stderr
+        $("#stdout").prepend("#{response.stdout}\n") if response.stdout
 
   'change #wordWrap': (e) ->
     Session.set 'wordWrap', e.srcElement.checked

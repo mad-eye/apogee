@@ -13,6 +13,11 @@
             {{> editorChrome }}
             {{> editorOverlay }}
             {{> editor}}
+            {{#if isInterview}}
+            <div id="programOutput" style="position: absolute; width: 770px;">
+              <pre id="stdout"><span class="filler" style="color: #999">program output will go here</span></pre>
+            </div>
+            {{/if}}
         </div>
     </div>
 </template>

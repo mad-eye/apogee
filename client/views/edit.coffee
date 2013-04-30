@@ -164,15 +164,21 @@ do ->
 
 
   resizeEditor = ->
+    isInterview = Projects.findOne(Session.get 'projectId')?.interview
     editorTop = $("#editor").offset().top
     editorLeft = $("#editor").offset().left
     windowHeight = $(window).height()
     windowWidth = $(window).width()
     newHeight = windowHeight - editorTop - 20
+    isInterview = Projects.findOne(Session.get 'projectId')?.interview
+    newHeight = newHeight - 100 if isInterview
     newWidth = windowWidth - editorLeft - 20
     $("#editor").height(newHeight)
     $("#editor").width(newWidth)
     ace.edit("editor").resize()
+
+    $("#programOutput").offset {top: newHeight + 175}
+
 
   Meteor.autorun ->
     return unless Session.equals "editorRendered", true
