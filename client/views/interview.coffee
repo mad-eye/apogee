@@ -41,7 +41,7 @@ Template.interview.events
     scratchPad.path = filename
     scratchPad.save()
     #TODO properly reroute
-    editorState.setPath scratchPath
+    editorState.setPath scratchPad.path
 
 Template.interview.rendered = ->
   return if Dropzone.forElement "#dropzone"
