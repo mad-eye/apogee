@@ -37,7 +37,7 @@ do ->
     _kmq.push ['record', 'opened file', {projectId: projectId, filePath: filePath}]
     "edit"
 
-  scratchPath = "SCRATCH"
+  scratchPath = "SCRATCH.rb"
 
   Meteor.Router.add
     '/':  ->
