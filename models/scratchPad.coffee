@@ -1,9 +1,9 @@
 class MadEye.ScratchPad extends MadEye.File
   save: ->
-    if ScratchPads.findOne {path: @path, projectId: Session.get "projectId"}
-      return alert "A file with that path already exists"
-    else if not @path? or @path == ""
-      return alert "You must specify a path"
+    unless @path
+      return "You must specify a path"
+    if !@_id and ScratchPads.findOne {path: @path, projectId: Session.get "projectId"}
+      return "A file with that path already exists"
     super()
 
 @ScratchPads = new Meteor.Collection 'scratchPads', transform: (doc) ->
