@@ -3,6 +3,7 @@
 #editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?([0-9]*)?/
 #TODO should probably OR the line and session fields
 @editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?(?:L([0-9]*))?(?:S([0-9a-f-]*))?/
+@interviewRegex = /\/interview(?:\/([-0-9a-f]+)(?:\/([^#]*)))?/
 @transitoryIssues = null
 
 if Meteor.settings.public.googleAnalyticsId
@@ -71,6 +72,16 @@ do ->
       window.editorState ?= new EditorState "editor"
       Session.set "projectId", id
       editorState.setPath filepath
+      "edit"
+
+    '/interview/:id': (id)->
+      if /hangout=true/.exec(document.location.href.split("?")[1])
+        Session.set "isHangout", true
+        isHangout = true
+
+      recordView page: "interview"
+      window.editorState ?= new EditorState "editor"
+      Session.set "projectId", id
       "edit"
 
     '/interview': ->
