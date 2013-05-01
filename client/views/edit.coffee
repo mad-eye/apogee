@@ -78,6 +78,9 @@ do ->
   Handlebars.registerHelper "editorIsLoading", ->
     Session.equals "editorIsLoading", true
 
+  Handlebars.registerHelper "isInterview", ->
+    Projects.findOne(Session.get "projectId")?.interview
+
   fileIsModifiedLocally = ->
     Files.findOne(path:editorState.getPath())?.modified_locally
 
@@ -106,9 +109,6 @@ do ->
 
   Template.editor.preserve("#editor")
 
-  Template.edit.helpers
-    isInterview: ->
-      Projects.findOne(Session.get "projectId")?.interview
 
   Template.editor.rendered = ->
     Session.set("editorRendered", true)

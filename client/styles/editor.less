@@ -48,8 +48,7 @@
 }
 
 .btn-primary.disabled, .btn-primary[disabled] {
-  background-color: #0044AA;
-  color: #CCCCCC;
+  .transparent(0.20);
 }
 
 /* EDITOR BAR */
@@ -123,7 +122,8 @@
 #revertFile, #discardFile {
 
   &.disabled {
-    display: none;
+    .transparent(0.35);
+    cursor: default;
   }
 }
 

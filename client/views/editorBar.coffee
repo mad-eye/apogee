@@ -47,7 +47,8 @@ Template.editorBar.events
     editorState.tabSize = parseInt e.srcElement.value
 
   'click #revertFile': (event) ->
-
+    el = $(event.target)
+    return if el.hasClass 'disabled' or Session.get 'working'
     Session.set "working", true
     editorState.revertFile (error)->
       Session.set "working", false
@@ -93,12 +94,13 @@ Template.editorBar.helpers
       "disabled"
     else
       ""
-  showRunButton: ->
+
+  runButtonDisabled: ->
     project = Projects.findOne(Session.get("projectId"))
-    unless project and project.interview
-      return false
-    else
-      return Session.get("syntaxMode") in ["javascript", "python", "ruby", "coffeescript"] 
+    disabled = "disabled"
+    if Session.get("syntaxMode") in ["javascript", "python", "ruby", "coffee"]
+      disabled = ""
+    return disabled
 
   hangoutLink: ->
     "#{Meteor.settings.public.hangoutUrl}#{document.location}"
