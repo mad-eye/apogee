@@ -20,9 +20,9 @@ Template.editorBar.events
       if result
         response = JSON.parse(result.content)
         $("#stdout").find(".filler").remove()
-        $("#stdout").prepend("#{response.stderr}\n") if response.stderr
-        $("#stdout").prepend("#{response.stdout}\n") if response.stdout
-        $("#stdout").prepend("#{response.runError}\n") if response.runError
+        $("#stdout").prepend("<span class='stderr'>#{response.stderr}</span>\n") if response.stderr
+        $("#stdout").prepend("<span class='stdout'>#{response.stdout}</span>\n") if response.stdout
+        $("#stdout").prepend("<span class='runError'>RUN ERROR: #{response.runError}</span>\n") if response.runError
 
   'change #wordWrap': (e) ->
     Session.set 'wordWrap', e.srcElement.checked
