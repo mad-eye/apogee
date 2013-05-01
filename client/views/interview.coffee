@@ -42,11 +42,11 @@ Template.interview.events
     projectId = Session.get "projectId"
     scratchPad.projectId = projectId
     scratchPad.path = filename
-    validationError = scratchPad.save() #should mostly be empty
-    if validationError
-      alert validationError
-    else
+    try
+      scratchPad.save()
       Meteor.Router.to "/interview/#{projectId}/#{filename}"
+    catch e
+      alert e.message
 
 Template.interview.rendered = ->
   return if Dropzone.forElement "#dropzone"
@@ -56,8 +56,11 @@ Template.interview.rendered = ->
       pad = new MadEye.ScratchPad
       pad.path = file.name
       pad.projectId = Session.get "projectId"
-      validationError = pad.save() #should mostly be empty.
-      @options.url = "#{Meteor.settings.public.azkabanUrl}/file-upload/#{pad._id}"
-      alert validationError if validationError
-      done(validationError)
+      try
+        pad.save()
+        @options.url = "#{Meteor.settings.public.azkabanUrl}/file-upload/#{pad._id}"
+        done()
+      catch e
+        alert e.message
+        done(e.message)
     url: "bogus" #can't initialize a dropzone w/o a url, overwritten in accept function above
