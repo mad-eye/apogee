@@ -1,5 +1,8 @@
 <template name="edit">
   {{> projectStatus}}
+  {{#if isInterview}}
+    {{> interviewIntro }}
+  {{/if}}
     <div class="row">
         <div class="span3">
           {{#if isInterview}}
@@ -20,6 +23,28 @@
             {{/if}}
         </div>
     </div>
+</template>
+
+<template name="interviewIntro">
+  <div class="row">
+    <div class="span12">
+      <div class="hero-unit">
+        <ol>
+          <li>Add interview files in the left sidebar
+          <li>Execute these files with the editor's run button
+          <li>Embed your interview session in a {{> hangoutButton}}
+      </div>
+    </div>
+  </div>
+</template>
+
+<template name="hangoutButton">
+  <a id="hangoutLink" href="{{hangoutLink}}" style="text-decoration:none;">
+    <img src="https://ssl.gstatic.com/s2/oz/images/stars/hangout/1/gplus-hangout-60x230-normal.png"
+         alt="Start a new Hangout"
+         title="Start a new Hangout"
+         style="border:0;width:115px;height:30px;" />
+  </a>
 </template>
 
 <template name="projectStatus">
