@@ -22,6 +22,7 @@ Template.editorBar.events
         $("#stdout").find(".filler").remove()
         $("#stdout").prepend("#{response.stderr}\n") if response.stderr
         $("#stdout").prepend("#{response.stdout}\n") if response.stdout
+        $("#stdout").prepend("#{response.runError}\n") if response.runError
 
   'change #wordWrap': (e) ->
     Session.set 'wordWrap', e.srcElement.checked
