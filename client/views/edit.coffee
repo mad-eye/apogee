@@ -153,10 +153,9 @@ do ->
 
       editorState.loadFile file, ->
         #XXX hack
-        if file instanceof MadEye.ScratchPad and  file.path == "SCRATCH" and editorState.doc.version == 0
-          editorState.getEditor().setValue """This is a scratch buffer.
-          You can execute javascript form here.  Or create a new python, coffee, etc file
-          in the right sidebar.  Also yo can drag stuff here."""
+        if file instanceof MadEye.ScratchPad and  file.path == "SCRATCH.rb" and editorState.doc.version == 0
+          editorState.getEditor().setValue """puts 2+2
+          """
         if editorState.doc.cursors and editorState.cursorDestination
           gotoPosition(editorState.getEditor(), editorState.doc.cursors[editorState.cursorDestination])
         else if editorState.doc.cursor
