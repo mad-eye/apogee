@@ -227,6 +227,7 @@ Meteor.startup ->
 
   #Word Wrap
   Deps.autorun ->
+    return unless Session.equals("editorRendered", true)
     #Need to do editorState.getEditor().getSession().setWrapLimitRange(min, max) somewhere
     #Ideally tied to editor size
     session = editorState.getEditor().getSession()
@@ -239,10 +240,12 @@ Meteor.startup ->
 
   #Show Invisibles
   Deps.autorun ->
+    return unless Session.equals("editorRendered", true)
     editorState.getEditor().setShowInvisibles Session.get 'showInvisibles' ? false
 
   #Syntax Modes from session
   Deps.autorun (computation) ->
+    return unless Session.equals("editorRendered", true)
     mode = Session.get 'syntaxMode'
     editorSession = editorState.getEditor().getSession()
     unless mode?
@@ -274,6 +277,7 @@ Meteor.startup ->
 
   #Syntax Modes from file
   Deps.autorun ->
+    return unless Session.equals("editorRendered", true)
     file = Files.findOne(path: editorState.getPath()) or ScratchPads.findOne(path: editorState.getPath())
     return unless file
     mode = file.aceMode
@@ -290,6 +294,7 @@ Meteor.startup ->
 
   #Keybinding
   Deps.autorun (computation) ->
+    return unless Session.equals("editorRendered", true)
     keybinding = Session.get 'keybinding'
     unless keybinding
       #No keybinding means Ace
@@ -305,6 +310,7 @@ Meteor.startup ->
 
   #Theme
   Deps.autorun ->
+    return unless Session.equals("editorRendered", true)
     theme = Session.get 'theme'
     return unless theme
     editorState.getEditor().setTheme("ace/theme/"+theme)
