@@ -50,10 +50,12 @@
 </template>
 
 <template name="smallHangoutButton">
+  {{#unless isHangout}}
   <a id="hangoutLink" href="{{hangoutLink}}" style="text-decoration:none; float:right">
     <img src="https://ssl.gstatic.com/s2/oz/images/stars/hangout/1/gplus-hangout-20x86-normal.png"
          alt="Start a new Hangout"
          title="Start a new Hangout"
          style="padding-top: 13px; border:0; border:0;width:86px;height:20px;" />
   </a>
+  {{/unless}}
 </template>
