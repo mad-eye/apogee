@@ -14,12 +14,14 @@ inputs = {
 Template.editorBar.events
   'click #runButton': (e)->
     editorBody = editorState.getEditor().getValue()
+    $("#stdout").find(".filler").remove()
+    $("#stdout").prepend('<div id="codeExecutingSpinner"><img src="/images/file-loader.gif" alt="Loading..." />\n</div>')
     Meteor.http.post "#{Meteor.settings.public.nurmengardUrl}/run", {data: {contents: editorBody, language: Session.get "syntaxMode"}, headers: {"Content-Type":"application/json"}}, (error, result)->
+      $("#codeExecutingSpinner").remove()
       if error
         console.error "MADEYE ERROR", error
       if result
         response = JSON.parse(result.content)
-        $("#stdout").find(".filler").remove()
         $("#stdout").prepend("<span class='stderr'>#{response.stderr}</span>\n") if response.stderr
         $("#stdout").prepend("<span class='stdout'>#{response.stdout}</span>\n") if response.stdout
         $("#stdout").prepend("<span class='runError'>RUN ERROR: #{response.runError}</span>\n") if response.runError
