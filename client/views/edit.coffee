@@ -181,8 +181,9 @@ do ->
     spinner.css('left', (container.width() - spinner.width())/2 )
 
 
-  Meteor.autorun ->
+  Deps.autorun (computation) ->
     return unless Session.equals "editorRendered", true
     $(window).resize ->
       resizeEditor()
+    computation.stop()
 
