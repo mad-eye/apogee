@@ -169,10 +169,16 @@ do ->
 
   resizeEditor = ->
     baseSpacing = 10; #px
-    editorTop = $("#editorContainer").offset().top
+    container = $('#editorContainer')
+    editorTop = container.offset().top
     windowHeight = $(window).height()
     newHeight = windowHeight - editorTop - 2*baseSpacing
     $("#editorContainer").height(newHeight)
+
+    #Spinner placement
+    spinner = $('#editorLoadingSpinner')
+    spinner.css('top', (newHeight - spinner.height())/2 )
+    spinner.css('left', (container.width() - spinner.width())/2 )
 
 
   Meteor.autorun ->
