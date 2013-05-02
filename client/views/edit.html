@@ -13,18 +13,19 @@
           
         </div>
         <div id="editorChrome" class="span8">
-            {{> editorChrome }}
-            {{> editorOverlay }}
+          {{> editorChrome }}
+          {{> editorOverlay }}
+          <div id="editorContainer">
             {{> editor}}
             {{> editorFooter}}
+          </div>
         </div>
     </div>
 </template>
 
 <template name="interviewIntro">
   <div class="row">
-    {{#if Session 'interviewInstructionsClosed'}}
-    {{else}}
+    {{#unless Session 'interviewInstructionsClosed'}}
       <div class="span12">
         <div id="interviewInstructions" class="well">
           <button id="closeInterviewInstructions" class="close">X</button>
@@ -35,7 +36,7 @@
           </ol>
         </div>
       </div>
-    {{/if}}
+    {{/unless}}
   </div>
 </template>
 
@@ -95,7 +96,7 @@
 
 <template name="editorFooter">
   {{#if isInterview}}
-    <div id="programOutput" style="position: absolute; width: 770px;">
+    <div id="programOutput">
       <pre id="stdout"><span class="filler" style="color: #999">program output will go here</span></pre>
     </div>
   {{/if}}

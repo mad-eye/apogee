@@ -4,11 +4,19 @@
   position:relative;
 }
 
+#editorContainer {
+  position: relative;
+  height: 600px;
+  width: 100%;
+  border: 1px solid #aaa;
+}
+
 #editor {
   position: absolute;
-  width: 600px;
-  height: 400px;
-  border-top: 1px solid #aaa;
+  top: 0;
+  left: 0;
+  bottom: 0; /*This will be changed if there are contents below.*/
+  right: 0;
 }
 
 @overlayWidth: 600px;
@@ -47,8 +55,32 @@
   }
 }
 
-.btn-primary.disabled, .btn-primary[disabled] {
-  .transparent(0.20);
+#programOutput {
+  position: absolute;
+  height: 200px;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+#stdout {
+  padding: @baseSpacing;
+  margin: 0;
+  border: solid #aaa;
+  border-width: 1px 0 0 0;
+  border-radius: 0;
+  position: relative;
+  height: 200px - 2*@baseSpacing - 1; /*border is 1px*/
+
+  .stderr {
+    color: rgb(153, 2, 2);
+  }
+  .stdout {
+  }
+
+  .runError {
+    color: rgb(153, 2, 2);
+  }
 }
 
 /* EDITOR BAR */
@@ -124,18 +156,6 @@
   &.disabled {
     .transparent(0.35);
     cursor: default;
-  }
-}
-
-#stdout {
-  .stderr {
-    color: rgb(153, 2, 2);
-  }
-  .stdout {
-  }
-
-  .runError {
-    color: rgb(153, 2, 2);
   }
 }
 

@@ -107,12 +107,17 @@ do ->
         return
       Session.set 'fileCount', count
 
+  #XXX: Unused?
   Template.editor.preserve("#editor")
 
 
   Template.editor.rendered = ->
+    ace.edit('editor')
     Session.set("editorRendered", true)
     editorState?.isRendered = true
+    #If we're displaying the program output, set the bottom of the editor
+    isInterview = Projects.findOne(Session.get 'projectId')?.interview
+    $('#editor').css('bottom', $('#programOutput').height()) if isInterview
     resizeEditor()
 
   Meteor.startup ->
@@ -163,20 +168,11 @@ do ->
 
 
   resizeEditor = ->
-    #isInterview = Projects.findOne(Session.get 'projectId')?.interview
-    #editorTop = $("#editor").offset().top
-    #windowHeight = $(window).height()
-    #newHeight = windowHeight - editorTop - 20
-    #newHeight = newHeight - 100 if isInterview
-
-    #editorLeft = $("#editor").offset().left
-    #windowWidth = $(window).width()
-    #newWidth = windowWidth - editorLeft - 20
-    #$("#editor").height(newHeight)
-    #$("#editor").width(newWidth)
-    #ace.edit("editor").resize()
-
-    #$("#programOutput").offset {top: newHeight + 175}
+    baseSpacing = 10; #px
+    editorTop = $("#editorContainer").offset().top
+    windowHeight = $(window).height()
+    newHeight = windowHeight - editorTop - 2*baseSpacing
+    $("#editorContainer").height(newHeight)
 
 
   Meteor.autorun ->
