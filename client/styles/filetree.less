@@ -1,0 +1,109 @@
+@import "base.less";
+
+#leftColumn {
+}
+
+#projectName {
+  margin-bottom: @baseSpacing;
+}
+
+.fileTree-indent(@numIndents) {
+  padding-left: (@smallImageSize * @numIndents);
+}
+
+ul.fileTree {
+    margin-left: 0;
+
+    span {
+        font-size: @baseFontSize;
+    }
+
+    .fileTreeUserIcon {
+      float: right;
+      height: @smallImageSize;
+      width: @smallImageSize;
+    }
+    
+    li {
+        list-style-type: none;
+        background-color: @backgroundColorDefault;
+        color: @textColorDefault;
+
+        &:nth-child(odd) {
+            background-color: @backgroundColorAlt;
+        }
+
+        &:hover {
+            background-color: @backgroundColorHover;
+        }
+
+        &.selected {
+            background-color: @backgroundColorSelected;
+            color: @textColorSelected;
+        }
+
+        &.modified {
+            font-style: italic;
+        }
+        
+        &.file:before {
+            content: url('/images/full_page.png');
+        }
+
+        &.directory.open:before {
+            content: url('/images/add_to_folder.png');
+        }
+
+        &.directory.closed:before {
+            content: url('/images/folder.png');
+        }
+
+        // TODO: Surely there is a way to match regexs?
+        &.level1 { .fileTree-indent(1); } 
+        &.level2 { .fileTree-indent(2); } 
+        &.level3 { .fileTree-indent(3); } 
+        &.level4 { .fileTree-indent(4); } 
+        &.level5 { .fileTree-indent(5); } 
+        &.level6 { .fileTree-indent(6); }
+        &.level7 { .fileTree-indent(7); }
+        &.level8 { .fileTree-indent(8); }
+        &.level9 { .fileTree-indent(9); }
+        &.level10 { .fileTree-indent(10); }
+        &.level11 { .fileTree-indent(11); }
+        &.level12 { .fileTree-indent(12); }
+    }
+
+}
+
+.dropzone {
+  height: 120px;
+  min-height: 60px;
+  background: rgba(0,0,0,0.02);
+
+  .rounded-border;
+  
+  &.clickable {
+    cursor: pointer;
+    .message,
+    .message span {
+      cursor: pointer;
+    }
+  }
+
+  &.clickable * {
+    cursor: default;
+  }
+
+  &.drag-hover {
+    border-color: rgba(0,0,0,0.15);
+    background: rgba(0,0,0,0.04);
+  }
+
+  .file-preview {
+    display: none;
+  }
+}
+
+#addFileButton {
+  margin-top: 10px;
+}

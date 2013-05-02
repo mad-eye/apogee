@@ -1,0 +1,182 @@
+@import "base.less";
+
+#editorChrome {
+  position:relative;
+}
+
+#editorContainer {
+  position: relative;
+  height: 600px;
+  width: 100%;
+  border: 1px solid #aaa;
+}
+
+#editor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0; /*This will be changed if there are contents below.*/
+  right: 0;
+}
+
+@overlayWidth: 600px;
+@overlayHeight: 200px;
+@overlaySpinnerWidth: 48px;
+@overlaySpinnerHeight: 48px;
+
+#editorOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color:rgba(0,0,0,0.3);
+  z-index: 9999;
+  .rounded-border;
+
+  #editorLoadingSpinner {
+    position: absolute;
+    top: (@overlayHeight - @overlaySpinnerHeight)/2px;
+    left: (@overlayWidth - @overlaySpinnerWidth)/2px;
+    height: @overlaySpinnerHeight;
+    width: @overlaySpinnerWidth;
+  }
+}
+
+#editorTitleBar {
+  max-width: 611px;
+  vertical-align: text-bottom;
+
+}
+
+#editorFileName {
+  width: 600px;
+  margin-bottom: @baseSpacing;
+  h4 {
+      padding-left: @baseSpacing;
+  }
+}
+
+#programOutput {
+  position: absolute;
+  height: 200px;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+#stdout {
+  padding: @baseSpacing;
+  margin: 0;
+  border: solid #aaa;
+  border-width: 1px 0 0 0;
+  border-radius: 0;
+  position: relative;
+  height: 200px - 2*@baseSpacing - 1; /*border is 1px*/
+  overflow: auto;
+
+  .stderr {
+    color: rgb(153, 2, 2);
+  }
+  .stdout {
+  }
+
+  .runError {
+    color: rgb(153, 2, 2);
+  }
+}
+
+/* EDITOR BAR */
+.editorBar {
+
+}
+
+.editorBarButton {
+  margin-right: @baseSpacing;
+  margin-bottom: @baseSpacing/2;
+  .btn {
+    height: 21px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+
+    &.dropdown-toggle {
+      height: 19px;
+    }
+  }
+
+}
+
+#hangoutLink img {
+  padding-top: 1px;
+}
+
+#editorSettings {
+  position: relative;
+  form.dropdown-menu {
+    padding: @baseSpacing;
+
+    label, select  {
+      font-size: @baseFontSize;
+      line-height: @baseLineHeight;
+    }
+  }
+
+  input[type="checkbox"] {
+    margin-top: 0;
+  }
+
+  
+}
+
+#syntaxMode {
+  form {
+    margin: 0;
+  }
+
+  select {
+    margin: 0;
+  }
+}
+
+#saveBox {
+  img {
+    width: @mediumImageSize;
+    height: @mediumImageSize;
+  }
+}
+
+#saveImage {
+  cursor: pointer;
+  
+  &.disabled {
+    .transparent(0.15);
+    cursor: default;
+  }  
+}
+
+#revertFile, #discardFile {
+
+  &.disabled {
+    .transparent(0.35);
+    cursor: default;
+  }
+}
+
+#interviewInstructions {
+  font-size: @bigFontSize;
+
+  li {
+    line-height: 24px;
+  }
+
+  padding: 8px 8px 8px 8px;
+
+  ol {
+    margin-bottom: 5px;
+  }
+}
+
+#codeExecutingSpinner{
+  height: 18px;
+  width: 18px;
+}

@@ -64,108 +64,125 @@ cursorToRange = (editorDoc, cursor) ->
 @projectIsClosed = ->
   Projects.findOne()?.closed
   
+fileIsDeleted = ->
+  Files.findOne(path:editorState.getPath())?.removed
 
-do ->
-  fileIsDeleted = ->
-    Files.findOne(path:editorState.getPath())?.removed
+Handlebars.registerHelper "fileIsDeleted", ->
+  fileIsDeleted()
 
-  Handlebars.registerHelper "fileIsDeleted", ->
-    fileIsDeleted()
+Handlebars.registerHelper "editorFileName", ->
+  editorState?.getPath()
 
-  Handlebars.registerHelper "editorFileName", ->
-    editorState?.getPath()
+Handlebars.registerHelper "editorIsLoading", ->
+  Session.equals "editorIsLoading", true
 
-  Handlebars.registerHelper "editorIsLoading", ->
-    Session.equals "editorIsLoading", true
+Handlebars.registerHelper "isInterview", ->
+  Projects.findOne(Session.get "projectId")?.interview
 
-  fileIsModifiedLocally = ->
-    Files.findOne(path:editorState.getPath())?.modified_locally
+fileIsModifiedLocally = ->
+  Files.findOne(path:editorState.getPath())?.modified_locally
 
-  projectIsLoading = ->
-    not (Projects.findOne(Session.get "projectId")? || Session.equals 'fileCount', Files.find().count())
+projectIsLoading = ->
+  not (Projects.findOne(Session.get "projectId")? || Session.equals 'fileCount', Files.find().count())
 
-  Template.projectStatus.projectAlerts = ->
-    alerts = []
-    alerts.push projectClosedError if projectIsClosed()
-    alerts.push fileDeletedWarning if fileIsDeleted()
-    alerts.push fileModifiedLocallyWarning if fileIsModifiedLocally()
-    alerts.push projectLoadingAlert if projectIsLoading()
-    alerts.push networkIssuesWarning if transitoryIssues?.has 'networkIssues'
-    return alerts
+Template.projectStatus.projectAlerts = ->
+  alerts = []
+  alerts.push projectClosedError if projectIsClosed()
+  alerts.push fileDeletedWarning if fileIsDeleted()
+  alerts.push fileModifiedLocallyWarning if fileIsModifiedLocally()
+  alerts.push projectLoadingAlert if projectIsLoading()
+  alerts.push networkIssuesWarning if transitoryIssues?.has 'networkIssues'
+  return alerts
 
-  #Find how many files the server things, so we know if we have them all.
-  Meteor.autosubscribe ->
-    Meteor.call 'getFileCount', Session.get('projectId'), (err, count)->
-      if err
-        Metrics.add
-          level:'error'
-          message:'getFileCount'
-        console.error err
-        return
-      Session.set 'fileCount', count
+#Find how many files the server things, so we know if we have them all.
+Meteor.autosubscribe ->
+  Meteor.call 'getFileCount', Session.get('projectId'), (err, count)->
+    if err
+      Metrics.add
+        level:'error'
+        message:'getFileCount'
+      console.error err
+      return
+    Session.set 'fileCount', count
 
-  Template.editor.preserve("#editor")
+#XXX: Unused?
+Template.editor.preserve("#editor")
 
-  Template.editor.rendered = ->
-    Session.set("editorRendered", true)
-    editorState?.isRendered = true
+
+Template.editor.rendered = ->
+  Session.set("editorRendered", true)
+  editorState?.isRendered = true
+  #If we're displaying the program output, set the bottom of the editor
+  isInterview = Projects.findOne(Session.get 'projectId')?.interview
+  $('#editor').css('bottom', $('#programOutput').height()) if isInterview
+  resizeEditor()
+
+Meteor.startup ->
+  gotoPosition = (editor, cursor)->
+    console.error "undefined cursor" unless cursor
+    position = cursorToRange(editor.getSession().getDocument(), cursor)
+    editorState.getEditor().navigateTo(position.start.row, position.start.column)
+    Meteor.setTimeout ->
+      editorState.getEditor().scrollToLine(position.start.row, position.start.column)
+    , 0
+
+  #TODO: Move this into internal editorState fns
+  Meteor.autorun ->
+    return unless Session.equals("editorRendered", true)
+    filePath = editorState?.getPath()
+    return unless filePath?
+    file = Files.findOne({path:filePath}) or ScratchPads.findOne({path:filePath})
+    return unless file and file._id != editorState.file?._id
+    #TODO less hacky way to do this?
+    #selectedFilePath?
+    Session.set "selectedFileId", file._id
+    #no file tree exists for interview page
+    fileTree?.open file.path, true
+    #Display warning/errors about file state.
+    #TODO: Replace this with an overlay.
+    if file.isLink
+      displayAlert
+        level: "error"
+        title: "Unable to load symbolic link"
+        message: file.path
+      return
+    if file.isBinary
+      displayAlert
+        level: "error"
+        title: "Unable to load binary file"
+        message: file.path
+      return
+
+    editorState.loadFile file, ->
+      #XXX hack
+      if file instanceof MadEye.ScratchPad and  file.path == "SCRATCH.rb" and editorState.doc.version == 0
+        editorState.getEditor().setValue """puts 2+2
+        """
+      if editorState.doc.cursors and editorState.cursorDestination
+        gotoPosition(editorState.getEditor(), editorState.doc.cursors[editorState.cursorDestination])
+      else if editorState.doc.cursor
+        gotoPosition(editorState.getEditor(), editorState.doc.cursor)
+
+
+@resizeEditor = ->
+  baseSpacing = 10; #px
+  container = $('#editorContainer')
+  editorTop = container.offset().top
+  windowHeight = $(window).height()
+  newHeight = windowHeight - editorTop - 2*baseSpacing
+  $("#editorContainer").height(newHeight)
+
+  #Spinner placement
+  spinner = $('#editorLoadingSpinner')
+  spinner.css('top', (newHeight - spinner.height())/2 )
+  spinner.css('left', (container.width() - spinner.width())/2 )
+
+  ace.edit('editor').resize()
+  
+
+Deps.autorun (computation) ->
+  return unless Session.equals "editorRendered", true
+  $(window).resize ->
     resizeEditor()
+  computation.stop()
 
-  Meteor.startup ->
-    gotoPosition = (editor, cursor)->
-      console.error "undefined cursor" unless cursor
-      position = cursorToRange(editor.getSession().getDocument(), cursor)
-      editorState.getEditor().navigateTo(position.start.row, position.start.column)
-      Meteor.setTimeout ->
-        editorState.getEditor().scrollToLine(position.start.row, position.start.column)
-      , 0
-
-    #TODO: Move this into internal editorState fns
-    Meteor.autorun ->
-      return unless Session.equals("editorRendered", true)
-      filePath = editorState?.getPath()
-      return unless filePath?
-      file = Files.findOne path:filePath
-      return unless file and file._id != editorState.file?._id
-      #TODO less hacky way to do this?
-      #selectedFilePath?
-      Session.set "selectedFileId", file._id
-      fileTree.open file.path, true
-      #Display warning/errors about file state.
-      #TODO: Replace this with an overlay.
-      if file.isLink
-        displayAlert
-          level: "error"
-          title: "Unable to load symbolic link"
-          message: file.path
-        return
-      if file.isBinary
-        displayAlert
-          level: "error"
-          title: "Unable to load binary file"
-          message: file.path
-        return
-
-      editorState.loadFile file, ->
-        if editorState.doc.cursors and editorState.cursorDestination
-          gotoPosition(editorState.getEditor(), editorState.doc.cursors[editorState.cursorDestination])
-        else if editorState.doc.cursor
-          gotoPosition(editorState.getEditor(), editorState.doc.cursor)
-
-
-  resizeEditor = ->
-    editorTop = $("#editor").offset().top
-    editorLeft = $("#editor").offset().left
-    windowHeight = $(window).height()
-    windowWidth = $(window).width()
-    newHeight = windowHeight - editorTop - 20
-    newWidth = windowWidth - editorLeft - 20
-    $("#editor").height(newHeight)
-    $("#editor").width(newWidth)
-    ace.edit("editor").resize()
-
-  Deps.autorun (computation) ->
-    return unless Session.equals "editorRendered", true
-    $(window).resize ->
-      resizeEditor()
-    computation.stop()

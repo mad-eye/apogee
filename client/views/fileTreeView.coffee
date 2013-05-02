@@ -47,8 +47,6 @@ do ->
     #console.log "Rendered fileTree"
 
   Meteor.startup ->
-    window.fileTree = new FileTree
-
     #Populate fileTree with ProjectStatuses filePath
     sessionsDep = new Deps.Dependency
 

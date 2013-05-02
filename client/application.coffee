@@ -3,6 +3,7 @@
 #editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?([0-9]*)?/
 #TODO should probably OR the line and session fields
 @editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?(?:L([0-9]*))?(?:S([0-9a-f-]*))?/
+@interviewRegex = /\/interview(?:\/([-0-9a-f]+)(?:\/([^#]*)))?/
 @transitoryIssues = null
 
 if Meteor.settings.public.googleAnalyticsId
@@ -37,10 +38,12 @@ do ->
     _kmq.push ['record', 'opened file', {projectId: projectId, filePath: filePath}]
     "edit"
 
+  scratchPath = "SCRATCH.rb"
+
   Meteor.Router.add
     '/':  ->
       recordView page: "home"
-      "home2"
+      "home"
       
     '/get-started': ->
       recordView page: "get-started"
@@ -60,6 +63,42 @@ do ->
       recordView page: "faq"
       'faq'
 
+    '/interview/:id/:filepath': (id, filepath)->
+      if /hangout=true/.exec(document.location.href.split("?")[1])
+        Session.set "isHangout", true
+        isHangout = true
+
+      recordView page: "interview"
+      window.editorState ?= new EditorState "editor"
+      Session.set "projectId", id
+      editorState.setPath filepath
+      "edit"
+
+    '/interview/:id': (id)->
+      if /hangout=true/.exec(document.location.href.split("?")[1])
+        Session.set "isHangout", true
+        isHangout = true
+
+      recordView page: "interview"
+      window.editorState ?= new EditorState "editor"
+      Session.set "projectId", id
+      "edit"
+
+    '/interview': ->
+      window.editorState ?= new EditorState "editor"
+      #TODO add more info here..
+      recordView page: "create interview"
+      project = new Project()
+      project.interview = true
+      project.save()
+
+      scratchPad = new MadEye.ScratchPad
+      scratchPad.projectId = project._id
+      scratchPad.path = scratchPath
+      scratchPad.save()
+      Meteor.setTimeout ->
+        Meteor.Router.to "/interview/#{project._id}/#{scratchPath}"
+
     '/unlinked-hangout': ->
       recordView()
       Session.set "isHangout", true
@@ -75,6 +114,7 @@ Deps.autorun ->
   Meteor.subscribe "files", projectId
   Meteor.subscribe "projects", projectId
   Meteor.subscribe "projectStatuses", projectId
+  Meteor.subscribe "scratchPads", projectId
 
 Deps.autorun ->
   return if Meteor.loggingIn()

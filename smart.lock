@@ -40,7 +40,7 @@
       "meteor-sharejs": {
         "git": "git://github.com/mad-eye/meteor-sharejs",
         "branch": "master",
-        "commit": "a5653600b46b46d4bfc301737536fe7f4f9ec899"
+        "commit": "039c32fa96f7da4f4fed121ea867f825b3af06a0"
       },
       "accounts-anonymous": {
         "git": "git://github.com/rissem/meteor-accounts-anonymous.git",

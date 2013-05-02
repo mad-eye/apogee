@@ -1,15 +1,52 @@
 <template name="edit">
   {{> projectStatus}}
+  {{#if isInterview}}
+      {{> interviewIntro }}
+  {{/if}}
     <div class="row">
-        <div class="span3">
+        <div id="leftColumn" class="span3">
+          {{#if isInterview}}
+            {{> interview}}
+          {{else}}
             {{> fileTree}}
+          {{/if}}
+          
         </div>
-        <div id="editorChrome" class="span8">
-            {{> editorChrome }}
+        <div id="editorChrome" class="span9">
+          {{> editorChrome }}
+          <div id="editorContainer">
             {{> editorOverlay }}
             {{> editor}}
+            {{> editorFooter}}
+          </div>
         </div>
     </div>
+</template>
+
+<template name="interviewIntro">
+  {{#unless Session 'interviewInstructionsClosed'}}
+    <div class="row">
+      <div class="span12">
+        <div id="interviewInstructions" class="well">
+          <button id="closeInterviewInstructions" class="close">&times;</button>
+          <ol>
+            <li>Add interview files in the left sidebar</li>
+            <li>Execute these files with the editor&apos;s run button</li>
+            <li>Embed your interview session in a Google Hangout:&nbsp; {{> hangoutButton}}</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  {{/unless}}
+</template>
+
+<template name="hangoutButton">
+  <a id="hangoutLink" href="{{hangoutLink}}" style="text-decoration:none;">
+    <img src="https://ssl.gstatic.com/s2/oz/images/stars/hangout/1/gplus-hangout-60x230-normal.png"
+         alt="Start a new Hangout"
+         title="Start a new Hangout"
+         style="border:0;width:115px;height:30px;" />
+  </a>
 </template>
 
 <template name="projectStatus">
@@ -54,7 +91,13 @@
 </template>
 
 <template name="editor">
-  <!-- this hack exists to force a new div block on file swtich {{editorFileName}} -->
-  <div id="editor" > </div>
+  <div id="editor"></div>
+</template>
 
+<template name="editorFooter">
+  {{#if isInterview}}
+    <div id="programOutput">
+      <pre id="stdout"><span class="filler" style="color: #999">program output will go here</span></pre>
+    </div>
+  {{/if}}
 </template>

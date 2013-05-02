@@ -12,6 +12,20 @@ inputs = {
 }
 
 Template.editorBar.events
+  'click #runButton': (e)->
+    editorBody = editorState.getEditor().getValue()
+    $("#stdout").find(".filler").remove()
+    $("#stdout").prepend('<div id="codeExecutingSpinner"><img src="/images/file-loader.gif" alt="Loading..." />\n</div>')
+    Meteor.http.post "#{Meteor.settings.public.nurmengardUrl}/run", {data: {contents: editorBody, language: Session.get "syntaxMode"}, headers: {"Content-Type":"application/json"}}, (error, result)->
+      $("#codeExecutingSpinner").remove()
+      if error
+        console.error "MADEYE ERROR", error
+      if result
+        response = JSON.parse(result.content)
+        $("#stdout").prepend("<span class='stderr'>#{response.stderr}</span>\n") if response.stderr
+        $("#stdout").prepend("<span class='stdout'>#{response.stdout}</span>\n") if response.stdout
+        $("#stdout").prepend("<span class='runError'>RUN ERROR: #{response.runError}</span>\n") if response.runError
+
   'change #wordWrap': (e) ->
     Session.set 'wordWrap', e.srcElement.checked
 
@@ -36,7 +50,8 @@ Template.editorBar.events
     editorState.tabSize = parseInt e.srcElement.value
 
   'click #revertFile': (event) ->
-
+    el = $(event.target)
+    return if el.hasClass 'disabled' or Session.get 'working'
     Session.set "working", true
     editorState.revertFile (error)->
       Session.set "working", false
@@ -82,7 +97,20 @@ Template.editorBar.helpers
       "disabled"
     else
       ""
-  
+
+  runButtonDisabled: ->
+    project = Projects.findOne(Session.get("projectId"))
+    disabled = "disabled"
+    if Session.get("syntaxMode") in ["javascript", "python", "ruby", "coffee"]
+      disabled = ""
+    return disabled
+
+  hangoutLink: ->
+    "#{Meteor.settings.public.hangoutUrl}#{document.location}"
+
+  isHangout: ->
+    Session.get "isHangout"
+
 
 Template.syntaxModeOptions.helpers
   #XXX: Clean this and MadEye.ACE_MODES up, into one structure.
@@ -202,6 +230,7 @@ Meteor.startup ->
 
   #Word Wrap
   Deps.autorun ->
+    return unless Session.equals("editorRendered", true)
     #Need to do editorState.getEditor().getSession().setWrapLimitRange(min, max) somewhere
     #Ideally tied to editor size
     session = editorState.getEditor().getSession()
@@ -214,10 +243,12 @@ Meteor.startup ->
 
   #Show Invisibles
   Deps.autorun ->
+    return unless Session.equals("editorRendered", true)
     editorState.getEditor().setShowInvisibles Session.get 'showInvisibles' ? false
 
   #Syntax Modes from session
   Deps.autorun (computation) ->
+    return unless Session.equals("editorRendered", true)
     mode = Session.get 'syntaxMode'
     editorSession = editorState.getEditor().getSession()
     unless mode?
@@ -249,7 +280,8 @@ Meteor.startup ->
 
   #Syntax Modes from file
   Deps.autorun ->
-    file = Files.findOne path: editorState.getPath()
+    return unless Session.equals("editorRendered", true)
+    file = Files.findOne(path: editorState.getPath()) or ScratchPads.findOne(path: editorState.getPath())
     return unless file
     mode = file.aceMode
     #Check for shebang. We might have such lines as '#! /bin/env sh -x'
@@ -265,6 +297,7 @@ Meteor.startup ->
 
   #Keybinding
   Deps.autorun (computation) ->
+    return unless Session.equals("editorRendered", true)
     keybinding = Session.get 'keybinding'
     unless keybinding
       #No keybinding means Ace
@@ -280,6 +313,7 @@ Meteor.startup ->
 
   #Theme
   Deps.autorun ->
+    return unless Session.equals("editorRendered", true)
     theme = Session.get 'theme'
     return unless theme
     editorState.getEditor().setTheme("ace/theme/"+theme)
