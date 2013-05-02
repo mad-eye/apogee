@@ -24,16 +24,10 @@
 <template name="interviewIntro">
   <div class="row">
     {{#if Session 'interviewInstructionsClosed'}}
-      <div class="span12">
-        <div id="interviewInstructions" class="well well-small">
-          <button id="openInterviewInstructions" class="close">v</button>
-          <p>Start a hangout: &nbsp; {{> hangoutButton}}</p>
-        </div>
-      </div>
     {{else}}
       <div class="span12">
         <div id="interviewInstructions" class="well">
-          <button id="closeInterviewInstructions" class="close">^</button>
+          <button id="closeInterviewInstructions" class="close">X</button>
           <ol>
             <li>Add interview files in the left sidebar</li>
             <li>Execute these files with the editor&apos;s run button</li>
