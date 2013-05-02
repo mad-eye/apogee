@@ -105,9 +105,6 @@ Template.editorBar.helpers
       disabled = ""
     return disabled
 
-  hangoutLink: ->
-    "#{Meteor.settings.public.hangoutUrl}#{document.location}"
-
   isHangout: ->
     Session.get "isHangout"
 

@@ -186,3 +186,5 @@ Deps.autorun (computation) ->
     resizeEditor()
   computation.stop()
 
+Handlebars.registerHelper "hangoutLink", ->
+  "#{Meteor.settings.public.hangoutUrl}#{document.location}"
