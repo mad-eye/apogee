@@ -2,13 +2,15 @@
   <div id="editorBar" class="clearfix">
 
     {{! SAVE}}
-    <div id="saveBox" class="editorBarButton pull-left">
-      {{#if showSaveSpinner}}
-        <img id="saveSpinner" src="/images/file-loader.gif" alt="Loading..." />
-      {{else}}
-        <img id="saveImage" src="/images/save-file_32.png" class="{{buttonDisabled}}"  {{buttonDisabled}} alt="Save file to host computer" title="Save file" />
-      {{/if}}
-    </div>
+    {{#unless isInterview}}
+      <div id="saveBox" class="editorBarButton pull-left">
+        {{#if showSaveSpinner}}
+          <img id="saveSpinner" src="/images/file-loader.gif" alt="Loading..." />
+        {{else}}
+          <img id="saveImage" src="/images/save-file_32.png" class="{{buttonDisabled}}"  {{buttonDisabled}} alt="Save file to host computer" title="Save file" />
+        {{/if}}
+      </div>
+    {{/unless}}
 
     {{! SYNTAX MODE }}
     <div id="syntaxMode" class="editorBarButton pull-left">
