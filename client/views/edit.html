@@ -1,7 +1,9 @@
 <template name="edit">
   {{> projectStatus}}
   {{#if isInterview}}
+    {{#unless Session 'isHangout'}}
       {{> interviewIntro }}
+    {{/unless}}
   {{/if}}
     <div class="row">
         <div id="leftColumn" class="span3">
