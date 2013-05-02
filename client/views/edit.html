@@ -1,7 +1,7 @@
 <template name="edit">
   {{> projectStatus}}
   {{#if isInterview}}
-    {{> interviewIntro }}
+      {{> interviewIntro }}
   {{/if}}
     <div class="row">
         <div class="span3">
@@ -16,25 +16,32 @@
             {{> editorChrome }}
             {{> editorOverlay }}
             {{> editor}}
-            {{#if isInterview}}
-            <div id="programOutput" style="position: absolute; width: 770px;">
-              <pre id="stdout"><span class="filler" style="color: #999">program output will go here</span></pre>
-            </div>
-            {{/if}}
+            {{> editorFooter}}
         </div>
     </div>
 </template>
 
 <template name="interviewIntro">
   <div class="row">
-    <div class="span12">
-      <div class="hero-unit">
-        <ol>
-          <li>Add interview files in the left sidebar
-          <li>Execute these files with the editor's run button
-          <li>Embed your interview session in a {{> hangoutButton}}
+    {{#if Session 'interviewInstructionsClosed'}}
+      <div class="span12">
+        <div id="interviewInstructions" class="well well-small">
+          <button id="openInterviewInstructions" class="close">v</button>
+          <p>Start a hangout: &nbsp; {{> hangoutButton}}</p>
+        </div>
       </div>
-    </div>
+    {{else}}
+      <div class="span12">
+        <div id="interviewInstructions" class="well">
+          <button id="closeInterviewInstructions" class="close">^</button>
+          <ol>
+            <li>Add interview files in the left sidebar</li>
+            <li>Execute these files with the editor&apos;s run button</li>
+            <li>Embed your interview session in a Google Hangout:&nbsp; {{> hangoutButton}}</li>
+          </ol>
+        </div>
+      </div>
+    {{/if}}
   </div>
 </template>
 
@@ -90,4 +97,12 @@
 
 <template name="editor">
   <div id="editor"></div>
+</template>
+
+<template name="editorFooter">
+  {{#if isInterview}}
+    <div id="programOutput" style="position: absolute; width: 770px;">
+      <pre id="stdout"><span class="filler" style="color: #999">program output will go here</span></pre>
+    </div>
+  {{/if}}
 </template>

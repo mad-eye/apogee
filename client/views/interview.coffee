@@ -64,3 +64,10 @@ Template.interview.rendered = ->
         alert e.message
         done(e.message)
     url: "bogus" #can't initialize a dropzone w/o a url, overwritten in accept function above
+
+Template.interviewIntro.events
+  'click #closeInterviewInstructions': (e) ->
+    Session.set 'interviewInstructionsClosed', true
+
+  'click #openInterviewInstructions': (e) ->
+    Session.set 'interviewInstructionsClosed', false
