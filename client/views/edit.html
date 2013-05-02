@@ -23,33 +23,6 @@
     </div>
 </template>
 
-<template name="interviewIntro">
-  {{#unless Session 'interviewInstructionsClosed'}}
-    <div class="row">
-      <div class="span12">
-        <div id="interviewInstructions" class="well">
-          <button id="closeInterviewInstructions" class="close">&times;</button>
-          <ol>
-            <li>Add interview files in the left sidebar</li>
-            <li>Execute these files with the editor&apos;s run button</li>
-            <li>Give the url to your interviewee, and watch them type!</li>
-            <li>Or embed your interview session in a Google Hangout:&nbsp; {{> hangoutButton}}</li>
-          </ol>
-        </div>
-      </div>
-    </div>
-  {{/unless}}
-</template>
-
-<template name="hangoutButton">
-  <a id="hangoutLink" href="{{hangoutLink}}" style="text-decoration:none;">
-    <img src="https://ssl.gstatic.com/s2/oz/images/stars/hangout/1/gplus-hangout-60x230-normal.png"
-         alt="Start a new Hangout"
-         title="Start a new Hangout"
-         style="border:0;width:115px;height:30px;" />
-  </a>
-</template>
-
 <template name="projectStatus">
   {{#each projectAlerts}}
     {{> alert this}}
