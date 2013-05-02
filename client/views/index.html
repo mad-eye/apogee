@@ -19,23 +19,25 @@
 </body>
 
 <template name="topnav">
-<div class="row topnav">
-  <div class="span9 title"> 
-    <h1>MadEye <small>Remote pair programming</small>
-    </h1>
-  </div>
-  <div class="span3 top-right">
-    {{!
-    <ul class="nav login pull-right">
-      {{!Sign in/up} }
-      <li>
-      {{loginButtons align="right"} }
-      </li>
-    </ul>
-    }}
-    {{#if isHomePage }}
-    <a href="https://twitter.com/_madeye" class="twitter-follow-button" data-show-count="false">Follow @_madeye</a>
-    {{/if}}
+<div class="topnav">
+  <div class="row">
+    <div class="span9 title"> 
+      <h1>MadEye <small>Remote pair programming</small>
+      </h1>
+    </div>
+    <div class="span3 top-right">
+      {{!
+      <ul class="nav login pull-right">
+        {{!Sign in/up} }
+        <li>
+        {{loginButtons align="right"} }
+        </li>
+      </ul>
+      }}
+      {{#if isHomePage }}
+      <a href="https://twitter.com/_madeye" class="twitter-follow-button" data-show-count="false">Follow @_madeye</a>
+      {{/if}}
+    </div>
   </div>
 </div>
 </template>
