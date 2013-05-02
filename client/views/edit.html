@@ -24,11 +24,11 @@
 </template>
 
 <template name="interviewIntro">
-  <div class="row">
-    {{#unless Session 'interviewInstructionsClosed'}}
+  {{#unless Session 'interviewInstructionsClosed'}}
+    <div class="row">
       <div class="span12">
         <div id="interviewInstructions" class="well">
-          <button id="closeInterviewInstructions" class="close">X</button>
+          <button id="closeInterviewInstructions" class="close">&times;</button>
           <ol>
             <li>Add interview files in the left sidebar</li>
             <li>Execute these files with the editor&apos;s run button</li>
@@ -36,8 +36,8 @@
           </ol>
         </div>
       </div>
-    {{/unless}}
-  </div>
+    </div>
+  {{/unless}}
 </template>
 
 <template name="hangoutButton">
