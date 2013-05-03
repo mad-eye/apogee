@@ -25,6 +25,7 @@ Template.editorBar.events
         $("#stdout").prepend("<span class='stderr'>#{response.stderr}</span>\n") if response.stderr
         $("#stdout").prepend("<span class='stdout'>#{response.stdout}</span>\n") if response.stdout
         $("#stdout").prepend("<span class='runError'>RUN ERROR: #{response.runError}</span>\n") if response.runError
+        $("#stdout").prepend("----\n")
 
   'change #wordWrap': (e) ->
     Session.set 'wordWrap', e.srcElement.checked
@@ -47,7 +48,7 @@ Template.editorBar.events
     editorState.useSoftTabs = e.srcElement.checked
 
   'change #tabSize': (e) ->
-    editorState.tabSize = parseInt e.srcElement.value
+    editorState.tabSize = parseInt e.srcElement.value, 10
 
   'click #revertFile': (event) ->
     el = $(event.target)
@@ -85,7 +86,7 @@ Template.editorBar.helpers
 
   tabSizeEquals: (size)->
     return false unless editorState.isRendered
-    editorState?.tabSize == parseInt size
+    editorState?.tabSize == parseInt size, 10
 
   showSaveSpinner: ->
     Session.equals "working", true
