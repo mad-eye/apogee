@@ -6,11 +6,35 @@
 @interviewRegex = /\/interview(?:\/([-0-9a-f]+)(?:\/([^#]*)))?/
 @transitoryIssues = null
 
+#queryString example: '?a=b&c&d=&a=f'
+#For right now, we ignore multiple values for a given param
+getQueryParams = (queryString) ->
+  params = {}
+  return params unless queryString and queryString.length > 1
+  queryString = queryString.substr 1
+  queryTokens = queryString.split '&'
+  for token in queryTokens
+    [key, value] = token.split '='
+    value ?= true
+    params[key] = value
+  return params
+
+registerHangout = (projectId, hangoutUrl) ->
+  return unless hangoutUrl
+  registerHangoutUrl = Meteor.settings.public.azkabanUrl + "/hangout/" + projectId
+  Meteor.http.put registerHangoutUrl, {
+      data: {hangoutUrl}
+      headers: {'Content-Type':'application/json'}
+      timeout: 5*1000
+    }, (error,response) =>
+      console.error "Registering hangout url failed." if error
+
+
 if Meteor.settings.public.googleAnalyticsId
   window._gaq = window._gaq || []
   _gaq.push ['_setAccount', Meteor.settings.public.googleAnalyticsId]
 
-@_kmq = @_kmq || [];
+@_kmq = @_kmq || []
 
 do ->
   recordView = (params)->
@@ -26,8 +50,10 @@ do ->
 
   Meteor.Router.add editRegex, (projectId, filePath, lineNumber, connectionId)->
     isHangout = false
-    if /hangout=true/.exec(document.location.href.split("?")[1])
+    params = getQueryParams window.location.search
+    if params.hangout
       Session.set "isHangout", true
+      registerHangout projectId, params.hangoutUrl
       isHangout = true
     recordView {page: "editor", projectId: projectId, filePath: filePath, hangout: isHangout}
     Session.set 'projectId', projectId
