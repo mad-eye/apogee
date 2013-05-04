@@ -28,27 +28,27 @@ Template.editorBar.events
         $("#stdout").prepend("----\n")
 
   'change #wordWrap': (e) ->
-    Session.set 'wordWrap', e.srcElement.checked
+    Session.set 'wordWrap', e.target.checked
 
   'change #showInvisibles': (e) ->
-    Session.set 'showInvisibles', e.srcElement.checked
+    Session.set 'showInvisibles', e.target.checked
 
   'change #syntaxModeSelect': (e) ->
-    Session.set 'syntaxMode', e.srcElement.value
+    Session.set 'syntaxMode', e.target.value
 
   'change #keybinding': (e) ->
-    keybinding = e.srcElement.value
+    keybinding = e.target.value
     keybinding = null if 'ace' == keybinding
     Session.set 'keybinding', keybinding
 
   'change #themeSelect': (e) ->
-    Session.set 'theme', e.srcElement.value
+    Session.set 'theme', e.target.value
 
   'change #useSoftTabs': (e) ->
-    editorState.useSoftTabs = e.srcElement.checked
+    editorState.useSoftTabs = e.target.checked
 
   'change #tabSize': (e) ->
-    editorState.tabSize = parseInt e.srcElement.value, 10
+    editorState.tabSize = parseInt e.target.value, 10
 
   'click #revertFile': (event) ->
     el = $(event.target)
