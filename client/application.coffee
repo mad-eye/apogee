@@ -22,12 +22,14 @@ getQueryParams = (queryString) ->
 registerHangout = (projectId, hangoutUrl) ->
   return unless hangoutUrl
   registerHangoutUrl = Meteor.settings.public.azkabanUrl + "/hangout/" + projectId
+  console.error "Registering hangout with url:", registerHangoutUrl
   Meteor.http.put registerHangoutUrl, {
       data: {hangoutUrl}
       headers: {'Content-Type':'application/json'}
       timeout: 5*1000
     }, (error,response) =>
-      console.error "Registering hangout url failed." if error
+      console.error "Registering hangout url failed.", error if error
+      console.error "Regstering hangout response:", response
 
 
 if Meteor.settings.public.googleAnalyticsId
