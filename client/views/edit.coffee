@@ -187,4 +187,4 @@ Deps.autorun (computation) ->
   computation.stop()
 
 Handlebars.registerHelper "hangoutLink", ->
-  "#{Meteor.settings.public.hangoutUrl}#{document.location}"
+  "#{Meteor.settings.public.hangoutUrl}#{Session.get 'projectId'}"

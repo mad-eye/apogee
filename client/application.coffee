@@ -54,6 +54,7 @@ do ->
     isHangout = false
     params = getQueryParams window.location.search
     if params.hangout
+      console.error "Found projectId", projectId
       Session.set "isHangout", true
       registerHangout projectId, params.hangoutUrl
       isHangout = true
