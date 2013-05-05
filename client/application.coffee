@@ -2,8 +2,8 @@
 #PATH_TO_FILE and LINE_NUMBER are optional
 #editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?([0-9]*)?/
 #TODO should probably OR the line and session fields
-@editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?(?:L([0-9]*))?(?:S([0-9a-f-]*))?/
-@interviewRegex = /\/interview(?:\/([-0-9a-f]+)(?:\/([^#]*)))?/
+@editRegex = /\/edit\/([-0-9a-zA-Z]+)\/?([^#]*)#?(?:L([0-9]*))?(?:S([0-9a-f-]*))?/
+@interviewRegex = /\/interview(?:\/([-0-9a-zA-Z]+)(?:\/([^#]*)))?/
 @transitoryIssues = null
 
 #queryString example: '?a=b&c&d=&a=f'
@@ -38,34 +38,40 @@ if Meteor.settings.public.googleAnalyticsId
 
 @_kmq = @_kmq || []
 
+routeToEdit = (projectId, filePath, options={}) ->
+  isHangout = false
+  params = getQueryParams window.location.search
+  if params.hangout
+    console.error "Found projectId", projectId
+    Session.set "isHangout", true
+    registerHangout projectId, params.hangoutUrl
+    isHangout = true
+  if options.interview
+    page = 'interview'
+  else
+    page = 'editor'
+  recordView {page, projectId, filePath, hangout: isHangout}
+  Session.set 'projectId', projectId
+  window.editorState ?= new EditorState "editor"
+  editorState.setPath filePath if filePath
+  "edit"
+
+recordView = (params)->
+  event = _.extend {name: "pageView"}, params
+  Deps.autorun (computation)->
+    return if Meteor.loggingIn()
+    _.extend event, {userId: Meteor.userId()}
+    Events.insert event
+    computation.stop()
+  Metrics.add _.extend({message:'load'}, params)
+  _gaq.push ['_trackPageview'] if _gaq?
+
 do ->
-  recordView = (params)->
-    event = _.extend {name: "pageView"}, params
-    Deps.autorun (computation)->
-      return if Meteor.loggingIn()
-      _.extend event, {userId: Meteor.userId()}
-      Events.insert event
-      computation.stop()
-    _gaq.push ['_trackPageview'] if _gaq?
 
   #TODO figure out how to eliminate all the duplicate recordView calls
 
   Meteor.Router.add editRegex, (projectId, filePath, lineNumber, connectionId)->
-    isHangout = false
-    params = getQueryParams window.location.search
-    if params.hangout
-      console.error "Found projectId", projectId
-      Session.set "isHangout", true
-      registerHangout projectId, params.hangoutUrl
-      isHangout = true
-    recordView {page: "editor", projectId: projectId, filePath: filePath, hangout: isHangout}
-    Session.set 'projectId', projectId
-    Metrics.add {message:'load', filePath, lineNumber, connectionId, isHangout}
-    window.editorState ?= new EditorState "editor"
-    editorState.setPath filePath
-    editorState.setCursorDestination connectionId
-    _kmq.push ['record', 'opened file', {projectId: projectId, filePath: filePath}]
-    "edit"
+    routeToEdit projectId, filePath
 
   scratchPath = "SCRATCH.rb"
 
@@ -78,10 +84,7 @@ do ->
       recordView page: "get-started"
       "getStarted"
 
-    '/login': ->
-
     '/tests': ->
-      recordView()
       "tests"
 
     '/tos': ->
@@ -92,26 +95,11 @@ do ->
       recordView page: "faq"
       'faq'
 
-    '/interview/:id/:filepath': (id, filepath)->
-      if /hangout=true/.exec(document.location.href.split("?")[1])
-        Session.set "isHangout", true
-        isHangout = true
-
-      recordView page: "interview"
-      window.editorState ?= new EditorState "editor"
-      Session.set "projectId", id
-      editorState.setPath filepath
-      "edit"
+    '/interview/:id/:filePath': (id, filePath)->
+      routeToEdit id, filePath, interview:true
 
     '/interview/:id': (id)->
-      if /hangout=true/.exec(document.location.href.split("?")[1])
-        Session.set "isHangout", true
-        isHangout = true
-
-      recordView page: "interview"
-      window.editorState ?= new EditorState "editor"
-      Session.set "projectId", id
-      "edit"
+      routeToEdit id, null, interview:true
 
     '/interview': ->
       window.editorState ?= new EditorState "editor"
@@ -119,6 +107,7 @@ do ->
       recordView page: "create interview"
       project = new Project()
       project.interview = true
+      project.name = 'interview' #Needed for mongoose schema
       project.save()
 
       scratchPad = new MadEye.ScratchPad
@@ -129,12 +118,13 @@ do ->
         Meteor.Router.to "/interview/#{project._id}/#{scratchPath}"
 
     '/unlinked-hangout': ->
-      recordView()
+      recordView page:'unlinked-hangout'
       Session.set "isHangout", true
       'unlinkedHangout'
 
     '*': ->
-      recordView()
+      console.error "Unknown page: #{window.location}"
+      recordView page:'missing'
       "missing"
 
 Deps.autorun ->
