@@ -102,7 +102,7 @@ Template.editorBar.helpers
   runButtonDisabled: ->
     project = Projects.findOne(Session.get("projectId"))
     disabled = "disabled"
-    if Session.get("syntaxMode") in ["javascript", "python", "ruby", "coffee"]
+    if canRunLanguage Session.get("syntaxMode")
       disabled = ""
     return disabled
 
@@ -110,81 +110,87 @@ Template.editorBar.helpers
     Session.get "isHangout"
 
 
+#XXX: Clean this and MadEye.ACE_MODES up, into one structure.
+@syntaxModes =
+  abap : "ABAP"
+  asciidoc : "AsciiDoc"
+  c9search : "C9Search"
+  coffee : "CoffeeScript"
+  coldfusion : "ColdFusion"
+  csharp : "C#"
+  css : "CSS"
+  curly : "Curly"
+  dart : "Dart"
+  diff : "Diff"
+  dot : "Dot"
+  ftl : "FreeMarker"
+  glsl : "Glsl"
+  golang : "Go"
+  groovy : "Groovy"
+  haxe : "haXe"
+  haml : "HAML"
+  html : "HTML"
+  c_cpp : "C/C++"
+  clojure : "Clojure"
+  jade : "Jade"
+  java : "Java"
+  jsp : "JSP"
+  javascript : "JavaScript"
+  json : "JSON"
+  jsx : "JSX"
+  latex : "LaTeX"
+  less : "LESS"
+  lisp : "Lisp"
+  scheme : "Scheme"
+  liquid : "Liquid"
+  livescript : "LiveScript"
+  logiql : "LogiQL"
+  lua : "Lua"
+  luapage : "LuaPage"
+  lucene : "Lucene"
+  lsl : "LSL"
+  makefile : "Makefile"
+  markdown : "Markdown"
+  objectivec : "Objective-C"
+  ocaml : "OCaml"
+  pascal : "Pascal"
+  perl : "Perl"
+  pgsql : "pgSQL"
+  php : "PHP"
+  powershell : "Powershell"
+  python : "Python"
+  r : "R"
+  rdoc : "RDoc"
+  rhtml : "RHTML"
+  ruby : "Ruby"
+  scad : "OpenSCAD"
+  scala : "Scala"
+  scss : "SCSS"
+  sass : "SASS"
+  sh : "SH"
+  sql : "SQL"
+  stylus : "Stylus"
+  svg : "SVG"
+  tcl : "Tcl"
+  tex : "Tex"
+  text : "Text"
+  textile : "Textile"
+  tm_snippet : "tmSnippet"
+  toml : "toml"
+  typescript : "Typescript"
+  vbscript : "VBScript"
+  xml : "XML"
+  xquery : "XQuery"
+  yaml : "YAML"
+
 Template.syntaxModeOptions.helpers
-  #XXX: Clean this and MadEye.ACE_MODES up, into one structure.
+  #XXX: The map seems to be traversed 'in order', but we shouldn't rely on that.
   'syntaxModes': ->
-    [
-      {value:"abap", name:"ABAP"},
-      {value:"asciidoc", name:"AsciiDoc"},
-      {value:"c9search", name:"C9Search"},
-      {value:"coffee", name:"CoffeeScript"},
-      {value:"coldfusion", name:"ColdFusion"},
-      {value:"csharp", name:"C#"},
-      {value:"css", name:"CSS"},
-      {value:"curly", name:"Curly"},
-      {value:"dart", name:"Dart"},
-      {value:"diff", name:"Diff"},
-      {value:"dot", name:"Dot"},
-      {value:"ftl", name:"FreeMarker"},
-      {value:"glsl", name:"Glsl"},
-      {value:"golang", name:"Go"},
-      {value:"groovy", name:"Groovy"},
-      {value:"haxe", name:"haXe"},
-      {value:"haml", name:"HAML"},
-      {value:"html", name:"HTML"},
-      {value:"c_cpp", name:"C/C++"},
-      {value:"clojure", name:"Clojure"},
-      {value:"jade", name:"Jade"},
-      {value:"java", name:"Java"},
-      {value:"jsp", name:"JSP"},
-      {value:"javascript", name:"JavaScript"},
-      {value:"json", name:"JSON"},
-      {value:"jsx", name:"JSX"},
-      {value:"latex", name:"LaTeX"},
-      {value:"less", name:"LESS"},
-      {value:"lisp", name:"Lisp"},
-      {value:"scheme", name:"Scheme"},
-      {value:"liquid", name:"Liquid"},
-      {value:"livescript", name:"LiveScript"},
-      {value:"logiql", name:"LogiQL"},
-      {value:"lua", name:"Lua"},
-      {value:"luapage", name:"LuaPage"},
-      {value:"lucene", name:"Lucene"},
-      {value:"lsl", name:"LSL"},
-      {value:"makefile", name:"Makefile"},
-      {value:"markdown", name:"Markdown"},
-      {value:"objectivec", name:"Objective-C"},
-      {value:"ocaml", name:"OCaml"},
-      {value:"pascal", name:"Pascal"},
-      {value:"perl", name:"Perl"},
-      {value:"pgsql", name:"pgSQL"},
-      {value:"php", name:"PHP"},
-      {value:"powershell", name:"Powershell"},
-      {value:"python", name:"Python"},
-      {value:"r", name:"R"},
-      {value:"rdoc", name:"RDoc"},
-      {value:"rhtml", name:"RHTML"},
-      {value:"ruby", name:"Ruby"},
-      {value:"scad", name:"OpenSCAD"},
-      {value:"scala", name:"Scala"},
-      {value:"scss", name:"SCSS"},
-      {value:"sass", name:"SASS"},
-      {value:"sh", name:"SH"},
-      {value:"sql", name:"SQL"},
-      {value:"stylus", name:"Stylus"},
-      {value:"svg", name:"SVG"},
-      {value:"tcl", name:"Tcl"},
-      {value:"tex", name:"Tex"},
-      {value:"text", name:"Text"},
-      {value:"textile", name:"Textile"},
-      {value:"tm_snippet", name:"tmSnippet"},
-      {value:"toml", name:"toml"},
-      {value:"typescript", name:"Typescript"},
-      {value:"vbscript", name:"VBScript"},
-      {value:"xml", name:"XML"},
-      {value:"xquery", name:"XQuery"},
-      {value:"yaml", name:"YAML"}
-    ]
+    ({value:handle, name:name} for handle, name of syntaxModes)
+
+  'canRunLanguage': (language) ->
+    console.log "Checking canRunLanguage #{language}: #{canRunLanguage language}"
+    canRunLanguage language
 
 Template.themeOptions.helpers
   brightThemes: ->

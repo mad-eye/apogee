@@ -1,6 +1,6 @@
 # TODO Don't need to wrap this in do-> in Meteor 0.6.0
 
-handleShareError: (err) ->
+handleShareError = (err) ->
   message = err.message ? err
   Metrics.add
     level:'error'
@@ -38,6 +38,20 @@ networkIssuesWarning =
   message: "We're having trouble with the network.  We'll try to resolve it automatically, but you may want to try again later."
   uncloseable: true
 
+cantRunLanguageWarning = (language) ->
+  titleLanguage = language ? "unknown"
+  messageLanguage = language ? "additional language"
+  return {
+    level: 'warn'
+    title: "Can't run #{titleLanguage}:"
+    message: """Currently, we only support running snippets in Ruby, Python, JavaScript, CoffeeScript, and PHP.
+      Tell us if you need #{messageLanguage} support, and we'll see what we can do!"""
+    uncloseable: true
+  }
+
+@canRunLanguage = (language) ->
+  language in ["javascript", "python", "ruby", "coffee", "php"]
+
 #TODO figure out a better way to share this from the ShareJS code
 cursorToRange = (editorDoc, cursor) ->
   Range = require("ace/range").Range
@@ -64,6 +78,9 @@ cursorToRange = (editorDoc, cursor) ->
 @projectIsClosed = ->
   Projects.findOne()?.closed
   
+@isInterview = ->
+  Projects.findOne(Session.get "projectId")?.interview
+
 fileIsDeleted = ->
   Files.findOne(path:editorState.getPath())?.removed
 
@@ -76,8 +93,7 @@ Handlebars.registerHelper "editorFileName", ->
 Handlebars.registerHelper "editorIsLoading", ->
   Session.equals "editorIsLoading", true
 
-Handlebars.registerHelper "isInterview", ->
-  Projects.findOne(Session.get "projectId")?.interview
+Handlebars.registerHelper "isInterview", isInterview
 
 fileIsModifiedLocally = ->
   Files.findOne(path:editorState.getPath())?.modified_locally
@@ -92,6 +108,8 @@ Template.projectStatus.projectAlerts = ->
   alerts.push fileModifiedLocallyWarning if fileIsModifiedLocally()
   alerts.push projectLoadingAlert if projectIsLoading()
   alerts.push networkIssuesWarning if transitoryIssues?.has 'networkIssues'
+  language = Session.get('syntaxMode')
+  alerts.push cantRunLanguageWarning(@syntaxModes[language]) if isInterview() and not canRunLanguage language
   return alerts
 
 #Find how many files the server things, so we know if we have them all.
@@ -113,8 +131,7 @@ Template.editor.rendered = ->
   Session.set("editorRendered", true)
   editorState?.isRendered = true
   #If we're displaying the program output, set the bottom of the editor
-  isInterview = Projects.findOne(Session.get 'projectId')?.interview
-  $('#editor').css('bottom', $('#programOutput').height()) if isInterview
+  $('#editor').css('bottom', $('#programOutput').height()) if isInterview()
   resizeEditor()
 
 Meteor.startup ->
