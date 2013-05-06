@@ -48,6 +48,14 @@ Template.interview.events
     catch e
       alert e.message
 
+  "click .hangout-link": (event) ->
+    warnFirefoxHangout()
+
+@warnFirefoxHangout = ->
+  if "Firefox" == BrowserDetect.browser
+    confirm "Firefox currently has performance issues in MadEye Hangouts.  For best experience, use Chrome or Safari.  Thanks, and we'll fix this soon!"
+  
+
 Template.interview.rendered = ->
   return if Dropzone.forElement "#dropzone"
   $("#dropzone").dropzone
@@ -74,4 +82,7 @@ Template.interviewIntro.events
     Meteor.setTimeout ->
       resizeEditor()
     , 0
+
+  "click .hangout-link": (event) ->
+    warnFirefoxHangout()
 

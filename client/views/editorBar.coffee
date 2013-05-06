@@ -192,7 +192,7 @@ Template.syntaxModeOptions.helpers
     ({value:handle, name:name} for handle, name of syntaxModes)
 
   'canRunLanguage': (language) ->
-    canRunLanguage language
+    isInterview() && canRunLanguage language
 
 Template.themeOptions.helpers
   brightThemes: ->

@@ -10,7 +10,7 @@
               <a id="runTooltip" href="#" data-toggle="tooltip" title="" data-placement="right" data-original-title="Currently we only support running Javascript (nodejs v0.8.22), CoffeeScript (v1.6.2), Ruby (v1.9.3), and Python (v2.7.3)."><i class="icon-question-sign"></i></a>
             </li>
             <li>Give the url to your interviewee, and watch them type!</li>
-            <li>You can also embed your interview session in a Google Hangout:&nbsp; {{> hangoutButton}}</li>
+            <li>You can also embed your interview session in a Google Hangout:&nbsp; {{> smallHangoutButton}}</li>
           </ul>
         </div>
       </div>
@@ -19,21 +19,21 @@
 </template>
 
 <template name="interview">
-  <div id="projectName">
+  <div id="projectName" class="interview clearfix">
     <h4 style="float:left; display:inline">Project</h4>
     {{#unless isHangout}}
       {{>smallHangoutButton}}
     {{/unless}}
   </div>
-    <div style="clear:both; height:0px">&nbsp;</div>
-    <ul class="fileTree interview">
-      {{#each scratchPads}}
-      <li id="{{path}}" class="file {{selected}}"><span>{{path}}</span>
-        {{#each usersInFile this}}
-        <img class="fileTreeUserIcon" alt="" src="{{this.img}}" />
-        {{/each}}
+  <!--<div style="clear:both; height:0px">&nbsp;</div>-->
+  <ul class="fileTree interview">
+    {{#each scratchPads}}
+    <li id="{{path}}" class="file {{selected}}"><span>{{path}}</span>
+      {{#each usersInFile this}}
+      <img class="fileTreeUserIcon" alt="" src="{{this.img}}" />
       {{/each}}
-    </ul>
+    {{/each}}
+  </ul>
   <div id="dropzone" class="dropzone">
     <span>Drop a file here to add (or you can click to upload)!</span>
   </div>
@@ -41,7 +41,7 @@
 </template>
 
 <template name="hangoutButton">
-  <a id="hangoutLink" href="{{hangoutLink}}" style="text-decoration:none;">
+  <a class="hangout-link hangout-link-big" href="{{hangoutLink}}" style="text-decoration:none;">
     <img src="https://ssl.gstatic.com/s2/oz/images/stars/hangout/1/gplus-hangout-60x230-normal.png"
          alt="Start a new Hangout"
          title="Start a new Hangout"
@@ -51,11 +51,11 @@
 
 <template name="smallHangoutButton">
   {{#unless isHangout}}
-  <a id="hangoutLink" href="{{hangoutLink}}" style="text-decoration:none; float:right">
+  <a class="hangout-link hangout-link-small" href="{{hangoutLink}}" style="text-decoration:none;">
     <img src="https://ssl.gstatic.com/s2/oz/images/stars/hangout/1/gplus-hangout-20x86-normal.png"
          alt="Start a new Hangout"
          title="Start a new Hangout"
-         style="padding-top: 13px; border:0; border:0;width:86px;height:20px;" />
+         style="border:0; border:0;width:86px;height:20px;" />
   </a>
   {{/unless}}
 </template>
