@@ -190,7 +190,7 @@ Template.syntaxModeOptions.helpers
 
   'canRunLanguage': (language) ->
     console.log "Checking canRunLanguage #{language}: #{canRunLanguage language}"
-    canRunLanguage language
+    isInterview() && canRunLanguage language
 
 Template.themeOptions.helpers
   brightThemes: ->
