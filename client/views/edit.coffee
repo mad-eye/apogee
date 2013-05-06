@@ -205,3 +205,28 @@ Deps.autorun (computation) ->
 
 Handlebars.registerHelper "hangoutLink", ->
   "#{Meteor.settings.public.hangoutUrl}#{document.location}"
+
+
+Template.editorFooter.helpers
+  output: ->
+    outputs = ScriptOutputs.find {projectId: Session.get("projectId")}, {sort: {timestamp: -1}}
+    output = ""
+    if Session.get "codeExecuting"
+      output += """<div id="codeExecutingSpinner"><img src="/images/file-loader.gif" alt="Loading..." />\n"""
+    unless outputs.count()
+      output += """<span class="initial-output">program output will go here</span>\n"""
+    else
+      outputs.forEach (response)->
+        if 0 == response.exitCode
+          responseClass = "faded"
+          responseMessage = "#{response.filename} returned:"
+        else
+          responseClass = "output-error"
+          responseMessage = "#{response.filename} returned error (#{response.exitCode}):"
+        output += """<span class="#{responseClass}">#{responseMessage}</span>\n"""
+        output += """<span class="stdout">#{response.stdout}</span>\n""" if response.stdout
+        
+        output += """<span class="stderr">#{response.stderr}</span>\n""" if response.stderr
+        output += """<span class="runError">#{response.runError}</span>\n""" if response.runError
+    output  
+

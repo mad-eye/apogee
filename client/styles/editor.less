@@ -1,4 +1,6 @@
 @import "base.less";
+@errorRed: rgb(153, 2, 2);
+@fadedOutput: #999;
 
 #editorChrome {
   position:relative;
@@ -75,14 +77,22 @@
   height: 200px - 2*@baseSpacing - 1; /*border is 1px*/
   overflow: auto;
 
+  .initial-output {
+    color: @fadedOutput;
+  }
+  
+  .output-error {
+    color: @errorRed;
+  }
+
   .stderr {
-    color: rgb(153, 2, 2);
+    color: @errorRed;
   }
   .stdout {
   }
 
   .runError {
-    color: rgb(153, 2, 2);
+    color: @errorRed;
   }
 }
 

@@ -13,19 +13,22 @@ inputs = {
 
 Template.editorBar.events
   'click #runButton': (e)->
+    Session.set "codeExecuting", true
     editorBody = editorState.getEditor().getValue()
-    $("#stdout").find(".filler").remove()
-    $("#stdout").prepend('<div id="codeExecutingSpinner"><img src="/images/file-loader.gif" alt="Loading..." />\n</div>')
+    filename = editorState.getPath()
     Meteor.http.post "#{Meteor.settings.public.nurmengardUrl}/run", {data: {contents: editorBody, language: Session.get "syntaxMode"}, headers: {"Content-Type":"application/json"}}, (error, result)->
-      $("#codeExecutingSpinner").remove()
+      Session.set "codeExecuting", false
+      #$("#codeExecutingSpinner").remove()
       if error
+        #TODO handle this better
         console.error "MADEYE ERROR", error
       if result
         response = JSON.parse(result.content)
-        $("#stdout").prepend("<span class='stderr'>#{response.stderr}</span>\n") if response.stderr
-        $("#stdout").prepend("<span class='stdout'>#{response.stdout}</span>\n") if response.stdout
-        $("#stdout").prepend("<span class='runError'>RUN ERROR: #{response.runError}</span>\n") if response.runError
-        $("#stdout").prepend("----\n")
+        response.filename = filename
+        response.projectId = Session.get("projectId")
+        response.timestamp = Date.now()
+        #might be nice to include filename here?
+        ScriptOutputs.insert response
 
   'change #wordWrap': (e) ->
     Session.set 'wordWrap', e.target.checked
@@ -189,7 +192,6 @@ Template.syntaxModeOptions.helpers
     ({value:handle, name:name} for handle, name of syntaxModes)
 
   'canRunLanguage': (language) ->
-    console.log "Checking canRunLanguage #{language}: #{canRunLanguage language}"
     canRunLanguage language
 
 Template.themeOptions.helpers
