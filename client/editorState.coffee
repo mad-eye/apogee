@@ -231,19 +231,6 @@ Object.defineProperty EditorState.prototype, 'isRendered',
     @_isRendered = isRendered
     @renderedDep.changed()
 
-  #Tabs, @tabsDep
-Object.defineProperty EditorState.prototype, 'useSoftTabs',
-  get: ->
-    return unless @isRendered
-    Deps.depend @tabsDep
-    return @getEditor()?.getSession()?.getUseSoftTabs()
-
-  set: (useSoftTabs) ->
-    return if useSoftTabs == @getEditor()?.getSession()?.getUseSoftTabs()
-    @getEditor().getSession().setUseSoftTabs useSoftTabs
-    @tabsDep.changed()
-
-  
 
 @EditorState = EditorState
 

@@ -30,17 +30,17 @@
       <form class="dropdown-menu">
         <!--<h5>Editor Settings</h5>-->
         <label class="checkbox" >
-          <input type="checkbox" id="showInvisibles" {{#if Session 'showInvisibles'}}checked{{/if}} />
+          <input type="checkbox" id="showInvisibles" {{#if editorState.editor.showInvisibles}}checked{{/if}} />
           Show Invisibles
         </label>
 
         <label class="checkbox" >
-          <input type="checkbox" id="wordWrap" {{#if Session 'wordWrap'}}checked{{/if}} />
+          <input type="checkbox" id="wordWrap" {{#if editorState.editor.wordWrap}}checked{{/if}} />
           Word Wrap
         </label>
 
         <label class="checkbox" >
-          <input type="checkbox" id="useSoftTabs"  {{#if editorState.useSoftTabs}}checked{{/if}} />
+          <input type="checkbox" id="useSoftTabs"  {{#if editorState.editor.useSoftTabs}}checked{{/if}} />
           Use Soft Tabs
         </label>
 

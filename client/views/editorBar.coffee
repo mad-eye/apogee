@@ -31,10 +31,10 @@ Template.editorBar.events
         ScriptOutputs.insert response
 
   'change #wordWrap': (e) ->
-    Session.set 'wordWrap', e.target.checked
+    editorState.editor.wordWrap = e.target.checked
 
   'change #showInvisibles': (e) ->
-    Session.set 'showInvisibles', e.target.checked
+    editorState.editor.showInvisibles = e.target.checked
 
   'change #syntaxModeSelect': (e) ->
     Session.set 'syntaxMode', e.target.value
@@ -48,7 +48,7 @@ Template.editorBar.events
     Session.set 'theme', e.target.value
 
   'change #useSoftTabs': (e) ->
-    editorState.useSoftTabs = e.target.checked
+    editorState.editor.useSoftTabs = e.target.checked
 
   'change #tabSize': (e) ->
     editorState.editor.tabSize = parseInt e.target.value, 10
@@ -233,24 +233,6 @@ Template.themeOptions.helpers
     ]
 
 Meteor.startup ->
-
-  #Word Wrap
-  Deps.autorun ->
-    return unless Session.equals("editorRendered", true)
-    #Need to do editorState.getEditor().getSession().setWrapLimitRange(min, max) somewhere
-    #Ideally tied to editor size
-    session = editorState.getEditor().getSession()
-    editorState.getEditor().renderer.setPrintMarginColumn 80
-    if Session.get 'wordWrap'
-      session.setUseWrapMode true
-      session.setWrapLimitRange null, null
-    else
-      session.setUseWrapMode false
-
-  #Show Invisibles
-  Deps.autorun ->
-    return unless Session.equals("editorRendered", true)
-    editorState.getEditor().setShowInvisibles Session.get 'showInvisibles' ? false
 
   #Syntax Modes from session
   Deps.autorun (computation) ->
