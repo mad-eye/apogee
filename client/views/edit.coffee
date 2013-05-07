@@ -212,7 +212,7 @@ Template.editorFooter.helpers
     outputs = ScriptOutputs.find {projectId: Session.get("projectId")}, {sort: {timestamp: -1}}
     output = ""
     if Session.get "codeExecuting"
-      output += """<div id="codeExecutingSpinner"><img src="/images/file-loader.gif" alt="Loading..." />\n"""
+      output += """<div id="codeExecutingSpinner"><img src="/images/file-loader.gif" alt="Loading..." /></div>\n"""
     unless outputs.count()
       output += """<span class="initial-output">program output will go here</span>\n"""
     else
@@ -228,5 +228,5 @@ Template.editorFooter.helpers
         
         output += """<span class="stderr">#{response.stderr}</span>\n""" if response.stderr
         output += """<span class="runError">#{response.runError}</span>\n""" if response.runError
-    output  
+    output
 
