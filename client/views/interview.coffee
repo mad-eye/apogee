@@ -38,6 +38,7 @@ Template.interview.events
 
   "click #addFileButton": (event)->
     filename = prompt "Enter a filename"
+    return unless filename?
     scratchPad = new MadEye.ScratchPad
     projectId = Session.get "projectId"
     scratchPad.projectId = projectId
