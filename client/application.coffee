@@ -57,7 +57,6 @@ do ->
     '/login': ->
 
     '/tests': ->
-      recordView()
       "tests"
 
     '/tos': ->
@@ -105,12 +104,12 @@ do ->
         Meteor.Router.to "/interview/#{project._id}/#{scratchPath}"
 
     '/unlinked-hangout': ->
-      recordView()
+      recordView page: "unlinked hangout"
       Session.set "isHangout", true
       'unlinkedHangout'
 
     '*': ->
-      recordView()
+      recordView page: "missing"
       "missing"
 
 Deps.autorun ->
