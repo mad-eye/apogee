@@ -90,12 +90,12 @@
   <option value="">Select theme&hellip;</option>
   <optgroup label="Bright">
     {{#each brightThemes}}
-      <option value="{{value}}" {{#if SessionEquals 'theme' value}}selected{{/if}}>{{name}}</option>
+      <option value="{{value}}" {{#if themeEquals value}}selected{{/if}}>{{name}}</option>
     {{/each}}
   </optgroup>
   <optgroup label="Dark">
     {{#each darkThemes}}
-      <option value="{{value}}" {{#if SessionEquals 'theme' value}}selected{{/if}}>{{name}}</option>
+      <option value="{{value}}" {{#if themeEquals value}}selected{{/if}}>{{name}}</option>
     {{/each}}
   </optgroup>
 </template>

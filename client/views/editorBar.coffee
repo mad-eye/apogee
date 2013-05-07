@@ -45,7 +45,7 @@ Template.editorBar.events
     Session.set 'keybinding', keybinding
 
   'change #themeSelect': (e) ->
-    Session.set 'theme', e.target.value
+    editorState.editor.theme = e.target.value
 
   'change #useSoftTabs': (e) ->
     editorState.editor.useSoftTabs = e.target.checked
@@ -195,6 +195,9 @@ Template.syntaxModeOptions.helpers
     isInterview() && canRunLanguage language
 
 Template.themeOptions.helpers
+  themeEquals: (value) ->
+    editorState.editor.theme == value
+
   brightThemes: ->
     [
       {value: "chrome", name: "Chrome"},
@@ -299,9 +302,3 @@ Meteor.startup ->
         handler = module.handler
         editorState.getEditor().setKeyboardHandler handler
 
-  #Theme
-  Deps.autorun ->
-    return unless Session.equals("editorRendered", true)
-    theme = Session.get 'theme'
-    return unless theme
-    editorState.getEditor().setTheme("ace/theme/"+theme)
