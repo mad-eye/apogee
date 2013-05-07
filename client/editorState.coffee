@@ -20,14 +20,19 @@ class EditorState
     @renderedDep = new Deps.Dependency
     @tabsDep = new Deps.Dependency
 
+    @editor = new ReactiveAce
+    
+  attach: ->
+    @editor.attach @editorId
 
   getEditor: ->
     Deps.depend @pathDep
-    editor = ace.edit @editorId
-    return editor
+    @editor.attach @editorId
+    newEditor = @editor._getEditor()
+    return newEditor
 
   getEditorBody : ->
-    @getEditor()?.getValue()
+    @editor.value
 
   getFileUrl : (file)->
     Meteor.settings.public.azkabanUrl + "/project/#{Projects.findOne(Session.get 'projectId')._id}/file/#{file._id}"
@@ -60,11 +65,7 @@ class EditorState
     @connectionId
 
   getChecksum: ->
-    Deps.depend @checksumDep
-    body = @getEditorBody()
-    #body = @doc.getText()
-    return null unless body?
-    return MadEye.crc32 body
+    @editor.checksum
 
   revertFile: (callback) ->
     unless @doc and @file
@@ -240,16 +241,6 @@ Object.defineProperty EditorState.prototype, 'useSoftTabs',
   set: (useSoftTabs) ->
     return if useSoftTabs == @getEditor()?.getSession()?.getUseSoftTabs()
     @getEditor().getSession().setUseSoftTabs useSoftTabs
-    @tabsDep.changed()
-
-Object.defineProperty EditorState.prototype, 'tabSize',
-  get: ->
-    Deps.depend @tabsDep
-    return @getEditor()?.getSession()?.getTabSize()
-
-  set: (tabSize) ->
-    return if tabSize == @getEditor()?.getSession()?.getTabSize()
-    @getEditor().getSession().setTabSize tabSize
     @tabsDep.changed()
 
   

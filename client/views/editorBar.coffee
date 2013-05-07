@@ -51,7 +51,7 @@ Template.editorBar.events
     editorState.useSoftTabs = e.target.checked
 
   'change #tabSize': (e) ->
-    editorState.tabSize = parseInt e.target.value, 10
+    editorState.editor.tabSize = parseInt e.target.value, 10
 
   'click #revertFile': (event) ->
     el = $(event.target)
@@ -89,7 +89,7 @@ Template.editorBar.helpers
 
   tabSizeEquals: (size)->
     return false unless editorState.isRendered
-    editorState?.tabSize == parseInt size, 10
+    editorState?.editor.tabSize == parseInt size, 10
 
   showSaveSpinner: ->
     Session.equals "working", true
