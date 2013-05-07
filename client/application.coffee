@@ -16,8 +16,13 @@ do ->
   recordView = (params)->
     event = _.extend {name: "pageView"}, params
     Deps.autorun (computation)->
-      return if Meteor.loggingIn()
+      if params.projectId
+        project = Projects.findOne params.projectId
+        return unless project
+        _.extend event, {isInterview: project.interview}
+      return unless Meteor.userId()
       _.extend event, {userId: Meteor.userId()}
+      event.timestamp = Date.now()
       Events.insert event
       computation.stop()
     _gaq.push ['_trackPageview'] if _gaq?
@@ -68,7 +73,7 @@ do ->
         Session.set "isHangout", true
         isHangout = true
 
-      recordView page: "interview"
+      recordView page: "interview", projectId: id
       window.editorState ?= new EditorState "editor"
       Session.set "projectId", id
       editorState.setPath filepath
