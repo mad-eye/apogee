@@ -76,6 +76,7 @@ class EditorState
       console.warn("revert called, but no doc selected")
       return callback? "No doc or no file"
     file = @file
+    Events.record("revert", {file: @file.path, projectId: Session.get "projectId"})
     Meteor.http.get "#{@getFileUrl(file)}?reset=true", (error,response) =>
       if error
         handleNetworkError error, response
@@ -195,6 +196,7 @@ class EditorState
   #callback: (err) ->
   save : (callback) ->
     console.log "Saving file #{@file?._id}"
+    Events.record("save", {file: @file?.path, projectId: Session.get "projectId"})
     Metrics.add
       message:'saveFile'
       fileId: @file?._id
