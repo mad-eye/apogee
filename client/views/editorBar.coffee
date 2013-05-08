@@ -262,7 +262,7 @@ Meteor.startup ->
     mode = file.aceMode
     #Check for shebang. We might have such lines as '#! /bin/env sh -x'
     unless mode
-      cmd = findShbangCmd editorState.getEditorBody()
+      cmd = findShbangCmd editorState.editor.value
       mode = switch cmd
         when 'sh', 'ksh', 'csh', 'tcsh', 'bash', 'dash', 'zsh' then 'sh'
         when 'node' then 'javascript'

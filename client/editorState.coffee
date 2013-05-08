@@ -37,9 +37,6 @@ class EditorState
     newEditor = @editor._getEditor()
     return newEditor
 
-  getEditorBody: ->
-    @editor.value
-
   getFileUrl : (file)->
     Meteor.settings.public.azkabanUrl + "/project/#{Projects.findOne(Session.get 'projectId')._id}/file/#{file._id}"
 
@@ -190,7 +187,7 @@ class EditorState
       fileId: @file?._id
       filePath: @file?.path #don't want reactivity
     self = this #The => doesn't work for some reason with the PUT callback.
-    contents = @getEditorBody()
+    contents = @editor.value
     editorChecksum = MadEye.crc32 contents
     file = @file
     return if @file.checksum == editorChecksum
