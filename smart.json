@@ -19,7 +19,7 @@
       "git": "git://github.com/rissem/meteor-accounts-anonymous.git"
     },
     "meteor-reactive-ace": {
-      "path": "../meteor-reactive-ace"
+      "git": "git://github.com/mad-eye/meteor-reactive-ace"
     }
   }
 }
