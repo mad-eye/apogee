@@ -108,7 +108,7 @@ Template.projectStatus.projectAlerts = ->
   alerts.push fileModifiedLocallyWarning if fileIsModifiedLocally()
   alerts.push projectLoadingAlert if projectIsLoading()
   alerts.push networkIssuesWarning if transitoryIssues?.has 'networkIssues'
-  language = Session.get('syntaxMode')
+  language = editorState.editor.syntaxMode
   alerts.push cantRunLanguageWarning(@syntaxModes[language]) if isInterview() and not canRunLanguage language
   return alerts
 
