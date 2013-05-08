@@ -55,10 +55,8 @@ Template.editorBar.events
 
   'click #revertFile': (event) ->
     el = $(event.target)
-    return if el.hasClass 'disabled' or Session.get 'working'
-    Session.set "working", true
+    return if el.hasClass 'disabled' or editorState.working == true
     editorState.revertFile (error)->
-      Session.set "working", false
 
   'click #discardFile': (event) ->
     Metrics.add
@@ -71,14 +69,12 @@ Template.editorBar.events
 
   'click #saveImage' : (event) ->
     el = $(event.target)
-    return if el.hasClass 'disabled' or Session.get 'working'
+    return if el.hasClass 'disabled' or editorState.working == true
     console.log "clicked save button"
-    Session.set "working", true
     editorState.save (err) ->
       if err
         #Handle error better.
         console.error "Error in save request:", err
-      Session.set "working", false
 
 Template.editorBar.rendered = ->
   Session.set 'editorBarRendered', true
@@ -92,12 +88,12 @@ Template.editorBar.helpers
     editorState?.editor.tabSize == parseInt size, 10
 
   showSaveSpinner: ->
-    Session.equals "working", true
+    editorState.working == true
 
   buttonDisabled : ->
     filePath = editorState.path
     file = Files.findOne({path: filePath}) if filePath?
-    if !file?.modified or Session.equals("working", true) or projectIsClosed()
+    if !file?.modified or editorState.working==true or projectIsClosed()
       "disabled"
     else
       ""

@@ -67,7 +67,9 @@ class EditorState
       return callback? "No doc or no file"
     file = @file
     Events.record("revert", {file: @file.path, projectId: Session.get "projectId"})
+    @working = true
     Meteor.http.get "#{@getFileUrl(file)}?reset=true", (error,response) =>
+      @working = false
       if error
         handleNetworkError error, response
         callback?(error)
