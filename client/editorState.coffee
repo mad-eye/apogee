@@ -124,7 +124,7 @@ class EditorState
       message:'loadFile'
       fileId: file?._id
       filePath: file?.path
-    Session.set "editorIsLoading", true
+    @loading = true
     sharejs.open file._id, "text2", "#{Meteor.settings.public.bolideUrl}/channel", (error, doc) =>
       @setConnectionId doc.connection.id
       unless file == @file #abort if we've loaded another file
@@ -138,11 +138,11 @@ class EditorState
           @attachAce(doc)
           @doc = doc
           editorChecksum = MadEye.crc32 doc.getText()
+          @loading = false
           # FIXME there's a better way to do this
           # we need to stop storing a stale file object on the editorState
           if file.modified_locally and file.checksum == editorChecksum
             @revertFile()
-          Session.set "editorIsLoading", false
           callback?()
         #ask azkaban to fetch the file from dementor unless this is a scratch pad
         else unless file instanceof MadEye.ScratchPad
@@ -159,15 +159,16 @@ class EditorState
               alert = response.data?.warning
               alert.level = 'warn'
               displayAlert alert
-            Session.set "editorIsLoading", false
+            @loading = false
             callback? null
         else #its a scratchPad
           @doc = doc
           @attachAce(doc)
-          Session.set "editorIsLoading", false
+          @loading = false
           callback?()
 
       catch e
+        @loading = false
         #TODO: Handle this better.
         console.error "Error in loading file: #{e.message}:", e
         Metrics.add
@@ -191,6 +192,7 @@ class EditorState
     editorChecksum = MadEye.crc32 contents
     file = @file
     return if @file.checksum == editorChecksum
+    @working = true
     Meteor.http.put @getFileUrl(file), {
       data: {contents: contents}
       headers: {'Content-Type':'application/json'}
@@ -201,6 +203,7 @@ class EditorState
       else
         #XXX: Are we worried about race conditions if there were modifications after the save button was pressed?
         file.update {checksum:editorChecksum}
+      @working = false
       callback(error)
 
 EditorState.addProperty = (name, getter, setter) ->
@@ -224,6 +227,10 @@ EditorState.addProperty = (name, getter, setter) ->
 
 EditorState.addProperty 'isRendered', '_isRendered', '_isRendered'
 EditorState.addProperty 'path', '_path', '_path'
+#Editor is loading a file
+EditorState.addProperty 'loading', '_loading', '_loading'
+#Editor is saving/reverting
+EditorState.addProperty 'working', '_working', '_working'
 
 
 @EditorState = EditorState

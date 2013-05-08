@@ -91,7 +91,7 @@ Handlebars.registerHelper "editorFileName", ->
   editorState?.path
 
 Handlebars.registerHelper "editorIsLoading", ->
-  Session.equals "editorIsLoading", true
+  editorState.loading == true
 
 Handlebars.registerHelper "isInterview", isInterview
 
