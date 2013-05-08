@@ -21,6 +21,10 @@
       "accounts-anonymous": {
         "git": "git://github.com/rissem/meteor-accounts-anonymous.git",
         "branch": "master"
+      },
+      "meteor-reactive-ace": {
+        "git": "git://github.com/mad-eye/meteor-reactive-ace",
+        "branch": "master"
       }
     },
     "packages": {
@@ -46,6 +50,11 @@
         "git": "git://github.com/rissem/meteor-accounts-anonymous.git",
         "branch": "master",
         "commit": "36f94a7909b0a09e4eb6782bdc316ced96eb4ca4"
+      },
+      "meteor-reactive-ace": {
+        "git": "git://github.com/mad-eye/meteor-reactive-ace",
+        "branch": "master",
+        "commit": "4f931ce3a1fe4415a0cc740aa9dba21846383be2"
       },
       "page-js-ie-support": {
         "git": "https://github.com/tmeasday/meteor-page-js-ie-support.git",

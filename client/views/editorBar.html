@@ -30,17 +30,17 @@
       <form class="dropdown-menu">
         <!--<h5>Editor Settings</h5>-->
         <label class="checkbox" >
-          <input type="checkbox" id="showInvisibles" {{#if Session 'showInvisibles'}}checked{{/if}} />
+          <input type="checkbox" id="showInvisibles" {{#if editorState.editor.showInvisibles}}checked{{/if}} />
           Show Invisibles
         </label>
 
         <label class="checkbox" >
-          <input type="checkbox" id="wordWrap" {{#if Session 'wordWrap'}}checked{{/if}} />
+          <input type="checkbox" id="wordWrap" {{#if editorState.editor.wordWrap}}checked{{/if}} />
           Word Wrap
         </label>
 
         <label class="checkbox" >
-          <input type="checkbox" id="useSoftTabs"  {{#if editorState.useSoftTabs}}checked{{/if}} />
+          <input type="checkbox" id="useSoftTabs"  {{#if editorState.editor.useSoftTabs}}checked{{/if}} />
           Use Soft Tabs
         </label>
 
@@ -90,12 +90,12 @@
   <option value="">Select theme&hellip;</option>
   <optgroup label="Bright">
     {{#each brightThemes}}
-      <option value="{{value}}" {{#if SessionEquals 'theme' value}}selected{{/if}}>{{name}}</option>
+      <option value="{{value}}" {{#if themeEquals value}}selected{{/if}}>{{name}}</option>
     {{/each}}
   </optgroup>
   <optgroup label="Dark">
     {{#each darkThemes}}
-      <option value="{{value}}" {{#if SessionEquals 'theme' value}}selected{{/if}}>{{name}}</option>
+      <option value="{{value}}" {{#if themeEquals value}}selected{{/if}}>{{name}}</option>
     {{/each}}
   </optgroup>
 </template>
@@ -103,7 +103,7 @@
 <template name="syntaxModeOptions">
   <option value="">Select syntax&hellip;</option>
   {{#each syntaxModes}}
-    <option value="{{value}}" {{#if SessionEquals 'syntaxMode' value}}selected{{/if}} class="{{#if canRunLanguage value}}can-run{{/if}}">
+    <option value="{{value}}" {{#if syntaxModeEquals value}}selected{{/if}} class="{{#if canRunLanguage value}}can-run{{/if}}">
       {{name}}</option>
   {{/each}}
 </template>

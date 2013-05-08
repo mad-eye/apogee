@@ -16,7 +16,7 @@ Template.editorBar.events
     Session.set "codeExecuting", true
     editorBody = editorState.getEditor().getValue()
     filename = editorState.getPath()
-    Meteor.http.post "#{Meteor.settings.public.nurmengardUrl}/run", {data: {contents: editorBody, language: Session.get "syntaxMode"}, headers: {"Content-Type":"application/json"}}, (error, result)->
+    Meteor.http.post "#{Meteor.settings.public.nurmengardUrl}/run", {data: {contents: editorBody, language: editorState.editor.syntaxMode}, headers: {"Content-Type":"application/json"}}, (error, result)->
       Session.set "codeExecuting", false
       #$("#codeExecutingSpinner").remove()
       if error
@@ -31,13 +31,13 @@ Template.editorBar.events
         ScriptOutputs.insert response
 
   'change #wordWrap': (e) ->
-    Session.set 'wordWrap', e.target.checked
+    editorState.editor.wordWrap = e.target.checked
 
   'change #showInvisibles': (e) ->
-    Session.set 'showInvisibles', e.target.checked
+    editorState.editor.showInvisibles = e.target.checked
 
   'change #syntaxModeSelect': (e) ->
-    Session.set 'syntaxMode', e.target.value
+    editorState.editor.syntaxMode = e.target.value
 
   'change #keybinding': (e) ->
     keybinding = e.target.value
@@ -45,13 +45,13 @@ Template.editorBar.events
     Session.set 'keybinding', keybinding
 
   'change #themeSelect': (e) ->
-    Session.set 'theme', e.target.value
+    editorState.editor.theme = e.target.value
 
   'change #useSoftTabs': (e) ->
-    editorState.useSoftTabs = e.target.checked
+    editorState.editor.useSoftTabs = e.target.checked
 
   'change #tabSize': (e) ->
-    editorState.tabSize = parseInt e.target.value, 10
+    editorState.editor.tabSize = parseInt e.target.value, 10
 
   'click #revertFile': (event) ->
     el = $(event.target)
@@ -89,7 +89,7 @@ Template.editorBar.helpers
 
   tabSizeEquals: (size)->
     return false unless editorState.isRendered
-    editorState?.tabSize == parseInt size, 10
+    editorState?.editor.tabSize == parseInt size, 10
 
   showSaveSpinner: ->
     Session.equals "working", true
@@ -105,7 +105,7 @@ Template.editorBar.helpers
   runButtonDisabled: ->
     project = Projects.findOne(Session.get("projectId"))
     disabled = "disabled"
-    if canRunLanguage Session.get("syntaxMode")
+    if canRunLanguage editorState.editor.syntaxMode
       disabled = ""
     return disabled
 
@@ -187,14 +187,20 @@ Template.editorBar.helpers
   yaml : "YAML"
 
 Template.syntaxModeOptions.helpers
+  syntaxModeEquals: (value) ->
+    editorState.editor.syntaxMode == value
+
   #XXX: The map seems to be traversed 'in order', but we shouldn't rely on that.
-  'syntaxModes': ->
+  syntaxModes: ->
     ({value:handle, name:name} for handle, name of syntaxModes)
 
-  'canRunLanguage': (language) ->
+  canRunLanguage: (language) ->
     isInterview() && canRunLanguage language
 
 Template.themeOptions.helpers
+  themeEquals: (value) ->
+    editorState.editor.theme == value
+
   brightThemes: ->
     [
       {value: "chrome", name: "Chrome"},
@@ -234,42 +240,6 @@ Template.themeOptions.helpers
 
 Meteor.startup ->
 
-  #Word Wrap
-  Deps.autorun ->
-    return unless Session.equals("editorRendered", true)
-    #Need to do editorState.getEditor().getSession().setWrapLimitRange(min, max) somewhere
-    #Ideally tied to editor size
-    session = editorState.getEditor().getSession()
-    editorState.getEditor().renderer.setPrintMarginColumn 80
-    if Session.get 'wordWrap'
-      session.setUseWrapMode true
-      session.setWrapLimitRange null, null
-    else
-      session.setUseWrapMode false
-
-  #Show Invisibles
-  Deps.autorun ->
-    return unless Session.equals("editorRendered", true)
-    editorState.getEditor().setShowInvisibles Session.get 'showInvisibles' ? false
-
-  #Syntax Modes from session
-  Deps.autorun (computation) ->
-    return unless Session.equals("editorRendered", true)
-    mode = Session.get 'syntaxMode'
-    editorSession = editorState.getEditor().getSession()
-    unless mode?
-      return editorSession?.setMode null
-    module = require("ace/mode/#{mode}")
-    unless module
-      jQuery.getScript("/ace/mode-#{mode}.js").done( ->
-        return computation.invalidate()
-      ).fail(->
-        editorSession?.setMode null
-      )
-    else
-      Mode = module.Mode
-      editorSession?.setMode(new Mode())
-
   findShbangCmd = (contents) ->
     if '#!' == contents[0..1]
       cmd = null
@@ -299,7 +269,7 @@ Meteor.startup ->
         #Other aliases?
         else cmd
       mode = null unless mode in _.values(MadEye.ACE_MODES)
-    Session.set 'syntaxMode', mode
+    editorState.editor.syntaxMode = mode
 
   #Keybinding
   Deps.autorun (computation) ->
@@ -317,9 +287,3 @@ Meteor.startup ->
         handler = module.handler
         editorState.getEditor().setKeyboardHandler handler
 
-  #Theme
-  Deps.autorun ->
-    return unless Session.equals("editorRendered", true)
-    theme = Session.get 'theme'
-    return unless theme
-    editorState.getEditor().setTheme("ace/theme/"+theme)
