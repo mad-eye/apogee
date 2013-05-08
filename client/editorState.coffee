@@ -16,18 +16,22 @@ handleNetworkError = (error, response) ->
 class EditorState
   constructor: (@editorId)->
     @pathDep = new Deps.Dependency
-    @checksumDep = new Deps.Dependency
     @renderedDep = new Deps.Dependency
     @tabsDep = new Deps.Dependency
 
+    @editor = new ReactiveAce
+    
+  attach: ->
+    @editor.attach @editorId
 
   getEditor: ->
     Deps.depend @pathDep
-    editor = ace.edit @editorId
-    return editor
+    @editor.attach @editorId
+    newEditor = @editor._getEditor()
+    return newEditor
 
   getEditorBody : ->
-    @getEditor()?.getValue()
+    @editor.value
 
   getFileUrl : (file)->
     Meteor.settings.public.azkabanUrl + "/project/#{Projects.findOne(Session.get 'projectId')._id}/file/#{file._id}"
@@ -59,13 +63,6 @@ class EditorState
     Deps.depend connectionIdDep
     @connectionId
 
-  getChecksum: ->
-    Deps.depend @checksumDep
-    body = @getEditorBody()
-    #body = @doc.getText()
-    return null unless body?
-    return MadEye.crc32 body
-
   revertFile: (callback) ->
     unless @doc and @file
       Metrics.add
@@ -82,7 +79,6 @@ class EditorState
         handleNetworkError error, response
         callback?(error)
         return
-      @checksumDep.changed()
       #TODO this was in the timeout block below, check to make sure there's no problems
       callback?()
       Meteor.setTimeout =>
@@ -107,8 +103,6 @@ class EditorState
     unless doc.editorAttached
       doc.attach_ace @getEditor()
       @getEditor().getSession().getDocument().setNewLineMode("auto")
-      doc.on 'change', (op) =>
-        @checksumDep.changed()
       doc.on 'warn', (data) =>
         Metrics.add
           level:'warn'
@@ -150,7 +144,6 @@ class EditorState
         if doc.version > 0
           @attachAce(doc)
           @doc = doc
-          @checksumDep.changed()
           editorChecksum = MadEye.crc32 doc.getText()
           # FIXME there's a better way to do this
           # we need to stop storing a stale file object on the editorState
@@ -169,7 +162,6 @@ class EditorState
             @attachAce(doc)
             if response.data?.checksum?
               @file.update {checksum:response.data.checksum}
-              #@checksumDeps.changed()
             if response.data?.warning
               alert = response.data?.warning
               alert.level = 'warn'
@@ -216,7 +208,6 @@ class EditorState
       else
         #XXX: Are we worried about race conditions if there were modifications after the save button was pressed?
         file.update {checksum:editorChecksum}
-        #@checksumDep.changed()
       callback(error)
 
 
@@ -232,29 +223,6 @@ Object.defineProperty EditorState.prototype, 'isRendered',
     @_isRendered = isRendered
     @renderedDep.changed()
 
-  #Tabs, @tabsDep
-Object.defineProperty EditorState.prototype, 'useSoftTabs',
-  get: ->
-    return unless @isRendered
-    Deps.depend @tabsDep
-    return @getEditor()?.getSession()?.getUseSoftTabs()
-
-  set: (useSoftTabs) ->
-    return if useSoftTabs == @getEditor()?.getSession()?.getUseSoftTabs()
-    @getEditor().getSession().setUseSoftTabs useSoftTabs
-    @tabsDep.changed()
-
-Object.defineProperty EditorState.prototype, 'tabSize',
-  get: ->
-    Deps.depend @tabsDep
-    return @getEditor()?.getSession()?.getTabSize()
-
-  set: (tabSize) ->
-    return if tabSize == @getEditor()?.getSession()?.getTabSize()
-    @getEditor().getSession().setTabSize tabSize
-    @tabsDep.changed()
-
-  
 
 @EditorState = EditorState
 
@@ -262,7 +230,7 @@ Meteor.startup ->
   Meteor.autorun ->
     file = Files.findOne(path:editorState?.getPath())
     return unless file?.checksum?
-    checksum = editorState.getChecksum()
+    checksum = editorState.editor.checksum
     return unless checksum?
     #console.log "isModified: #{checksum} vs #{file.checksum}"
     modified = checksum != file.checksum
