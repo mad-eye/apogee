@@ -16,7 +16,7 @@ Template.editorBar.events
     Session.set "codeExecuting", true
     editorBody = editorState.getEditor().getValue()
     filename = editorState.getPath()
-    Meteor.http.post "#{Meteor.settings.public.nurmengardUrl}/run", {data: {contents: editorBody, language: Session.get "syntaxMode"}, headers: {"Content-Type":"application/json"}}, (error, result)->
+    Meteor.http.post "#{Meteor.settings.public.nurmengardUrl}/run", {data: {contents: editorBody, language: editorState.editor.syntaxMode}, headers: {"Content-Type":"application/json"}}, (error, result)->
       Session.set "codeExecuting", false
       #$("#codeExecutingSpinner").remove()
       if error
@@ -37,7 +37,7 @@ Template.editorBar.events
     editorState.editor.showInvisibles = e.target.checked
 
   'change #syntaxModeSelect': (e) ->
-    Session.set 'syntaxMode', e.target.value
+    editorState.editor.syntaxMode = e.target.value
 
   'change #keybinding': (e) ->
     keybinding = e.target.value
@@ -105,7 +105,7 @@ Template.editorBar.helpers
   runButtonDisabled: ->
     project = Projects.findOne(Session.get("projectId"))
     disabled = "disabled"
-    if canRunLanguage Session.get("syntaxMode")
+    if canRunLanguage editorState.editor.syntaxMode
       disabled = ""
     return disabled
 
@@ -187,11 +187,14 @@ Template.editorBar.helpers
   yaml : "YAML"
 
 Template.syntaxModeOptions.helpers
+  syntaxModeEquals: (value) ->
+    editorState.editor.syntaxMode == value
+
   #XXX: The map seems to be traversed 'in order', but we shouldn't rely on that.
-  'syntaxModes': ->
+  syntaxModes: ->
     ({value:handle, name:name} for handle, name of syntaxModes)
 
-  'canRunLanguage': (language) ->
+  canRunLanguage: (language) ->
     isInterview() && canRunLanguage language
 
 Template.themeOptions.helpers
@@ -237,24 +240,6 @@ Template.themeOptions.helpers
 
 Meteor.startup ->
 
-  #Syntax Modes from session
-  Deps.autorun (computation) ->
-    return unless Session.equals("editorRendered", true)
-    mode = Session.get 'syntaxMode'
-    editorSession = editorState.getEditor().getSession()
-    unless mode?
-      return editorSession?.setMode null
-    module = require("ace/mode/#{mode}")
-    unless module
-      jQuery.getScript("/ace/mode-#{mode}.js").done( ->
-        return computation.invalidate()
-      ).fail(->
-        editorSession?.setMode null
-      )
-    else
-      Mode = module.Mode
-      editorSession?.setMode(new Mode())
-
   findShbangCmd = (contents) ->
     if '#!' == contents[0..1]
       cmd = null
@@ -284,7 +269,7 @@ Meteor.startup ->
         #Other aliases?
         else cmd
       mode = null unless mode in _.values(MadEye.ACE_MODES)
-    Session.set 'syntaxMode', mode
+    editorState.editor.syntaxMode = mode
 
   #Keybinding
   Deps.autorun (computation) ->
