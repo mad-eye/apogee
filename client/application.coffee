@@ -27,7 +27,7 @@ do ->
     Session.set 'projectId', projectId
     Metrics.add {message:'load', filePath, lineNumber, connectionId, isHangout}
     window.editorState ?= new EditorState "editor"
-    editorState.setPath filePath
+    editorState.path = filePath
     editorState.setCursorDestination connectionId
     _kmq.push ['record', 'opened file', {projectId: projectId, filePath: filePath}]
     "edit"
@@ -64,7 +64,7 @@ do ->
       recordView page: "interview", projectId: id
       window.editorState ?= new EditorState "editor"
       Session.set "projectId", id
-      editorState.setPath filepath
+      editorState.path = filepath
       "edit"
 
     '/interview/:id': (id)->

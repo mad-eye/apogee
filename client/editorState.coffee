@@ -15,42 +15,38 @@ handleNetworkError = (error, response) ->
 # Must set editorState.file for fetchBody or save to work.
 class EditorState
   constructor: (@editorId)->
-    @pathDep = new Deps.Dependency
     @renderedDep = new Deps.Dependency
     @tabsDep = new Deps.Dependency
 
+    @_deps = {}
     @editor = new ReactiveAce
     
+  depend: (key) ->
+    @_deps[key] ?= new Deps.Dependency
+    @_deps[key].depend()
+
+  change: (key) ->
+    @_deps[key]?.changed()
+
   attach: ->
     @editor.attach @editorId
 
   getEditor: ->
-    Deps.depend @pathDep
+    @depend 'path'
     @editor.attach @editorId
     newEditor = @editor._getEditor()
     return newEditor
 
-  getEditorBody : ->
+  getEditorBody: ->
     @editor.value
 
   getFileUrl : (file)->
     Meteor.settings.public.azkabanUrl + "/project/#{Projects.findOne(Session.get 'projectId')._id}/file/#{file._id}"
 
-  setPath: (filePath) ->
-    return if filePath == @filePath
-    @filePath = filePath
-    @pathDep.changed()
-
   setCursorDestination: (connectionId)->
     @cursorDestination = connectionId
 
   setLine: (@lineNumber) ->
-
-  getPath: () ->
-    # TODO handle the case where this is called and no currnet computation exists
-    # http://docs.meteor.com/#dependency_adddependent
-    Deps.depend @pathDep
-    return @filePath
 
   connectionIdDep = new Deps.Dependency
 
@@ -210,25 +206,34 @@ class EditorState
         file.update {checksum:editorChecksum}
       callback(error)
 
+EditorState.addProperty = (name, getter, setter) ->
+  descriptor = {}
+  if 'string' == typeof getter
+    varName = getter
+    getter = -> return @[varName]
+  if getter
+    descriptor.get = ->
+      @depend name
+      return getter.call(this)
+  if 'string' == typeof setter
+    varName = setter
+    setter = (value) -> @[varName] = value
+  if setter
+    descriptor.set = (value) ->
+      return if getter and value == getter.call this
+      setter.call this, value
+      @change name
+  Object.defineProperty EditorState.prototype, name, descriptor
 
-  ##Reactive Ace fields
-  #IsRendered
-Object.defineProperty EditorState.prototype, 'isRendered',
-  get: ->
-    Deps.depend @renderedDep
-    @_isRendered
-
-  set: (isRendered) ->
-    return if isRendered == @_isRendered
-    @_isRendered = isRendered
-    @renderedDep.changed()
+EditorState.addProperty 'isRendered', '_isRendered', '_isRendered'
+EditorState.addProperty 'path', '_path', '_path'
 
 
 @EditorState = EditorState
 
 Meteor.startup ->
   Meteor.autorun ->
-    file = Files.findOne(path:editorState?.getPath())
+    file = Files.findOne(path:editorState?.path)
     return unless file?.checksum?
     checksum = editorState.editor.checksum
     return unless checksum?

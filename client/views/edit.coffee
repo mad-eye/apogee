@@ -82,13 +82,13 @@ cursorToRange = (editorDoc, cursor) ->
   Projects.findOne(Session.get "projectId")?.interview
 
 fileIsDeleted = ->
-  Files.findOne(path:editorState.getPath())?.removed
+  Files.findOne(path:editorState.path)?.removed
 
 Handlebars.registerHelper "fileIsDeleted", ->
   fileIsDeleted()
 
 Handlebars.registerHelper "editorFileName", ->
-  editorState?.getPath()
+  editorState?.path
 
 Handlebars.registerHelper "editorIsLoading", ->
   Session.equals "editorIsLoading", true
@@ -96,7 +96,7 @@ Handlebars.registerHelper "editorIsLoading", ->
 Handlebars.registerHelper "isInterview", isInterview
 
 fileIsModifiedLocally = ->
-  Files.findOne(path:editorState.getPath())?.modified_locally
+  Files.findOne(path:editorState.path)?.modified_locally
 
 projectIsLoading = ->
   not (Projects.findOne(Session.get "projectId")? || Session.equals 'fileCount', Files.find().count())
@@ -109,7 +109,7 @@ Template.projectStatus.projectAlerts = ->
   alerts.push projectLoadingAlert if projectIsLoading()
   alerts.push networkIssuesWarning if transitoryIssues?.has 'networkIssues'
   language = editorState.editor.syntaxMode
-  alerts.push cantRunLanguageWarning(@syntaxModes[language]) if isInterview() and not canRunLanguage language
+  alerts.push cantRunLanguageWarning(syntaxModes[language]) if isInterview() and not canRunLanguage language
   return alerts
 
 #Find how many files the server things, so we know if we have them all.
@@ -148,7 +148,7 @@ Meteor.startup ->
   #TODO: Move this into internal editorState fns
   Meteor.autorun ->
     return unless Session.equals("editorRendered", true)
-    filePath = editorState?.getPath()
+    filePath = editorState?.path
     return unless filePath?
     file = Files.findOne({path:filePath}) or ScratchPads.findOne({path:filePath})
     return unless file and file._id != editorState.file?._id

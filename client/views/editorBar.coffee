@@ -15,7 +15,7 @@ Template.editorBar.events
   'click #runButton': (e)->
     Session.set "codeExecuting", true
     editorBody = editorState.getEditor().getValue()
-    filename = editorState.getPath()
+    filename = editorState.path
     Meteor.http.post "#{Meteor.settings.public.nurmengardUrl}/run", {data: {contents: editorBody, language: editorState.editor.syntaxMode}, headers: {"Content-Type":"application/json"}}, (error, result)->
       Session.set "codeExecuting", false
       #$("#codeExecutingSpinner").remove()
@@ -67,7 +67,7 @@ Template.editorBar.events
       filePath: editorState?.file?.path #don't want reactivity
     editorState.file.remove()
     editorState.file = null
-    editorState.setPath ""
+    editorState.path = ""
 
   'click #saveImage' : (event) ->
     el = $(event.target)
@@ -95,7 +95,7 @@ Template.editorBar.helpers
     Session.equals "working", true
 
   buttonDisabled : ->
-    filePath = editorState.getPath()
+    filePath = editorState.path
     file = Files.findOne({path: filePath}) if filePath?
     if !file?.modified or Session.equals("working", true) or projectIsClosed()
       "disabled"
@@ -257,7 +257,7 @@ Meteor.startup ->
   #Syntax Modes from file
   Deps.autorun ->
     return unless Session.equals("editorRendered", true)
-    file = Files.findOne(path: editorState.getPath()) or ScratchPads.findOne(path: editorState.getPath())
+    file = Files.findOne(path: editorState.path) or ScratchPads.findOne(path: editorState.path)
     return unless file
     mode = file.aceMode
     #Check for shebang. We might have such lines as '#! /bin/env sh -x'
