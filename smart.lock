@@ -54,7 +54,7 @@
       "meteor-reactive-ace": {
         "git": "git://github.com/mad-eye/meteor-reactive-ace",
         "branch": "master",
-        "commit": "4f931ce3a1fe4415a0cc740aa9dba21846383be2"
+        "commit": "b7879aa4b6d99e3c752d5128f639a4675157b2d6"
       },
       "page-js-ie-support": {
         "git": "https://github.com/tmeasday/meteor-page-js-ie-support.git",
