@@ -25,7 +25,7 @@ class EditorState
     @_deps[key] ?= new Deps.Dependency
     @_deps[key].depend()
 
-  change: (key) ->
+  changed: (key) ->
     @_deps[key]?.changed()
 
   attach: ->
@@ -224,7 +224,7 @@ EditorState.addProperty = (name, getter, setter) ->
     descriptor.set = (value) ->
       return if getter and value == getter.call this
       setter.call this, value
-      @change name
+      @changed name
   Object.defineProperty EditorState.prototype, name, descriptor
 
 EditorState.addProperty 'isRendered', '_isRendered', '_isRendered'
