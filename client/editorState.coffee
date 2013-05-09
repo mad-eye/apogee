@@ -34,8 +34,8 @@ class EditorState
     newEditor = @editor._getEditor()
     return newEditor
 
-  getFileUrl : (file)->
-    Meteor.settings.public.azkabanUrl + "/project/#{Projects.findOne(Session.get 'projectId')._id}/file/#{file._id}"
+  getFileUrl : (fileId)->
+    Meteor.settings.public.azkabanUrl + "/project/#{Projects.findOne(Session.get 'projectId')._id}/file/#{fileId}"
 
   setCursorDestination: (connectionId)->
     @cursorDestination = connectionId
@@ -54,7 +54,7 @@ class EditorState
     file = @file
     Events.record("revert", {file: @file.path, projectId: Session.get "projectId"})
     @working = true
-    Meteor.http.get "#{@getFileUrl(file)}?reset=true", (error,response) =>
+    Meteor.http.get "#{@getFileUrl(file._id)}?reset=true", (error,response) =>
       @working = false
       if error
         handleNetworkError error, response
@@ -136,7 +136,7 @@ class EditorState
         else unless file instanceof MadEye.ScratchPad
           #TODO figure out why this sometimes gets stuck on..
           #editor.setReadOnly true
-          Meteor.http.get @getFileUrl(file), timeout:5*1000, (error,response) =>
+          Meteor.http.get @getFileUrl(file._id), timeout:5*1000, (error,response) =>
             return callback? handleNetworkError error, response if error
             return callback?(true) unless file == @file #Safety for multiple loadFiles running simultaneously
             @doc = doc
@@ -181,7 +181,7 @@ class EditorState
     file = @file
     return if @file.checksum == editorChecksum
     @working = true
-    Meteor.http.put @getFileUrl(file), {
+    Meteor.http.put @getFileUrl(file._id), {
       data: {contents: contents}
       headers: {'Content-Type':'application/json'}
       timeout: 5*1000
