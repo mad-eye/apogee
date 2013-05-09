@@ -43,18 +43,17 @@ class EditorState
   setLine: (@lineNumber) ->
 
   revertFile: (callback) ->
-    unless @doc and @file
+    unless @doc and @fileId
       Metrics.add
         level:'warn'
         message:'revertFile with null @doc'
-        fileId: @file?._id
-        filePath: @file?.path
+        fileId: @fileId
+        filePath: @path
       console.warn("revert called, but no doc selected")
       return callback? "No doc or no file"
-    file = @file
-    Events.record("revert", {file: @file.path, projectId: Session.get "projectId"})
+    Events.record("revert", {file: @path, projectId: Session.get "projectId"})
     @working = true
-    Meteor.http.get "#{@getFileUrl(file._id)}?reset=true", (error,response) =>
+    Meteor.http.get "#{@getFileUrl(@fileId)}?reset=true", (error,response) =>
       @working = false
       if error
         handleNetworkError error, response
@@ -73,14 +72,15 @@ class EditorState
       Metrics.add
         level:'warn'
         message:'shareJsError'
-        fileId: @file._id
-        filePath: @file?.path
+        fileId: @fileId
+        filePath: @path
         error: 'Found null doc version'
-      console.error "Found null doc version for file #{@file._id}"
+      console.error "Found null doc version for file #{@fileId}"
     return doc.version?
 
   attachAce: (doc)->
-    file = @file
+    fileId = @fileId
+    filePath = @path
     unless doc.editorAttached
       doc.attach_ace @getEditor()
       @getEditor().getSession().getDocument().setNewLineMode("auto")
@@ -88,8 +88,8 @@ class EditorState
         Metrics.add
           level:'warn'
           message:'shareJsError'
-          fileId: file._id
-          filePath: file?.path
+          fileId: fileId
+          filePath: filePath
           error: data
       @getEditor().navigateFileStart() unless doc.cursor #why unless doc.cursor
       doc.emit "cursors"
@@ -97,14 +97,15 @@ class EditorState
       Metrics.add
         level:'warn'
         message:'shareJsError'
-        fileId: file._id
-        filePath: file?.path
+        fileId: fileId
+        filePath: filePath
         error: 'Editor already attached'
       console.error "EDITOR ALREADY ATTACHED"
 
   #callback: (error) ->
   loadFile: (@file, callback) ->
     #console.log "Loading file", file
+    @fileId = file._id
     editor = @getEditor()
     @doc?.detach_ace?()
     @doc = null
@@ -169,19 +170,19 @@ class EditorState
 
   #callback: (err) ->
   save : (callback) ->
-    console.log "Saving file #{@file?._id}"
-    Events.record("save", {file: @file?.path, projectId: Session.get "projectId"})
+    console.log "Saving file #{@fileId}"
+    Events.record("save", {file: @path, projectId: Session.get "projectId"})
     Metrics.add
       message:'saveFile'
-      fileId: @file?._id
-      filePath: @file?.path #don't want reactivity
+      fileId: @fileId
+      filePath: @path #don't want reactivity
     self = this #The => doesn't work for some reason with the PUT callback.
     contents = @editor.value
     editorChecksum = MadEye.crc32 contents
-    file = @file
-    return if @file.checksum == editorChecksum
+    file = Files.findOne @fileId
+    return if file.checksum == editorChecksum
     @working = true
-    Meteor.http.put @getFileUrl(file._id), {
+    Meteor.http.put @getFileUrl(@fileId), {
       data: {contents: contents}
       headers: {'Content-Type':'application/json'}
       timeout: 5*1000
