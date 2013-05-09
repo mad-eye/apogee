@@ -151,7 +151,7 @@ Meteor.startup ->
     filePath = editorState?.path
     return unless filePath?
     file = Files.findOne({path:filePath}) or ScratchPads.findOne({path:filePath})
-    return unless file and file._id != editorState.file?._id
+    return unless file and file._id != editorState.fileId
     #TODO less hacky way to do this?
     #selectedFilePath?
     Session.set "selectedFileId", file._id

@@ -59,13 +59,16 @@ Template.editorBar.events
     editorState.revertFile (error)->
 
   'click #discardFile': (event) ->
+    file = Files.findOne editorState.fileId
+    return unless file
     Metrics.add
       message:'discardFile'
-      fileId: editorState?.file?._id
-      filePath: editorState?.file?.path #don't want reactivity
-    editorState.file.remove()
-    editorState.file = null
+      fileId: file._id
+      filePath: file.path
+    file.remove()
     editorState.path = ""
+    #XXX: This will eventually not be necessary.
+    editorState.fileId = null
 
   'click #saveImage' : (event) ->
     el = $(event.target)

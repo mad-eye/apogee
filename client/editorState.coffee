@@ -1,6 +1,3 @@
-#TODO: This is just the bone-headed extraction of code from edit.coffee.
-#We should refactor it so that it doesn't have knowlege of DOM ids/etc.
-
 #Takes httpResponse
 handleNetworkError = (error, response) ->
   err = response.content?.error ? error
@@ -12,7 +9,6 @@ handleNetworkError = (error, response) ->
   transitoryIssues.set 'networkIssues', 10*1000
   return err
 
-# Must set editorState.file for fetchBody or save to work.
 class EditorState
   constructor: (@editorId)->
     @_deps = {}
@@ -103,21 +99,21 @@ class EditorState
       console.error "EDITOR ALREADY ATTACHED"
 
   #callback: (error) ->
-  loadFile: (@file, callback) ->
+  loadFile: (file, callback) ->
     #console.log "Loading file", file
-    @fileId = file._id
+    @fileId = fileId = file._id
     editor = @getEditor()
     @doc?.detach_ace?()
     @doc = null
     Metrics.add
       message:'loadFile'
-      fileId: file?._id
-      filePath: file?.path
+      fileId: fileId
+      filePath: file.path
     @loading = true
-    sharejs.open file._id, "text2", "#{Meteor.settings.public.bolideUrl}/channel", (error, doc) =>
+    sharejs.open fileId, "text2", "#{Meteor.settings.public.bolideUrl}/channel", (error, doc) =>
       @connectionId = doc.connection.id
-      unless file == @file #abort if we've loaded another file
-        console.log "Loading file #{@file._id} overriding #{file._id}"
+      unless fileId == @fileId #abort if we've loaded another file
+        console.log "Loading file #{@fileId} overriding #{fileId}"
         return callback?(true)
       try
         #TODO: Extract this into its own autorun block
@@ -137,13 +133,13 @@ class EditorState
         else unless file instanceof MadEye.ScratchPad
           #TODO figure out why this sometimes gets stuck on..
           #editor.setReadOnly true
-          Meteor.http.get @getFileUrl(file._id), timeout:5*1000, (error,response) =>
+          Meteor.http.get @getFileUrl(fileId), timeout:5*1000, (error,response) =>
             return callback? handleNetworkError error, response if error
-            return callback?(true) unless file == @file #Safety for multiple loadFiles running simultaneously
+            return callback?(true) unless fileId == @fileId #Safety for multiple loadFiles running simultaneously
             @doc = doc
             @attachAce(doc)
             if response.data?.checksum?
-              @file.update {checksum:response.data.checksum}
+              file.update {checksum:response.data.checksum}
             if response.data?.warning
               alert = response.data?.warning
               alert.level = 'warn'
@@ -164,7 +160,7 @@ class EditorState
           level:'error'
           message:'shareJsError'
           fileId: file._id
-          filePath: file?.path
+          filePath: file.path
           error: e.message
         callback? e
 
