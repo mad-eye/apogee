@@ -42,17 +42,6 @@ class EditorState
 
   setLine: (@lineNumber) ->
 
-  connectionIdDep = new Deps.Dependency
-
-  setConnectionId: (connectionId) ->
-    return if connectionId == @connectionId
-    @connectionId = connectionId
-    connectionIdDep.changed()
-
-  getConnectionId: ()->
-    Deps.depend connectionIdDep
-    @connectionId
-
   revertFile: (callback) ->
     unless @doc and @file
       Metrics.add
@@ -125,7 +114,7 @@ class EditorState
       filePath: file?.path
     @loading = true
     sharejs.open file._id, "text2", "#{Meteor.settings.public.bolideUrl}/channel", (error, doc) =>
-      @setConnectionId doc.connection.id
+      @connectionId = doc.connection.id
       unless file == @file #abort if we've loaded another file
         console.log "Loading file #{@file._id} overriding #{file._id}"
         return callback?(true)
@@ -226,10 +215,12 @@ EditorState.addProperty = (name, getter, setter) ->
 
 EditorState.addProperty 'rendered', '_rendered', '_rendered'
 EditorState.addProperty 'path', '_path', '_path'
-#Editor is loading a file
+#@loading: if a file is loading
 EditorState.addProperty 'loading', '_loading', '_loading'
-#Editor is saving/reverting
+#@working: if a file is saving/reverting
 EditorState.addProperty 'working', '_working', '_working'
+#shareJs connection Id
+EditorState.addProperty 'connectionId', '_connectionId', '_connectionId'
 
 
 @EditorState = EditorState
