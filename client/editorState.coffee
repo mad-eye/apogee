@@ -172,14 +172,12 @@ class EditorState
       message:'saveFile'
       fileId: @fileId
       filePath: @path #don't want reactivity
-    self = this #The => doesn't work for some reason with the PUT callback.
-    contents = @editor.value
-    editorChecksum = MadEye.crc32 contents
+    editorChecksum = @editor.checksum
     file = Files.findOne @fileId
     return if file.checksum == editorChecksum
     @working = true
     Meteor.http.put @getFileUrl(@fileId), {
-      data: {contents: contents}
+      data: {contents: @editor.value}
       headers: {'Content-Type':'application/json'}
       timeout: 5*1000
     }, (error,response) =>
