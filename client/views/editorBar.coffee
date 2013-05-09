@@ -16,19 +16,24 @@ Template.editorBar.events
     Session.set "codeExecuting", true
     editorBody = editorState.getEditor().getValue()
     filename = editorState.getPath()
-    Meteor.http.post "#{Meteor.settings.public.nurmengardUrl}/run", {data: {contents: editorBody, language: editorState.editor.syntaxMode}, headers: {"Content-Type":"application/json"}}, (error, result)->
-      Session.set "codeExecuting", false
-      #$("#codeExecutingSpinner").remove()
-      if error
-        #TODO handle this better
-        console.error "MADEYE ERROR", error
-      if result
-        response = JSON.parse(result.content)
-        response.filename = filename
-        response.projectId = Session.get("projectId")
-        response.timestamp = Date.now()
-        #might be nice to include filename here?
-        ScriptOutputs.insert response
+    Meteor.http.post "#{Meteor.settings.public.nurmengardUrl}/run",
+      data:
+        contents: editorBody
+        language: editorState.editor.syntaxMode
+        fileName: filename
+      headers:
+        "Content-Type": "application/json"
+      , (error, result)->
+        Session.set "codeExecuting", false
+        if error
+          #TODO handle this better
+          console.error "MADEYE ERROR", error
+        if result
+          response = JSON.parse(result.content)
+          response.filename = filename
+          response.projectId = Session.get("projectId")
+          response.timestamp = Date.now()
+          ScriptOutputs.insert response
 
   'change #wordWrap': (e) ->
     editorState.editor.wordWrap = e.target.checked
