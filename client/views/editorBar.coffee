@@ -84,7 +84,7 @@ Template.editorBar.helpers
     editorState
 
   tabSizeEquals: (size)->
-    return false unless editorState.isRendered
+    return false unless editorState.rendered
     editorState?.editor.tabSize == parseInt size, 10
 
   showSaveSpinner: ->

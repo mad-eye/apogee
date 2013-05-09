@@ -15,9 +15,6 @@ handleNetworkError = (error, response) ->
 # Must set editorState.file for fetchBody or save to work.
 class EditorState
   constructor: (@editorId)->
-    @renderedDep = new Deps.Dependency
-    @tabsDep = new Deps.Dependency
-
     @_deps = {}
     @editor = new ReactiveAce
     
@@ -227,7 +224,7 @@ EditorState.addProperty = (name, getter, setter) ->
       @changed name
   Object.defineProperty EditorState.prototype, name, descriptor
 
-EditorState.addProperty 'isRendered', '_isRendered', '_isRendered'
+EditorState.addProperty 'rendered', '_rendered', '_rendered'
 EditorState.addProperty 'path', '_path', '_path'
 #Editor is loading a file
 EditorState.addProperty 'loading', '_loading', '_loading'

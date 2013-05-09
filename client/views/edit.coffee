@@ -131,7 +131,7 @@ Template.editor.rendered = ->
   console.log "Rendering editor"
   Session.set("editorRendered", true)
   editorState.attach()
-  editorState?.isRendered = true
+  editorState?.rendered = true
   #If we're displaying the program output, set the bottom of the editor
   $('#editor').css('bottom', $('#programOutput').height()) if isInterview()
   resizeEditor()
