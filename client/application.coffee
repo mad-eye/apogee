@@ -34,6 +34,8 @@ do ->
     window.editorState ?= new EditorState "editor"
     
     MadEye.fileLoader.loadPath = filePath
+    fileTree.open MadEye.fileLoader.editorFilePath, true
+
     _kmq.push ['record', 'opened file', {projectId: projectId, filePath: filePath}]
     "edit"
 

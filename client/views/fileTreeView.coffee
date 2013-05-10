@@ -35,6 +35,10 @@ do ->
   # Select file
   Template.fileTree.events
     'click li.fileTree-item' : (event) ->
+      fileId = event.currentTarget.id
+      file = Files.findOne(fileId)
+      return unless file
+      fileTree.toggle file.path
       MadEye.fileLoader.loadId = event.currentTarget.id 
 
     #'click img.fileTreeUserIcon': (event) ->
