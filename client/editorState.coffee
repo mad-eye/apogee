@@ -76,7 +76,7 @@ class EditorState
     fileId = @fileId
     unless doc.editorAttached
       doc.attach_ace @editor._getEditor()
-      @editor._getEditor().getSession().getDocument().setNewLineMode("auto")
+      @editor.newLineMode = "auto"
       doc.on 'warn', (data) =>
         Metrics.add
           level:'warn'

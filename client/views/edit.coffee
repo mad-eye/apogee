@@ -137,12 +137,13 @@ Template.editor.rendered = ->
   resizeEditor()
 
 Meteor.startup ->
-  gotoPosition = (editor, cursor)->
+  gotoPosition = (cursor)->
     console.error "undefined cursor" unless cursor
+    editor = editorState.getEditor()
     position = cursorToRange(editor.getSession().getDocument(), cursor)
-    editorState.getEditor().navigateTo(position.start.row, position.start.column)
+    editor.navigateTo(position.start.row, position.start.column)
     Meteor.setTimeout ->
-      editorState.getEditor().scrollToLine(position.start.row, position.start.column)
+      editor.scrollToLine(position.start.row, true)
     , 0
 
   #TODO: Move this into internal editorState fns
@@ -153,14 +154,8 @@ Meteor.startup ->
     file = Files.findOne(fileId) or ScratchPads.findOne(fileId)
     return unless file and file._id != editorState.fileId
     editorState.loadFile file, ->
-      #XXX hack
-      if file instanceof MadEye.ScratchPad and  file.path == "SCRATCH.rb" and editorState.doc.version == 0
-        editorState.getEditor().setValue """puts 2+2
-        """
-      if editorState.doc.cursors and editorState.cursorDestination
-        gotoPosition(editorState.getEditor(), editorState.doc.cursors[editorState.cursorDestination])
-      else if editorState.doc.cursor
-        gotoPosition(editorState.getEditor(), editorState.doc.cursor)
+      if editorState.doc.cursor
+        gotoPosition(editorState.doc.cursor)
 
 
 @resizeEditor = ->
