@@ -110,7 +110,7 @@ Deps.autorun ->
   return unless Session.equals("editorRendered", true)
   fileId = MadEye.fileLoader.selectedFileId
   return unless fileId?
-  fileTree?.open fileLoader.selectedFilePath, true
+  fileTree?.open MadEye.fileLoader.selectedFilePath, true
   
 Deps.autorun ->
   fileId = MadEye.fileLoader.selectedFileId

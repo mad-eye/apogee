@@ -128,7 +128,7 @@ Template.editor.preserve("#editor")
 
 
 Template.editor.rendered = ->
-  console.log "Rendering editor"
+  #console.log "Rendering editor"
   Session.set("editorRendered", true)
   editorState.attach()
   editorState?.rendered = true
@@ -211,4 +211,3 @@ Template.editorFooter.helpers
         output += """<span class="stderr">#{response.stderr}</span>\n""" if response.stderr
         output += """<span class="runError">#{response.runError}</span>\n""" if response.runError
     output
-

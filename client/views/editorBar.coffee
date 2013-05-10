@@ -256,7 +256,7 @@ Meteor.startup ->
   #Syntax Modes from file
   Deps.autorun ->
     return unless Session.equals("editorRendered", true)
-    file = Files.findOne(path: editorState.path) or ScratchPads.findOne(path: editorState.path)
+    file = Files.findOne(editorState.fileId) or ScratchPads.findOne(path: editorState.path)
     return unless file
     mode = file.aceMode
     #Check for shebang. We might have such lines as '#! /bin/env sh -x'

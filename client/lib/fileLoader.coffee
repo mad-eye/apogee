@@ -48,7 +48,6 @@ class @FileLoader
     @_selectedFilePath = file.path
     @changed 'selectedFilePath'
 
-    console.log "Checking file attributes:", file
     if file.isDir
       return
     if file.isLink
@@ -62,7 +61,6 @@ class @FileLoader
         level: "error"
         title: "Unable to load binary file"
         message: file.path
-      console.log "Making binary alert", @alert
       return
 
     #Else, this is a normal file. 

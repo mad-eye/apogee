@@ -44,7 +44,6 @@ class EditorState
         level:'warn'
         message:'revertFile with null @doc'
         fileId: @fileId
-        filePath: @path
       console.warn("revert called, but no doc selected")
       return callback? "No doc or no file"
     Events.record("revert", {file: @path, projectId: Session.get "projectId"})
@@ -69,23 +68,20 @@ class EditorState
         level:'warn'
         message:'shareJsError'
         fileId: @fileId
-        filePath: @path
         error: 'Found null doc version'
       console.error "Found null doc version for file #{@fileId}"
     return doc.version?
 
   attachAce: (doc)->
     fileId = @fileId
-    filePath = @path
     unless doc.editorAttached
-      doc.attach_ace @getEditor()
-      @getEditor().getSession().getDocument().setNewLineMode("auto")
+      doc.attach_ace @editor._getEditor()
+      @editor._getEditor().getSession().getDocument().setNewLineMode("auto")
       doc.on 'warn', (data) =>
         Metrics.add
           level:'warn'
           message:'shareJsError'
           fileId: fileId
-          filePath: filePath
           error: data
       @getEditor().navigateFileStart() unless doc.cursor #why unless doc.cursor
       doc.emit "cursors"
@@ -94,7 +90,6 @@ class EditorState
         level:'warn'
         message:'shareJsError'
         fileId: fileId
-        filePath: filePath
         error: 'Editor already attached'
       console.error "EDITOR ALREADY ATTACHED"
 
@@ -160,18 +155,16 @@ class EditorState
           level:'error'
           message:'shareJsError'
           fileId: file._id
-          filePath: file.path
           error: e.message
         callback? e
 
   #callback: (err) ->
   save : (callback) ->
     console.log "Saving file #{@fileId}"
-    Events.record("save", {file: @path, projectId: Session.get "projectId"})
+    Events.record("save", {file: @fileId, projectId: Session.get "projectId"})
     Metrics.add
       message:'saveFile'
       fileId: @fileId
-      filePath: @path #don't want reactivity
     editorChecksum = @editor.checksum
     file = Files.findOne @fileId
     return if file.checksum == editorChecksum
@@ -210,6 +203,7 @@ EditorState.addProperty = (name, getter, setter) ->
 
 EditorState.addProperty 'rendered', '_rendered', '_rendered'
 EditorState.addProperty 'path', '_path', '_path'
+EditorState.addProperty 'fileId', '_fileId', '_fileId'
 #@loading: if a file is loading
 EditorState.addProperty 'loading', '_loading', '_loading'
 #@working: if a file is saving/reverting
@@ -222,7 +216,7 @@ EditorState.addProperty 'connectionId', '_connectionId', '_connectionId'
 
 Meteor.startup ->
   Meteor.autorun ->
-    file = Files.findOne(path:editorState?.path)
+    file = Files.findOne(editorState?.fileId)
     return unless file?.checksum?
     checksum = editorState.editor.checksum
     return unless checksum?
