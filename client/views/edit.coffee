@@ -146,32 +146,12 @@ Meteor.startup ->
     , 0
 
   #TODO: Move this into internal editorState fns
-  Meteor.autorun ->
+  Deps.autorun ->
     return unless Session.equals("editorRendered", true)
-    filePath = editorState?.path
-    return unless filePath?
-    file = Files.findOne({path:filePath}) or ScratchPads.findOne({path:filePath})
+    fileId = MadEye.fileLoader.editorFileId
+    return unless fileId?
+    file = Files.findOne(fileId) or ScratchPads.findOne(fileId)
     return unless file and file._id != editorState.fileId
-    #TODO less hacky way to do this?
-    #selectedFilePath?
-    Session.set "selectedFileId", file._id
-    #no file tree exists for interview page
-    fileTree?.open file.path, true
-    #Display warning/errors about file state.
-    #TODO: Replace this with an overlay.
-    if file.isLink
-      displayAlert
-        level: "error"
-        title: "Unable to load symbolic link"
-        message: file.path
-      return
-    if file.isBinary
-      displayAlert
-        level: "error"
-        title: "Unable to load binary file"
-        message: file.path
-      return
-
     editorState.loadFile file, ->
       #XXX hack
       if file instanceof MadEye.ScratchPad and  file.path == "SCRATCH.rb" and editorState.doc.version == 0

@@ -6,6 +6,11 @@
 @interviewRegex = /\/interview(?:\/([-0-9a-f]+)(?:\/([^#]*)))?/
 @transitoryIssues = null
 
+MadEye.fileLoader = new FileLoader
+#soon..
+#MadEye.editorState = new EditorState "editor"
+#MadEye.fileTree = new FileTree
+
 if Meteor.settings.public.googleAnalyticsId
   window._gaq = window._gaq || []
   _gaq.push ['_setAccount', Meteor.settings.public.googleAnalyticsId]
@@ -27,8 +32,8 @@ do ->
     Session.set 'projectId', projectId
     Metrics.add {message:'load', filePath, lineNumber, connectionId, isHangout}
     window.editorState ?= new EditorState "editor"
-    editorState.path = filePath
-    editorState.setCursorDestination connectionId
+    
+    MadEye.fileLoader.loadPath = filePath
     _kmq.push ['record', 'opened file', {projectId: projectId, filePath: filePath}]
     "edit"
 

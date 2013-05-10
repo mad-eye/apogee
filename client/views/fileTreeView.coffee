@@ -35,9 +35,7 @@ do ->
   # Select file
   Template.fileTree.events
     'click li.fileTree-item' : (event) ->
-      file = Files.findOne event.currentTarget.id
-      fileTree.select file
-
+      MadEye.fileLoader.loadId = event.currentTarget.id 
 
     #'click img.fileTreeUserIcon': (event) ->
       #event.stopPropagation()
