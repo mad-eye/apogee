@@ -1,9 +1,31 @@
+###
+might be nice to try something more declaritive like this
+
+fileLoader = ReactiveMachine.new {
+    props:
+        alert: readWrite
+        loadPath: writeOnly
+        complicated:
+          get: ->
+          set: (val) ->
+
+    sentries:
+}
+###
+
 class @FileLoader
   constructor: ->
     @_deps = {}
     self = this
+
     Meteor.autorun (computation) ->
       self._loadFileSentry.call self, computation
+
+  _startSentries: ->
+    self = this
+    for sentry in sentries
+      Meteor.autorun (computation) ->
+        sentry.call self, computation
 
   depend: (key) ->
     @_deps[key] ?= new Deps.Dependency
@@ -13,7 +35,6 @@ class @FileLoader
     @_deps[key]?.changed()
 
   _loadFileSentry: (computation) ->
-    console.log "Running loadFileSentry"
     @depend 'loadId'
     @depend 'loadPath'
     if @_loadPath
@@ -27,6 +48,7 @@ class @FileLoader
     @_selectedFilePath = file.path
     @changed 'selectedFilePath'
 
+    console.log "Checking file attributes:", file
     if file.isDir
       return
     if file.isLink
@@ -48,8 +70,8 @@ class @FileLoader
     @changed 'editorFileId'
     @_editorFilePath = file.path
     @changed 'editorFilePath'
-    
-    
+
+
 FileLoader.addProperty = (name, getter, setter) ->
   descriptor = {}
   if 'string' == typeof getter

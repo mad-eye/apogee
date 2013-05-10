@@ -15,9 +15,9 @@ Meteor.startup ->
       link = new File path: 'link', isDir: false, isLink: true
       link.save()
       image = new File path: 'cat.jpg', isDir: false
+      image.save()
 
     beforeEach ->
-      console.log "FileLoader:", FileLoader
       fileLoader = new FileLoader
 
     checkOutput = (fileLoader, editorFile, selectedFile, alert) ->
