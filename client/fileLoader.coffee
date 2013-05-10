@@ -40,6 +40,7 @@ class @FileLoader
         level: "error"
         title: "Unable to load binary file"
         message: file.path
+      console.log "Making binary alert", @alert
       return
 
     #Else, this is a normal file. 
