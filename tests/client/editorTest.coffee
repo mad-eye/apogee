@@ -26,7 +26,7 @@ describe "editorChrome", ->
         path: 'a/path/whee.txt'
         modified: true
         isTest: true
-      editorState.setPath file.path
+      editorState.path = file.path
 
       helpers = Template.editorBar._tmpl_data.helpers
 

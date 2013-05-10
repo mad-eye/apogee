@@ -15,7 +15,7 @@ Template.editorBar.events
   'click #runButton': (e)->
     Session.set "codeExecuting", true
     editorBody = editorState.getEditor().getValue()
-    filename = editorState.getPath()
+    filename = editorState.path
     Meteor.http.post "#{Meteor.settings.public.nurmengardUrl}/run",
       data:
         contents: editorBody
@@ -60,30 +60,29 @@ Template.editorBar.events
 
   'click #revertFile': (event) ->
     el = $(event.target)
-    return if el.hasClass 'disabled' or Session.get 'working'
-    Session.set "working", true
+    return if el.hasClass 'disabled' or editorState.working == true
     editorState.revertFile (error)->
-      Session.set "working", false
 
   'click #discardFile': (event) ->
+    file = Files.findOne editorState.fileId
+    return unless file
     Metrics.add
       message:'discardFile'
-      fileId: editorState?.file?._id
-      filePath: editorState?.file?.path #don't want reactivity
-    editorState.file.remove()
-    editorState.file = null
-    editorState.setPath ""
+      fileId: file._id
+      filePath: file.path
+    file.remove()
+    editorState.path = ""
+    #XXX: This will eventually not be necessary.
+    editorState.fileId = null
 
   'click #saveImage' : (event) ->
     el = $(event.target)
-    return if el.hasClass 'disabled' or Session.get 'working'
+    return if el.hasClass 'disabled' or editorState.working == true
     console.log "clicked save button"
-    Session.set "working", true
     editorState.save (err) ->
       if err
         #Handle error better.
         console.error "Error in save request:", err
-      Session.set "working", false
 
 Template.editorBar.rendered = ->
   Session.set 'editorBarRendered', true
@@ -93,16 +92,16 @@ Template.editorBar.helpers
     editorState
 
   tabSizeEquals: (size)->
-    return false unless editorState.isRendered
+    return false unless editorState.rendered
     editorState?.editor.tabSize == parseInt size, 10
 
   showSaveSpinner: ->
-    Session.equals "working", true
+    editorState.working == true
 
   buttonDisabled : ->
-    filePath = editorState.getPath()
+    filePath = editorState.path
     file = Files.findOne({path: filePath}) if filePath?
-    if !file?.modified or Session.equals("working", true) or projectIsClosed()
+    if !file?.modified or editorState.working==true or projectIsClosed()
       "disabled"
     else
       ""
@@ -262,12 +261,12 @@ Meteor.startup ->
   #Syntax Modes from file
   Deps.autorun ->
     return unless Session.equals("editorRendered", true)
-    file = Files.findOne(path: editorState.getPath()) or ScratchPads.findOne(path: editorState.getPath())
+    file = Files.findOne(editorState.fileId) or ScratchPads.findOne(path: editorState.path)
     return unless file
     mode = file.aceMode
     #Check for shebang. We might have such lines as '#! /bin/env sh -x'
     unless mode
-      cmd = findShbangCmd editorState.getEditorBody()
+      cmd = findShbangCmd editorState.editor.value
       mode = switch cmd
         when 'sh', 'ksh', 'csh', 'tcsh', 'bash', 'dash', 'zsh' then 'sh'
         when 'node' then 'javascript'

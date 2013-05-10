@@ -82,21 +82,21 @@ cursorToRange = (editorDoc, cursor) ->
   Projects.findOne(Session.get "projectId")?.interview
 
 fileIsDeleted = ->
-  Files.findOne(path:editorState.getPath())?.removed
+  Files.findOne(path:editorState.path)?.removed
 
 Handlebars.registerHelper "fileIsDeleted", ->
   fileIsDeleted()
 
 Handlebars.registerHelper "editorFileName", ->
-  editorState?.getPath()
+  editorState?.path
 
 Handlebars.registerHelper "editorIsLoading", ->
-  Session.equals "editorIsLoading", true
+  editorState.loading == true
 
 Handlebars.registerHelper "isInterview", isInterview
 
 fileIsModifiedLocally = ->
-  Files.findOne(path:editorState.getPath())?.modified_locally
+  Files.findOne(path:editorState.path)?.modified_locally
 
 projectIsLoading = ->
   not (Projects.findOne(Session.get "projectId")? || Session.equals 'fileCount', Files.find().count())
@@ -109,7 +109,7 @@ Template.projectStatus.projectAlerts = ->
   alerts.push projectLoadingAlert if projectIsLoading()
   alerts.push networkIssuesWarning if transitoryIssues?.has 'networkIssues'
   language = editorState.editor.syntaxMode
-  alerts.push cantRunLanguageWarning(@syntaxModes[language]) if isInterview() and not canRunLanguage language
+  alerts.push cantRunLanguageWarning(syntaxModes[language]) if isInterview() and not canRunLanguage language
   return alerts
 
 #Find how many files the server things, so we know if we have them all.
@@ -128,59 +128,34 @@ Template.editor.preserve("#editor")
 
 
 Template.editor.rendered = ->
-  console.log "Rendering editor"
+  #console.log "Rendering editor"
   Session.set("editorRendered", true)
   editorState.attach()
-  editorState?.isRendered = true
+  editorState?.rendered = true
   #If we're displaying the program output, set the bottom of the editor
   $('#editor').css('bottom', $('#programOutput').height()) if isInterview()
   resizeEditor()
 
 Meteor.startup ->
-  gotoPosition = (editor, cursor)->
+  gotoPosition = (cursor)->
     console.error "undefined cursor" unless cursor
+    editor = editorState.getEditor()
     position = cursorToRange(editor.getSession().getDocument(), cursor)
-    editorState.getEditor().navigateTo(position.start.row, position.start.column)
+    editor.navigateTo(position.start.row, position.start.column)
     Meteor.setTimeout ->
-      editorState.getEditor().scrollToLine(position.start.row, position.start.column)
+      editor.scrollToLine(position.start.row, true)
     , 0
 
   #TODO: Move this into internal editorState fns
-  Meteor.autorun ->
+  Deps.autorun ->
     return unless Session.equals("editorRendered", true)
-    filePath = editorState?.getPath()
-    return unless filePath?
-    file = Files.findOne({path:filePath}) or ScratchPads.findOne({path:filePath})
-    return unless file and file._id != editorState.file?._id
-    #TODO less hacky way to do this?
-    #selectedFilePath?
-    Session.set "selectedFileId", file._id
-    #no file tree exists for interview page
-    fileTree?.open file.path, true
-    #Display warning/errors about file state.
-    #TODO: Replace this with an overlay.
-    if file.isLink
-      displayAlert
-        level: "error"
-        title: "Unable to load symbolic link"
-        message: file.path
-      return
-    if file.isBinary
-      displayAlert
-        level: "error"
-        title: "Unable to load binary file"
-        message: file.path
-      return
-
+    fileId = MadEye.fileLoader.editorFileId
+    return unless fileId?
+    file = Files.findOne(fileId) or ScratchPads.findOne(fileId)
+    return unless file and file._id != editorState.fileId
     editorState.loadFile file, ->
-      #XXX hack
-      if file instanceof MadEye.ScratchPad and  file.path == "SCRATCH.rb" and editorState.doc.version == 0
-        editorState.getEditor().setValue """puts 2+2
-        """
-      if editorState.doc.cursors and editorState.cursorDestination
-        gotoPosition(editorState.getEditor(), editorState.doc.cursors[editorState.cursorDestination])
-      else if editorState.doc.cursor
-        gotoPosition(editorState.getEditor(), editorState.doc.cursor)
+      if editorState.doc.cursor
+        gotoPosition(editorState.doc.cursor)
 
 
 @resizeEditor = ->
@@ -231,4 +206,3 @@ Template.editorFooter.helpers
         output += """<span class="stderr">#{response.stderr}</span>\n""" if response.stderr
         output += """<span class="runError">#{response.runError}</span>\n""" if response.runError
     output
-

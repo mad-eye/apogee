@@ -6,7 +6,7 @@ Template.interview.helpers
     ScratchPads.find()
 
   selected: ->
-    if editorState.getPath() == @path
+    if editorState.path == @path
       "selected"
     else
       "unselected"
@@ -15,7 +15,7 @@ Template.interview.helpers
     @path
 
   fileId: ->
-    ScratchPads.findOne(path: editorState.getPath())._id
+    ScratchPads.findOne(path: editorState.path)._id
 
   #XXX TODO copied w/ shame from fileTreeView.coffee
   usersInFile: (file)->
