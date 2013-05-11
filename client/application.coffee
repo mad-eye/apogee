@@ -6,7 +6,6 @@
 @interviewRegex = /\/interview(?:\/([-0-9a-f]+)(?:\/([^#]*)))?/
 @transitoryIssues = null
 
-MadEye.fileLoader = newFileLoader()
 #soon..
 #MadEye.editorState = new EditorState "editor"
 #MadEye.fileTree = new FileTree
@@ -15,7 +14,7 @@ if Meteor.settings.public.googleAnalyticsId
   window._gaq = window._gaq || []
   _gaq.push ['_setAccount', Meteor.settings.public.googleAnalyticsId]
 
-@_kmq = @_kmq || [];
+@_kmq = @_kmq || []
 
 do ->
   #TODO figure out how to eliminate all the duplicate recordView calls
