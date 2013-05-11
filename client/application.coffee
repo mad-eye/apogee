@@ -6,7 +6,7 @@
 @interviewRegex = /\/interview(?:\/([-0-9a-f]+)(?:\/([^#]*)))?/
 @transitoryIssues = null
 
-MadEye.fileLoader = new FileLoader
+MadEye.fileLoader = newFileLoader()
 #soon..
 #MadEye.editorState = new EditorState "editor"
 #MadEye.fileTree = new FileTree
