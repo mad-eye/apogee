@@ -88,7 +88,7 @@ Handlebars.registerHelper "fileIsDeleted", ->
   fileIsDeleted()
 
 Handlebars.registerHelper "editorFileName", ->
-  editorState?.path
+  MadEye.fileLoader?.editorFilePath
 
 Handlebars.registerHelper "editorIsLoading", ->
   editorState.loading == true
