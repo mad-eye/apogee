@@ -99,6 +99,47 @@ do ->
       file.save()
       Meteor.setTimeout ->
         Meteor.Router.to "/interview/#{project._id}/#{scratchPath}"
+      return "edit"
+
+    '/scratch/:id/:filepath': (id, filepath)->
+      if /hangout=true/.exec(document.location.href.split("?")[1])
+        Session.set "isHangout", true
+        isHangout = true
+
+      recordView page: "scratch", projectId: id
+      window.editorState ?= new EditorState "editor"
+      Session.set "projectId", id
+      MadEye.fileLoader.loadPath = filepath
+      "edit"
+
+    '/scratch/:id': (id)->
+      if /hangout=true/.exec(document.location.href.split("?")[1])
+        Session.set "isHangout", true
+        isHangout = true
+
+      recordView page: "scratch"
+      window.editorState ?= new EditorState "editor"
+      Session.set "projectId", id
+      "edit"
+
+    '/scratch': ->
+      # window.editorState ?= new EditorState "editor"
+      #TODO add more info here..
+      # recordView page: "create scratch"
+      project = new Project()
+      project.scratch = true
+      project.save()
+
+      Deps.nonreactive ->
+        file = new MadEye.File
+        file.projectId = project._id
+        file.path = scratchPath
+        file.scratch = true
+        file.save()
+      Meteor.setTimeout ->
+        Meteor.Router.to "/scratch/#{project._id}/#{scratchPath}"
+      # return "missing"
+
 
     '/unlinked-hangout': ->
       recordView page: "unlinked hangout"
