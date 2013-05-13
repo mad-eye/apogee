@@ -12,7 +12,7 @@ class MadEye.File extends MadEye.Model
   save: ->
     unless @path
       throw new Error "You must specify a path"
-    if !@_id and Files.findOne {path: @path, projectId: Session.get "projectId"}
+    if !@_id and Files.findOne {path: @path, projectId: @projectId}
       throw new Error "A file with that path already exists"
     super()
  
