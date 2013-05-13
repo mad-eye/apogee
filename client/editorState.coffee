@@ -220,7 +220,6 @@ Meteor.startup ->
     return unless file?.checksum?
     checksum = editorState.editor.checksum
     return unless checksum?
-    #console.log "isModified: #{checksum} vs #{file.checksum}"
     modified = checksum != file.checksum
     file.update {modified}
 
