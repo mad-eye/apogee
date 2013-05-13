@@ -42,7 +42,11 @@ Template.editorBar.events
     editorState.editor.showInvisibles = e.target.checked
 
   'change #syntaxModeSelect': (e) ->
-    editorState.editor.syntaxMode = e.target.value
+    workspace = Workspaces.findOne {userId: Meteor.userId()}
+    workspace ?= new MadEye.Workspace(userId: Meteor.userId())
+    workspace.modeOverrides ?= {}
+    workspace.modeOverrides[editorState.fileId] = e.target.value
+    workspace.save()
 
   'change #keybinding': (e) ->
     keybinding = e.target.value
@@ -263,6 +267,10 @@ Meteor.startup ->
     return unless Session.equals("editorRendered", true)
     file = Files.findOne(editorState.fileId)
     return unless file
+    workspace = Workspaces.findOne {userId: Meteor.userId()}
+    if workspace?.modeOverrides?[editorState.fileId]
+      editorState.editor.syntaxMode = workspace.modeOverrides[editorState.fileId]
+      return
     mode = file.aceMode
     #Check for shebang. We might have such lines as '#! /bin/env sh -x'
     unless mode
