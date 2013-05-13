@@ -3,10 +3,11 @@ Template.interview.helpers
     Projects.findOne()?._id
 
   scratchPads: ->
-    ScratchPads.find()
+    Files.find(scratch: true)
 
   selected: ->
-    if editorState.path == @path
+    file = Files.findOne editorState.fileId
+    if file?.path == @path
       "selected"
     else
       "unselected"
@@ -15,7 +16,7 @@ Template.interview.helpers
     @path
 
   fileId: ->
-    ScratchPads.findOne(path: editorState.path)._id
+    Files.findOne(scratch: true, path: editorState.path)._id
 
   #XXX TODO copied w/ shame from fileTreeView.coffee
   usersInFile: (file)->
@@ -39,12 +40,13 @@ Template.interview.events
   "click #addFileButton": (event)->
     filename = prompt "Enter a filename"
     return unless filename?
-    scratchPad = new MadEye.ScratchPad
+    file = new MadEye.File
+    file.scratch = true
     projectId = Session.get "projectId"
-    scratchPad.projectId = projectId
-    scratchPad.path = filename
+    file.projectId = projectId
+    file.path = filename
     try
-      scratchPad.save()
+      file.save()
       Meteor.Router.to "/interview/#{projectId}/#{filename}"
     catch e
       alert e.message
@@ -61,13 +63,14 @@ Template.interview.rendered = ->
   return if Dropzone.forElement "#dropzone"
   $("#dropzone").dropzone
     paramName: "file"
-    accept: (file, done)->
-      pad = new MadEye.ScratchPad
-      pad.path = file.name
-      pad.projectId = Session.get "projectId"
+    accept: (dropfile, done)->
+      file = new MadEye.File
+      file.scratch = true
+      file.path = dropfile.name
+      file.projectId = Session.get "projectId"
       try
-        pad.save()
-        @options.url = "#{Meteor.settings.public.azkabanUrl}/file-upload/#{pad._id}"
+        file.save()
+        @options.url = "#{Meteor.settings.public.azkabanUrl}/file-upload/#{file._id}"
         done()
       catch e
         alert e.message

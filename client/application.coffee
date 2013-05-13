@@ -106,10 +106,11 @@ do ->
       project.name = 'interview' #Needed for mongoose schema
       project.save()
 
-      scratchPad = new MadEye.ScratchPad
-      scratchPad.projectId = project._id
-      scratchPad.path = scratchPath
-      scratchPad.save()
+      file = new MadEye.File
+      file.projectId = project._id
+      file.path = scratchPath
+      file.scratch = true
+      file.save()
       Meteor.setTimeout ->
         Meteor.Router.to "/interview/#{project._id}/#{scratchPath}"
 
@@ -128,7 +129,6 @@ Deps.autorun ->
   Meteor.subscribe "files", projectId
   Meteor.subscribe "projects", projectId
   Meteor.subscribe "projectStatuses", projectId
-  Meteor.subscribe "scratchPads", projectId
   Meteor.subscribe "scriptOutputs", projectId
 
 Deps.autorun ->
