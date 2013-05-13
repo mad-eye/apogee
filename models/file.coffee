@@ -8,6 +8,13 @@ stripSlash = (path) ->
 class MadEye.File extends MadEye.Model
   constructor: (data) ->
     super data
+
+  save: ->
+    unless @path
+      throw new Error "You must specify a path"
+    if !@_id and Files.findOne {path: @path, projectId: Session.get "projectId"}
+      throw new Error "A file with that path already exists"
+    super()
  
 Object.defineProperty MadEye.File.prototype, 'filename',
   get: -> stripSlash(@path).split('/').pop()
