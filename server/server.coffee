@@ -13,6 +13,9 @@ Meteor.publish "scratchPads", (projectId)->
 Meteor.publish "projectStatuses", (projectId) ->
   ProjectStatuses.find projectId: projectId
 
+Meteor.publish "scriptOutputs", (projectId) ->
+  ScriptOutputs.find projectId: projectId
+
 Meteor.setInterval ->
   before = Date.now() - 20*1000
   ProjectStatuses.remove({heartbeat: {$lt:before}})
@@ -42,6 +45,9 @@ Projects.allow
 
 ScratchPads.allow
   insert: (userId, doc) -> true
+
+ScriptOutputs.allow
+  insert: -> true
 
 do ->
   getIcon = (projectId)->

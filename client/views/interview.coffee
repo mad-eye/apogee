@@ -6,7 +6,7 @@ Template.interview.helpers
     ScratchPads.find()
 
   selected: ->
-    if editorState.getPath() == @path
+    if editorState.path == @path
       "selected"
     else
       "unselected"
@@ -15,7 +15,7 @@ Template.interview.helpers
     @path
 
   fileId: ->
-    ScratchPads.findOne(path: editorState.getPath())._id
+    ScratchPads.findOne(path: editorState.path)._id
 
   #XXX TODO copied w/ shame from fileTreeView.coffee
   usersInFile: (file)->
@@ -38,6 +38,7 @@ Template.interview.events
 
   "click #addFileButton": (event)->
     filename = prompt "Enter a filename"
+    return unless filename?
     scratchPad = new MadEye.ScratchPad
     projectId = Session.get "projectId"
     scratchPad.projectId = projectId
@@ -47,6 +48,14 @@ Template.interview.events
       Meteor.Router.to "/interview/#{projectId}/#{filename}"
     catch e
       alert e.message
+
+  "click .hangout-link": (event) ->
+    warnFirefoxHangout()
+
+@warnFirefoxHangout = ->
+  if "Firefox" == BrowserDetect.browser
+    confirm "Firefox currently has performance issues in MadEye Hangouts.  For best experience, use Chrome or Safari.  Thanks, and we'll fix this soon!"
+  
 
 Template.interview.rendered = ->
   return if Dropzone.forElement "#dropzone"
@@ -74,4 +83,7 @@ Template.interviewIntro.events
     Meteor.setTimeout ->
       resizeEditor()
     , 0
+
+  "click .hangout-link": (event) ->
+    warnFirefoxHangout()
 

@@ -31,6 +31,10 @@ registerHangout = (projectId, hangoutUrl) ->
       console.error "Registering hangout url failed.", error if error
       console.error "Regstering hangout response:", response
 
+MadEye.fileLoader = new FileLoader
+#soon..
+#MadEye.editorState = new EditorState "editor"
+#MadEye.fileTree = new FileTree
 
 if Meteor.settings.public.googleAnalyticsId
   window._gaq = window._gaq || []
@@ -53,23 +57,15 @@ routeToEdit = (projectId, filePath, options={}) ->
   recordView {page, projectId, filePath, hangout: isHangout}
   Session.set 'projectId', projectId
   window.editorState ?= new EditorState "editor"
-  editorState.setPath filePath if filePath
+  MadEye.fileLoader.loadPath = filePath
   "edit"
 
 recordView = (params)->
-  event = _.extend {name: "pageView"}, params
-  Deps.autorun (computation)->
-    return if Meteor.loggingIn()
-    _.extend event, {userId: Meteor.userId()}
-    Events.insert event
-    computation.stop()
+  @Events.record "pageView", params
   Metrics.add _.extend({message:'load'}, params)
   _gaq.push ['_trackPageview'] if _gaq?
 
 do ->
-
-  #TODO figure out how to eliminate all the duplicate recordView calls
-
   Meteor.Router.add editRegex, (projectId, filePath, lineNumber, connectionId)->
     routeToEdit projectId, filePath
 
@@ -123,7 +119,6 @@ do ->
       'unlinkedHangout'
 
     '*': ->
-      console.error "Unknown page: #{window.location}"
       recordView page:'missing'
       "missing"
 
@@ -134,6 +129,7 @@ Deps.autorun ->
   Meteor.subscribe "projects", projectId
   Meteor.subscribe "projectStatuses", projectId
   Meteor.subscribe "scratchPads", projectId
+  Meteor.subscribe "scriptOutputs", projectId
 
 Deps.autorun ->
   return if Meteor.loggingIn()

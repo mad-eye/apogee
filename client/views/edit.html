@@ -67,13 +67,16 @@
 </template>
 
 <template name="editor">
-  <div id="editor"></div>
+  {{#constant}}<div id="editor"></div>{{/constant}}
 </template>
 
 <template name="editorFooter">
   {{#if isInterview}}
     <div id="programOutput">
-      <pre id="stdout"><span class="filler" style="color: #999">program output will go here</span></pre>
+      {{! would be nice to move logic from helper here into template
+      handlebars unfortunately generates a pile of whitespace that
+      breaks our pre tag }}
+      <pre id="stdout">{{{output}}}</pre>
     </div>
   {{/if}}
 </template>

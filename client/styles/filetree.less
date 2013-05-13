@@ -5,7 +5,18 @@
 
 #projectName {
   margin-bottom: @baseSpacing;
+  &.interview {
+    margin-bottom: 0;
+  }
+
+  .hangout-link {
+    float: right;
+    img {
+      padding-top: 13px;
+    }
+  }
 }
+
 
 .fileTree-indent(@numIndents) {
   padding-left: (@smallImageSize * @numIndents);

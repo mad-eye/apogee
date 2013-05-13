@@ -49,11 +49,11 @@ class FileTree
     return @isOpen(parentPath) and @isVisible(parentPath)
 
   select: (file) ->
+    return if file._id == @fileId
+    @fileId = file._id
     Session.set("selectedFileId", file._id)
     if !file.isDir
       Meteor.Router.to("/edit/#{file.projectId}/#{file.path}")
-    else
-      @toggle(file.path)
 
   _dependOnSessionPath: (path) ->
     @sessionPathsDeps[path] ?= new Deps.Dependency
@@ -101,3 +101,10 @@ class FileTree
 
 @FileTree = FileTree
 window.fileTree = new FileTree
+
+
+Deps.autorun ->
+  fileId = MadEye.fileLoader.selectedFileId
+  return unless fileId
+  file = Files.findOne fileId
+  fileTree.select file  
