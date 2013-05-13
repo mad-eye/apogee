@@ -125,7 +125,7 @@ class EditorState
             @revertFile()
           callback?()
         #ask azkaban to fetch the file from dementor unless this is a scratch pad
-        else unless file instanceof MadEye.ScratchPad
+        else unless file.scratch
           #TODO figure out why this sometimes gets stuck on..
           #editor.setReadOnly true
           Meteor.http.get @getFileUrl(fileId), timeout:5*1000, (error,response) =>

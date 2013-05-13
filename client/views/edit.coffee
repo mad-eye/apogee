@@ -151,7 +151,7 @@ Meteor.startup ->
     return unless Session.equals("editorRendered", true)
     fileId = MadEye.fileLoader.editorFileId
     return unless fileId?
-    file = Files.findOne(fileId) or ScratchPads.findOne(fileId)
+    file = Files.findOne(fileId)
     return unless file and file._id != editorState.fileId
     editorState.loadFile file, ->
       if editorState.doc.cursor
