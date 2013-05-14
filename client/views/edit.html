@@ -33,18 +33,20 @@
 
 <template name="fileTree">
 <div id="projectName"><h4>{{projectName}}</h4></div>
-<ul class="fileTree">
+<div id="fileTreeContainer">
+  <ul class="fileTree" id="fileTree">
     {{#each files}}
-      {{#if isVisible}}
-        <li class="{{fileEntryClass}}" id="{{_id}}">
-          <span>{{filename}} {{#if modified}}*{{/if}}</span>
-          {{#each usersInFile this}}
-            <img class="fileTreeUserIcon" alt="" destination="{{this.destination}}" src="{{this.img}}"</img>
-          {{/each}}
-        </li>
-      {{/if}}
+    {{#if isVisible}}
+    <li class="{{fileEntryClass}}" id="{{_id}}">
+      <span>{{filename}} {{#if modified}}*{{/if}}</span>
+      {{#each usersInFile this}}
+      <img class="fileTreeUserIcon" alt="" destination="{{this.destination}}" src="{{this.img}}"</img>
+           {{/each}}
+           </li>
+    {{/if}}
     {{/each}}
-</ul>
+  </ul>
+</div>
 </template>
 
 <template name="editorChrome">

@@ -151,6 +151,11 @@ Meteor.startup ->
   spinner.css('top', (newHeight - spinner.height())/2 )
   spinner.css('left', (container.width() - spinner.width())/2 )
 
+  fileTreeContainer = $("#fileTreeContainer")
+  fileTreeTop = fileTreeContainer.offset().top
+  newFileTreeHeight = Math.min(windowHeight - fileTreeTop - 2*baseSpacing, $("#fileTree").height())
+  $("#fileTreeContainer").height(newFileTreeHeight)
+
   ace.edit('editor').resize()
   
 

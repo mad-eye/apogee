@@ -28,10 +28,18 @@ class FileTree
     return unless dirPath
     @openedDirs.set dirPath, true
     @open getParentPath(dirPath), true if withParents
+    #HACK - this should be some event or reactive variable that a view pays attention to
+    Meteor.setTimeout ->
+      resizeEditor()
+    ,0
 
   close: (dirPath) ->
     return unless dirPath
     @openedDirs.set dirPath, false
+    #HACK - this should be some event or reactive variable that a view pays attention to
+    Meteor.setTimeout ->
+      resizeEditor()
+    ,0
 
   toggle: (dirPath) ->
     #Don't want the get to be reactive
@@ -39,6 +47,7 @@ class FileTree
       @close dirPath
     else
       @open dirPath
+    
 
   isOpen: (dirPath) ->
     @openedDirs.get dirPath
