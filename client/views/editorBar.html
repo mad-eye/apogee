@@ -2,7 +2,7 @@
   <div id="editorBar" class="clearfix">
 
     {{! SAVE}}
-    {{#unless isInterview}}
+    {{#unless isScratch}}
       <div id="saveBox" class="editorBarButton pull-left">
         {{#if showSaveSpinner}}
           <img id="saveSpinner" src="/images/file-loader.gif" alt="Loading..." />
@@ -68,7 +68,8 @@
       <div id="runCode" class="editorBarButton pull-left">
         <input type="button" class="btn btn-primary {{runButtonDisabled}}" {{runButtonDisabled}} title="Run the code, and return the result." value="Run" id="runButton" />
       </div>
-    {{else}}
+    {{/if}}
+    {{#unless isScratch}}
       {{! REVERT/DISCARD }}
       <div id="revertDiscard" class="editorBarButton pull-left">
         {{#unless fileIsDeleted}}
@@ -78,7 +79,7 @@
         {{/unless}}
       </div>
 
-    {{/if}}
+    {{/unless}}
   </div>
 
 

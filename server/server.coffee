@@ -7,9 +7,6 @@ Meteor.publish "files", (projectId)->
   Files.find
     projectId: projectId
 
-Meteor.publish "scratchPads", (projectId)->
-  ScratchPads.find projectId: projectId
-
 Meteor.publish "projectStatuses", (projectId) ->
   ProjectStatuses.find projectId: projectId
 
@@ -31,6 +28,7 @@ ProjectStatuses.allow
 Files.allow
   #TODO make this more restrictive  
   #For example, restrict by projectId
+  insert: (userId, doc) -> true
   update: (userId, docs, fields, modifier) -> true
   remove: (userId, docs) -> true
 
@@ -41,9 +39,6 @@ Events.allow
   insert: -> true
 
 Projects.allow
-  insert: (userId, doc) -> true
-
-ScratchPads.allow
   insert: (userId, doc) -> true
 
 ScriptOutputs.allow

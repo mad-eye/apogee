@@ -15,20 +15,25 @@ Template.editorBar.events
   'click #runButton': (e)->
     Session.set "codeExecuting", true
     editorBody = editorState.getEditor().getValue()
-    filename = editorState.path
-    Meteor.http.post "#{Meteor.settings.public.nurmengardUrl}/run", {data: {contents: editorBody, language: editorState.editor.syntaxMode}, headers: {"Content-Type":"application/json"}}, (error, result)->
-      Session.set "codeExecuting", false
-      #$("#codeExecutingSpinner").remove()
-      if error
-        #TODO handle this better
-        console.error "MADEYE ERROR", error
-      if result
-        response = JSON.parse(result.content)
-        response.filename = filename
-        response.projectId = Session.get("projectId")
-        response.timestamp = Date.now()
-        #might be nice to include filename here?
-        ScriptOutputs.insert response
+    filename = MadEye.fileLoader.editorFilePath
+    Meteor.http.post "#{Meteor.settings.public.nurmengardUrl}/run",
+      data:
+        contents: editorBody
+        language: editorState.editor.syntaxMode
+        fileName: filename
+      headers:
+        "Content-Type": "application/json"
+      , (error, result)->
+        Session.set "codeExecuting", false
+        if error
+          #TODO handle this better
+          console.error "MADEYE ERROR", error
+        if result
+          response = JSON.parse(result.content)
+          response.filename = filename
+          response.projectId = Session.get("projectId")
+          response.timestamp = Date.now()
+          ScriptOutputs.insert response
 
   'change #wordWrap': (e) ->
     editorState.editor.wordWrap = e.target.checked
@@ -66,7 +71,7 @@ Template.editorBar.events
       fileId: file._id
       filePath: file.path
     file.remove()
-    editorState.path = ""
+    MadEye.fileLoader.loadPath = ""
     #XXX: This will eventually not be necessary.
     editorState.fileId = null
 
@@ -94,8 +99,8 @@ Template.editorBar.helpers
     editorState.working == true
 
   buttonDisabled : ->
-    filePath = editorState.path
-    file = Files.findOne({path: filePath}) if filePath?
+    fileId = editorState.fileId
+    file = Files.findOne(fileId) if fileId?
     if !file?.modified or editorState.working==true or projectIsClosed()
       "disabled"
     else
@@ -256,7 +261,7 @@ Meteor.startup ->
   #Syntax Modes from file
   Deps.autorun ->
     return unless Session.equals("editorRendered", true)
-    file = Files.findOne(editorState.fileId) or ScratchPads.findOne(path: editorState.path)
+    file = Files.findOne(editorState.fileId)
     return unless file
     mode = file.aceMode
     #Check for shebang. We might have such lines as '#! /bin/env sh -x'

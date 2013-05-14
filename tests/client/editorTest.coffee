@@ -26,8 +26,8 @@ describe "editorChrome", ->
         path: 'a/path/whee.txt'
         modified: true
         isTest: true
-      editorState.path = file.path
-
+      file.save()
+      editorState.fileId = file._id
       helpers = Template.editorBar._tmpl_data.helpers
 
       Meteor.flush()
@@ -35,7 +35,7 @@ describe "editorChrome", ->
     after ->
       Meteor.call "cleanProject", projectId
 
-    describe "when project.closed and !file.modified", ->
+    describe "when project.closed==false and file.modified==false", ->
       before ->
         project.closed = false
         project.save()
@@ -44,11 +44,15 @@ describe "editorChrome", ->
         Meteor.flush()
 
       it "should have a disabled button", ->
+        #Hack, but this extra-flushes for mocha-phantomjs, which needs it.
+        Meteor.flush()
         assert.equal helpers.buttonDisabled(), "disabled"
       it 'should not show save spinner', ->
+        #Hack, but this extra-flushes for mocha-phantomjs, which needs it.
+        Meteor.flush()
         assert.isFalse helpers.showSaveSpinner()
 
-    describe "when project.closed and file.modified", ->
+    describe "when project.closed==false and file.modified==true", ->
       before ->
         project.closed = false
         project.save()
@@ -60,6 +64,40 @@ describe "editorChrome", ->
         #Hack, but this extra-flushes for mocha-phantomjs, which needs it.
         Meteor.flush()
         assert.equal helpers.buttonDisabled(), ""
+      it 'should not show save spinner', ->
+        #Hack, but this extra-flushes for mocha-phantomjs, which needs it.
+        Meteor.flush()
+        assert.isFalse helpers.showSaveSpinner()
+
+    describe "when project.closed==true and file.modified==true", ->
+      before ->
+        project.closed = true
+        project.save()
+        file.modified = true
+        file.save()
+        Meteor.flush()
+
+      it "should have a disabled button", ->
+        #Hack, but this extra-flushes for mocha-phantomjs, which needs it.
+        Meteor.flush()
+        assert.equal helpers.buttonDisabled(), "disabled"
+      it 'should not show save spinner', ->
+        #Hack, but this extra-flushes for mocha-phantomjs, which needs it.
+        Meteor.flush()
+        assert.isFalse helpers.showSaveSpinner()
+
+    describe "when project.closed==true and file.modified==true", ->
+      before ->
+        project.closed = true
+        project.save()
+        file.modified = true
+        file.save()
+        Meteor.flush()
+
+      it "should  have a disabled button", ->
+        #Hack, but this extra-flushes for mocha-phantomjs, which needs it.
+        Meteor.flush()
+        assert.equal helpers.buttonDisabled(), "disabled"
       it 'should not show save spinner', ->
         #Hack, but this extra-flushes for mocha-phantomjs, which needs it.
         Meteor.flush()
