@@ -76,19 +76,23 @@ cursorToRange = (editorDoc, cursor) ->
     offset += line.length + 1
 
 @projectIsClosed = ->
-  Projects.findOne()?.closed
+  Projects.findOne(Session.get 'projectId')?.closed
   
 @isInterview = ->
   Projects.findOne(Session.get "projectId")?.interview
 
+@isScratch = ->
+  project = Projects.findOne(Session.get "projectId")
+  project?.interview or project?.scratch
+
 fileIsDeleted = ->
-  Files.findOne(path:editorState.path)?.removed
+  Files.findOne(path:MadEye.fileLoader.editorFilePath)?.removed
 
 Handlebars.registerHelper "fileIsDeleted", ->
   fileIsDeleted()
 
 Handlebars.registerHelper "editorFileName", ->
-  editorState?.path
+  MadEye.fileLoader?.editorFilePath
 
 Handlebars.registerHelper "editorIsLoading", ->
   editorState.loading == true
@@ -96,7 +100,7 @@ Handlebars.registerHelper "editorIsLoading", ->
 Handlebars.registerHelper "isInterview", isInterview
 
 fileIsModifiedLocally = ->
-  Files.findOne(path:editorState.path)?.modified_locally
+  Files.findOne(path:MadEye.fileLoader.editorFilePath)?.modified_locally
 
 projectIsLoading = ->
   not (Projects.findOne(Session.get "projectId")? || Session.equals 'fileCount', Files.find().count())
@@ -183,6 +187,8 @@ Deps.autorun (computation) ->
 Handlebars.registerHelper "hangoutLink", ->
   "#{Meteor.settings.public.hangoutUrl}#{document.location}"
 
+Handlebars.registerHelper 'isScratch', ->
+  isScratch()
 
 Template.editorFooter.helpers
   output: ->
