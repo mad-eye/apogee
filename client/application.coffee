@@ -5,7 +5,6 @@
 @editRegex = /\/(edit|interview)\/([-\w]+)\/?([^#]*)#?(?:L([0-9]*))?(?:S([0-9a-f-]*))?/
 @transitoryIssues = null
 
-MadEye.fileLoader = new FileLoader
 #soon..
 #MadEye.editorState = new EditorState "editor"
 #MadEye.fileTree = new FileTree
