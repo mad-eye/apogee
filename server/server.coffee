@@ -13,6 +13,9 @@ Meteor.publish "projectStatuses", (projectId) ->
 Meteor.publish "scriptOutputs", (projectId) ->
   ScriptOutputs.find projectId: projectId
 
+Meteor.publish "workspaces", (projectId) ->
+  Workspaces.find userId: @userId
+
 Meteor.setInterval ->
   before = Date.now() - 20*1000
   ProjectStatuses.remove({heartbeat: {$lt:before}})
@@ -43,6 +46,10 @@ Projects.allow
 
 ScriptOutputs.allow
   insert: -> true
+
+Workspaces.allow
+  insert: -> true
+  update: -> true
 
 do ->
   getIcon = (projectId)->
