@@ -112,6 +112,7 @@ Deps.autorun ->
   Meteor.subscribe "projects", projectId
   Meteor.subscribe "projectStatuses", projectId
   Meteor.subscribe "scriptOutputs", projectId
+  Meteor.subscribe "workspaces", projectId
 
 Deps.autorun ->
   return if Meteor.loggingIn()

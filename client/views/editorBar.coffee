@@ -11,6 +11,16 @@ inputs = {
   'keyboardSelect': 'ace'
 }
 
+getWorkspace = ->
+  Workspaces.findOne {userId: Meteor.userId()}
+
+setWorkspaceConfig = (key, value)->
+  workspace = getWorkspace()
+  workspace ?= new MadEye.Workspace(userId: Meteor.userId())
+  workspace.save()
+  workspace[key] = value
+  workspace.save()
+
 Template.editorBar.events
   'click #runButton': (e)->
     Session.set "codeExecuting", true
@@ -36,27 +46,30 @@ Template.editorBar.events
           ScriptOutputs.insert response
 
   'change #wordWrap': (e) ->
-    editorState.editor.wordWrap = e.target.checked
+    setWorkspaceConfig "wordWrap", e.target.checked
 
   'change #showInvisibles': (e) ->
-    editorState.editor.showInvisibles = e.target.checked
+    setWorkspaceConfig "showInvisibles", e.target.checked
 
   'change #syntaxModeSelect': (e) ->
-    editorState.editor.syntaxMode = e.target.value
+    workspace = getWorkspace()
+    workspace.modeOverrides ?= {}
+    workspace.modeOverrides[editorState.fileId] = e.target.value
+    workspace.save()
 
   'change #keybinding': (e) ->
     keybinding = e.target.value
     keybinding = null if 'ace' == keybinding
-    Session.set 'keybinding', keybinding
+    setWorkspaceConfig "keybinding", keybinding
 
   'change #themeSelect': (e) ->
-    editorState.editor.theme = e.target.value
+    setWorkspaceConfig "theme", e.target.value
 
   'change #useSoftTabs': (e) ->
-    editorState.editor.useSoftTabs = e.target.checked
+    setWorkspaceConfig "useSoftTabs", e.target.checked
 
   'change #tabSize': (e) ->
-    editorState.editor.tabSize = parseInt e.target.value, 10
+    setWorkspaceConfig("tabSize", parseInt(e.target.value, 10))
 
   'click #revertFile': (event) ->
     el = $(event.target)
@@ -116,6 +129,12 @@ Template.editorBar.helpers
   isHangout: ->
     Session.get "isHangout"
 
+  workspace: ->
+    getWorkspace()
+
+  keybinding: (binding)->
+    keybinding = getWorkspace()?.keybinding
+    keybinding == binding
 
 #XXX: Clean this and MadEye.ACE_MODES up, into one structure.
 @syntaxModes =
@@ -263,6 +282,10 @@ Meteor.startup ->
     return unless Session.equals("editorRendered", true)
     file = Files.findOne(editorState.fileId)
     return unless file
+    workspace = Workspaces.findOne {userId: Meteor.userId()}
+    if workspace?.modeOverrides?[editorState.fileId]
+      editorState.editor.syntaxMode = workspace.modeOverrides[editorState.fileId]
+      return
     mode = file.aceMode
     #Check for shebang. We might have such lines as '#! /bin/env sh -x'
     unless mode
@@ -278,7 +301,9 @@ Meteor.startup ->
   #Keybinding
   Deps.autorun (computation) ->
     return unless Session.equals("editorRendered", true)
-    keybinding = Session.get 'keybinding'
+    workspace = getWorkspace()
+    return unless workspace
+    keybinding = workspace.keybinding
     unless keybinding
       #No keybinding means Ace
       editorState.getEditor().setKeyboardHandler null
@@ -291,3 +316,12 @@ Meteor.startup ->
         handler = module.handler
         editorState.getEditor().setKeyboardHandler handler
 
+  Deps.autorun (computation) ->
+    return unless Session.equals("editorRendered", true)
+    workspace = getWorkspace()
+    return unless workspace
+    editorState.editor.showInvisibles = workspace.showInvisibles
+    editorState.editor.tabSize = workspace.tabSize
+    editorState.editor.theme = workspace.theme
+    editorState.editor.useSoftTabs = workspace.useSoftTabs
+    editorState.editor.wordWrap = workspace.wordWrap
