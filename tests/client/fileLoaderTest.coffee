@@ -18,7 +18,7 @@ Meteor.startup ->
       image.save()
 
     beforeEach ->
-      fileLoader = new FileLoader
+      fileLoader = newFileLoader()
 
     checkOutput = (fileLoader, editorFile, selectedFile, alert) ->
       selectedFile ?= editorFile
