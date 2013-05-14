@@ -28,6 +28,7 @@ ProjectStatuses.allow
 Files.allow
   #TODO make this more restrictive  
   #For example, restrict by projectId
+  insert: (userId, doc) -> true
   update: (userId, docs, fields, modifier) -> true
   remove: (userId, docs) -> true
 
