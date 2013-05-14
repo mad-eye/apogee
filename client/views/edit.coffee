@@ -1,6 +1,6 @@
 # TODO Don't need to wrap this in do-> in Meteor 0.6.0
 
-handleShareError = (err) ->
+@handleShareError = (err) ->
   message = err.message ? err
   Metrics.add
     level:'error'
@@ -74,30 +74,6 @@ cursorToRange = (editorDoc, cursor) ->
       return range
     #+1 for newline
     offset += line.length + 1
-
-@projectIsClosed = ->
-  Projects.findOne(Session.get 'projectId')?.closed
-  
-@isInterview = ->
-  Projects.findOne(Session.get "projectId")?.interview
-
-@isScratch = ->
-  project = Projects.findOne(Session.get "projectId")
-  project?.interview or project?.scratch
-
-fileIsDeleted = ->
-  Files.findOne(path:MadEye.fileLoader.editorFilePath)?.removed
-
-Handlebars.registerHelper "fileIsDeleted", ->
-  fileIsDeleted()
-
-Handlebars.registerHelper "editorFileName", ->
-  MadEye.fileLoader?.editorFilePath
-
-Handlebars.registerHelper "editorIsLoading", ->
-  editorState.loading == true
-
-Handlebars.registerHelper "isInterview", isInterview
 
 fileIsModifiedLocally = ->
   Files.findOne(path:MadEye.fileLoader.editorFilePath)?.modified_locally
@@ -184,11 +160,13 @@ Deps.autorun (computation) ->
     resizeEditor()
   computation.stop()
 
-Handlebars.registerHelper "hangoutLink", ->
-  "#{Meteor.settings.public.hangoutUrl}#{document.location}"
+Template.editorChrome.helpers
+  "editorFileName": ->
+    MadEye.fileLoader?.editorFilePath
 
-Handlebars.registerHelper 'isScratch', ->
-  isScratch()
+Template.editorOverlay.helpers
+  "editorIsLoading": ->
+    editorState.loading == true
 
 Template.editorFooter.helpers
   output: ->
