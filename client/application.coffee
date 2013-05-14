@@ -2,8 +2,7 @@
 #PATH_TO_FILE and LINE_NUMBER are optional
 #editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?([0-9]*)?/
 #TODO should probably OR the line and session fields
-@editRegex = /\/edit\/([-0-9A-z]+)\/?([^#]*)#?(?:L([0-9]*))?(?:S([0-9a-f-]*))?/
-@interviewRegex = /\/interview(?:\/([-\w]+)(?:\/([^#]*)))?/
+@editRegex = /\/(?:edit|interview)\/([-\w]+)\/?([^#]*)#?(?:L([0-9]*))?(?:S([0-9a-f-]*))?/
 @transitoryIssues = null
 
 MadEye.fileLoader = new FileLoader
@@ -26,6 +25,7 @@ do ->
   Meteor.Router.add editRegex, (projectId, filePath, lineNumber, connectionId)->
     Deps.nonreactive ->
       isHangout = false
+      #TODO record type..edit/interview/scratch
       if /hangout=true/.exec(document.location.href.split("?")[1])
         Session.set "isHangout", true
         isHangout = true
@@ -66,47 +66,24 @@ do ->
       recordView page: "faq"
       'faq'
 
-    '/interview/:id/:filepath': (id, filepath)->
-      if /hangout=true/.exec(document.location.href.split("?")[1])
-        Session.set "isHangout", true
-        isHangout = true
-
-      recordView page: "interview", projectId: id
-      window.editorState ?= new EditorState "editor"
-      Session.set "projectId", id
-      MadEye.fileLoader.loadPath = filepath
-      "edit"
-
-    '/interview/:id': (id)->
-      if /hangout=true/.exec(document.location.href.split("?")[1])
-        Session.set "isHangout", true
-        isHangout = true
-
-      recordView page: "interview"
-      window.editorState ?= new EditorState "editor"
-      Session.set "projectId", id
-      "edit"
-
     '/interview': ->
-      window.editorState ?= new EditorState "editor"
       #TODO add more info here..
       recordView page: "create interview"
       project = new Project()
       project.interview = true
       project.save()
 
-      file = new MadEye.File
-      file.projectId = project._id
-      file.path = scratchPath
-      file.scratch = true
-      file.save()
+      Deps.nonreactive ->
+        file = new MadEye.File
+        file.projectId = project._id
+        file.path = scratchPath
+        file.scratch = true
+        file.save()
       Meteor.setTimeout ->
-        Meteor.Router.to "/interview/#{project._id}/#{scratchPath}"
+        Meteor.Router.to "/edit/#{project._id}/#{scratchPath}"
       , 0
-      return "edit"
 
     '/scratch': ->
-      # window.editorState ?= new EditorState "editor"
       #TODO add more info here..
       # recordView page: "create scratch"
       project = new Project()
