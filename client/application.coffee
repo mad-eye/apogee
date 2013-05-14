@@ -2,8 +2,8 @@
 #PATH_TO_FILE and LINE_NUMBER are optional
 #editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?([0-9]*)?/
 #TODO should probably OR the line and session fields
-@editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?(?:L([0-9]*))?(?:S([0-9a-f-]*))?/
-@interviewRegex = /\/interview(?:\/([-0-9a-f]+)(?:\/([^#]*)))?/
+@editRegex = /\/edit\/([-0-9A-z]+)\/?([^#]*)#?(?:L([0-9]*))?(?:S([0-9a-f-]*))?/
+@interviewRegex = /\/interview(?:\/([-\w]+)(?:\/([^#]*)))?/
 @transitoryIssues = null
 
 MadEye.fileLoader = new FileLoader
@@ -24,17 +24,20 @@ do ->
     _gaq.push ['_trackPageview'] if _gaq?
 
   Meteor.Router.add editRegex, (projectId, filePath, lineNumber, connectionId)->
-    isHangout = false
-    if /hangout=true/.exec(document.location.href.split("?")[1])
-      Session.set "isHangout", true
-      isHangout = true
-    recordView {page: "editor", projectId: projectId, filePath: filePath, hangout: isHangout}
-    Session.set 'projectId', projectId
-    Metrics.add {message:'load', filePath, lineNumber, connectionId, isHangout}
-    window.editorState ?= new EditorState "editor"
-    
-    MadEye.fileLoader.loadPath = filePath
-    fileTree.open MadEye.fileLoader.editorFilePath, true
+    Deps.nonreactive ->
+      isHangout = false
+      if /hangout=true/.exec(document.location.href.split("?")[1])
+        Session.set "isHangout", true
+        isHangout = true
+      recordView {page: "editor", projectId: projectId, filePath: filePath, hangout: isHangout}
+      Session.set 'projectId', projectId
+      Metrics.add {message:'load', filePath, lineNumber, connectionId, isHangout}
+      window.editorState ?= new EditorState "editor"
+      
+      console.log "Routing to", filePath
+      MadEye.fileLoader.loadPath = filePath
+      #This editorFilePath probably isn't set yet, because we haven't flushed
+      fileTree.open MadEye.fileLoader.editorFilePath, true
 
     _kmq.push ['record', 'opened file', {projectId: projectId, filePath: filePath}]
     "edit"
@@ -99,28 +102,8 @@ do ->
       file.save()
       Meteor.setTimeout ->
         Meteor.Router.to "/interview/#{project._id}/#{scratchPath}"
+      , 0
       return "edit"
-
-    '/scratch/:id/:filepath': (id, filepath)->
-      if /hangout=true/.exec(document.location.href.split("?")[1])
-        Session.set "isHangout", true
-        isHangout = true
-
-      recordView page: "scratch", projectId: id
-      window.editorState ?= new EditorState "editor"
-      Session.set "projectId", id
-      MadEye.fileLoader.loadPath = filepath
-      "edit"
-
-    '/scratch/:id': (id)->
-      if /hangout=true/.exec(document.location.href.split("?")[1])
-        Session.set "isHangout", true
-        isHangout = true
-
-      recordView page: "scratch"
-      window.editorState ?= new EditorState "editor"
-      Session.set "projectId", id
-      "edit"
 
     '/scratch': ->
       # window.editorState ?= new EditorState "editor"
@@ -137,9 +120,8 @@ do ->
         file.scratch = true
         file.save()
       Meteor.setTimeout ->
-        Meteor.Router.to "/scratch/#{project._id}/#{scratchPath}"
-      # return "missing"
-
+        Meteor.Router.to "/edit/#{project._id}/#{scratchPath}"
+      , 0
 
     '/unlinked-hangout': ->
       recordView page: "unlinked hangout"

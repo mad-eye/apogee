@@ -57,8 +57,6 @@ class FileTree
       Meteor.Router.to("/edit/#{file.projectId}/#{file.path}")
     else if !file.isDir and project.interview
       Meteor.Router.to("/interview/#{file.projectId}/#{file.path}")
-    else if !file.isDir and project.scratch
-      Meteor.Router.to("/scratch/#{file.projectId}/#{file.path}")
 
   _dependOnSessionPath: (path) ->
     @sessionPathsDeps[path] ?= new Deps.Dependency
