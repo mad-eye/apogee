@@ -22,16 +22,13 @@ widget = ReactiveMachine.new {
      
 }
 ###
-
 class @ReactiveMachine
   constructor: (data) ->
-    #NB: For some reason, data.sentries is undefined below setting properties.
-    #Why, I have no idea.
     @sentries = data.sentries
     @_deps = {}
 
-    for name, data of data.properties
-      @addProperty name, data
+    for name, descriptor of data.properties
+      @addProperty name, descriptor
 
     self = this
     for sentry in @sentries
@@ -45,9 +42,9 @@ class @ReactiveMachine
   changed: (key) ->
     @_deps[key]?.changed()
 
-  addProperty: (name, data) ->
+  addProperty: (name, options) ->
     descriptor = {}
-    getter = data.get
+    getter = options.get
     if 'string' == typeof getter
       varName = getter
       getter = -> return @[varName]
@@ -55,7 +52,7 @@ class @ReactiveMachine
       descriptor.get = ->
         @depend name
         return getter.call(this)
-    setter = data.set
+    setter = options.set
     if 'string' == typeof setter
       varName = setter
       setter = (value) -> @[varName] = value
