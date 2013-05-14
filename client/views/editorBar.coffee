@@ -15,7 +15,7 @@ Template.editorBar.events
   'click #runButton': (e)->
     Session.set "codeExecuting", true
     editorBody = editorState.getEditor().getValue()
-    filename = editorState.path
+    filename = MadEye.fileLoader.editorFilePath
     Meteor.http.post "#{Meteor.settings.public.nurmengardUrl}/run",
       data:
         contents: editorBody
@@ -71,7 +71,7 @@ Template.editorBar.events
       fileId: file._id
       filePath: file.path
     file.remove()
-    editorState.path = ""
+    MadEye.fileLoader.loadPath = ""
     #XXX: This will eventually not be necessary.
     editorState.fileId = null
 
@@ -99,8 +99,8 @@ Template.editorBar.helpers
     editorState.working == true
 
   buttonDisabled : ->
-    filePath = editorState.path
-    file = Files.findOne({path: filePath}) if filePath?
+    fileId = editorState.fileId
+    file = Files.findOne(fileId) if fileId?
     if !file?.modified or editorState.working==true or projectIsClosed()
       "disabled"
     else

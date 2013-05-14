@@ -12,12 +12,6 @@ Template.interview.helpers
     else
       "unselected"
 
-  path: ->
-    @path
-
-  fileId: ->
-    Files.findOne(scratch: true, path: editorState.path)._id
-
   #XXX TODO copied w/ shame from fileTreeView.coffee
   usersInFile: (file)->
     projectId = Session.get "projectId"
