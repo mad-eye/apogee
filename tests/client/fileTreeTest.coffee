@@ -175,41 +175,41 @@ describe "FileTree", ->
     #toSpy = sinon.spy()
     called = null
     calledArgs = null
-    toSpy = () ->
-      called = true
-      calledArgs = _.toArray arguments
+    toSpy = null
 
 
     oldTo = null
     file = dir = null
     projectId = Meteor.uuid()
+    oldTo = Meteor.Router.to
 
     before ->
-      oldTo = Meteor.Router.to
-      Meteor.Router.to = toSpy
       file = MadEye.File.create path:'a4/b4/file.txt', isDir:false, projectId:projectId
       dir = MadEye.File.create path:'a4/b4', isDir:true, projectId:projectId
 
     beforeEach ->
+ 	    toSpy = () ->
+        called = true
+        calledArgs = _.toArray arguments
+      Meteor.Router.to = toSpy
+
       fileTree = new FileTree
-      called = null
+      called = false
       calledArgs = null
 
     after ->
       Meteor.Router.to = oldTo
 
-    it 'should set selectedFileId for file and navigate', ->
+    it 'should set fileTree.fileId for file and navigate', ->
       fileTree.select file
-      assert.equal Session.get("selectedFileId"), file._id
-      assert.ok called
+      assert.equal fileTree.fileId, file._id
+      assert.isTrue called
       assert.equal calledArgs[0], "/edit/#{file.projectId}/#{file.path}"
-      assert.ok !fileTree.isOpen file.path
 
-    it 'should set selectedFileId and open for dir, but not navigate', ->
+    it 'should set fileTree.fileId for dir, but not navigate', ->
       fileTree.select dir
-      assert.equal Session.get("selectedFileId"), dir._id
-      assert.ok !called
-      assert.isTrue fileTree.isOpen dir.path
+      assert.equal fileTree.fileId, dir._id
+      assert.isFalse called
 
   describe 'sessionPaths', ->
     sessionPaths = null
