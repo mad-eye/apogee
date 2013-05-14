@@ -81,6 +81,10 @@ cursorToRange = (editorDoc, cursor) ->
 @isInterview = ->
   Projects.findOne(Session.get "projectId")?.interview
 
+@isScratch = ->
+  project = Projects.findOne(Session.get "projectId")
+  project?.interview or project?.scratch
+
 fileIsDeleted = ->
   Files.findOne(path:MadEye.fileLoader.editorFilePath)?.removed
 
@@ -183,6 +187,8 @@ Deps.autorun (computation) ->
 Handlebars.registerHelper "hangoutLink", ->
   "#{Meteor.settings.public.hangoutUrl}#{document.location}"
 
+Handlebars.registerHelper 'isScratch', ->
+  isScratch()
 
 Template.editorFooter.helpers
   output: ->
