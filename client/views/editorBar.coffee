@@ -116,6 +116,8 @@ Template.editorBar.helpers
   isHangout: ->
     Session.get "isHangout"
 
+  "fileIsDeleted": ->
+    fileIsDeleted()
 
 #XXX: Clean this and MadEye.ACE_MODES up, into one structure.
 @syntaxModes =
