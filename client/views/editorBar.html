@@ -56,9 +56,9 @@
 
         <!--<label class="select">:</label>-->
         <select id="keybinding" class="input-small" size="1">
-          <option value="ace" {{#unless Session 'keybinding'}}selected{{/unless}}>Ace Keys</option>
-          <option value="vim" {{#if SessionEquals 'keybinding' 'vim'}}selected{{/if}}>Vim</option>
-          <option value="emacs" {{#if SessionEquals 'keybinding' 'emacs'}}selected{{/if}}>Emacs</option>
+          <option value="ace" {{#unless keybinding}}selected{{/unless}}>Ace Keys</option>
+          <option value="vim" {{#if keybinding 'vim'}}selected{{/if}}>Vim</option>
+          <option value="emacs" {{#if keybinding 'emacs'}}selected{{/if}}>Emacs</option>
         </select>
       </form>
     </div>
