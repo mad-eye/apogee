@@ -2,7 +2,7 @@
 #PATH_TO_FILE and LINE_NUMBER are optional
 #editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?([0-9]*)?/
 #TODO should probably OR the line and session fields
-@editRegex = /\/(?:edit|interview)\/([-\w]+)\/?([^#]*)#?(?:L([0-9]*))?(?:S([0-9a-f-]*))?/
+@editRegex = /\/(edit|interview)\/([-\w]+)\/?([^#]*)#?(?:L([0-9]*))?(?:S([0-9a-f-]*))?/
 @transitoryIssues = null
 
 MadEye.fileLoader = new FileLoader
@@ -22,19 +22,18 @@ do ->
     @Events.record "pageView", params
     _gaq.push ['_trackPageview'] if _gaq?
 
-  Meteor.Router.add editRegex, (projectId, filePath, lineNumber, connectionId)->
+  Meteor.Router.add editRegex, (page, projectId, filePath, lineNumber, connectionId)->
     Deps.nonreactive ->
       isHangout = false
       #TODO record type..edit/interview/scratch
       if /hangout=true/.exec(document.location.href.split("?")[1])
         Session.set "isHangout", true
         isHangout = true
-      recordView {page: "editor", projectId: projectId, filePath: filePath, hangout: isHangout}
+      recordView {page, projectId, filePath, hangout: isHangout}
       Session.set 'projectId', projectId
       Metrics.add {message:'load', filePath, lineNumber, connectionId, isHangout}
       window.editorState ?= new EditorState "editor"
       
-      console.log "Routing to", filePath
       MadEye.fileLoader.loadPath = filePath
       #This editorFilePath probably isn't set yet, because we haven't flushed
       fileTree.open MadEye.fileLoader.editorFilePath, true
