@@ -3,7 +3,6 @@
 #editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?([0-9]*)?/
 #TODO should probably OR the line and session fields
 @editRegex = /\/(edit|interview)\/([-\w]+)\/?([^#]*)#?(?:L([0-9]*))?(?:S([0-9a-f-]*))?/
-@transitoryIssues = null
 
 #soon..
 #MadEye.editorState = new EditorState "editor"
@@ -117,9 +116,8 @@ Deps.autorun ->
   return if Meteor.loggingIn()
   Meteor.loginAnonymously() unless Meteor.user()
 
+#TODO: Replace this with MadEye.transitoryIssues
+@transitoryIssues = null
 Meteor.startup ->
   transitoryIssues = new TransitoryIssues
-  projectStatus = ProjectStatuses.findOne {sessionId:Session.get('sessionId')}
-  Meteor.call "updateProjectStatusHeartbeat", Session.get("sessionId"), Session.get("projectId")
-
 
