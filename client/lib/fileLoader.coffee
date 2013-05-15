@@ -17,8 +17,8 @@
       alert:
         get: '_alert'
         set: '_alert'
-    sentries: [
-      (computation) ->
+    sentries:
+      _loadFileSentry: ->
         @depend 'loadId'
         @depend 'loadPath'
         if @_loadPath
@@ -27,13 +27,12 @@
           file = Files.findOne @_loadId unless file
         return unless file
         @_loadId = @_loadPath = null
-        @_selectedFileId = file._id
-        @changed 'selectedFileId'
-        @_selectedFilePath = file.path
-        @changed 'selectedFilePath'
+        unless @_selectedFileId == file._id
+          @_selectedFileId = file._id
+          @changed 'selectedFileId'
+          @_selectedFilePath = file.path
+          @changed 'selectedFilePath'
 
-        if file.isDir
-          return
         if file.isLink
           @alert =
             level: "error"
@@ -47,12 +46,22 @@
             message: file.path
           return
 
+        @alert = null
+        return if file.isDir
+
         #Else, this is a normal file. 
-        @_editorFileId = file._id
-        @changed 'editorFileId'
-        @_editorFilePath = file.path
-        @changed 'editorFilePath'
-    ]
+        unless @_editorFileId == file._id
+          @_editorFileId = file._id
+          @changed 'editorFileId'
+          @_editorFilePath = file.path
+          @changed 'editorFilePath'
+
+      _routeSentry: ->
+        return unless @editorFilePath
+        project = getProject()
+        return unless project
+        type = if project.interview then "interview" else "edit"
+        Meteor.Router.to("/#{type}/#{project._id}/#{@editorFilePath}")
 
 MadEye.fileLoader = newFileLoader()
 
