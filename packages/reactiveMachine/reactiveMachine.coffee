@@ -24,16 +24,21 @@ widget = ReactiveMachine.new {
 ###
 class @ReactiveMachine
   constructor: (data) ->
-    @sentries = data.sentries
     @_deps = {}
 
     for name, descriptor of data.properties
       @addProperty name, descriptor
 
     self = this
-    for sentry in @sentries
+    sentries = data.sentries
+
+    startSentry = (fixedName, fixedSentry) ->
+      self[fixedName] = fixedSentry
       Deps.autorun (computation) ->
-        sentry.call self, computation
+        self[fixedName] computation
+
+    for name, sentry of data.sentries
+      startSentry name, sentry
 
   depend: (key) ->
     @_deps[key] ?= new Deps.Dependency
