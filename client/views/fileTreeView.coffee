@@ -10,6 +10,8 @@ do ->
       clazz = "fileTree-item"
       if @isDir
         clazz += " directory " + if fileTree.isOpen @path then "open" else "closed"
+      else if @scratch
+        clazz += " scratch"
       else
         clazz += " file"
       clazz += " level" + @depth
