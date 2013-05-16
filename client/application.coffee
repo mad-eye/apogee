@@ -30,10 +30,13 @@ do ->
       Metrics.add {message:'load', filePath, lineNumber, connectionId, isHangout}
       window.editorState ?= new EditorState "editor"
       
-      filePath = filePath or "__SCRATCH_BUFFER"
-      MadEye.fileLoader.loadPath = filePath
-      #This editorFilePath probably isn't set yet, because we haven't flushed
-      fileTree.open MadEye.fileLoader.editorFilePath, true
+    #Grab the (a?) scratch file if we are just going to the project
+    unless filePath
+      scratchFile = Files.findOne {scratch:true, projectId}
+      filePath = scratchFile.path if scratchFile
+    MadEye.fileLoader.loadPath = filePath
+    #This editorFilePath probably isn't set yet, because we haven't flushed
+    fileTree.open MadEye.fileLoader.editorFilePath, true
 
     "edit"
 
