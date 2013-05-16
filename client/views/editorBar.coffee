@@ -1,25 +1,19 @@
-#editor.setShowInvisibles()
-#editor.setMode()
-#editor.setTheme()
-#editor.setKeyboardHandler()
-
-
-inputs = {
-  'themeSelect': 'eclipse'
-  'modeSelect': null
-  'showInvisibles': false
-  'keyboardSelect': 'ace'
-}
-
 getWorkspace = ->
   Workspaces.findOne {userId: Meteor.userId()}
 
 setWorkspaceConfig = (key, value)->
   workspace = getWorkspace()
   workspace ?= new MadEye.Workspace(userId: Meteor.userId())
-  workspace.save()
   workspace[key] = value
   workspace.save()
+
+addWorkspaceModeOverride = (fileId, syntaxMode) ->
+  workspace = getWorkspace()
+  workspace ?= new MadEye.Workspace(userId: Meteor.userId())
+  workspace.modeOverrides ?= {}
+  workspace.modeOverrides[fileId] = syntaxMode
+  workspace.save()
+
 
 Template.editorBar.events
   'click #runButton': (e)->
@@ -52,10 +46,7 @@ Template.editorBar.events
     setWorkspaceConfig "showInvisibles", e.target.checked
 
   'change #syntaxModeSelect': (e) ->
-    workspace = getWorkspace()
-    workspace.modeOverrides ?= {}
-    workspace.modeOverrides[editorState.fileId] = e.target.value
-    workspace.save()
+    addWorkspaceModeOverride editorState.fileId, e.target.value
 
   'change #keybinding': (e) ->
     keybinding = e.target.value
