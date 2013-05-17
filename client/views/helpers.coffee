@@ -10,21 +10,24 @@ Handlebars.registerHelper "SessionEquals", (key, value) ->
 Handlebars.registerHelper "hangoutLink", ->
   "#{Meteor.settings.public.hangoutUrl}#{document.location}"
 
+@getProject = ->
+  Projects.findOne(Session.get "projectId")
+
 @isScratch = ->
-  project = Projects.findOne(Session.get "projectId")
+  project = getProject()
   project?.interview or project?.scratch
 
 Handlebars.registerHelper 'isScratch', ->
   isScratch()
 
 @projectIsClosed = ->
-  Projects.findOne(Session.get 'projectId')?.closed
+  getProject()?.closed
   
 @fileIsDeleted = ->
   Files.findOne(path:MadEye.fileLoader.editorFilePath)?.removed
 
 @isInterview = ->
-  Projects.findOne(Session.get "projectId")?.interview
+  getProject()?.interview
 
 Handlebars.registerHelper "isInterview", isInterview
 
