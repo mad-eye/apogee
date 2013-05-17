@@ -31,6 +31,9 @@ do ->
     projectName : ->
       Projects.findOne(Session.get "projectId")?.name ? "New project"
 
+  Template.fileTree.rendered = ->
+    resizeEditor()
+
   # Select file
   Template.fileTree.events
     'click li.fileTree-item' : (event) ->
