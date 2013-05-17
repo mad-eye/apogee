@@ -9,6 +9,7 @@ jquery
 underscore
 less
 accounts-github
+HTML5-History-API
 router
 madeye-common
 accounts-ui-unstyled

@@ -3,9 +3,9 @@
     "git": "git://github.com/mad-eye/meteor.git",
     "tag": "binary_search_master"
   },
-
   "packages": {
-    "router": { },
+    "HTML5-History-API": {},
+    "router": {},
     "madeye-common": {
       "path": "./.madeye-common"
     },
