@@ -188,9 +188,9 @@ describe "FileTree", ->
       dir = MadEye.File.create path:'a4/b4', isDir:true, projectId:projectId
 
     beforeEach ->
- 	    toSpy = () ->
-        called = true
-        calledArgs = _.toArray arguments
+      toSpy = () ->
+      called = true
+      calledArgs = _.toArray arguments
       Meteor.Router.to = toSpy
 
       fileTree = new FileTree
@@ -200,16 +200,13 @@ describe "FileTree", ->
     after ->
       Meteor.Router.to = oldTo
 
-    it 'should set fileTree.fileId for file and navigate', ->
+    it 'should set fileTree.fileId for file', ->
       fileTree.select file
       assert.equal fileTree.fileId, file._id
-      assert.isTrue called
-      assert.equal calledArgs[0], "/edit/#{file.projectId}/#{file.path}"
 
-    it 'should set fileTree.fileId for dir, but not navigate', ->
+    it 'should set fileTree.fileId for dir', ->
       fileTree.select dir
       assert.equal fileTree.fileId, dir._id
-      assert.isFalse called
 
   describe 'sessionPaths', ->
     sessionPaths = null

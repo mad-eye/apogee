@@ -59,7 +59,6 @@ class FileTree
 
   select: (file) ->
     return if file._id == @fileId
-    project = Projects.findOne(Session.get("projectId"))
     @fileId = file._id
     Session.set("selectedFileId", file._id)
 

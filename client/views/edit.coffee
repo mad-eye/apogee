@@ -140,24 +140,28 @@ Meteor.startup ->
 
 @resizeEditor = ->
   baseSpacing = 10; #px
-  container = $('#editorContainer')
-  editorTop = container.offset().top
   windowHeight = $(window).height()
-  newHeight = windowHeight - editorTop - 2*baseSpacing
-  $("#editorContainer").height(newHeight)
 
-  #Spinner placement
-  spinner = $('#editorLoadingSpinner')
-  spinner.css('top', (newHeight - spinner.height())/2 )
-  spinner.css('left', (container.width() - spinner.width())/2 )
+  editorContainer = $('#editorContainer')
+  editorContainerOffset = editorContainer?.offset()
+  if editorContainerOffset
+    editorTop = editorContainerOffset.top
+    newHeight = windowHeight - editorTop - 2*baseSpacing
+    editorContainer.height(newHeight)
+
+    #Spinner placement
+    spinner = $('#editorLoadingSpinner')
+    spinner.css('top', (newHeight - spinner.height())/2 )
+    spinner.css('left', (editorContainer.width() - spinner.width())/2 )
+
+    ace.edit('editor').resize()
 
   fileTreeContainer = $("#fileTreeContainer")
-  fileTreeTop = fileTreeContainer.offset().top
-  newFileTreeHeight = Math.min(windowHeight - fileTreeTop - 2*baseSpacing, $("#fileTree").height())
-  $("#fileTreeContainer").height(newFileTreeHeight)
-
-  ace.edit('editor').resize()
-  
+  fileTreeContainerOffset = fileTreeContainer?.offset()
+  if fileTreeContainerOffset
+    fileTreeTop = fileTreeContainerOffset.top
+    newFileTreeHeight = Math.min(windowHeight - fileTreeTop - 2*baseSpacing, $("#fileTree").height())
+    fileTreeContainer.height(newFileTreeHeight)
 
 Deps.autorun (computation) ->
   return unless Session.equals "editorRendered", true
