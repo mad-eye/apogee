@@ -26,8 +26,10 @@ Loading your MadEye project.  We'll be done in just a moment!
 var projectUrl = appData;
 var theIFrame = document.getElementById("theIFrame");
 if (appData){
+  gapi.hangout.onApiReady.add(function(eventObj) {
     gapi.hangout.data.setValue("projectUrl", appData);
     theIFrame.src = appData + "?hangout=true";
+  });
 } else {
   gapi.hangout.onApiReady.add(function(eventObj) {
     var state = gapi.hangout.data.getState();
