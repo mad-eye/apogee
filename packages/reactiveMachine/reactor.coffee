@@ -21,23 +21,32 @@ class @Reactor
     @changed name if reactive
 
   @property: (name, options) ->
-    defaults = write:true, read:true
+    defaults = get:true, set:true
     options = _.extend defaults, options
     descriptor = {}
-    if options.read
-      descriptor.get = ->
-        @_get name
-    else
+    unless options.get
       descriptor.get = ->
         console.error "Unable to get #{name} [read:false] on", this
         null
+    else if 'function' == typeof options.get
+      descriptor.get = ->
+        @depend name
+        return options.get.call this
+    else
+      descriptor.get = ->
+        @_get name
 
-    if options.write
+    unless options.set
+      descriptor.set = (value) ->
+        console.error "Unable to set #{name} [write:false] on", this
+    else if 'function' == typeof options.set
+      descriptor.set = (value) ->
+        return if descriptor.get and value == descriptor.get.call this
+        options.set.call this, value
+        @changed name
+    else
       descriptor.set = (value) ->
         return if value == @_get name, false
         @_set name, value
-    else
-      descriptor.set = (value) ->
-        console.error "Unable to set #{name} [write:false] on", this
     Object.defineProperty this.prototype, name, descriptor
 

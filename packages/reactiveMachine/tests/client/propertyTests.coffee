@@ -7,9 +7,9 @@ describe 'Reactive Properties:', ->
     before ->
       class MyObj extends Reactor
         @property 'foo'
-        @property 'ronly', write:false
-        @property 'wonly', read:false
-        @property 'internal', read:false, write:false
+        @property 'ronly', set:false
+        @property 'wonly', get:false
+        @property 'internal', get:false, set:false
 
       myObj = new MyObj()
 
@@ -62,4 +62,38 @@ describe 'Reactive Properties:', ->
       myObj._set 'internal', null
       myObj.internal = 6
       assert.isNull myObj._get('internal')
+
+  describe 'complex properties', ->
+    complexObj = null
+    valStore = null
+
+    before ->
+      class ComplexObj extends Reactor
+        @property 'complex',
+          get: ->
+            valStore['complex']
+          set: (value) ->
+            valStore['complex'] = value
+
+      complexObj = new ComplexObj()
+
+    beforeEach ->
+      valStore = {}
+
+    it 'should be reactive', ->
+      complexVal = null
+      Deps.autorun ->
+        complexVal = complexObj.complex
+      complexObj.complex = 'abc'
+      Deps.flush()
+      assert.equal complexVal, 'abc'
+
+    it 'should call the setter on write, not be stored internally', ->
+      complexObj.complex = 'ppp'
+      assert.equal valStore['complex'], 'ppp'
+      assert.ok !complexObj._keys['complex']?
+
+    it 'should use getter for read, not be stored internally', ->
+      valStore['complex'] = 'poi'
+      assert.equal complexObj.complex, 'poi'
 
