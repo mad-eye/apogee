@@ -4,5 +4,5 @@ Package.describe({
 
 Package.on_use(function (api) {
   api.use("coffeescript", "client");
-  api.add_files(["definePropertyShim.coffee", "reactiveMachine.coffee"], "client");
+  api.add_files(["definePropertyShim.coffee", "reactor.coffee", "reactiveMachine.coffee"], "client");
 });
