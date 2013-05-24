@@ -74,6 +74,12 @@ describe 'Reactive Properties:', ->
             valStore['complex']
           set: (value) ->
             valStore['complex'] = value
+        @property 'complexReadonly',
+          get: ->
+            valStore['complexReadonly']
+        @property 'complexWriteonly',
+          set: ->
+            valStore['complexWriteonly']
 
       complexObj = new ComplexObj()
 
@@ -97,3 +103,15 @@ describe 'Reactive Properties:', ->
       valStore['complex'] = 'poi'
       assert.equal complexObj.complex, 'poi'
 
+    it 'readonly properties are defined by just declaring a setter', ->
+      complexObj.complexReadonly = 'joe'
+      assert.ok !valStore['complexReadonly']?
+      assert.ok !complexObj.complexReadonly?
+
+    it 'readonly properties dont get stored internally on write', ->
+      complexObj.complexReadonly = 'joe'
+      assert.ok !complexObj._keys['complexReadonly']?
+
+    it 'writeonly properties are defined by just declaring a setter', ->
+      valStore['complexWriteonly'] = 'ooq'
+      assert.ok !complexObj.complexWriteonly?

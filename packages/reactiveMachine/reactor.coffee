@@ -20,8 +20,11 @@ class @Reactor
     @_keys[name] = value
     @changed name if reactive
 
-  @property: (name, options) ->
+  @property: (name, options={}) ->
     defaults = get:true, set:true
+    #If we are defining a complex function, default to false for getters/setters.
+    defaults.get = false if 'function' == typeof options.set
+    defaults.set = false if 'function' == typeof options.get
     options = _.extend defaults, options
     descriptor = {}
     unless options.get
