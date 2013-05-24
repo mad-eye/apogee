@@ -5,20 +5,31 @@ class @Reactor
     @_keys = {}
     @_deps = {}
 
+    self = this
+
+    startSentry = (fixedName, fixedSentry) ->
+      Deps.autorun (computation) ->
+        fixedSentry.call self, computation
+
+    for name, sentry of @sentries
+      startSentry name, sentry
+
   depend: (key) ->
+    return unless key
     @_deps[key] ?= new Deps.Dependency
     @_deps[key].depend()
 
   changed: (key) ->
+    return unless key
     @_deps[key]?.changed()
 
   _get: (key, reactive=true) ->
-    @depend name if reactive
-    return @_keys[name]
+    @depend key if reactive
+    return @_keys[key]
 
   _set: (key, value, reactive=true) ->
-    @_keys[name] = value
-    @changed name if reactive
+    @_keys[key] = value
+    @changed key if reactive
 
   @property: (name, options={}) ->
     defaults = get:true, set:true
@@ -52,4 +63,8 @@ class @Reactor
         return if value == @_get name, false
         @_set name, value
     Object.defineProperty this.prototype, name, descriptor
+
+  @sentry: (name, fn) ->
+    @prototype.sentries ?= {}
+    @prototype.sentries[name] = fn
 
