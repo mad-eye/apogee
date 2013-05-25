@@ -21,11 +21,11 @@ do ->
 
     usersInFile: (file) ->
       projectId = Session.get "projectId"
-      sessionIds = fileTree.getSessionsInFile file.path
-      return unless sessionIds
+      userIds = fileTree.getSessionsInFile file.path
+      return unless userIds
       users = null
       Deps.nonreactive ->
-        users = ProjectStatuses.find(sessionId: {$in: sessionIds}).map (status) ->
+        users = ProjectStatuses.find(userId: {$in: userIds}).map (status) ->
           destination = "/edit/#{projectId}/#{file.path}#S#{status.connectionId}"
           {img: "/images/#{USER_ICONS[status.iconId]}", destination}
       return users

@@ -91,10 +91,10 @@ class FileTree
   getSessionsInFile: (filePath) ->
     @_dependOnSessionPath filePath
     sessions = []
-    for sessionId, path of @sessionPaths
+    for userId, path of @sessionPaths
       if filePath == @_lowestVisiblePath path
         #@_dependOnSessionPaths path, filePath
-        sessions.push sessionId
+        sessions.push userId
     return sessions
 
   setSessionPaths: (sessionPaths) ->

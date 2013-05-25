@@ -1,24 +1,27 @@
 Meteor.startup ->
-  Meteor.call "updateProjectStatusHeartbeat", Session.get("sessionId"), Session.get("projectId")
+  #Create one for the session
+  Deps.autorun ->
+    userId = Meteor.userId()
+    projectId = Session.get("projectId")
+    return unless userId and projectId
+    Meteor.call "touchProjectStatus", userId, projectId
 
   #return a map between file paths and open sharejs session ids
   #Set heartbeat
   Meteor.setInterval ->
-    sessionId = Session.get "sessionId"
+    userId = Meteor.userId()
     projectId = Session.get "projectId"
-    return unless sessionId and projectId
-    status = ProjectStatuses.findOne {sessionId, projectId}
-    Meteor.call "updateProjectStatusHeartbeat", {sessionId, projectId}
-    status?.update {heartbeat: Date.now()}
+    return unless userId and projectId
+    Meteor.call "heartbeat", userId, projectId
   , 2*1000
 
   #Set filepath
   Deps.autorun ->
     #TODO this seems bolierplatey..
-    sessionId = Session.get("sessionId")
+    userId = Meteor.userId()
     projectId = Session.get("projectId")
-    return unless Session.equals("editorRendered", true) and sessionId and projectId
-    projectStatus = ProjectStatuses.findOne {sessionId, projectId}
+    return unless Session.equals("editorRendered", true) and userId and projectId
+    projectStatus = ProjectStatuses.findOne {userId, projectId}
     return unless projectStatus
     projectStatus.update {filePath: MadEye.fileLoader.editorFilePath, connectionId: editorState.connectionId}
 
@@ -31,7 +34,7 @@ Meteor.startup ->
     sessionPaths = {}
     Deps.nonreactive ->
       ProjectStatuses.find({projectId}).forEach (status) ->
-        sessionPaths[status.sessionId] = status.filePath if status.filePath
+        sessionPaths[status.userId] = status.filePath if status.filePath
     #console.log "Setting sessionPaths from autorun", sessionPaths
     fileTree.setSessionPaths sessionPaths
 
@@ -39,13 +42,9 @@ Meteor.startup ->
   queryHandle = null
   Deps.autorun (computation)->
     projectId = Session.get("projectId")
-    return unless projectId
+    return unless projectId and Meteor.userId()
     Deps.nonreactive ->
       queryHandle?.stop()
-      unless Session.get("sessionId")?
-        Session.set "sessionId", Meteor.uuid()
-      sessionId = Session.get "sessionId"
-      Meteor.call "createProjectStatus", sessionId, projectId
 
       cursor = ProjectStatuses.find {projectId}
       queryHandle = cursor.observeChanges
