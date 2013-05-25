@@ -4,7 +4,7 @@ Meteor.startup ->
     userId = Meteor.userId()
     projectId = Session.get("projectId")
     return unless userId and projectId
-    Meteor.call "touchProjectStatus", userId, projectId
+    Meteor.call "touchProjectStatus", userId, projectId, isHangout: Session.get("isHangout")
 
   #return a map between file paths and open sharejs session ids
   #Set heartbeat

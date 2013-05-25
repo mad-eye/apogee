@@ -14,13 +14,18 @@ Meteor.methods
   heartbeat: (userId, projectId) ->
     ProjectStatuses.update {userId, projectId}, {$set: {heartbeat: Date.now()}}
 
-  touchProjectStatus: (userId, projectId)->
+  touchProjectStatus: (userId, projectId, fields={})->
     return unless userId and projectId
     status = ProjectStatuses.findOne {userId, projectId}
+    fields.heartbeat = Date.now()
     if status
-      status.update {heartbeat: Date.now()}
+      status.update fields
     else
-      ProjectStatuses.insert {userId, projectId, iconId: getIcon(projectId), heartbeat: Date.now()}, (err, result)->
+      fields = _.extend fields,
+        userId: userId
+        projectId: projectId
+        iconId: getIcon(projectId)
+      ProjectStatuses.insert fields, (err, result)->
         console.error "ERR", err if err
 
   markDirty: (collectionName, ids...) ->
