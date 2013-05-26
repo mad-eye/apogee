@@ -8,7 +8,7 @@ Handlebars.registerHelper "SessionEquals", (key, value) ->
   Session.equals key, value
 
 Handlebars.registerHelper "hangoutLink", ->
-  "#{Meteor.settings.public.hangoutUrl}#{document.location}"
+  "#{Meteor.settings.public.hangoutUrl}#{Session.get 'projectId'}"
 
 @getProject = ->
   Projects.findOne(Session.get "projectId")
