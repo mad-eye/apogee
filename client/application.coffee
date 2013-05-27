@@ -68,20 +68,26 @@ do ->
       "interviewLanding"
 
     '/createInterview': ->
-      recordView page: "create interview"
-      project = new Project()
-      project.interview = true
-      project.save()
+      Meteor.autorun (computation)->
+        unless Meteor.user()?.profile
+          Meteor.loginWithGoogle()
+          return
+        computation.stop()
+        recordView page: "create interview"
+        project = new Project()
+        project.interview = true
+        project.save()
 
-      Deps.nonreactive ->
-        file = new MadEye.File
-        file.projectId = project._id
-        file.path = scratchPath
-        file.scratch = true
-        file.save()
-      Meteor.setTimeout ->
-        Meteor.Router.to "/edit/#{project._id}/#{scratchPath}"
-      , 0
+        Deps.nonreactive ->
+          file = new MadEye.File
+          file.projectId = project._id
+          file.path = scratchPath
+          file.scratch = true
+          file.save()
+        Meteor.setTimeout ->
+          Meteor.Router.to "/edit/#{project._id}/#{scratchPath}"
+        , 0
+      return Meteor.Router.page()
 
     '/scratch': ->
       #TODO add more info here..
