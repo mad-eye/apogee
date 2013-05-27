@@ -65,7 +65,9 @@ do ->
       'faq'
 
     '/interview': ->
-      #TODO add more info here..
+      "interviewLanding"
+
+    '/createInterview': ->
       recordView page: "create interview"
       project = new Project()
       project.interview = true
