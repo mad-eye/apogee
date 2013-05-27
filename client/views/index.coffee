@@ -14,3 +14,6 @@ do ->
   }
   $('#alertBox').append html
 
+@loginWithGoogle = ->
+  Meteor.logout()
+  Meteor.loginWithGoogle()
