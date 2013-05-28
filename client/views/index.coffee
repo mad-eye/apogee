@@ -17,3 +17,14 @@ do ->
 @loginWithGoogle = ->
   Meteor.logout()
   Meteor.loginWithGoogle()
+
+Template.topnav.helpers
+  #TODO
+  googleLoggedin: ->
+    return false
+
+Template.topnav.events
+  "click .google": (e)->
+    e.preventDefault()
+    Meteor.logout()
+    Meteor.loginWithGoogle()
