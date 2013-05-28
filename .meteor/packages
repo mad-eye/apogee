@@ -20,3 +20,5 @@ meteor-sharejs
 spiderable
 accounts-anonymous
 meteor-reactive-ace
+accounts-google
+accounts-base

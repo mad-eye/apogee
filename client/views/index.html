@@ -27,14 +27,12 @@
       </h1>
     </div>
     <div class="span3 top-right">
-      {{!
-      <ul class="nav login pull-right">
-        {{!Sign in/up} }
-        <li>
-        {{loginButtons align="right"} }
-        </li>
-      </ul>
-      }}
+        {{#unless googleLoggedIn}}
+	        <a href="#" class="zocial google">Sign in with Google</a></li>
+        {{else}}
+          Logged in as {{currentUser}}
+          Log out
+        {{/unless}}
       {{#if isHomePage }}
       <a href="https://twitter.com/_madeye" class="twitter-follow-button" data-show-count="false">Follow @_madeye</a>
       {{/if}}

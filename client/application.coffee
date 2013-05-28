@@ -65,7 +65,16 @@ do ->
       'faq'
 
     '/interview': ->
-      #TODO add more info here..
+      "interviewLanding"
+
+    '/createInterview': ->
+      if Meteor.loggingIn()
+        return Meteor.Router.page()
+      #logged in with google (not just anonymously)
+      unless Meteor.user() and Meteor.user()?.profile
+        Meteor.loginWithGoogle()
+        return Meteor.Router.page()
+
       recordView page: "create interview"
       project = new Project()
       project.interview = true
