@@ -1,27 +1,27 @@
 Meteor.startup ->
   #Create one for the session
   Deps.autorun ->
-    userId = Meteor.userId()
+    console.log "SessionId (1):", Session.id
     projectId = Session.get("projectId")
-    return unless userId and projectId
-    Meteor.call "touchProjectStatus", userId, projectId, isHangout: Session.get("isHangout")
+    return unless projectId
+    Meteor.call "touchProjectStatus", Session.id, projectId, isHangout: Session.get("isHangout")
 
   #return a map between file paths and open sharejs session ids
   #Set heartbeat
   Meteor.setInterval ->
-    userId = Meteor.userId()
+    console.log "SessionId (2):", Session.id
     projectId = Session.get "projectId"
-    return unless userId and projectId
-    Meteor.call "heartbeat", userId, projectId
+    return unless projectId
+    Meteor.call "heartbeat", Session.id, projectId
   , 2*1000
 
   #Set filepath
   Deps.autorun ->
+    console.log "SessionId (3):", Session.id
     #TODO this seems bolierplatey..
-    userId = Meteor.userId()
     projectId = Session.get("projectId")
-    return unless Session.equals("editorRendered", true) and userId and projectId
-    projectStatus = ProjectStatuses.findOne {userId, projectId}
+    return unless Session.equals("editorRendered", true) and projectId
+    projectStatus = ProjectStatuses.findOne {sessionId:Session.id, projectId}
     return unless projectStatus
     projectStatus.update {filePath: MadEye.fileLoader.editorFilePath, connectionId: editorState.connectionId}
 
@@ -34,7 +34,7 @@ Meteor.startup ->
     sessionPaths = {}
     Deps.nonreactive ->
       ProjectStatuses.find({projectId}).forEach (status) ->
-        sessionPaths[status.userId] = status.filePath if status.filePath
+        sessionPaths[status.sessionId] = status.filePath if status.filePath
     #console.log "Setting sessionPaths from autorun", sessionPaths
     fileTree.setSessionPaths sessionPaths
 
@@ -42,7 +42,7 @@ Meteor.startup ->
   queryHandle = null
   Deps.autorun (computation)->
     projectId = Session.get("projectId")
-    return unless projectId and Meteor.userId()
+    return unless projectId
     Deps.nonreactive ->
       queryHandle?.stop()
 

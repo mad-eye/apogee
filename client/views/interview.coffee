@@ -15,11 +15,11 @@ Template.interview.helpers
   #XXX TODO copied w/ shame from fileTreeView.coffee
   usersInFile: (file)->
     projectId = Session.get "projectId"
-    userIds = fileTree.getSessionsInFile file.path
-    return unless userIds
+    sessionIds = fileTree.getSessionsInFile file.path
+    return unless sessionIds
     users = null
     Deps.nonreactive ->
-      users = ProjectStatuses.find(userId: {$in: userIds}).map (status) ->
+      users = ProjectStatuses.find(sessionId: {$in: sessionIds}).map (status) ->
         {img: "/images/#{USER_ICONS[status.iconId]}"}
     return users
 
