@@ -47,6 +47,9 @@ Template.interview.events
 
   "click .hangout-link": (event) ->
     warnFirefoxHangout()
+    #Page.js tries to handle this, but gets the port wrong.
+    event.stopPropagation()
+    window.location = event.target.href
 
 @warnFirefoxHangout = ->
   if "Firefox" == BrowserDetect.browser
