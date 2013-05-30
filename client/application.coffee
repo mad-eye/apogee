@@ -131,6 +131,7 @@ do ->
       'unlinkedHangout'
 
     '*': ->
+      console.log "Found missing url", window.location
       recordView page:'missing'
       "missing"
 

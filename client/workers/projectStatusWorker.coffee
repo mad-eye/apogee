@@ -1,7 +1,6 @@
 Meteor.startup ->
   #Create one for the session
   Deps.autorun ->
-    console.log "SessionId (1):", Session.id
     projectId = Session.get("projectId")
     return unless projectId
     Meteor.call "touchProjectStatus", Session.id, projectId, isHangout: Session.get("isHangout")
@@ -9,7 +8,6 @@ Meteor.startup ->
   #return a map between file paths and open sharejs session ids
   #Set heartbeat
   Meteor.setInterval ->
-    console.log "SessionId (2):", Session.id
     projectId = Session.get "projectId"
     return unless projectId
     Meteor.call "heartbeat", Session.id, projectId
@@ -17,7 +15,6 @@ Meteor.startup ->
 
   #Set filepath
   Deps.autorun ->
-    console.log "SessionId (3):", Session.id
     #TODO this seems bolierplatey..
     projectId = Session.get("projectId")
     return unless Session.equals("editorRendered", true) and projectId
