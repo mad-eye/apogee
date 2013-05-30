@@ -17,7 +17,7 @@ Meteor.publish "workspaces", (projectId) ->
   Workspaces.find userId: @userId
 
 Meteor.setInterval ->
-  before = Date.now() - 20*1000
+  before = Date.now() - 10*1000
   ProjectStatuses.remove({heartbeat: {$lt:before}})
   ProjectStatuses.remove({heartbeat: {$exists:false}})
 , 5*1000

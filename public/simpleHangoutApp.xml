@@ -28,7 +28,8 @@ var theIFrame = document.getElementById("theIFrame");
 if (appData){
   gapi.hangout.onApiReady.add(function(eventObj) {
     gapi.hangout.data.setValue("projectUrl", appData);
-    theIFrame.src = appData + "?hangout=true";
+    var hangoutUrl = gapi.hangout.getHangoutUrl();
+    theIFrame.src = appData + "?hangout=true&hangoutUrl=" + hangoutUrl;
   });
 } else {
   gapi.hangout.onApiReady.add(function(eventObj) {

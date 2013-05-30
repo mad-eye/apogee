@@ -1,24 +1,27 @@
 Meteor.startup ->
-  Meteor.call "updateProjectStatusHeartbeat", Session.get("sessionId"), Session.get("projectId")
+  #Create one for the session
+  Deps.autorun ->
+    console.log "SessionId (1):", Session.id
+    projectId = Session.get("projectId")
+    return unless projectId
+    Meteor.call "touchProjectStatus", Session.id, projectId, isHangout: Session.get("isHangout")
 
   #return a map between file paths and open sharejs session ids
   #Set heartbeat
   Meteor.setInterval ->
-    sessionId = Session.get "sessionId"
+    console.log "SessionId (2):", Session.id
     projectId = Session.get "projectId"
-    return unless sessionId and projectId
-    status = ProjectStatuses.findOne {sessionId, projectId}
-    Meteor.call "updateProjectStatusHeartbeat", {sessionId, projectId}
-    status?.update {heartbeat: Date.now()}
+    return unless projectId
+    Meteor.call "heartbeat", Session.id, projectId
   , 2*1000
 
   #Set filepath
   Deps.autorun ->
+    console.log "SessionId (3):", Session.id
     #TODO this seems bolierplatey..
-    sessionId = Session.get("sessionId")
     projectId = Session.get("projectId")
-    return unless Session.equals("editorRendered", true) and sessionId and projectId
-    projectStatus = ProjectStatuses.findOne {sessionId, projectId}
+    return unless Session.equals("editorRendered", true) and projectId
+    projectStatus = ProjectStatuses.findOne {sessionId:Session.id, projectId}
     return unless projectStatus
     projectStatus.update {filePath: MadEye.fileLoader.editorFilePath, connectionId: editorState.connectionId}
 
@@ -42,10 +45,6 @@ Meteor.startup ->
     return unless projectId
     Deps.nonreactive ->
       queryHandle?.stop()
-      unless Session.get("sessionId")?
-        Session.set "sessionId", Meteor.uuid()
-      sessionId = Session.get "sessionId"
-      Meteor.call "createProjectStatus", sessionId, projectId
 
       cursor = ProjectStatuses.find {projectId}
       queryHandle = cursor.observeChanges

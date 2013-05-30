@@ -11,15 +11,22 @@ Meteor.methods
   getFileCount: (projectId)->
     return Files.find(projectId: projectId).count()
 
-  updateProjectStatusHearbeat: (sessionId, projectId)->
-    status = ProjectStatuses.findOne {sessionId, projectId}
-    status.update {heartbeat: Date.now()}
+  heartbeat: (sessionId, projectId) ->
+    ProjectStatuses.update {sessionId, projectId}, {$set: {heartbeat: Date.now()}}
 
-  createProjectStatus: (sessionId, projectId)->
+  touchProjectStatus: (sessionId, projectId, fields={})->
+    return unless sessionId and projectId
     status = ProjectStatuses.findOne {sessionId, projectId}
-    return if status
-    ProjectStatuses.insert {sessionId, projectId, iconId: getIcon(projectId), heartbeat: Date.now()}, (err, result)->
-      console.error "ERR", err if err
+    fields.heartbeat = Date.now()
+    if status
+      status.update fields
+    else
+      fields = _.extend fields,
+        sessionId: sessionId
+        projectId: projectId
+        iconId: getIcon(projectId)
+      ProjectStatuses.insert fields, (err, result)->
+        console.error "ERR", err if err
 
   markDirty: (collectionName, ids...) ->
     switch collectionName
