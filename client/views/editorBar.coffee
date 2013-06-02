@@ -39,15 +39,6 @@ Template.editorBar.events
           response.timestamp = Date.now()
           ScriptOutputs.insert response
 
-  'change #wordWrap': (e) ->
-    setWorkspaceConfig "wordWrap", e.target.checked
-
-  'change #showInvisibles': (e) ->
-    setWorkspaceConfig "showInvisibles", e.target.checked
-
-  'change #syntaxModeSelect': (e) ->
-    addWorkspaceModeOverride editorState.fileId, e.target.value
-
   'change #keybinding': (e) ->
     keybinding = e.target.value
     keybinding = null if 'ace' == keybinding
@@ -55,12 +46,6 @@ Template.editorBar.events
 
   'change #themeSelect': (e) ->
     setWorkspaceConfig "theme", e.target.value
-
-  'change #useSoftTabs': (e) ->
-    setWorkspaceConfig "useSoftTabs", e.target.checked
-
-  'change #tabSize': (e) ->
-    setWorkspaceConfig("tabSize", parseInt(e.target.value, 10))
 
   'click #revertFile': (event) ->
     el = $(event.target)
@@ -88,10 +73,30 @@ Template.editorBar.events
         #Handle error better.
         console.error "Error in save request:", err
 
+Template.editorBar.helpers
+  "editorFileName": ->
+    MadEye.fileLoader?.editorFilePath
+
 Template.editorBar.rendered = ->
   Session.set 'editorBarRendered', true
 
-Template.editorBar.helpers
+Template.statusBar.events
+  'change #wordWrap': (e) ->
+    setWorkspaceConfig "wordWrap", e.target.checked
+
+  'change #showInvisibles': (e) ->
+    setWorkspaceConfig "showInvisibles", e.target.checked
+
+  'change #syntaxModeSelect': (e) ->
+    addWorkspaceModeOverride editorState.fileId, e.target.value
+
+  'change #useSoftTabs': (e) ->
+    setWorkspaceConfig "useSoftTabs", e.target.checked
+
+  'change #tabSize': (e) ->
+    setWorkspaceConfig("tabSize", parseInt(e.target.value, 10))
+
+Template.statusBar.helpers
   editorState: ->
     editorState
 
@@ -119,9 +124,6 @@ Template.editorBar.helpers
 
   isHangout: ->
     Session.get "isHangout"
-
-  workspace: ->
-    getWorkspace()
 
   keybinding: (binding)->
     keybinding = getWorkspace()?.keybinding

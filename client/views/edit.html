@@ -51,11 +51,6 @@
 
 <template name="editorChrome">
   <div id="editorTitleBar" class="clearfix">
-    <div id="editorTitle" class="pull-left">
-      <h4>
-        {{editorFileName}}
-      </h4>
-    </div>
   </div>
   {{> editorBar }}
 </template>
@@ -73,6 +68,8 @@
 </template>
 
 <template name="editorFooter">
+  {{> statusBar }}
+
   {{#if isInterview}}
     <div id="programOutput">
       {{! would be nice to move logic from helper here into template
