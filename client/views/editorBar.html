@@ -16,26 +16,27 @@
 
     {{! Show Invisibles }}
     <div class="statusBarButton pull-left">
-      <label class="checkbox" >
+      <!--<label class="checkbox" >-->
+      <label>
         <input type="checkbox" id="showInvisibles" {{#if editorState.editor.showInvisibles}}checked{{/if}} />
-        SI
+        <span title="Show Invisible Characters"><i class="icon-eye-open"></i></span>
       </label>
     </div>
 
 
     {{! Word Wrap }}
     <div class="statusBarButton pull-left">
-      <label class="checkbox" >
+      <label>
         <input type="checkbox" id="wordWrap" {{#if editorState.editor.wordWrap}}checked{{/if}} />
-        Word Wrap
+        <span title="Word Wrap">¬</span>
       </label>
     </div>
 
     {{! Word Wrap }}
     <div class="statusBarButton pull-left">
-      <label class="checkbox" >
+      <label>
         <input type="checkbox" id="useSoftTabs"  {{#if editorState.editor.useSoftTabs}}checked{{/if}} />
-        Use Soft Tabs
+        <span title="Use Soft Tabs">→&nbsp;</span>
       </label>
     </div>
 
