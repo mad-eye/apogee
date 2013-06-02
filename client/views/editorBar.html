@@ -49,6 +49,26 @@
         </select>     
     </div>
 
+    {{! Theme }}
+    <div class="statusBarButton pull-left">
+      <form>
+        <select id="themeSelect" class="input-medium" size="1">
+          {{> themeOptions}}
+        </select>     
+      </form>
+    </div>
+
+    {{! Keybinding }}
+    <div class="statusBarButton pull-left">
+      <form>
+        <!--<label class="select">:</label>-->
+        <select id="keybinding" class="input-small" size="1">
+          <option value="ace" {{#unless keybinding}}selected{{/unless}}>Ace Keys</option>
+          <option value="vim" {{#if keybinding 'vim'}}selected{{/if}}>Vim</option>
+          <option value="emacs" {{#if keybinding 'emacs'}}selected{{/if}}>Emacs</option>
+        </select>
+      </form>
+    </div>
 
   </div>
 </template>
@@ -92,29 +112,18 @@
 
     {{/unless}}
 
-    {{! EDITOR SETTINGS }}
+    {{! EDITOR SETTINGS
     <div id="editorSettings" class="editorBarButton pull-right">
       <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
         <img alt="Settings" src="/images/cog_16.png"/>
         <span class="caret"></span>
       </a>
       <form class="dropdown-menu">
-        <select id="themeSelect" class="input-medium" size="1">
-          {{> themeOptions}}
-        </select>     
-
-        <!--<label class="select">:</label>-->
-        <select id="keybinding" class="input-small" size="1">
-          <option value="ace" {{#unless keybinding}}selected{{/unless}}>Ace Keys</option>
-          <option value="vim" {{#if keybinding 'vim'}}selected{{/if}}>Vim</option>
-          <option value="emacs" {{#if keybinding 'emacs'}}selected{{/if}}>Emacs</option>
-        </select>
       </form>
     </div>
+   }}
 
   </div>
-
-
 
 </template>
 

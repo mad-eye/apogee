@@ -39,14 +39,6 @@ Template.editorBar.events
           response.timestamp = Date.now()
           ScriptOutputs.insert response
 
-  'change #keybinding': (e) ->
-    keybinding = e.target.value
-    keybinding = null if 'ace' == keybinding
-    setWorkspaceConfig "keybinding", keybinding
-
-  'change #themeSelect': (e) ->
-    setWorkspaceConfig "theme", e.target.value
-
   'click #revertFile': (event) ->
     el = $(event.target)
     return if el.hasClass 'disabled' or editorState.working == true
@@ -95,6 +87,14 @@ Template.statusBar.events
 
   'change #tabSize': (e) ->
     setWorkspaceConfig("tabSize", parseInt(e.target.value, 10))
+
+  'change #keybinding': (e) ->
+    keybinding = e.target.value
+    keybinding = null if 'ace' == keybinding
+    setWorkspaceConfig "keybinding", keybinding
+
+  'change #themeSelect': (e) ->
+    setWorkspaceConfig "theme", e.target.value
 
 Template.statusBar.helpers
   editorState: ->
