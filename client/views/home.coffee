@@ -5,7 +5,7 @@ Accounts.ui.config
     github: ['user', 'repo']
   passwordSignupFields: 'USERNAME_AND_OPTIONAL_EMAIL'
 
-Template.home.events
+Template.getStarted.events
   #'click #submitEmailButton' : (event) ->
   'submit #signupForm' : (event) ->
     emailAddr = $('#emailInput').val()
