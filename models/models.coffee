@@ -7,6 +7,7 @@ Project.prototype.collection = @Projects
 
 
 class NewsletterEmail extends MadEye.Model
+@NewsletterEmail = NewsletterEmail
 
 @NewsletterEmails = new Meteor.Collection 'newsletterEmails', transform: (doc) ->
   new NewsletterEmail doc
