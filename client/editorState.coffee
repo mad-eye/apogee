@@ -9,11 +9,17 @@ handleNetworkError = (error, response) ->
   transitoryIssues.set 'networkIssues', 10*1000
   return err
 
+#TODO: HACK: Move to a better place
+os = (navigator.platform.match(/mac|win|linux/i) || ["other"])[0].toLowerCase()
+isMac = os == 'mac'
+
+
 class EditorState
   constructor: (@editorId)->
     @_deps = {}
     @editor = new ReactiveAce
-    
+    @setupEvents()
+
   depend: (key) ->
     @_deps[key] ?= new Deps.Dependency
     @_deps[key].depend()
@@ -23,6 +29,19 @@ class EditorState
 
   attach: ->
     @editor.attach @editorId
+
+  setupEvents: ->
+    $(window).keydown (event) =>
+      if isMac
+        usedModifier = event.metaKey
+      else
+        usedModifier = event.ctrlKey
+      return unless usedModifier
+      switch String.fromCharCode(event.keyCode)
+        when 'S'
+          @save()
+          event.stopPropagation()
+          return false
 
   getEditor: ->
     @depend 'path'
@@ -180,7 +199,7 @@ class EditorState
         #XXX: Are we worried about race conditions if there were modifications after the save button was pressed?
         file.update {checksum:editorChecksum}
       @working = false
-      callback(error)
+      callback?(error)
 
 EditorState.addProperty = (name, getter, setter) ->
   descriptor = {}
