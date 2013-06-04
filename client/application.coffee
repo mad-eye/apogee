@@ -21,14 +21,12 @@ getQueryParams = (queryString) ->
 registerHangout = (projectId, hangoutUrl) ->
   return unless hangoutUrl
   registerHangoutUrl = Meteor.settings.public.azkabanUrl + "/hangout/" + projectId
-  console.error "Registering hangout with url:", registerHangoutUrl
   Meteor.http.put registerHangoutUrl, {
       data: {hangoutUrl}
       headers: {'Content-Type':'application/json'}
       timeout: 5*1000
     }, (error,response) =>
       console.error "Registering hangout url failed.", error if error
-      console.error "Regstering hangout response:", response
 
 #soon..
 #MadEye.editorState = new EditorState "editor"
@@ -50,7 +48,6 @@ do ->
       #TODO record type..edit/interview/scratch
       params = getQueryParams window.location.search
       if params.hangout
-        console.error "Found projectId", projectId
         Session.set "isHangout", true
         registerHangout projectId, params.hangoutUrl
         isHangout = true
