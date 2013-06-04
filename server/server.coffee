@@ -1,3 +1,10 @@
+do ->
+  configuration = Accounts.loginServiceConfiguration.findOne({clientId: Meteor.settings.googleClientId})
+  unless configuration
+    Accounts.loginServiceConfiguration.insert
+      clientId: Meteor.settings.googleClientId
+      secret: Meteor.settings.googleSecret
+      service: "google"
 
 Meteor.publish "projects", (projectId)->
   Projects.find
