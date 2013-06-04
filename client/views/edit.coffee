@@ -113,11 +113,9 @@ Template.editor.rendered = ->
   editorState.attach()
   editorState?.rendered = true
   #If we're displaying the program output, set the bottom of the editor
-  if isInterview()
-    bottomOffset = $('#statusBar').height() + $('#programOutput').height()
-  else
-    bottomOffset = $('#statusBar').height()
-  $('#editor').css 'bottom', bottomOffset
+  outputOffset = if isInterview() then $('#programOutput').height() else 0
+  $('#editor').css 'bottom', $('#statusBar').height() + outputOffset
+  $('#statusBar').css 'bottom', outputOffset
   resizeEditor()
 
 Meteor.startup ->
