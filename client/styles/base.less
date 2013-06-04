@@ -1,7 +1,5 @@
-/**
- * This file is the base less file for common declarations.
- * It should be the only less file imported.
- */
+// This file is the base less file for common declarations.
+// It should be the only less file imported.
 
 @backgroundColorDefault: #FFF;
 @backgroundColorAlt: #F0F0F0;
@@ -40,20 +38,20 @@
 }
 
 .transparent (@fraction: 0.50) {
-  @pct: 100*@fraction;
-  /* IE 8 */
+  @pct: percentage(@fraction);
+  // IE 8
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=@pct)";
 
-  /* IE 5-7 */
+  // IE 5-7
   filter: alpha(opacity=@pct);
 
-  /* Netscape */
+  // Netscape
   -moz-opacity: @fraction;
 
-  /* Safari 1.x */
+  // Safari 1.x
   -khtml-opacity: @fraction;
 
-  /* Good browsers */
+  // Good browsers
   opacity: @fraction;
 }
 
