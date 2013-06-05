@@ -1,3 +1,78 @@
+<template name="statusBar">
+  <div id="statusBar" class="clearfix">
+
+    <div id="position" class="statusBarButton pull-left">
+      <span>({{ editorState.editor.lineNumber }}:{{ editorState.editor.column }})</span>
+    </div>
+
+    {{! SYNTAX MODE }}
+    <div id="syntaxMode" class="statusBarButton pull-left">
+      <form>
+        <select id="syntaxModeSelect" class="input-medium" size="1">
+          {{> syntaxModeOptions}}
+        </select>
+      </form>
+    </div>
+
+    {{! Show Invisibles }}
+    <div class="statusBarButton pull-left">
+      <!--<label class="checkbox" >-->
+      <label>
+        <input type="checkbox" id="showInvisibles" {{#if editorState.editor.showInvisibles}}checked{{/if}} />
+        <span title="Show Invisible Characters"><i class="icon-eye-open"></i></span>
+      </label>
+    </div>
+
+
+    {{! Word Wrap }}
+    <div class="statusBarButton pull-left">
+      <label>
+        <input type="checkbox" id="wordWrap" {{#if editorState.editor.wordWrap}}checked{{/if}} />
+        <span title="Word Wrap">¬</span>
+      </label>
+    </div>
+
+    {{! Soft Tabs }}
+    <div class="statusBarButton pull-left">
+      <label>
+        <input type="checkbox" id="useSoftTabs"  {{#if editorState.editor.useSoftTabs}}checked{{/if}} />
+        <span title="Use Soft Tabs">→&nbsp;</span>
+      </label>
+    </div>
+
+    {{! Tab Size  }}
+    <div id="tabSizeButton" class="statusBarButton pull-left">
+        <select id="tabSize" class="input-medium" size="1">
+          <option value="2" {{#if tabSizeEquals 2}}selected{{/if}}>Tab Size: 2</option>
+          <option value="4" {{#if tabSizeEquals 4}}selected{{/if}}>Tab Size: 4</option>
+          <option value="8" {{#if tabSizeEquals 8}}selected{{/if}}>Tab Size: 8</option>
+        </select>     
+    </div>
+
+    {{! Theme }}
+    <div class="statusBarButton pull-left">
+      <form>
+        <select id="themeSelect" class="input-medium" size="1">
+          {{> themeOptions}}
+        </select>     
+      </form>
+    </div>
+
+    {{! Keybinding }}
+    <div class="statusBarButton pull-left">
+      <form>
+        <!--<label class="select">:</label>-->
+        <select id="keybinding" class="input-small" size="1">
+          <option value="ace" {{#unless keybinding}}selected{{/unless}}>Ace Keys</option>
+          <option value="vim" {{#if keybinding 'vim'}}selected{{/if}}>Vim</option>
+          <option value="emacs" {{#if keybinding 'emacs'}}selected{{/if}}>Emacs</option>
+        </select>
+      </form>
+    </div>
+
+  </div>
+</template>
+
 <template name="editorBar">
   <div id="editorBar" class="clearfix">
 
@@ -12,66 +87,22 @@
       </div>
     {{/unless}}
 
-    {{! SYNTAX MODE }}
-    <div id="syntaxMode" class="editorBarButton pull-left">
-      <form>
-        <select id="syntaxModeSelect" class="input-medium" size="1">
-          {{> syntaxModeOptions}}
-        </select>
-      </form>
-    </div>
 
-    {{! EDITOR SETTINGS }}
-    <div id="editorSettings" class="editorBarButton pull-left">
-      <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-        <img alt="Settings" src="/images/cog_16.png"/>
-        <span class="caret"></span>
-      </a>
-      <form class="dropdown-menu">
-        <!--<h5>Editor Settings</h5>-->
-        <label class="checkbox" >
-          <input type="checkbox" id="showInvisibles" {{#if editorState.editor.showInvisibles}}checked{{/if}} />
-          Show Invisibles
-        </label>
-
-        <label class="checkbox" >
-          <input type="checkbox" id="wordWrap" {{#if editorState.editor.wordWrap}}checked{{/if}} />
-          Word Wrap
-        </label>
-
-        <label class="checkbox" >
-          <input type="checkbox" id="useSoftTabs"  {{#if editorState.editor.useSoftTabs}}checked{{/if}} />
-          Use Soft Tabs
-        </label>
-
-        <select id="tabSize" class="input-medium" size="1">
-          <option value="2" {{#if tabSizeEquals 2}}selected{{/if}}>Tab Size: 2</option>
-          <option value="4" {{#if tabSizeEquals 4}}selected{{/if}}>Tab Size: 4</option>
-          <option value="8" {{#if tabSizeEquals 8}}selected{{/if}}>Tab Size: 8</option>
-        </select>     
-
-        <select id="themeSelect" class="input-medium" size="1">
-          {{> themeOptions}}
-        </select>     
-
-        <!--<label class="select">:</label>-->
-        <select id="keybinding" class="input-small" size="1">
-          <option value="ace" {{#unless keybinding}}selected{{/unless}}>Ace Keys</option>
-          <option value="vim" {{#if keybinding 'vim'}}selected{{/if}}>Vim</option>
-          <option value="emacs" {{#if keybinding 'emacs'}}selected{{/if}}>Emacs</option>
-        </select>
-      </form>
+    <div id="editorTitle" class="pull-left">
+      <h4>
+        {{editorFileName}}
+      </h4>
     </div>
 
     {{#if isInterview}}
       {{! RUN }}
-      <div id="runCode" class="editorBarButton pull-left">
+      <div id="runCode" class="editorBarButton pull-right">
         <input type="button" class="btn btn-primary {{runButtonDisabled}}" {{runButtonDisabled}} title="Run the code, and return the result." value="Run" id="runButton" />
       </div>
     {{/if}}
     {{#unless isScratch}}
       {{! REVERT/DISCARD }}
-      <div id="revertDiscard" class="editorBarButton pull-left">
+      <div id="revertDiscard" class="editorBarButton pull-right">
         {{#unless fileIsDeleted}}
           <a id="revertFile" class="btn {{buttonDisabled}}" {{buttonDisabled}} title="Revert the file to the state on the host computer." href="#">Revert</a>
         {{else}}
@@ -80,9 +111,19 @@
       </div>
 
     {{/unless}}
+
+    {{! EDITOR SETTINGS
+    <div id="editorSettings" class="editorBarButton pull-right">
+      <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+        <img alt="Settings" src="/images/cog_16.png"/>
+        <span class="caret"></span>
+      </a>
+      <form class="dropdown-menu">
+      </form>
+    </div>
+   }}
+
   </div>
-
-
 
 </template>
 

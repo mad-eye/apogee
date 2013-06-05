@@ -113,7 +113,9 @@ Template.editor.rendered = ->
   editorState.attach()
   editorState?.rendered = true
   #If we're displaying the program output, set the bottom of the editor
-  $('#editor').css('bottom', $('#programOutput').height()) if isInterview()
+  outputOffset = if isInterview() then $('#programOutput').height() else 0
+  $('#editor').css 'bottom', $('#statusBar').height() + outputOffset
+  $('#statusBar').css 'bottom', outputOffset
   resizeEditor()
 
 Meteor.startup ->
@@ -168,10 +170,6 @@ Deps.autorun (computation) ->
   $(window).resize ->
     resizeEditor()
   computation.stop()
-
-Template.editorChrome.helpers
-  "editorFileName": ->
-    MadEye.fileLoader?.editorFilePath
 
 Template.editorOverlay.helpers
   "editorIsLoading": ->

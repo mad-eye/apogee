@@ -10,14 +10,14 @@
   position: relative;
   height: 600px;
   width: 100%;
-  border: 1px solid #aaa;
+  border: @standardBorder;
 }
 
 #editor {
   position: absolute;
   top: 0;
   left: 0;
-  bottom: 0; /*This will be changed if there are contents below.*/
+  bottom: 0; //This will be changed if there are contents below.
   right: 0;
 }
 
@@ -48,7 +48,6 @@
 #editorTitleBar {
   max-width: 611px;
   vertical-align: text-bottom;
-
 }
 
 #editorFileName {
@@ -59,9 +58,11 @@
   }
 }
 
+@outputHeight: 200px;
+
 #programOutput {
   position: absolute;
-  height: 200px;
+  height: @outputHeight;
   left: 0;
   bottom: 0;
   right: 0;
@@ -74,7 +75,7 @@
   border-width: 1px 0 0 0;
   border-radius: 0;
   position: relative;
-  height: 200px - 2*@baseSpacing - 1; /*border is 1px*/
+  height: @outputHeight - 2*@baseSpacing - 1; /*border is 1px*/
   overflow: auto;
 
   .initial-output {
@@ -96,45 +97,74 @@
   }
 }
 
-/* EDITOR BAR */
+// EDITOR BAR
+#statusBar {
+  position: absolute;
+  height: 18px;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: #DCDCDC;
+  border-top: @standardBorder;
+
+  font-size: @smallFontSize;
+  line-height: @baseLineHeight;
+  z-index: 10;
+}
+
+.statusBarButton {
+  margin: 0 @baseSpacing/2;
+
+  select {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0;
+    height: 16px;
+    width: 105px;
+    font-size: @smallFontSize;
+    .rounded-border (0)
+  }
+
+  label {
+    line-height: @baseLineHeight;
+  }
+
+  input {
+    margin-top: 1px;
+    margin-bottom: 1px;
+  }
+
+}
+
+#position {
+  width: 30px;
+  span {
+    line-height: 16px;
+  }
+}
+
+//The <i> messes with the span height
+#showInvisibles {
+  margin-top: -3px;
+}
+
 .editorBar {
 
 }
 
 .editorBarButton {
-  margin-right: @baseSpacing;
-  margin-bottom: @baseSpacing/2;
+  margin: 8px;
   .btn {
     height: 21px;
     padding-top: 0px;
     padding-bottom: 0px;
-
-    &.dropdown-toggle {
-      height: 19px;
-    }
   }
 
-}
-
-#editorSettings {
-  position: relative;
-  form.dropdown-menu {
-    padding: @baseSpacing;
-
-    label, select  {
-      font-size: @baseFontSize;
-      line-height: @baseLineHeight;
-    }
-  }
-
-  input[type="checkbox"] {
-    margin-top: 0;
-  }
-
-  
 }
 
 #syntaxMode {
+  margin-left: 0;
+
   form {
     margin: 0;
   }
@@ -145,6 +175,7 @@
 }
 
 #saveBox {
+  margin-left: 0;
   img {
     width: @mediumImageSize;
     height: @mediumImageSize;
@@ -158,6 +189,10 @@
     .transparent(0.15);
     cursor: default;
   }  
+}
+
+#revertDiscard, #runCode {
+  margin-right: 0;
 }
 
 #revertFile, #discardFile {
