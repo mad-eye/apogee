@@ -12,7 +12,7 @@ describe "editorChrome", ->
     projectName = 'fizzik'
     projectId = null
     before ->
-      window.editorState ?= new EditorState "editor"
+      MadEye.editorState ?= new EditorState "editor"
       project = new Project
         name: projectName
         closed: false
@@ -27,7 +27,7 @@ describe "editorChrome", ->
         modified: true
         isTest: true
       file.save()
-      editorState.fileId = file._id
+      MadEye.editorState.fileId = file._id
       helpers = Template.editorBar._tmpl_data.helpers
 
       Meteor.flush()

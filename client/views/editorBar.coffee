@@ -69,6 +69,27 @@ Template.editorBar.helpers
   "editorFileName": ->
     MadEye.fileLoader?.editorFilePath
 
+  showSaveSpinner: ->
+    MadEye.editorState.working == true
+
+  buttonDisabled : ->
+    fileId = MadEye.editorState?.fileId
+    file = Files.findOne(fileId) if fileId?
+    if !file?.modified or MadEye.editorState.working==true or projectIsClosed()
+      "disabled"
+    else
+      ""
+
+  runButtonDisabled: ->
+    project = Projects.findOne(Session.get("projectId"))
+    disabled = "disabled"
+    if canRunLanguage MadEye.editorState.editor.syntaxMode
+      disabled = ""
+    return disabled
+
+  isHangout: ->
+    Session.get "isHangout"
+
 Template.statusBar.created = ->
   MadEye.rendered 'statusBar'
 
@@ -114,27 +135,6 @@ Template.statusBar.helpers
   tabSizeEquals: (size)->
     return false unless MadEye.editorState.rendered
     MadEye.editorState?.editor.tabSize == parseInt size, 10
-
-  showSaveSpinner: ->
-    MadEye.editorState.working == true
-
-  buttonDisabled : ->
-    fileId = MadEye.editorState?.fileId
-    file = Files.findOne(fileId) if fileId?
-    if !file?.modified or MadEye.editorState.working==true or projectIsClosed()
-      "disabled"
-    else
-      ""
-
-  runButtonDisabled: ->
-    project = Projects.findOne(Session.get("projectId"))
-    disabled = "disabled"
-    if canRunLanguage MadEye.editorState.editor.syntaxMode
-      disabled = ""
-    return disabled
-
-  isHangout: ->
-    Session.get "isHangout"
 
   keybinding: (binding)->
     keybinding = getWorkspace()?.keybinding
