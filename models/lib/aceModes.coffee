@@ -29,6 +29,7 @@ MadEye.ACE_MODES =
   gsh: "groovy"
   haml: "haml"
 #haxe
+  hs: "haskell"
   html: "html"
   jade: "jade"
   java: "java"
@@ -40,6 +41,7 @@ MadEye.ACE_MODES =
   less: "less"
 #liquid
   lisp: "lisp"
+  lhs: "haskell"
   lua: "lua"
 #luapage
 #lucene

@@ -161,6 +161,7 @@ Template.statusBar.helpers
   golang : "Go"
   groovy : "Groovy"
   haml : "HAML"
+  haskell : "Haskell"
   haxe : "haXe"
   html : "HTML"
   jade : "Jade"
