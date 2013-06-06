@@ -15,24 +15,17 @@
         "git": "git://github.com/mad-eye/meteor-mocha-web.git",
         "branch": "master"
       },
-      "meteor-sharejs": {
-        "git": "git://github.com/mad-eye/meteor-sharejs",
-        "branch": "master"
-      },
       "accounts-anonymous": {
         "git": "git://github.com/rissem/meteor-accounts-anonymous.git",
         "branch": "master"
       },
-      "meteor-reactive-ace": {
-        "git": "git://github.com/mad-eye/meteor-reactive-ace",
-        "branch": "master"
-      }
+      "reactive-ace": {}
     },
     "packages": {
       "HTML5-History-API": {
         "git": "https://github.com/tmeasday/meteor-HTML5-History-API.git",
-        "tag": "v0.1.2",
-        "commit": "72333bfa71ae1ca75243085e83200eef40818088"
+        "tag": "v4.0.0",
+        "commit": "dc4965f1424cfca625ec3fbea17eace03f8e32c5"
       },
       "router": {
         "git": "https://github.com/tmeasday/meteor-router.git",
@@ -45,22 +38,17 @@
       "meteor-mocha-web": {
         "git": "git://github.com/mad-eye/meteor-mocha-web.git",
         "branch": "master",
-        "commit": "93ea01fc43f2fec879feeebfbe174d6c87a88f20"
-      },
-      "meteor-sharejs": {
-        "git": "git://github.com/mad-eye/meteor-sharejs",
-        "branch": "master",
-        "commit": "039c32fa96f7da4f4fed121ea867f825b3af06a0"
+        "commit": "17685adf244acc12693d721f85e73cdd18e70e97"
       },
       "accounts-anonymous": {
         "git": "git://github.com/rissem/meteor-accounts-anonymous.git",
         "branch": "master",
         "commit": "36f94a7909b0a09e4eb6782bdc316ced96eb4ca4"
       },
-      "meteor-reactive-ace": {
-        "git": "git://github.com/mad-eye/meteor-reactive-ace",
-        "branch": "master",
-        "commit": "24ff00928b8e26442fb9a76eb514fc45da8ca8b1"
+      "reactive-ace": {
+        "git": "https://github.com/mad-eye/meteor-reactive-ace.git",
+        "tag": "v0.0.2",
+        "commit": "32038d073b1cfffe951e84536d6dd14afcfac229"
       },
       "page-js-ie-support": {
         "git": "https://github.com/tmeasday/meteor-page-js-ie-support.git",
