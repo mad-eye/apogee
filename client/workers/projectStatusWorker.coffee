@@ -17,10 +17,10 @@ Meteor.startup ->
   Deps.autorun ->
     #TODO this seems bolierplatey..
     projectId = Session.get("projectId")
-    return unless Session.equals("editorRendered", true) and projectId
+    return unless projectId and MadEye.fileLoader and MadEye.editorState
     projectStatus = ProjectStatuses.findOne {sessionId:Session.id, projectId}
     return unless projectStatus
-    projectStatus.update {filePath: MadEye.fileLoader.editorFilePath, connectionId: editorState.connectionId}
+    projectStatus.update {filePath: MadEye.fileLoader.editorFilePath, connectionId: MadEye.editorState.connectionId}
 
   #Populate fileTree with ProjectStatuses filePath
   sessionsDep = new Deps.Dependency

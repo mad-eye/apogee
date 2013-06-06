@@ -51,5 +51,3 @@ class @FileLoader extends Reactor
         type = if project.interview then "interview" else "edit"
         Meteor.Router.to("/#{type}/#{project._id}/#{@editorFilePath}")
 
-MadEye.fileLoader = new FileLoader()
-

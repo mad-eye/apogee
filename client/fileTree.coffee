@@ -1,19 +1,3 @@
-#TODO: Replace this with Meteor's ReactiveDict
-class ReactiveDict
-  constructor: () ->
-    @deps = {}
-    @keys = {}
-
-  get: (key) ->
-    @deps[key]  ?= new Deps.Dependency
-    Deps.depend @deps[key]
-    @keys[key]
-
-  set: (key, value) ->
-    unless @keys[key] == value
-      @deps[key]?.changed()
-      @keys[key] = value
-
 class FileTree
   constructor: ()->
     @openedDirs = new ReactiveDict
@@ -111,7 +95,7 @@ window.fileTree = new FileTree
 
 
 Deps.autorun ->
-  fileId = MadEye.fileLoader.selectedFileId
+  fileId = MadEye.fileLoader?.selectedFileId
   return unless fileId
   file = Files.findOne fileId
   fileTree.select file

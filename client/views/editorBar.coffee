@@ -18,12 +18,12 @@ addWorkspaceModeOverride = (fileId, syntaxMode) ->
 Template.editorBar.events
   'click #runButton': (e)->
     Session.set "codeExecuting", true
-    editorBody = editorState.getEditor().getValue()
+    editorBody = MadEye.editorState.getEditor().getValue()
     filename = MadEye.fileLoader.editorFilePath
     Meteor.http.post "#{Meteor.settings.public.nurmengardUrl}/run",
       data:
         contents: editorBody
-        language: editorState.editor.syntaxMode
+        language: MadEye.editorState.editor.syntaxMode
         fileName: filename
       headers:
         "Content-Type": "application/json"
@@ -41,11 +41,11 @@ Template.editorBar.events
 
   'click #revertFile': (event) ->
     el = $(event.target)
-    return if el.hasClass 'disabled' or editorState.working == true
-    editorState.revertFile (error)->
+    return if el.hasClass 'disabled' or MadEye.editorState.working == true
+    MadEye.editorState.revertFile (error)->
 
   'click #discardFile': (event) ->
-    file = Files.findOne editorState.fileId
+    file = Files.findOne MadEye.editorState.fileId
     return unless file
     Metrics.add
       message:'discardFile'
@@ -54,13 +54,13 @@ Template.editorBar.events
     file.remove()
     MadEye.fileLoader.loadPath = ""
     #XXX: This will eventually not be necessary.
-    editorState.fileId = null
+    MadEye.editorState.fileId = null
 
   'click #saveImage' : (event) ->
     el = $(event.target)
-    return if el.hasClass 'disabled' or editorState.working == true
+    return if el.hasClass 'disabled' or MadEye.editorState.working == true
     console.log "clicked save button"
-    editorState.save (err) ->
+    MadEye.editorState.save (err) ->
       if err
         #Handle error better.
         console.error "Error in save request:", err
@@ -69,8 +69,19 @@ Template.editorBar.helpers
   "editorFileName": ->
     MadEye.fileLoader?.editorFilePath
 
+Template.statusBar.created = ->
+  MadEye.rendered 'statusBar'
+
+Template.statusBar.rendered = ->
+  outputOffset = if isInterview() then $('#programOutput').height() else 0
+  $('#statusBar').css 'bottom', outputOffset
+  resizeEditor()
+
+Template.editorBar.created = ->
+  MadEye.rendered 'editorBar'
+
 Template.editorBar.rendered = ->
-  Session.set 'editorBarRendered', true
+  resizeEditor()
 
 Template.statusBar.events
   'change #wordWrap': (e) ->
@@ -80,7 +91,7 @@ Template.statusBar.events
     setWorkspaceConfig "showInvisibles", e.target.checked
 
   'change #syntaxModeSelect': (e) ->
-    addWorkspaceModeOverride editorState.fileId, e.target.value
+    addWorkspaceModeOverride MadEye.editorState.fileId, e.target.value
 
   'change #useSoftTabs': (e) ->
     setWorkspaceConfig "useSoftTabs", e.target.checked
@@ -98,19 +109,19 @@ Template.statusBar.events
 
 Template.statusBar.helpers
   editorState: ->
-    editorState
+    MadEye.editorState
 
   tabSizeEquals: (size)->
-    return false unless editorState.rendered
-    editorState?.editor.tabSize == parseInt size, 10
+    return false unless MadEye.editorState.rendered
+    MadEye.editorState?.editor.tabSize == parseInt size, 10
 
   showSaveSpinner: ->
-    editorState.working == true
+    MadEye.editorState.working == true
 
   buttonDisabled : ->
-    fileId = editorState.fileId
+    fileId = MadEye.editorState?.fileId
     file = Files.findOne(fileId) if fileId?
-    if !file?.modified or editorState.working==true or projectIsClosed()
+    if !file?.modified or MadEye.editorState.working==true or projectIsClosed()
       "disabled"
     else
       ""
@@ -118,7 +129,7 @@ Template.statusBar.helpers
   runButtonDisabled: ->
     project = Projects.findOne(Session.get("projectId"))
     disabled = "disabled"
-    if canRunLanguage editorState.editor.syntaxMode
+    if canRunLanguage MadEye.editorState.editor.syntaxMode
       disabled = ""
     return disabled
 
@@ -205,7 +216,7 @@ Template.statusBar.helpers
 
 Template.syntaxModeOptions.helpers
   syntaxModeEquals: (value) ->
-    editorState.editor.syntaxMode == value
+    MadEye.editorState.editor.syntaxMode == value
 
   #XXX: The map seems to be traversed 'in order', but we shouldn't rely on that.
   syntaxModes: ->
@@ -216,7 +227,7 @@ Template.syntaxModeOptions.helpers
 
 Template.themeOptions.helpers
   themeEquals: (value) ->
-    editorState.editor.theme == value
+    MadEye.editorState.editor.theme == value
 
   brightThemes: ->
     [
@@ -273,34 +284,34 @@ Meteor.startup ->
 
   #Syntax Modes from file
   Deps.autorun ->
-    return unless Session.equals("editorRendered", true)
-    file = Files.findOne(editorState.fileId)
+    return unless MadEye.isRendered 'editor'
+    file = Files.findOne(MadEye.editorState?.fileId)
     return unless file
     workspace = Workspaces.findOne {userId: Meteor.userId()}
-    if workspace?.modeOverrides?[editorState.fileId]
-      editorState.editor.syntaxMode = workspace.modeOverrides[editorState.fileId]
+    if workspace?.modeOverrides?[MadEye.editorState.fileId]
+      MadEye.editorState.editor.syntaxMode = workspace.modeOverrides[MadEye.editorState.fileId]
       return
     mode = file.aceMode
     #Check for shebang. We might have such lines as '#! /bin/env sh -x'
     unless mode
-      cmd = findShbangCmd editorState.editor.value
+      cmd = findShbangCmd MadEye.editorState.editor.value
       mode = switch cmd
         when 'sh', 'ksh', 'csh', 'tcsh', 'bash', 'dash', 'zsh' then 'sh'
         when 'node' then 'javascript'
         #Other aliases?
         else cmd
       mode = null unless mode in _.values(MadEye.ACE_MODES)
-    editorState.editor.syntaxMode = mode
+    MadEye.editorState.editor.syntaxMode = mode
 
   #Keybinding
   Deps.autorun (computation) ->
-    return unless Session.equals("editorRendered", true)
+    return unless MadEye.isRendered('editor') and MadEye.editorState
     workspace = getWorkspace()
     return unless workspace
     keybinding = workspace.keybinding
     unless keybinding
       #No keybinding means Ace
-      editorState.getEditor().setKeyboardHandler null
+      MadEye.editorState.getEditor().setKeyboardHandler null
     else
       module = require("ace/keyboard/#{keybinding}")
       unless module
@@ -308,14 +319,14 @@ Meteor.startup ->
           computation.invalidate()
       else
         handler = module.handler
-        editorState.getEditor().setKeyboardHandler handler
+        MadEye.editorState.getEditor().setKeyboardHandler handler
 
   Deps.autorun (computation) ->
-    return unless Session.equals("editorRendered", true)
+    return unless MadEye.isRendered('editor') and MadEye.editorState
     workspace = getWorkspace()
     return unless workspace
-    editorState.editor.showInvisibles = workspace.showInvisibles
-    editorState.editor.tabSize = workspace.tabSize
-    editorState.editor.theme = workspace.theme
-    editorState.editor.useSoftTabs = workspace.useSoftTabs
-    editorState.editor.wordWrap = workspace.wordWrap
+    MadEye.editorState.editor.showInvisibles = workspace.showInvisibles
+    MadEye.editorState.editor.tabSize = workspace.tabSize
+    MadEye.editorState.editor.theme = workspace.theme
+    MadEye.editorState.editor.useSoftTabs = workspace.useSoftTabs
+    MadEye.editorState.editor.wordWrap = workspace.wordWrap

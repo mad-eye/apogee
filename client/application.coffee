@@ -5,6 +5,8 @@
 @editRegex = /\/(edit|interview)\/([-\w]+)\/?([^#]*)#?(?:L([0-9]*))?(?:S([0-9a-f-]*))?/
 @transitoryIssues = null
 
+MadEye.fileLoader = new FileLoader()
+
 #queryString example: '?a=b&c&d=&a=f'
 #For right now, we ignore multiple values for a given param
 getQueryParams = (queryString) ->
@@ -28,10 +30,6 @@ registerHangout = (projectId, hangoutUrl) ->
     }, (error,response) =>
       console.error "Registering hangout url failed.", error if error
 
-#soon..
-#MadEye.editorState = new EditorState "editor"
-#MadEye.fileTree = new FileTree
-
 if Meteor.settings.public.googleAnalyticsId
   window._gaq = window._gaq || []
   _gaq.push ['_setAccount', Meteor.settings.public.googleAnalyticsId]
@@ -43,6 +41,7 @@ recordView = (params)->
 
 do ->
   Meteor.Router.add editRegex, (page, projectId, filePath, lineNumber, connectionId)->
+    return unless MadEye.fileLoader
     Deps.nonreactive ->
       isHangout = false
       #TODO record type..edit/interview/scratch
@@ -53,7 +52,7 @@ do ->
         isHangout = true
       recordView {page, projectId, filePath, hangout: isHangout}
       Session.set 'projectId', projectId
-      window.editorState ?= new EditorState "editor"
+      MadEye.editorState ?= new EditorState "editor"
       
     #Grab the (a?) scratch file if we are just going to the project
     unless filePath

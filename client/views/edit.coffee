@@ -88,7 +88,7 @@ Template.projectStatus.projectAlerts = ->
   alerts.push fileModifiedLocallyWarning if fileIsModifiedLocally()
   alerts.push projectLoadingAlert if projectIsLoading()
   alerts.push networkIssuesWarning if transitoryIssues?.has 'networkIssues'
-  language = editorState.editor.syntaxMode
+  language = MadEye.editorState.editor.syntaxMode
   alerts.push cantRunLanguageWarning(syntaxModes[language]) if isInterview() and not canRunLanguage language
   return alerts
 
@@ -106,12 +106,13 @@ Meteor.autosubscribe ->
 #XXX: Unused?
 Template.editor.preserve("#editor")
 
+Template.editor.created = ->
+  MadEye.rendered 'editor'
 
 Template.editor.rendered = ->
   #console.log "Rendering editor"
-  Session.set("editorRendered", true)
-  editorState.attach()
-  editorState?.rendered = true
+  MadEye.editorState.attach()
+  MadEye.editorState.rendered = true
   #If we're displaying the program output, set the bottom of the editor
   outputOffset = if isInterview() then $('#programOutput').height() else 0
   $('#editor').css 'bottom', $('#statusBar').height() + outputOffset
@@ -121,23 +122,23 @@ Template.editor.rendered = ->
 Meteor.startup ->
   gotoPosition = (cursor)->
     console.error "undefined cursor" unless cursor
-    editor = editorState.getEditor()
+    editor = MadEye.editorState.getEditor()
     position = cursorToRange(editor.getSession().getDocument(), cursor)
     editor.navigateTo(position.start.row, position.start.column)
     Meteor.setTimeout ->
       editor.scrollToLine(position.start.row, true)
     , 0
 
-  #TODO: Move this into internal editorState fns
+  #TODO: Move this into internal MadEye.editorState fns
   Deps.autorun ->
-    return unless Session.equals("editorRendered", true)
-    fileId = MadEye.fileLoader.editorFileId
+    return unless MadEye.isRendered 'editor'
+    fileId = MadEye.fileLoader?.editorFileId
     return unless fileId?
     file = Files.findOne(fileId)
-    return unless file and file._id != editorState.fileId
-    editorState.loadFile file, ->
-      if editorState.doc.cursor
-        gotoPosition(editorState.doc.cursor)
+    return unless file and file._id != MadEye.editorState?.fileId
+    MadEye.editorState.loadFile file, ->
+      if MadEye.editorState.doc.cursor
+        gotoPosition(MadEye.editorState.doc.cursor)
 
 
 @resizeEditor = ->
@@ -166,14 +167,15 @@ Meteor.startup ->
     fileTreeContainer.height(newFileTreeHeight)
 
 Deps.autorun (computation) ->
-  return unless Session.equals "editorRendered", true
+  return unless MadEye.isRendered 'editor', 'fileTree', 'statusBar'
+  resizeEditor()
   $(window).resize ->
     resizeEditor()
   computation.stop()
 
 Template.editorOverlay.helpers
   "editorIsLoading": ->
-    editorState.loading == true
+    MadEye.editorState.loading == true
 
 Template.editorFooter.helpers
   output: ->

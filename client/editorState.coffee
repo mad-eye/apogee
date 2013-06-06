@@ -139,7 +139,7 @@ class EditorState
           editorChecksum = MadEye.crc32 doc.getText()
           @loading = false
           # FIXME there's a better way to do this
-          # we need to stop storing a stale file object on the editorState
+          # we need to stop storing a stale file object on the MadEye.editorState
           if file.modified_locally and file.checksum == editorChecksum
             @revertFile()
           callback?()
@@ -235,11 +235,10 @@ EditorState.addProperty 'connectionId', '_connectionId', '_connectionId'
 
 Meteor.startup ->
   Meteor.autorun ->
-    file = Files.findOne(editorState?.fileId)
+    file = Files.findOne(MadEye.editorState?.fileId)
     return unless file?.checksum?
-    checksum = editorState.editor.checksum
+    checksum = MadEye.editorState.editor.checksum
     return unless checksum?
     modified = checksum != file.checksum
     file.update {modified}
-
 

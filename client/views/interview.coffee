@@ -6,7 +6,7 @@ Template.interview.helpers
     Files.find(scratch: true)
 
   selected: ->
-    file = Files.findOne editorState.fileId
+    file = Files.findOne MadEye.editorState.fileId
     if file?.path == @path
       "selected"
     else

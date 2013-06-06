@@ -33,6 +33,9 @@ do ->
     projectName : ->
       Projects.findOne(Session.get "projectId")?.name ? "New project"
 
+  Template.fileTree.created = ->
+    MadEye.rendered 'fileTree'
+
   Template.fileTree.rendered = ->
     resizeEditor()
 
@@ -48,7 +51,4 @@ do ->
     #'click img.fileTreeUserIcon': (event) ->
       #event.stopPropagation()
       #Meteor.Router.to event.toElement.attributes.destination.value
-
-  #Template.fileTree.rendered = ->
-    #console.log "Rendered fileTree"
 
