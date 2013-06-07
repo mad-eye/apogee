@@ -12,6 +12,8 @@ MadEye.Event.prototype.collection = @Events
   Deps.autorun (computation)->
     return unless Meteor.userId()
     event.userId = Meteor.userId()
+    event.group = "a" if groupA()
+    event.group = "b" if groupB()
     if event.projectId
       project = Projects.findOne event.projectId
       return unless project

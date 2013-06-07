@@ -5,6 +5,14 @@
 @editRegex = /\/(edit|interview)\/([-\w]+)\/?([^#]*)#?(?:L([0-9]*))?(?:S([0-9a-f-]*))?/
 @transitoryIssues = null
 
+@groupA = (testName)->
+  return null unless Meteor.userId()
+  return MadEye.crc32("#{Meteor.userId()}#{testName}") % 2 == 0
+
+@groupB = (testName)->
+  return null unless Meteor.userId()
+  return MadEye.crc32("#{Meteor.userId()}#{testName}") % 2 != 0
+
 MadEye.fileLoader = new FileLoader()
 
 #queryString example: '?a=b&c&d=&a=f'
