@@ -129,6 +129,9 @@ do ->
         Meteor.Router.to "/edit/#{project._id}/#{scratchPath}"
       , 0
 
+    '/projectSelection': ->
+      "projectSelection"
+
     '/unlinked-hangout': ->
       recordView page:'unlinked-hangout'
       Session.set "isHangout", true
