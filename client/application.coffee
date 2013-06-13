@@ -2,7 +2,7 @@
 #PATH_TO_FILE and LINE_NUMBER are optional
 #editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?([0-9]*)?/
 #TODO should probably OR the line and session fields
-@editRegex = /\/(edit|interview)\/([-\w]+)\/?([^#]*)#?(?:L([0-9]*))?(?:S([0-9a-f-]*))?/
+@editRegex = /\/(edit|interview|editImpressJS)\/([-\w]+)\/?([^#]*)#?(?:L([0-9]*))?(?:S([0-9a-f-]*))?/
 @transitoryIssues = null
 
 @groupA = (testName)->
@@ -70,7 +70,11 @@ do ->
     #This editorFilePath probably isn't set yet, because we haven't flushed
     fileTree.open MadEye.fileLoader.editorFilePath, true
 
-    "edit"
+    console.log "PAGE", page
+    unless page == "editImpressJS"
+      return "edit"
+    else
+      return "editImpressJS"
 
   scratchPath = "SCRATCH.rb"
 

@@ -25,6 +25,24 @@
     </div>
 </template>
 
+<template name="editImpressJS">
+  {{> projectStatus}}
+  <div class="row">
+    <div id="leftColumn" class="span5">
+      {{> fileTree}}
+      <iframe id="presentationPreview" src="http://localhost:8000/#/bored" class="span5" style="height:350px"/>
+    </div>
+    <div id="editorChrome" class="span7">
+      {{> editorChrome }}
+      <div id="editorContainer">
+        {{> editorOverlay }}
+        {{> editor}}
+        {{> editorFooter}}
+      </div>
+    </div>
+  </div>
+</template>
+
 <template name="projectStatus">
   {{#each projectAlerts}}
     {{> alert this}}

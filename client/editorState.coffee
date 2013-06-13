@@ -199,6 +199,11 @@ class EditorState
         #XXX: Are we worried about race conditions if there were modifications after the save button was pressed?
         file.update {checksum:editorChecksum}
       @working = false
+      src = $("#presentationPreview")[0].src
+      $("#presentationPreview").remove()
+      $("#leftColumn").append("""
+            <iframe id="presentationPreview" src="#{src}" height="300px" width="400px"/>
+      """)
       callback?(error)
 
 EditorState.addProperty = (name, getter, setter) ->
