@@ -1,8 +1,8 @@
 {
   "meteor": {
-    "git": "git://github.com/mad-eye/meteor.git",
-    "tag": "binary_search_master",
-    "commit": "1272c6053567ccd1e52ae026972dda949c2f10d1"
+    "git": "git://github.com/meteor/meteor.git",
+    "tag": "release/0.6.4",
+    "commit": "20a1f88993279b8bdc9550b67e40fe06534b00e4"
   },
   "dependencies": {
     "basePackages": {
@@ -12,14 +12,12 @@
         "path": ".madeye-common"
       },
       "meteor-mocha-web": {
-        "git": "git://github.com/mad-eye/meteor-mocha-web.git",
-        "branch": "master"
+        "path": "../../meteor-mocha-web"
       },
       "accounts-anonymous": {
         "git": "git://github.com/rissem/meteor-accounts-anonymous.git",
         "branch": "master"
-      },
-      "reactive-ace": {}
+      }
     },
     "packages": {
       "HTML5-History-API": {
@@ -36,19 +34,12 @@
         "path": ".madeye-common"
       },
       "meteor-mocha-web": {
-        "git": "git://github.com/mad-eye/meteor-mocha-web.git",
-        "branch": "master",
-        "commit": "17685adf244acc12693d721f85e73cdd18e70e97"
+        "path": "../../meteor-mocha-web"
       },
       "accounts-anonymous": {
         "git": "git://github.com/rissem/meteor-accounts-anonymous.git",
         "branch": "master",
         "commit": "36f94a7909b0a09e4eb6782bdc316ced96eb4ca4"
-      },
-      "reactive-ace": {
-        "git": "https://github.com/mad-eye/meteor-reactive-ace.git",
-        "tag": "v0.0.2",
-        "commit": "32038d073b1cfffe951e84536d6dd14afcfac229"
       },
       "page-js-ie-support": {
         "git": "https://github.com/tmeasday/meteor-page-js-ie-support.git",
