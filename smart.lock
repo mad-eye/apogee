@@ -12,7 +12,8 @@
         "path": ".madeye-common"
       },
       "meteor-mocha-web": {
-        "path": "../../meteor-mocha-web"
+        "git": "git://github.com/mad-eye/meteor-mocha-web.git",
+        "branch": "master"
       },
       "accounts-anonymous": {
         "git": "git://github.com/rissem/meteor-accounts-anonymous.git",
@@ -34,7 +35,9 @@
         "path": ".madeye-common"
       },
       "meteor-mocha-web": {
-        "path": "../../meteor-mocha-web"
+        "git": "git://github.com/mad-eye/meteor-mocha-web.git",
+        "branch": "master",
+        "commit": "17685adf244acc12693d721f85e73cdd18e70e97"
       },
       "accounts-anonymous": {
         "git": "git://github.com/rissem/meteor-accounts-anonymous.git",
