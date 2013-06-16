@@ -202,12 +202,8 @@ class EditorState
         file.update {checksum:editorChecksum}
       @working = false
 
-      #TODO break this out so it doesn't affect the normal project
-      src = $("#presentationPreview")[0].src
-      $("#presentationPreview").remove()
-      $("#leftColumn").append("""
-            <iframe id="presentationPreview" src="#{src}" height="300px" width="400px"/>
-      """)
+      if project.impressJS
+        iFrame = $("#presentationPreview")[0].contentDocument.location.reload()
       callback?(error)
 
 EditorState.addProperty = (name, getter, setter) ->
