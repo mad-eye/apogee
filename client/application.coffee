@@ -70,7 +70,6 @@ do ->
     #This editorFilePath probably isn't set yet, because we haven't flushed
     fileTree.open MadEye.fileLoader.editorFilePath, true
 
-    console.log "PAGE", page
     unless page == "editImpressJS"
       return "edit"
     else
@@ -115,6 +114,11 @@ do ->
       Meteor.setTimeout ->
         Meteor.Router.to "/edit/#{project._id}/#{scratchPath}"
       , 0
+
+    '/createImpressJS': ->
+      Meteor.http.post "http://localhost:4004/newImpressJSProject", (err, result)->
+        data = JSON.parse result.content
+        Meteor.Router.to "/editImpressJS/#{data['projectId']}/index.html"
 
     '/scratch': ->
       #TODO add more info here..

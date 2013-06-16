@@ -2,3 +2,4 @@
 dump.rdb
 settings.json
 .env
+public/userStatic
