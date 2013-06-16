@@ -116,7 +116,7 @@ do ->
       , 0
 
     '/createImpressJS': ->
-      Meteor.http.post "http://localhost:4004/newImpressJSProject", (err, result)->
+      Meteor.http.post "#{Meteor.settings.public.azkabanUrl}/newImpressJSProject", (err, result)->
         data = JSON.parse result.content
         Meteor.Router.to "/editImpressJS/#{data['projectId']}/index.html"
 
