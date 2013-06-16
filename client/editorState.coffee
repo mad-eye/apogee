@@ -179,8 +179,9 @@ class EditorState
 
   #callback: (err) ->
   save : (callback) ->
+    project = Projects.findOne Session.get("projectId")
     console.log "Saving file #{@fileId}"
-    Events.record("save", {file: @fileId, projectId: Session.get "projectId"})
+    Events.record("save", {file: @fileId, projectId: project._id})
     Metrics.add
       message:'saveFile'
       fileId: @fileId
@@ -189,9 +190,10 @@ class EditorState
     return if file.checksum == editorChecksum
     @working = true
     Meteor.http.put @getFileUrl(@fileId), {
-      data: {contents: @editor.value}
+      data: {contents: @editor.value, static: true}
       headers: {'Content-Type':'application/json'}
       timeout: 5*1000
+
     }, (error,response) =>
       if error
         handleNetworkError error, response
@@ -199,6 +201,8 @@ class EditorState
         #XXX: Are we worried about race conditions if there were modifications after the save button was pressed?
         file.update {checksum:editorChecksum}
       @working = false
+
+      #TODO break this out so it doesn't affect the normal project
       src = $("#presentationPreview")[0].src
       $("#presentationPreview").remove()
       $("#leftColumn").append("""
