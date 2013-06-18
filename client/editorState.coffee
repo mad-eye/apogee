@@ -193,7 +193,6 @@ class EditorState
       data: {contents: @editor.value, static: true}
       headers: {'Content-Type':'application/json'}
       timeout: 5*1000
-
     }, (error,response) =>
       if error
         handleNetworkError error, response
@@ -201,9 +200,8 @@ class EditorState
         #XXX: Are we worried about race conditions if there were modifications after the save button was pressed?
         file.update {checksum:editorChecksum}
       @working = false
-
       if project.impressJS
-        iFrame = $("#presentationPreview")[0].contentDocument.location.reload()
+        $("#presentationPreview")[0].contentDocument.location.reload()
       callback?(error)
 
 EditorState.addProperty = (name, getter, setter) ->
