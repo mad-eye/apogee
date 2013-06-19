@@ -1,14 +1,8 @@
 {
-  "meteor": {
-    "git": "git://github.com/meteor/meteor.git",
-    "tag": "release/0.6.4"
-  },
   "packages": {
     "HTML5-History-API": {},
     "router": {},
-    "meteor-mocha-web": {
-      "git": "git://github.com/mad-eye/meteor-mocha-web.git"
-    },
+    "mocha-web": {},
     "accounts-anonymous": {
       "git": "git://github.com/rissem/meteor-accounts-anonymous.git"
     }
