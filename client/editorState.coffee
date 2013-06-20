@@ -179,9 +179,8 @@ class EditorState
 
   #callback: (err) ->
   save : (callback) ->
-    project = Projects.findOne Session.get("projectId")
     console.log "Saving file #{@fileId}"
-    Events.record("save", {file: @fileId, projectId: project._id})
+    Events.record("save", {file: @fileId, projectId: Session.get("projectId")})
     Metrics.add
       message:'saveFile'
       fileId: @fileId
@@ -200,6 +199,7 @@ class EditorState
         #XXX: Are we worried about race conditions if there were modifications after the save button was pressed?
         file.update {checksum:editorChecksum}
       @working = false
+      project = Projects.findOne Session.get("projectId")
       if project.impressJS
         $("#presentationPreview")[0].contentDocument.location.reload()
       callback?(error)
