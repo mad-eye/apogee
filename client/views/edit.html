@@ -30,8 +30,10 @@
   <div class="row">
     <div id="leftColumn" class="span5">
       {{> fileTree}}
-      <iframe id="presentationPreview" src="/userStatic/{{projectId}}"/>
-      <a href = "/userStatic/{{projectId}}/index.html">View full presentation</a>
+      <div class='wrapper'>
+        <iframe id="presentationPreview" src="/userStatic/{{projectId}}"/>
+      </div>
+      <a id="fullPresentationLink" href = "/userStatic/{{projectId}}/index.html">View full presentation</a>
     </div>
 
     <div id="editorChrome" class="span7">
