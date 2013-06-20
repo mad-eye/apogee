@@ -6,12 +6,7 @@
   "packages": {
     "HTML5-History-API": {},
     "router": {},
-    "madeye-common": {
-      "path": "./.madeye-common"
-    },
-    "meteor-mocha-web": {
-      "git": "git://github.com/mad-eye/meteor-mocha-web.git"
-    },
+    "mocha-web": {},
     "accounts-anonymous": {
       "git": "git://github.com/rissem/meteor-accounts-anonymous.git"
     }

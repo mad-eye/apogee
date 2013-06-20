@@ -3,3 +3,4 @@
 basedir=$(dirname $0)
 git submodule update --recursive --init
 $basedir/makeSettings
+mrt install
