@@ -1,6 +1,14 @@
 @import "base.less";
 
+@zoomFactor: 0.4;
+
 #leftColumn {
+  .wrapper {
+    width: 1024px * @zoomFactor;
+    height: 768px * @zoomFactor;
+    overflow: hidden;
+  }
+
   #presentationPreview {
     margin-top: 14px;
     margin-left: 0px;
@@ -8,11 +16,11 @@
     height: 768px;
     width: 1024px;
     // zoom: 0.25;
-    -moz-transform: scale(0.40);
+    -moz-transform: scale(@zoomFactor);
     -moz-transform-origin: 0 0;
-    -o-transform: scale(0.40);
+    -o-transform: scale(@zoomFactor);
     -o-transform-origin: 0 0;
-    -webkit-transform: scale(0.40);
+    -webkit-transform: scale(@zoomFactor);
     -webkit-transform-origin: 0 0;
   }
 }
