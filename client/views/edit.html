@@ -29,11 +29,19 @@
   {{> projectStatus}}
   <div class="row">
     <div id="leftColumn" class="span5">
-      {{> fileTree}}
-      <div class='wrapper'>
-        <iframe id="presentationPreview" src="/userStatic/{{projectId}}"/>
+      <div class="row">
+        <div class="span5">
+          {{> fileTree}}
+        </div>
       </div>
-      <a id="fullPresentationLink" href = "/userStatic/{{projectId}}/index.html">View full presentation</a>
+      <div class="row">
+        <div class="span5">
+          <div class='wrapper'>
+            <iframe id="presentationPreview" src="/userStatic/{{projectId}}"/>
+          </div>
+          <a id="fullPresentationLink" href = "/userStatic/{{projectId}}/index.html">View full presentation</a>
+        </div>
+      </div>
     </div>
 
     <div id="editorChrome" class="span7">
