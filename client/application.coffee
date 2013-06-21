@@ -115,7 +115,7 @@ do ->
         Meteor.Router.to "/edit/#{project._id}/#{scratchPath}"
       , 0
 
-    '/createImpressJS': ->
+    '/impress.js': ->
       Meteor.http.post "#{Meteor.settings.public.azkabanUrl}/newImpressJSProject", (err, result)->
         data = JSON.parse result.content
         Meteor.Router.to "/editImpressJS/#{data['projectId']}/index.html"
