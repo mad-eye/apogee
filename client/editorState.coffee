@@ -190,7 +190,7 @@ class EditorState
     @working = true
     project = Projects.findOne Session.get "projectId"
     Meteor.http.put @getFileUrl(@fileId), {
-      data: {contents: @editor.value, static: project.impressJS?}
+      data: {contents: @editor.value, static: project.impressJS}
       headers: {'Content-Type':'application/json'}
       timeout: 5*1000
     }, (error,response) =>
