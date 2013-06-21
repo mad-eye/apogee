@@ -17,6 +17,5 @@ accounts-base
 accounts-github
 accounts-ui-unstyled
 accounts-anonymous
-reactive-ace
 meteor-sharejs
-madeye-common
+

@@ -2,7 +2,7 @@
 #PATH_TO_FILE and LINE_NUMBER are optional
 #editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?([0-9]*)?/
 #TODO should probably OR the line and session fields
-@editRegex = /\/(edit|interview)\/([-\w]+)\/?([^#]*)#?(?:L([0-9]*))?(?:S([0-9a-f-]*))?/
+@editRegex = /\/(edit|interview|editImpressJS)\/([-\w]+)\/?([^#]*)#?(?:L([0-9]*))?(?:S([0-9a-f-]*))?/
 @transitoryIssues = null
 
 @groupA = (testName)->
@@ -70,7 +70,10 @@ do ->
     #This editorFilePath probably isn't set yet, because we haven't flushed
     fileTree.open MadEye.fileLoader.editorFilePath, true
 
-    "edit"
+    unless page == "editImpressJS"
+      return "edit"
+    else
+      return "editImpressJS"
 
   scratchPath = "SCRATCH.rb"
 
@@ -111,6 +114,11 @@ do ->
       Meteor.setTimeout ->
         Meteor.Router.to "/edit/#{project._id}/#{scratchPath}"
       , 0
+
+    '/createImpressJS': ->
+      Meteor.http.post "#{Meteor.settings.public.azkabanUrl}/newImpressJSProject", (err, result)->
+        data = JSON.parse result.content
+        Meteor.Router.to "/editImpressJS/#{data['projectId']}/index.html"
 
     '/scratch': ->
       #TODO add more info here..

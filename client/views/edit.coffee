@@ -199,3 +199,7 @@ Template.editorFooter.helpers
         output += """<span class="stderr">#{response.stderr}</span>\n""" if response.stderr
         output += """<span class="runError">#{response.runError}</span>\n""" if response.runError
     output
+
+Template.editImpressJS.helpers
+  projectId: ->
+    Session.get("projectId")
