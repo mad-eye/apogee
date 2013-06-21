@@ -1,6 +1,59 @@
 @import "base.less";
 
 #leftColumn {
+  .miniIFrameWrapper (@width){
+    @zoomFactor: (@width / 1024);
+    margin-top: 30px;
+    width: 1024px * @zoomFactor;
+    height: 768px * @zoomFactor;
+    overflow: hidden;
+  }
+
+  .miniIFrame (@width){
+    @zoomFactor: (@width / 1024);
+
+    margin-top: 0px;
+    margin-left: 0px;
+
+    height: 768px;
+    width: 1024px;
+
+    -moz-transform: scale(@zoomFactor);
+    -moz-transform-origin: 0 0;
+    -o-transform: scale(@zoomFactor);
+    -o-transform-origin: 0 0;
+    -webkit-transform: scale(@zoomFactor);
+    -webkit-transform-origin: 0 0;
+  }
+
+  .wrapper {
+    @media (max-width: 979px) {
+      .miniIFrameWrapper(58 * 5)
+    }
+    @media (min-width: 980px) and (max-width: 1199px) {
+      .miniIFrameWrapper(76 * 5)
+    }
+    @media(min-width: 1200px) {
+      .miniIFrameWrapper(94 * 5)
+    }
+  }
+
+  #presentationPreview {
+    @media (max-width: 979px) {
+      .miniIFrame(58 * 5)
+    }
+    @media (min-width: 980px) and (max-width: 1199px) {
+      .miniIFrame(76 * 5)
+    }
+    @media(min-width: 1200px) {
+      .miniIFrame(94 * 5)
+    }
+  }
+
+  #fullPresentationLink {
+    margin-top: 8px;
+    float: left;
+  }
 }
 
 #projectName {

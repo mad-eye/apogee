@@ -180,7 +180,7 @@ class EditorState
   #callback: (err) ->
   save : (callback) ->
     console.log "Saving file #{@fileId}"
-    Events.record("save", {file: @fileId, projectId: Session.get "projectId"})
+    Events.record("save", {file: @fileId, projectId: Session.get("projectId")})
     Metrics.add
       message:'saveFile'
       fileId: @fileId
@@ -188,8 +188,9 @@ class EditorState
     file = Files.findOne @fileId
     return if file.checksum == editorChecksum
     @working = true
+    project = Projects.findOne Session.get "projectId"
     Meteor.http.put @getFileUrl(@fileId), {
-      data: {contents: @editor.value}
+      data: {contents: @editor.value, static: project.impressJS?}
       headers: {'Content-Type':'application/json'}
       timeout: 5*1000
     }, (error,response) =>
@@ -199,6 +200,9 @@ class EditorState
         #XXX: Are we worried about race conditions if there were modifications after the save button was pressed?
         file.update {checksum:editorChecksum}
       @working = false
+      project = Projects.findOne Session.get("projectId")
+      if project.impressJS
+        $("#presentationPreview")[0].contentDocument.location.reload()
       callback?(error)
 
 EditorState.addProperty = (name, getter, setter) ->

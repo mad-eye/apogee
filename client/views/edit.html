@@ -25,6 +25,36 @@
     </div>
 </template>
 
+<template name="editImpressJS">
+  {{> projectStatus}}
+  <div class="row">
+    <div id="leftColumn" class="span5">
+      <div class="row">
+        <div class="span5">
+          {{> fileTree}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="span5">
+          <div class='wrapper'>
+            <iframe id="presentationPreview" src="/userStatic/{{projectId}}"/>
+          </div>
+          <a id="fullPresentationLink" href = "/userStatic/{{projectId}}/index.html">View full presentation</a>
+        </div>
+      </div>
+    </div>
+
+    <div id="editorChrome" class="span7">
+      {{> editorChrome }}
+      <div id="editorContainer">
+        {{> editorOverlay }}
+        {{> editor}}
+        {{> editorFooter}}
+      </div>
+    </div>
+  </div>
+</template>
+
 <template name="projectStatus">
   {{#each projectAlerts}}
     {{> alert this}}

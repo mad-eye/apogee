@@ -45,9 +45,14 @@ class @FileLoader extends Reactor
       @_set 'editorFilePath', file.path
 
   @sentry 'route', ->
-        return unless @editorFilePath
-        project = getProject()
-        return unless project
-        type = if project.interview then "interview" else "edit"
-        Meteor.Router.to("/#{type}/#{project._id}/#{@editorFilePath}")
+    return unless @editorFilePath
+    project = getProject()
+    return unless project
+    if project.interview
+      type = "interview"
+    else if project.impressJS
+      type = "editImpressJS"
+    else
+      type = "edit"
+    Meteor.Router.to("/#{type}/#{project._id}/#{@editorFilePath}")
 
