@@ -203,6 +203,8 @@ class EditorState
       project = Projects.findOne Session.get("projectId")
       if project.impressJS
         $("#presentationPreview")[0].contentDocument.location.reload()
+        project.lastUpdated = Date.now()
+        project.save()
       callback?(error)
 
 EditorState.addProperty = (name, getter, setter) ->

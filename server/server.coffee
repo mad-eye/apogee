@@ -43,6 +43,7 @@ Events.allow
 
 Projects.allow
   insert: (userId, doc) -> true
+  update: (userId, doc) -> true
 
 ScriptOutputs.allow
   insert: -> true
