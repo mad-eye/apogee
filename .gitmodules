@@ -7,3 +7,6 @@
 [submodule "packages/madeye-common"]
 	path = packages/madeye-common
 	url = git@github.com:mad-eye/madeye-common.git
+[submodule "packages/madeye-meteor"]
+	path = packages/madeye-meteor
+	url = git@github.com:mad-eye/madeye-meteor.git
