@@ -31,4 +31,7 @@ Handlebars.registerHelper 'isScratch', ->
 
 Handlebars.registerHelper "isInterview", isInterview
 
+Handlebars.registerHelper "projectName", ->
+  getProject()?.name
+
 
