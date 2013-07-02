@@ -203,3 +203,22 @@ Template.editorFooter.helpers
 Template.editImpressJS.helpers
   projectId: ->
     Session.get("projectId")
+
+Template.fileUpload.rendered = ->
+  return if Dropzone.forElement "#dropzone"
+  $("#dropzone").dropzone
+    paramName: "file"
+    accept: (dropfile, done)->
+      file = new MadEye.File
+      file.scratch = true
+      file.path = dropfile.name
+      file.projectId = Session.get "projectId"
+      try
+        file.save()
+        @options.url = "#{Meteor.settings.public.azkabanUrl}/file-upload/#{file._id}"
+        done()
+      catch e
+        alert e.message
+        done(e.message)
+    url: "bogus" #can't initialize a dropzone w/o a url, overwritten in accept function above
+
