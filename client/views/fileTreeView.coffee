@@ -72,6 +72,6 @@ Template.fileTree.events
     #Meteor.Router.to event.toElement.attributes.destination.value
 
 @warnFirefoxHangout = ->
-if "Firefox" == BrowserDetect.browser
-  confirm "Firefox currently has performance issues in MadEye Hangouts.  For best experience, use Chrome or Safari.  Thanks, and we'll fix this soon!"
+  if "Firefox" == BrowserDetect.browser
+    confirm "Firefox currently has performance issues in MadEye Hangouts.  For best experience, use Chrome or Safari.  Thanks, and we'll fix this soon!"
 
