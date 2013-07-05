@@ -143,8 +143,8 @@ Template.statusBar.helpers
     keybinding == binding
 
 Template.syntaxModeOptions.helpers
-  syntaxModeEquals: (value) ->
-    MadEye.editorState.editor.syntaxMode == value
+  selected: (value) ->
+    "selected" if MadEye.editorState.editor.syntaxMode == @name
 
   syntaxModes: ->
     aceModes.modes
