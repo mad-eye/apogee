@@ -1,3 +1,5 @@
+aceModes = ace.require('ace/ext/modelist')
+
 getWorkspace = ->
   Workspaces.findOne {userId: Meteor.userId()}
 
@@ -140,88 +142,12 @@ Template.statusBar.helpers
     keybinding = getWorkspace()?.keybinding
     keybinding == binding
 
-#XXX: Clean this and MadEye.ACE_MODES up, into one structure.
-#TODO alphabetize
-@syntaxModes =
-  abap : "ABAP"
-  asciidoc : "AsciiDoc"
-  c9search : "C9Search"
-  c_cpp : "C/C++"
-  clojure : "Clojure"
-  coffee : "CoffeeScript"
-  coldfusion : "ColdFusion"
-  csharp : "C#"
-  css : "CSS"
-  curly : "Curly"
-  dart : "Dart"
-  diff : "Diff"
-  dot : "Dot"
-  ftl : "FreeMarker"
-  glsl : "Glsl"
-  golang : "Go"
-  groovy : "Groovy"
-  haml : "HAML"
-  haskell : "Haskell"
-  haxe : "haXe"
-  html : "HTML"
-  jade : "Jade"
-  java : "Java"
-  javascript : "JavaScript"
-  json : "JSON"
-  jsp : "JSP"
-  jsx : "JSX"
-  latex : "LaTeX"
-  less : "LESS"
-  liquid : "Liquid"
-  lisp : "Lisp"
-  livescript : "LiveScript"
-  logiql : "LogiQL"
-  lsl : "LSL"
-  lua : "Lua"
-  luapage : "LuaPage"
-  lucene : "Lucene"
-  makefile : "Makefile"
-  markdown : "Markdown"
-  objectivec : "Objective-C"
-  ocaml : "OCaml"
-  pascal : "Pascal"
-  perl : "Perl"
-  pgsql : "pgSQL"
-  php : "PHP"
-  powershell : "Powershell"
-  python : "Python"
-  r : "R"
-  rdoc : "RDoc"
-  rhtml : "RHTML"
-  ruby : "Ruby"
-  sass : "SASS"
-  scad : "OpenSCAD"
-  scala : "Scala"
-  scheme : "Scheme"
-  scss : "SCSS"
-  sh : "SH"
-  sql : "SQL"
-  stylus : "Stylus"
-  svg : "SVG"
-  tcl : "Tcl"
-  tex : "Tex"
-  text : "Text"
-  textile : "Textile"
-  tm_snippet : "tmSnippet"
-  toml : "toml"
-  typescript : "Typescript"
-  vbscript : "VBScript"
-  xml : "XML"
-  xquery : "XQuery"
-  yaml : "YAML"
-
 Template.syntaxModeOptions.helpers
   syntaxModeEquals: (value) ->
     MadEye.editorState.editor.syntaxMode == value
 
-  #XXX: The map seems to be traversed 'in order', but we shouldn't rely on that.
   syntaxModes: ->
-    ({value:handle, name:name} for handle, name of syntaxModes)
+    aceModes.modes
 
   canRunLanguage: (language) ->
     isInterview() && canRunLanguage language
