@@ -185,11 +185,12 @@ Template.themeOptions.helpers
       {value: "monokai", name: "Monokai"},
       {value: "pastel_on_dark", name: "Pastel on dark"},
       {value: "solarized_dark", name: "Solarized Dark"},
-      {value: "twilight", name: "Twilight"},
+      {value: "terminal", name: "Terminal"},
       {value: "tomorrow_night", name: "Tomorrow Night"},
       {value: "tomorrow_night_blue", name: "Tomorrow Night Blue"},
       {value: "tomorrow_night_bright", name: "Tomorrow Night Bright"},
       {value: "tomorrow_night_eighties", name: "Tomorrow Night 80s"},
+      {value: "twilight", name: "Twilight"},
       {value: "vibrant_ink", name: "Vibrant Ink"}
     ]
 
