@@ -9,6 +9,13 @@ class @FileLoader extends Reactor
 
   @property 'alert'
 
+  clearFile: ->
+    console.log "Calling clearFile"
+    @_set 'selectedFileId',  null
+    @_set 'selectedFilePath',  null
+    @_set 'editorFileId',  null
+    @_set 'editorFilePath',  null
+
   @sentry 'loadFile', ->
     loadPath = @_get 'loadPath'
     loadId = @_get 'loadId'
@@ -45,7 +52,6 @@ class @FileLoader extends Reactor
       @_set 'editorFilePath', file.path
 
   @sentry 'route', ->
-    return unless @editorFilePath
     project = getProject()
     return unless project
     if project.interview
@@ -54,5 +60,6 @@ class @FileLoader extends Reactor
       type = "editImpressJS"
     else
       type = "edit"
-    Meteor.Router.to("/#{type}/#{project._id}/#{@editorFilePath}")
+    filePath = encodeURIComponent( @editorFilePath ? "" )
+    Meteor.Router.to("/#{type}/#{project._id}/#{filePath}")
 

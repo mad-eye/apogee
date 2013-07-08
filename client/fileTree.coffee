@@ -42,9 +42,15 @@ class FileTree
     return @isOpen(parentPath) and @isVisible(parentPath)
 
   select: (file) ->
-    return if file._id == @fileId
-    @fileId = file._id
-    Session.set("selectedFileId", file._id)
+    if file
+      return if file._id == @fileId
+      @fileId = file._id
+      Session.set("selectedFileId", file._id)
+    else
+      #File was deleted/discarded
+      @fileId = null
+      Session.set "selectedFileId", null
+
 
   _dependOnSessionPath: (path) ->
     @sessionPathsDeps[path] ?= new Deps.Dependency

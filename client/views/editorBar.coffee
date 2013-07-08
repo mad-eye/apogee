@@ -54,9 +54,7 @@ Template.editorBar.events
       fileId: file._id
       filePath: file.path
     file.remove()
-    MadEye.fileLoader.loadPath = ""
-    #XXX: This will eventually not be necessary.
-    MadEye.editorState.fileId = null
+    MadEye.fileLoader.clearFile()
 
   'click #saveImage' : (event) ->
     el = $(event.target)
