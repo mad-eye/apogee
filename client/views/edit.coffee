@@ -108,6 +108,11 @@ Template.editor.preserve("#editor")
 
 Template.editor.created = ->
   MadEye.rendered 'editor'
+  #Sometimes the resize happens before everything is ready.
+  #It's idempotent and cheap, so do this for safety's sake.
+  Meteor.setTimeout ->
+    resizeEditor()
+  , 100
 
 Template.editor.rendered = ->
   #console.log "Rendering editor"
