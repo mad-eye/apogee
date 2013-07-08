@@ -6,7 +6,7 @@ handleNetworkError = (error, response) ->
     level:'error'
     message:'networkError'
     error: err.message
-  transitoryIssues.set 'networkIssues', 10*1000
+  MadEye.transitoryIssues.set 'networkIssues', 10*1000
   return err
 
 #TODO: HACK: Move to a better place

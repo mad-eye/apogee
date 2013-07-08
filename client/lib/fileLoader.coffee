@@ -10,7 +10,6 @@ class @FileLoader extends Reactor
   @property 'alert'
 
   clearFile: ->
-    console.log "Calling clearFile"
     @_set 'selectedFileId',  null
     @_set 'selectedFilePath',  null
     @_set 'editorFileId',  null

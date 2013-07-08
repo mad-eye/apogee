@@ -17,6 +17,12 @@ projectClosedError =
 fileDeletedWarning =
   level: 'warn'
   title: 'File Deleted'
+  message: 'The file has been deleted on the client.'
+  uncloseable: true
+
+fileDeletedAndModifiedWarning =
+  level: 'warn'
+  title: 'File Deleted'
   message: 'The file has been deleted on the client.  If you save it, it will be recreated.'
   uncloseable: true
 
@@ -84,24 +90,14 @@ projectIsLoading = ->
 Template.projectStatus.projectAlerts = ->
   alerts = []
   alerts.push projectClosedError if projectIsClosed()
-  alerts.push fileDeletedWarning if fileIsDeleted()
+  alerts.push fileDeletedAndModifiedWarning if fileIsDeleted()
   alerts.push fileModifiedLocallyWarning if fileIsModifiedLocally()
   alerts.push projectLoadingAlert if projectIsLoading()
-  alerts.push networkIssuesWarning if transitoryIssues?.has 'networkIssues'
+  alerts.push networkIssuesWarning if MadEye.transitoryIssues?.has 'networkIssues'
+  alerts.push fileDeletedWarning if MadEye.transitoryIssues?.has 'fileDeleted'
   language = MadEye.editorState.editor.syntaxMode
   alerts.push cantRunLanguageWarning(syntaxModes[language]) if isInterview() and not canRunLanguage language
   return alerts
-
-#Find how many files the server things, so we know if we have them all.
-Meteor.autosubscribe ->
-  Meteor.call 'getFileCount', Session.get('projectId'), (err, count)->
-    if err
-      Metrics.add
-        level:'error'
-        message:'getFileCount'
-      console.error err
-      return
-    Session.set 'fileCount', count
 
 #XXX: Unused?
 Template.editor.preserve("#editor")
@@ -144,7 +140,6 @@ Meteor.startup ->
     MadEye.editorState.loadFile file, ->
       if MadEye.editorState.doc.cursor
         gotoPosition(MadEye.editorState.doc.cursor)
-
 
 @resizeEditor = ->
   baseSpacing = 10; #px

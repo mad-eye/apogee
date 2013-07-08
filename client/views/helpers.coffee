@@ -1,3 +1,6 @@
+Meteor.startup ->
+  MadEye.startedUp = true
+
 Handlebars.registerHelper "Settings", ->
   Settings.findOne()
 
@@ -31,8 +34,4 @@ Handlebars.registerHelper 'isScratch', ->
   getProject()?.interview
 
 Handlebars.registerHelper "isInterview", isInterview
-
-
-Meteor.startup ->
-  MadEye.startedUp = true
 
