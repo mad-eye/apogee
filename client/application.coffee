@@ -87,7 +87,6 @@ do ->
       "getStarted"
 
     '/tests': ->
-      Session.set 'projectId', null
       "tests"
 
     '/tos': ->
