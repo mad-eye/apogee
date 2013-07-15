@@ -12,9 +12,4 @@ Deps.autorun ->
   return if Meteor.loggingIn()
   Meteor.loginAnonymously() unless Meteor.user()
 
-#TODO: Replace this with MadEye.transitoryIssues
-@transitoryIssues = null
-Meteor.startup ->
-  transitoryIssues = new TransitoryIssues
-
 
