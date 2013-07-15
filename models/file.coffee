@@ -1,3 +1,4 @@
+
 stripSlash = (path) ->
   if path.charAt(0) == '/'
     path = path.substring(1)
@@ -36,21 +37,30 @@ Object.defineProperty MadEye.File.prototype, 'extension',
     if tokens.length > 1 then tokens.pop() else null
 
 Object.defineProperty MadEye.File.prototype, 'isBinary',
-  get: -> /(bmp|gif|jpg|jpeg|png|psd|ai|ps|svg|pdf|exe|jar|dwg|dxf|7z|deb|gz|zip|dmg|iso|avi|mov|mp4|mpg|wmb|vob)$/i.test(@extension)
-
-Object.defineProperty MadEye.File.prototype, 'aceMode',
   get: ->
-    extension = @extension?.toLowerCase()
-    if extension
-      MadEye.ACE_MODES[extension]
-    else
-      switch @filename
-        when 'Makefile' then 'makefile'
-        when 'Cakefile' then 'coffee'
-        when 'Rakefile', 'Gemfile', 'Guardfile', 'Vagrantfile' then 'ruby'
-        else null
+    #coffee --lint doesn't like this being on one line.
+    re = /(bmp|gif|jpg|jpeg|png|psd|ai|ps|svg|pdf|exe|jar|dwg|dxf|7z|deb|gz|zip|dmg|iso|avi|mov|mp4|mpg|wmb|vob)$/i
+    re.test(@extension)
+
 
 @Files = new Meteor.Collection 'files', transform: (doc) ->
   new MadEye.File doc
 
 MadEye.File.prototype.collection = @Files
+
+if Meteor.isClient
+  aceModes = ace.require('ace/ext/modelist')
+
+  Object.defineProperty MadEye.File.prototype, 'aceMode',
+    get: ->
+      aceMode = aceModes.getModeForPath @filename
+      #text is the default, which it will give if it doesn't recognize the filename.
+      if aceMode.name == 'text' and @extension != 'txt'
+        modeName = switch @filename
+          when 'Rakefile', 'Gemfile', 'Guardfile', 'Vagrantfile', 'Assetfile'
+            'ruby'
+          #Others?
+        aceMode = aceModes.modesByName[modeName]
+      return aceMode?.name
+
+  

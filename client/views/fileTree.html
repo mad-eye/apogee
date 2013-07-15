@@ -1,0 +1,45 @@
+<template name="fileTree">
+<div id="projectName" class="clearfix">
+  <h4>{{projectName}}</h4>
+  {{#unless isHangout}}
+    {{> hangoutButton}}
+  {{/unless}}
+</div>
+<div id="fileTreeContainer">
+  <ul class="fileTree" id="fileTree">
+    {{#each files}}
+      {{#if isVisible}}
+        <li class="{{fileEntryClass}}" id="{{_id}}">
+          <span>{{filename}} {{#if modified}}*{{/if}}</span>
+          {{#each usersInFile this}}
+            <img class="fileTreeUserIcon" alt="" destination="{{this.destination}}" src="{{this.img}}"</img>
+          {{/each}}
+        </li>
+      {{/if}}
+    {{/each}}
+  </ul>
+</div>
+
+{{#if isScratch}}
+  {{> fileUpload}}
+{{/if}}
+
+</template>
+
+<template name="fileUpload">
+    <div id="dropzone" class="dropzone">
+      <span>Drop a file here to add (or you can click to upload)!</span>
+    </div>
+    <input id="addFileButton" type="button" class="btn" value="New file"/>
+</template>
+
+<template name="hangoutButton">
+  {{#unless isHangout}}
+  <a class="hangout-link hangout-link-small" href="{{hangoutLink}}" style="text-decoration:none;">
+    <img src="https://ssl.gstatic.com/s2/oz/images/stars/hangout/1/gplus-hangout-20x86-normal.png"
+         alt="Start a new Hangout"
+         title="Start a new Hangout"
+         style="border:0; border:0;width:86px;height:20px;" />
+  </a>
+  {{/unless}}
+</template>

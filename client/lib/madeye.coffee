@@ -18,6 +18,8 @@ addMadEyeProperty= (name) ->
 addMadEyeProperty 'editorState'
 addMadEyeProperty 'fileTree'
 addMadEyeProperty 'fileLoader'
+addMadEyeProperty 'transitoryIssues'
+addMadEyeProperty 'startedUp'
 
 
 

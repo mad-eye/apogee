@@ -1,12 +1,12 @@
 #Takes httpResponse
 handleNetworkError = (error, response) ->
-  err = response.content?.error ? error
+  err = response?.content?.error ? error
   console.error "Network Error:", err.message
   Metrics.add
     level:'error'
     message:'networkError'
     error: err.message
-  transitoryIssues.set 'networkIssues', 10*1000
+  MadEye.transitoryIssues.set 'networkIssues', 10*1000
   return err
 
 #TODO: HACK: Move to a better place
@@ -145,8 +145,6 @@ class EditorState
           callback?()
         #ask azkaban to fetch the file from dementor unless this is a scratch pad
         else unless file.scratch
-          #TODO figure out why this sometimes gets stuck on..
-          #editor.setReadOnly true
           Meteor.http.get @getFileUrl(fileId), timeout:5*1000, (error,response) =>
             return callback? handleNetworkError error, response if error
             return callback?(true) unless fileId == @fileId #Safety for multiple loadFiles running simultaneously

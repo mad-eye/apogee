@@ -17,6 +17,12 @@ projectClosedError =
 fileDeletedWarning =
   level: 'warn'
   title: 'File Deleted'
+  message: 'The file has been deleted on the client.'
+  uncloseable: true
+
+fileDeletedAndModifiedWarning =
+  level: 'warn'
+  title: 'File Deleted'
   message: 'The file has been deleted on the client.  If you save it, it will be recreated.'
   uncloseable: true
 
@@ -84,30 +90,25 @@ projectIsLoading = ->
 Template.projectStatus.projectAlerts = ->
   alerts = []
   alerts.push projectClosedError if projectIsClosed()
-  alerts.push fileDeletedWarning if fileIsDeleted()
+  alerts.push fileDeletedAndModifiedWarning if fileIsDeleted()
   alerts.push fileModifiedLocallyWarning if fileIsModifiedLocally()
   alerts.push projectLoadingAlert if projectIsLoading()
-  alerts.push networkIssuesWarning if transitoryIssues?.has 'networkIssues'
+  alerts.push networkIssuesWarning if MadEye.transitoryIssues?.has 'networkIssues'
+  alerts.push fileDeletedWarning if MadEye.transitoryIssues?.has 'fileDeleted'
   language = MadEye.editorState.editor.syntaxMode
   alerts.push cantRunLanguageWarning(syntaxModes[language]) if isInterview() and not canRunLanguage language
   return alerts
-
-#Find how many files the server things, so we know if we have them all.
-Meteor.autosubscribe ->
-  Meteor.call 'getFileCount', Session.get('projectId'), (err, count)->
-    if err
-      Metrics.add
-        level:'error'
-        message:'getFileCount'
-      console.error err
-      return
-    Session.set 'fileCount', count
 
 #XXX: Unused?
 Template.editor.preserve("#editor")
 
 Template.editor.created = ->
   MadEye.rendered 'editor'
+  #Sometimes the resize happens before everything is ready.
+  #It's idempotent and cheap, so do this for safety's sake.
+  Meteor.setTimeout ->
+    resizeEditor()
+  , 100
 
 Template.editor.rendered = ->
   #console.log "Rendering editor"
@@ -139,7 +140,6 @@ Meteor.startup ->
     MadEye.editorState.loadFile file, ->
       if MadEye.editorState.doc.cursor
         gotoPosition(MadEye.editorState.doc.cursor)
-
 
 @resizeEditor = ->
   baseSpacing = 10; #px
@@ -203,3 +203,22 @@ Template.editorFooter.helpers
 Template.editImpressJS.helpers
   projectId: ->
     Session.get("projectId")
+
+Template.fileUpload.rendered = ->
+  return if Dropzone.forElement "#dropzone"
+  $("#dropzone").dropzone
+    paramName: "file"
+    accept: (dropfile, done)->
+      file = new MadEye.File
+      file.scratch = true
+      file.path = dropfile.name
+      file.projectId = Session.get "projectId"
+      try
+        file.save()
+        @options.url = "#{Meteor.settings.public.azkabanUrl}/file-upload/#{file._id}"
+        done()
+      catch e
+        alert e.message
+        done(e.message)
+    url: "bogus" #can't initialize a dropzone w/o a url, overwritten in accept function above
+

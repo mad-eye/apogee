@@ -3,7 +3,7 @@ describe 'aceMode', ->
 
   assertCorrectMode = (filename, mode) ->
     f = new MadEye.File {path:filename, isDir:false}
-    assert.equal f.aceMode, mode
+    assert.equal f.aceMode, mode, "Incorrect mode for #{filename}"
 
   describe 'from extension', ->
     it 'should calculate easy cases correctly', ->
@@ -18,7 +18,6 @@ describe 'aceMode', ->
       assertCorrectMode 'second.cpp', 'c_cpp'
       assertCorrectMode 'third.cc', 'c_cpp'
       assertCorrectMode 'ff.cxx', 'c_cpp'
-      assertCorrectMode 'gf.c++', 'c_cpp'
   
   describe 'from filename', ->
     it 'should get makefile from Makefiles', ->

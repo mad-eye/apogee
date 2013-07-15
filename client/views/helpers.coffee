@@ -1,3 +1,6 @@
+Meteor.startup ->
+  MadEye.startedUp = true
+
 Handlebars.registerHelper "Settings", ->
   Settings.findOne()
 
@@ -11,6 +14,7 @@ Handlebars.registerHelper "hangoutLink", ->
   "#{Meteor.settings.public.hangoutUrl}#{Session.get 'projectId'}"
 
 @getProject = ->
+  return null unless MadEye.startedUp
   Projects.findOne(Session.get "projectId")
 
 @isScratch = ->
@@ -33,5 +37,3 @@ Handlebars.registerHelper "isInterview", isInterview
 
 Handlebars.registerHelper "projectName", ->
   getProject()?.name
-
-

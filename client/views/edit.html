@@ -7,12 +7,7 @@
   {{/if}}
     <div class="row">
         <div id="leftColumn" class="span3">
-          {{#if isScratch}}
-            {{> interview}}
-          {{else}}
-            {{> fileTree}}
-          {{/if}}
-          
+          {{> fileTree}}
         </div>
         <div id="editorChrome" class="span9">
           {{> editorChrome }}
@@ -59,24 +54,6 @@
   {{#each projectAlerts}}
     {{> alert this}}
   {{/each}}
-</template>
-
-<template name="fileTree">
-<div id="projectName"><h4>{{projectName}}</h4></div>
-<div id="fileTreeContainer">
-  <ul class="fileTree" id="fileTree">
-    {{#each files}}
-    {{#if isVisible}}
-    <li class="{{fileEntryClass}}" id="{{_id}}">
-      <span>{{filename}} {{#if modified}}*{{/if}}</span>
-      {{#each usersInFile this}}
-      <img class="fileTreeUserIcon" alt="" destination="{{this.destination}}" src="{{this.img}}"</img>
-           {{/each}}
-           </li>
-    {{/if}}
-    {{/each}}
-  </ul>
-</div>
 </template>
 
 <template name="editorChrome">

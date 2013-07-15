@@ -145,7 +145,7 @@
 <template name="syntaxModeOptions">
   <option value="">Select syntax&hellip;</option>
   {{#each syntaxModes}}
-    <option value="{{value}}" {{#if syntaxModeEquals value}}selected{{/if}} class="{{#if canRunLanguage value}}can-run{{/if}}">
-      {{name}}</option>
+    <option value="{{name}}" {{selected}} class="{{#if canRunLanguage name}}can-run{{/if}}">
+      {{caption}}</option>
   {{/each}}
 </template>
