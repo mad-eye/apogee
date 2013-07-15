@@ -149,7 +149,6 @@ do ->
       recordView page:'output'
       Session.set 'projectId', projectId
       'output'
-      
 
     '*': ->
       console.log "Found missing url", window.location
