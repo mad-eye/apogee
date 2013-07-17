@@ -1,4 +1,4 @@
-# TODO Don't need to wrap this in do-> in Meteor 0.6.0
+aceModes = ace.require('ace/ext/modelist')
 
 @handleShareError = (err) ->
   message = err.message ? err
@@ -96,7 +96,7 @@ Template.projectStatus.projectAlerts = ->
   alerts.push networkIssuesWarning if MadEye.transitoryIssues?.has 'networkIssues'
   alerts.push fileDeletedWarning if MadEye.transitoryIssues?.has 'fileDeleted'
   language = MadEye.editorState.editor.syntaxMode
-  alerts.push cantRunLanguageWarning(syntaxModes[language]) if isInterview() and not canRunLanguage language
+  alerts.push cantRunLanguageWarning(aceModes.modesByName[language]?.caption) if isInterview() and not canRunLanguage language
   return alerts
 
 #XXX: Unused?
