@@ -145,6 +145,11 @@ do ->
       Session.set "isHangout", true
       'unlinkedHangout'
 
+    '/output/:projectId': (projectId) ->
+      recordView page:'output'
+      Session.set 'projectId', projectId
+      'output'
+
     '*': ->
       console.log "Found missing url", window.location
       recordView page:'missing'

@@ -1,0 +1,14 @@
+<template name="output">
+  <div class="row">
+    <div class="span12">
+      <h2>Output for {{projectName}}</h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="span12">
+      {{#each outputs}}
+        <div class="output output-{{type}}">{{data}}</div>
+      {{/each}}
+    </div>
+  </div>
+</template>
