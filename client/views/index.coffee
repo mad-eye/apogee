@@ -1,9 +1,8 @@
-do ->
-  Handlebars.registerHelper "isHomePage", ->
-    return Meteor.Router._page in ["home", "home2", "getStarted"]
+Handlebars.registerHelper "isHomePage", ->
+  return Meteor.Router._page in ["home", "home2", "getStarted"]
 
-  Handlebars.registerHelper "isHangout", ->
-    Session.get "isHangout"
+Handlebars.registerHelper "isHangout", ->
+  Session.get "isHangout"
 
 @displayAlert = (alert) ->
   return unless alert?

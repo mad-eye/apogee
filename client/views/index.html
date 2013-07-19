@@ -35,12 +35,15 @@
       </ul>
       }}
       {{#if isHomePage }}
-      <a href="https://twitter.com/_madeye" class="twitter-follow-button" data-show-count="false">Follow @_madeye</a>
+        {{#constant}}
+          <a href="https://twitter.com/_madeye" class="twitter-follow-button" data-show-count="false">Follow @_madeye</a>
+        {{/constant}}
       {{/if}}
     </div>
   </div>
 </div>
 </template>
+
 
 <template name="alert">
 <div class="alert alert-{{level}} fade in">
