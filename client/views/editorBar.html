@@ -8,9 +8,7 @@
     {{! SYNTAX MODE }}
     <div id="syntaxMode" class="statusBarButton pull-left">
       <form>
-        <select id="syntaxModeSelect" class="input-medium" size="1">
           {{> syntaxModeOptions}}
-        </select>
       </form>
     </div>
 
@@ -143,9 +141,11 @@
 </template>
 
 <template name="syntaxModeOptions">
+<select id="syntaxModeSelect" class="input-medium" size="1">
   <option value="">Select syntax&hellip;</option>
   {{#each syntaxModes}}
     <option value="{{name}}" {{selected}} class="{{#if canRunLanguage name}}can-run{{/if}}">
       {{caption}}</option>
   {{/each}}
+</select>
 </template>
