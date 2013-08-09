@@ -159,9 +159,9 @@ Deps.autorun ->
   Meteor.subscribe "scriptOutputs", projectId
   Meteor.subscribe "workspaces", projectId
 
-Deps.autorun ->
-  return if Meteor.loggingIn()
-  Meteor.loginAnonymously() unless Meteor.user()
+#Deps.autorun ->
+#  return if Meteor.loggingIn()
+#  Meteor.loginAnonymously() unless Meteor.user()
 
 Meteor.startup ->
   MadEye.transitoryIssues = new TransitoryIssues

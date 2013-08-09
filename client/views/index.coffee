@@ -13,3 +13,10 @@ Handlebars.registerHelper "isHangout", ->
   }
   $('#alertBox').append html
 
+Template.topnav.helpers
+  isLoggedIn: ->
+    Meteor.user()?.services?.google?
+    
+  isLoggedOut: ->
+    #We view 'loggedOut' to mean using an anonymous account
+    not Meteor.user()?.services?

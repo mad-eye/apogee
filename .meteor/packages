@@ -18,4 +18,4 @@ accounts-github
 accounts-ui-unstyled
 accounts-anonymous
 meteor-sharejs
-
+accounts-google

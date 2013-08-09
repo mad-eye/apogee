@@ -26,19 +26,31 @@
       </h1>
     </div>
     <div class="span3 top-right">
-      {{!
-      <ul class="nav login pull-right">
-        {{!Sign in/up} }
-        <li>
-        {{loginButtons align="right"} }
-        </li>
+      <ul class="nav nav-pills login pull-right">
+        {{! loginButtons}}
+        {{#if isLoggedIn}}
+          <li>
+            {{currentUser.username}}
+          </li>
+          <li>
+            <a href="#">Sign out</a>
+          </li>
+        {{else}}
+          {{#if isLoggedOut}}
+            <li>
+              <a href="#">Sign in with Google NEW STUFF</a>
+            </li>
+          {{! else if in transition, show nothing}}
+          {{/if}}
+        {{/if}}
+        {{#if isHomePage }}
+          <li>
+          {{#constant}}
+            <a href="https://twitter.com/_madeye" class="twitter-follow-button" data-show-count="false">Follow @_madeye</a>
+          {{/constant}}
+          </li>
+        {{/if}}
       </ul>
-      }}
-      {{#if isHomePage }}
-        {{#constant}}
-          <a href="https://twitter.com/_madeye" class="twitter-follow-button" data-show-count="false">Follow @_madeye</a>
-        {{/constant}}
-      {{/if}}
     </div>
   </div>
 </div>
