@@ -1,8 +1,4 @@
 {
-  "meteor": {
-    "git": "git://github.com/meteor/meteor.git",
-    "tag": "release/0.6.4"
-  },
   "packages": {
     "HTML5-History-API": {},
     "router": {},
