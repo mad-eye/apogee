@@ -1,6 +1,6 @@
 aceModes = ace.require('ace/ext/modelist')
 
-getWorkspace = ->
+@getWorkspace = ->
   Workspaces.findOne {userId: Meteor.userId()}
 
 setWorkspaceConfig = (key, value)->
@@ -126,6 +126,7 @@ Template.statusBar.events
     setWorkspaceConfig "keybinding", keybinding
 
   'change #themeSelect': (e) ->
+    console.log "Changing theme to #{e.target.value} from select"
     setWorkspaceConfig "theme", e.target.value
 
 Template.statusBar.helpers
@@ -198,6 +199,7 @@ Meteor.startup ->
     if '#!' == contents[0..1]
       cmd = null
       firstLine = contents.split('\n', 1)[0]
+      #trim and split tokens on whitespace
       tokens = (firstLine[2..]).replace(/^\s+|\s+$/g,'').split(/\s+/)
       token = tokens.pop()
       while token
@@ -253,6 +255,7 @@ Meteor.startup ->
     return unless workspace
     MadEye.editorState.editor.showInvisibles = workspace.showInvisibles
     MadEye.editorState.editor.tabSize = workspace.tabSize
+    console.log "Setting editor theme to ", workspace.theme
     MadEye.editorState.editor.theme = workspace.theme
     MadEye.editorState.editor.useSoftTabs = workspace.useSoftTabs
     MadEye.editorState.editor.wordWrap = workspace.wordWrap

@@ -6,7 +6,6 @@ Meteor.publish 'userData', ->
     type: 1
 
 Accounts.onCreateUser (options, user) ->
-  console.log 'onCreateUser'
   user.type = switch
     when options.anonymous then 'anonymous'
     when user.services?.google then 'google'

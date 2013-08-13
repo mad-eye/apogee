@@ -19,12 +19,37 @@ Template.signin.helpers
 
 Template.signin.events
   'click #signinButton': (e) ->
+    stashWorkspace()
     Meteor.logout()
-    Meteor.loginWithGoogle()
+    Meteor.loginWithGoogle (err) ->
+      Workspaces.insert userId: Meteor.userId() unless getWorkspace()
 
   'click #signoutButton': (e) ->
+    stashWorkspace()
     Meteor.logout()
+    Meteor.loginAnonymously ->
+      Workspaces.insert userId: Meteor.userId() unless getWorkspace()
 
 Meteor.startup ->
   Deps.autorun ->
     Meteor.subscribe 'userData'
+
+
+#Maybe this should go somewhere else?
+tempWorkspace = null
+stashWorkspace = ->
+  tempWorkspace = getWorkspace()
+  console.log "Stashing workspace", tempWorkspace
+
+Meteor.startup ->
+  Deps.autorun (computation) ->
+    return unless getWorkspace() and tempWorkspace
+    workspace = getWorkspace()
+    for key in _.keys tempWorkspace
+      continue if key == '_id' or key == 'userId'
+      #set values if there isn't an appropriate key in the workspace.
+      workspace[key] = tempWorkspace[key] unless workspace[key]?
+    console.log "Saving workspace", workspace
+    workspace.save()
+    tempWorkspace = null
+
