@@ -27,35 +27,44 @@
     </div>
     <div class="span3 top-right">
       <ul class="nav nav-pills login pull-right">
-        {{! loginButtons}}
-        {{#if isLoggedIn}}
-          <li>
-            {{currentUser.username}}
-          </li>
-          <li>
-            <a href="#">Sign out</a>
-          </li>
-        {{else}}
-          {{#if isLoggedOut}}
-            <li>
-              <a href="#">Sign in with Google NEW STUFF</a>
-            </li>
-          {{! else if in transition, show nothing}}
-          {{/if}}
-        {{/if}}
-        {{#if isHomePage }}
-          <li>
-          {{#constant}}
-            <a href="https://twitter.com/_madeye" class="twitter-follow-button" data-show-count="false">Follow @_madeye</a>
-          {{/constant}}
-          </li>
-        {{/if}}
+        {{> signin}}
       </ul>
     </div>
   </div>
 </div>
 </template>
 
+<template name="signin">
+  {{! loginButtons}}
+  {{#if loggingIn}}
+      <li>
+        Loading...
+      </li>
+  {{else}}
+    {{#if isLoggedIn}}
+      <li>
+        {{currentUser.name}}
+      </li>
+      <li>
+        <a id="signoutButton" href="#">Sign out</a>
+      </li>
+    {{else}}
+      {{#if isLoggedOut}}
+        <li>
+          <a id="signinButton" href="#">Sign in with Google NEW STUFF</a>
+        </li>
+      {{! else if in transition, show nothing}}
+      {{/if}}
+    {{/if}}
+  {{/if}}
+  {{#if isHomePage }}
+    <li>
+    {{#constant}}
+      <a href="https://twitter.com/_madeye" class="twitter-follow-button" data-show-count="false">Follow @_madeye</a>
+    {{/constant}}
+    </li>
+  {{/if}}
+</template>
 
 <template name="alert">
 <div class="alert alert-{{level}} fade in">
