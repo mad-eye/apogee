@@ -95,3 +95,10 @@
   color: #000;
   background: #f0f0f0;
 }
+
+.terminal div {
+  border: 0px;
+  margin: 0px;
+  padding: 0px;
+  line-height: initial;
+}
