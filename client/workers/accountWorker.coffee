@@ -19,12 +19,10 @@ Template.signin.helpers
 
 Template.signin.events
   'click #signinButton': (e) ->
-    console.log "Clicked signinButton"
     Meteor.logout()
     Meteor.loginWithGoogle()
 
   'click #signoutButton': (e) ->
-    console.log "Clicked signoutButton"
     Meteor.logout()
 
 Meteor.startup ->
