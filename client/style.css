@@ -3,33 +3,6 @@
  * Copyright (c) 2012-2013, Christopher Jeffrey (MIT License)
  */
 
-html, body {
-  margin: 0;
-  padding: 0;
-}
-
-div {
-  border: 0;
-  padding: 0;
-  margin: 0;
-}
-
-html {
-  background: #fff;
-}
-
-html.dark {
-  background: #333;
-}
-
-html.maximized {
-  overflow: hidden;
-}
-
-body {
-  margin: 25px;
-}
-
 /* Only allow plaintext?
 [contenteditable=""],
 [contenteditable="true"] {
@@ -76,7 +49,7 @@ body {
 .maximized .bar {
 }
 
-.title {
+.window .title {
   position: absolute;
   right: 5px;
   top: 2px;
@@ -122,62 +95,3 @@ body {
   color: #000;
   background: #f0f0f0;
 }
-
-/**
- * Page
- */
-
-h1 {
-  font: 20px/1.5 sans-serif;
-  background: #333;
-  margin: -25px -25px 0 -25px;
-  height: 30px;
-  padding: 10px 25px;
-  color: white;
-  border-top: #e15729 solid 10px;
-}
-
-#open, #lights {
-  font: 20px/1.5 sans-serif;
-  position: fixed;
-  right: 0;
-  padding: 10px;
-  height: 50px;
-  color: white;
-  cursor: pointer;
-  margin: 0;
-  background: none;
-  border: none;
-  -webkit-appearance: none;
-}
-
-#open {
-  top: 10px;
-  background: #333;
-}
-
-#lights {
-  font-size: 18px;
-  height: 46px;
-  top: 60px;
-  background: #555;
-}
-
-#open:hover, #lights:hover {
-  color: slategrey;
-  background: white;
-}
-
-#open:active, #lights:active {
-  color: orange;
-}
-
-#help {
-  font: 12px/1.5 sans-serif;
-  color: #999;
-  position: fixed;
-  bottom: 10px;
-  left: 10px;
-}
-
-.dark h1, .dark #help { display: none; }
