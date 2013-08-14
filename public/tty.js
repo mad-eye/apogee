@@ -3,7 +3,6 @@
  * Copyright (c) 2012-2013, Christopher Jeffrey (MIT License)
  */
 
-var backdoor = {}
 ;(function() {
 
 /**
@@ -91,8 +90,19 @@ tty.open = function() {
   open = tty.elements.open;
   lights = tty.elements.lights;
 
-  backdoor = function(){
+  MadEye.createTerminal = function(){
     new Window;
+    Meteor.setTimeout(function(){
+      $(".window").click(function(e){
+        console.log("window clicked");
+        e.stopPropagation()
+      })
+    }, 0);
+    $("body").click(function(){
+      console.log("body clicked");
+      Terminal.focus = null;
+    });
+
   }
 
   if (open) {
