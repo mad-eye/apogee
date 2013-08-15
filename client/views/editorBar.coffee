@@ -5,13 +5,13 @@ aceModes = ace.require('ace/ext/modelist')
 
 setWorkspaceConfig = (key, value)->
   workspace = getWorkspace()
-  workspace ?= new MadEye.Workspace(userId: Meteor.userId())
+  return unless workspace
   workspace[key] = value
   workspace.save()
 
 addWorkspaceModeOverride = (fileId, syntaxMode) ->
   workspace = getWorkspace()
-  workspace ?= new MadEye.Workspace(userId: Meteor.userId())
+  return unless workspace
   workspace.modeOverrides ?= {}
   workspace.modeOverrides[fileId] = syntaxMode
   workspace.save()

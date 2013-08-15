@@ -21,14 +21,12 @@ Template.signin.events
   'click #signinButton': (e) ->
     stashWorkspace()
     Meteor.logout()
-    Meteor.loginWithGoogle (err) ->
-      Workspaces.insert userId: Meteor.userId() unless getWorkspace()
+    Meteor.loginWithGoogle (err)
 
   'click #signoutButton': (e) ->
     stashWorkspace()
     Meteor.logout()
-    Meteor.loginAnonymously ->
-      Workspaces.insert userId: Meteor.userId() unless getWorkspace()
+    Meteor.loginAnonymously
 
 Meteor.startup ->
   Deps.autorun ->
@@ -47,8 +45,16 @@ Meteor.startup ->
     workspace = getWorkspace()
     for key in _.keys tempWorkspace
       continue if key == '_id' or key == 'userId'
-      #set values if there isn't an appropriate key in the workspace.
-      workspace[key] = tempWorkspace[key] unless workspace[key]?
+      unless key == 'modeOverrides'
+        #set values if there isn't an appropriate key in the workspace.
+        workspace[key] = tempWorkspace[key] unless workspace[key]?
+      else
+        #modeOverrides require treatment by fileId
+        workspace.modeOverrides ?= {}
+        for fileId, syntaxMode of tempWorkspace.modeOverrides
+          unless workspace.modeOverrides[fileId]
+            console.log "Setting syntax #{syntaxMode} for #{fileId}"
+            workspace.modeOverrides[fileId] = syntaxMode
     console.log "Saving workspace", workspace
     workspace.save()
     tempWorkspace = null

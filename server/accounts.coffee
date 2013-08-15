@@ -14,4 +14,5 @@ Accounts.onCreateUser (options, user) ->
     user.name = user.services.google.name
     user.email = user.services.google.email
 
+  Workspaces.insert userId: user._id
   return user
