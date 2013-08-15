@@ -59,7 +59,6 @@ Template.editorBar.events
   'click #saveImage' : (event) ->
     el = $(event.target)
     return if el.hasClass 'disabled' or MadEye.editorState.working == true
-    console.log "clicked save button"
     MadEye.editorState.save (err) ->
       if err
         #Handle error better.
@@ -126,7 +125,6 @@ Template.statusBar.events
     setWorkspaceConfig "keybinding", keybinding
 
   'change #themeSelect': (e) ->
-    console.log "Changing theme to #{e.target.value} from select"
     setWorkspaceConfig "theme", e.target.value
 
 Template.statusBar.helpers
@@ -255,7 +253,6 @@ Meteor.startup ->
     return unless workspace
     MadEye.editorState.editor.showInvisibles = workspace.showInvisibles
     MadEye.editorState.editor.tabSize = workspace.tabSize
-    console.log "Setting editor theme to ", workspace.theme
     MadEye.editorState.editor.theme = workspace.theme
     MadEye.editorState.editor.useSoftTabs = workspace.useSoftTabs
     MadEye.editorState.editor.wordWrap = workspace.wordWrap
