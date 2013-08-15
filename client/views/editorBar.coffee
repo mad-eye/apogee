@@ -1,17 +1,17 @@
 aceModes = ace.require('ace/ext/modelist')
 
-getWorkspace = ->
+@getWorkspace = ->
   Workspaces.findOne {userId: Meteor.userId()}
 
 setWorkspaceConfig = (key, value)->
   workspace = getWorkspace()
-  workspace ?= new MadEye.Workspace(userId: Meteor.userId())
+  return unless workspace
   workspace[key] = value
   workspace.save()
 
 addWorkspaceModeOverride = (fileId, syntaxMode) ->
   workspace = getWorkspace()
-  workspace ?= new MadEye.Workspace(userId: Meteor.userId())
+  return unless workspace
   workspace.modeOverrides ?= {}
   workspace.modeOverrides[fileId] = syntaxMode
   workspace.save()
@@ -59,7 +59,6 @@ Template.editorBar.events
   'click #saveImage' : (event) ->
     el = $(event.target)
     return if el.hasClass 'disabled' or MadEye.editorState.working == true
-    console.log "clicked save button"
     MadEye.editorState.save (err) ->
       if err
         #Handle error better.
@@ -198,6 +197,7 @@ Meteor.startup ->
     if '#!' == contents[0..1]
       cmd = null
       firstLine = contents.split('\n', 1)[0]
+      #trim and split tokens on whitespace
       tokens = (firstLine[2..]).replace(/^\s+|\s+$/g,'').split(/\s+/)
       token = tokens.pop()
       while token

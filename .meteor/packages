@@ -9,13 +9,10 @@ jquery
 underscore
 less
 http
-email
 spiderable
 HTML5-History-API
 router
 accounts-base
-accounts-github
-accounts-ui-unstyled
 accounts-anonymous
 meteor-sharejs
-
+accounts-google
