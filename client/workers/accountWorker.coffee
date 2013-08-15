@@ -21,12 +21,12 @@ Template.signin.events
   'click #signinButton': (e) ->
     stashWorkspace()
     Meteor.logout()
-    Meteor.loginWithGoogle (err)
+    Meteor.loginWithGoogle()
 
   'click #signoutButton': (e) ->
     stashWorkspace()
     Meteor.logout()
-    Meteor.loginAnonymously
+    Meteor.loginAnonymously()
 
 Meteor.startup ->
   Deps.autorun ->
