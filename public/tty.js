@@ -639,7 +639,7 @@ Tab.prototype.handleTitle = function(title) {
   this.title = title;
 
   if (Terminal.focus === this) {
-    document.title = title;
+    // document.title = title;
     // if (h1) h1.innerHTML = title;
   }
 
