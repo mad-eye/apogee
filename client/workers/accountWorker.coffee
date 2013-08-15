@@ -37,7 +37,6 @@ Meteor.startup ->
 tempWorkspace = null
 stashWorkspace = ->
   tempWorkspace = getWorkspace()
-  console.log "Stashing workspace", tempWorkspace
 
 Meteor.startup ->
   Deps.autorun (computation) ->
@@ -53,9 +52,7 @@ Meteor.startup ->
         workspace.modeOverrides ?= {}
         for fileId, syntaxMode of tempWorkspace.modeOverrides
           unless workspace.modeOverrides[fileId]
-            console.log "Setting syntax #{syntaxMode} for #{fileId}"
             workspace.modeOverrides[fileId] = syntaxMode
-    console.log "Saving workspace", workspace
     workspace.save()
     tempWorkspace = null
 

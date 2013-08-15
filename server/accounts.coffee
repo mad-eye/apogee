@@ -1,5 +1,4 @@
 Meteor.publish 'userData', ->
-  #console.log "Publishing user", Meteor.users.findOne this.userId
   return Meteor.users.find {_id: this.userId}, fields:
     name: 1
     email: 1
