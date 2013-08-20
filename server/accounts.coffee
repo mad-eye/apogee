@@ -15,3 +15,17 @@ Accounts.onCreateUser (options, user) ->
 
   Workspaces.insert userId: user._id
   return user
+
+Meteor.startup ->
+  googleConfig = Accounts.loginServiceConfiguration.findOne(service:'google')
+  return if googleConfig
+  unless Meteor.settings.googleSecret
+    console.error "Missing googleSecret; cannot configure"
+    return
+  unless Meteor.settings.googleClientId
+    console.error "Missing googleClientId; cannot configure"
+    return
+  Accounts.loginServiceConfiguration.insert
+    service: 'google'
+    clientId: Meteor.settings.googleClientId
+    secret: Meteor.settings.googleSecret
