@@ -10,7 +10,7 @@ Deps.autorun ->
 
 Template.signin.helpers
   isLoggedIn: ->
-    Meteor.user()?.type != 'anonymous'
+    Meteor.user() && Meteor.user().type != 'anonymous'
 
   isLoggedOut: ->
     #We view 'loggedOut' to mean using an anonymous account
