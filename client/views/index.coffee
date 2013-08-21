@@ -13,3 +13,9 @@ Handlebars.registerHelper "isHangout", ->
   }
   $('#alertBox').append html
 
+Template.topnav.events
+  'click #createTerminal': (event, tmpl) ->
+    event.stopPropagation()
+    event.preventDefault()
+    parent = $('#terminal')[0]
+    MadEye.createTerminal parent:parent

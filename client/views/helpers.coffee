@@ -35,3 +35,8 @@ Handlebars.registerHelper 'isScratch', ->
 
 Handlebars.registerHelper "isInterview", isInterview
 
+@isTerminal = ->
+  #TODO: always true for now
+  true or getProject()?.terminal
+
+Handlebars.registerHelper "isTerminal", isTerminal

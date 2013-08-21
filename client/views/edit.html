@@ -77,6 +77,10 @@
 <template name="editorFooter">
   {{> statusBar }}
 
+  {{#if isTerminal}}
+    <div id="terminal"></div>
+  {{/if}}
+
   {{#if isInterview}}
     <div id="programOutput">
       {{! would be nice to move logic from helper here into template

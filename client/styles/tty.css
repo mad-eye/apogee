@@ -15,13 +15,8 @@
  */
 
 .window {
-  padding-top: 15px;
   border: #fafafa solid 1px;
   background: #272829;
-  position: fixed;
-  bottom: 0px;
-  left: 0px;
-  z-index: 1000;
   box-shadow: rgba(0, 0, 0, 0.8) 2px 2px 20px;
 }
 

@@ -115,7 +115,10 @@ Template.editor.rendered = ->
   MadEye.editorState.attach()
   MadEye.editorState.rendered = true
   #If we're displaying the program output, set the bottom of the editor
-  outputOffset = if isInterview() then $('#programOutput').height() else 0
+  outputOffset = switch
+    when isInterview() then $('#programOutput').height()
+    when isTerminal() then $('#terminal').height()
+    else 0
   $('#editor').css 'bottom', $('#statusBar').height() + outputOffset
   $('#statusBar').css 'bottom', outputOffset
   resizeEditor()

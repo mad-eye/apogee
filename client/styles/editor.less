@@ -58,6 +58,33 @@
   }
 }
 
+@terminalHeight: 200px;
+
+#programOutput {
+  position: absolute;
+  height: @outputHeight;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+#terminal {
+  position: absolute;
+  height: @terminalHeight;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.window {
+  padding-top: 15px;
+  border: #fafafa solid 1px;
+  background: #272829;
+  position: relative;
+  height: @terminalHeight - 15 - 1; /*border is 1px*/
+  overflow: auto;
+}
+
 @outputHeight: 200px;
 
 #programOutput {

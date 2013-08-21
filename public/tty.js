@@ -90,8 +90,8 @@ tty.open = function() {
   open = tty.elements.open;
   lights = tty.elements.lights;
 
-  MadEye.createTerminal = function(){
-    new Window;
+  MadEye.createTerminal = function(options){
+    new Window(null, options);
     Meteor.setTimeout(function(){
       $(".window").click(function(e){
         console.log("window clicked");
@@ -221,8 +221,9 @@ tty.toggleLights = function() {
  * Window
  */
 
-function Window(socket) {
+function Window(socket, options) {
   var self = this;
+  var options = options || {}
 
   EventEmitter.call(this);
 
@@ -268,6 +269,10 @@ function Window(socket) {
   bar.appendChild(button);
   bar.appendChild(title);
   body.appendChild(el);
+
+  if (options.parent) {
+    options.parent.appendChild(el)
+  }
 
   tty.windows.push(this);
 

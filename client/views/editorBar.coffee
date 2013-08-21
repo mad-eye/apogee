@@ -93,7 +93,10 @@ Template.statusBar.created = ->
   MadEye.rendered 'statusBar'
 
 Template.statusBar.rendered = ->
-  outputOffset = if isInterview() then $('#programOutput').height() else 0
+  outputOffset = switch
+    when isInterview() then $('#programOutput').height()
+    when isTerminal() then $('#terminal').height()
+    else 0
   $('#statusBar').css 'bottom', outputOffset
   resizeEditor()
 
