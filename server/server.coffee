@@ -14,6 +14,10 @@ Meteor.publish "scriptOutputs", (projectId) ->
   ScriptOutputs.find projectId: projectId
 
 Meteor.publish "workspaces", (projectId) ->
+  #Create workspaces for old accounts that don't have any.
+  unless Workspaces.findOne(userId: @userId)
+    Workspaces.insert userId: @userId
+
   Workspaces.find userId: @userId
 
 Meteor.setInterval ->
