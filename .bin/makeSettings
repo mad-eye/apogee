@@ -11,7 +11,10 @@ settings = {
     kissMetricsId: process.env.MADEYE_KISS_METRICS_ID,
     nurmengardUrl: process.env.MADEYE_NURMENGARD_URL,
     hangoutUrl: process.env.MADEYE_AZKABAN_URL + "/hangout/"
-  }
+  },
+  googleClientId: process.env.MADEYE_GOOGLE_CLIENT_ID,
+  googleSecret: process.env.MADEYE_GOOGLE_SECRET
+
 };
 
 fs.writeFileSync(__dirname + '/../settings.json', JSON.stringify(settings));
