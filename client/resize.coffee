@@ -1,6 +1,11 @@
 # All the various resize logic goes here, instead of scattered
 # and cluttering up the controllers.
 windowDep = new Deps.Dependency()
+#the least height/width of other sessions' terminals.
+#Store it here to only trigger reactivity if the values change.
+@leastSize = new ReactiveDict
+
+
 baseSpacing = 10; #px
 inactiveTerminalHeight = 20; #px
 
@@ -18,6 +23,8 @@ Deps.autorun (computation) ->
 
 
 Meteor.startup ->
+  windowDep.changed()
+
   #Editor resize
   Deps.autorun ->
     return unless MadEye.isRendered 'editor', 'statusBar'
@@ -30,6 +37,10 @@ Meteor.startup ->
     editorContainer.height totalHeight
     #Set terminal height to be 1/3rd total
     terminalHeight = Math.floor(totalHeight / 3)
+    #If there are other terminals, don't be heigher than them.
+    if leastSize.get('height')?
+      terminalHeight = Math.min terminalHeight, leastSize.get('height')
+
 
     if $('#terminal')
       unless Session.get 'terminalIsActive'
@@ -67,12 +78,39 @@ Meteor.startup ->
     newFileTreeHeight = Math.min(windowHeight - fileTreeTop - 2*baseSpacing, $("#fileTree").height())
     fileTreeContainer.height(newFileTreeHeight)
 
-Template.editor.created = ->
-  MadEye.rendered 'editor'
-  #Sometimes the resize happens before everything is ready.
-  #It's idempotent and cheap, so do this for safety's sake.
-  Meteor.setTimeout ->
-    windowSizeChanged()
-  , 100
+  Deps.autorun ->
+    projectId = Session.get("projectId")
+    return unless projectId
+    projectStatus = ProjectStatuses.findOne {sessionId:Session.id, projectId}
+    return unless projectStatus
+    windowDep.depend()
+    if isTerminal() and Session.get 'terminalIsActive'
+      terminal = $('#terminal')
+      projectStatus.update
+        terminalSize:
+          height: terminal.height()
+          width: terminal.width()
+    else
+      projectStatus.update terminalSize:undefined
+
+  #calculate the minimum height/width of other people's terminals
+  Deps.autorun ->
+    projectId = Session.get("projectId")
+    return unless projectId
+    height = width = null
+    
+    ProjectStatuses.find({projectId, sessionId: {$ne: Session.id}})
+      .forEach (status) ->
+        return unless status.terminalSize?
+        unless height?
+          height = status.terminalSize.height
+          width = status.terminalSize.width
+        else
+          height = Math.min height, status.terminalSize.height
+          width = Math.min width, status.terminalSize.width
+
+    leastSize.set 'height', height
+    leastSize.set 'width', width
+
 
 
