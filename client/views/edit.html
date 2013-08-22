@@ -78,7 +78,7 @@
   {{> statusBar }}
 
   {{#if isTerminal}}
-    <div id="terminal"></div>
+    {{> terminal}}
   {{/if}}
 
   {{#if isInterview}}
@@ -89,4 +89,18 @@
       <pre id="stdout">{{{output}}}</pre>
     </div>
   {{/if}}
+</template>
+
+<template name="terminal">
+  {{#unless Session 'terminalIsActive'}}
+    <div id="terminal" class="terminal-closed">
+      <span><a id="createTerminal" href="#">Open terminal for session.</a></span>
+    </div>
+
+  {{else}}
+    {{#constant}}
+      <div id="terminal">
+      </div>
+    {{/constant}}
+  {{/unless}}
 </template>

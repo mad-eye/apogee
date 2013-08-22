@@ -102,26 +102,11 @@ Template.projectStatus.projectAlerts = ->
 #XXX: Unused?
 Template.editor.preserve("#editor")
 
-Template.editor.created = ->
-  MadEye.rendered 'editor'
-  #Sometimes the resize happens before everything is ready.
-  #It's idempotent and cheap, so do this for safety's sake.
-  Meteor.setTimeout ->
-    resizeEditor()
-  , 100
-
 Template.editor.rendered = ->
   #console.log "Rendering editor"
   MadEye.editorState.attach()
   MadEye.editorState.rendered = true
-  #If we're displaying the program output, set the bottom of the editor
-  outputOffset = switch
-    when isInterview() then $('#programOutput').height()
-    when isTerminal() then $('#terminal').height()
-    else 0
-  $('#editor').css 'bottom', $('#statusBar').height() + outputOffset
-  $('#statusBar').css 'bottom', outputOffset
-  resizeEditor()
+  windowSizeChanged()
 
 Meteor.startup ->
   gotoPosition = (cursor)->
@@ -143,38 +128,6 @@ Meteor.startup ->
     MadEye.editorState.loadFile file, ->
       if MadEye.editorState.doc.cursor
         gotoPosition(MadEye.editorState.doc.cursor)
-
-@resizeEditor = ->
-  baseSpacing = 10; #px
-  windowHeight = $(window).height()
-
-  editorContainer = $('#editorContainer')
-  editorContainerOffset = editorContainer?.offset()
-  if editorContainerOffset
-    editorTop = editorContainerOffset.top
-    newHeight = windowHeight - editorTop - 2*baseSpacing
-    editorContainer.height(newHeight)
-
-    #Spinner placement
-    spinner = $('#editorLoadingSpinner')
-    spinner.css('top', (newHeight - spinner.height())/2 )
-    spinner.css('left', (editorContainer.width() - spinner.width())/2 )
-
-    ace.edit('editor').resize()
-
-  fileTreeContainer = $("#fileTreeContainer")
-  fileTreeContainerOffset = fileTreeContainer?.offset()
-  if fileTreeContainerOffset
-    fileTreeTop = fileTreeContainerOffset.top
-    newFileTreeHeight = Math.min(windowHeight - fileTreeTop - 2*baseSpacing, $("#fileTree").height())
-    fileTreeContainer.height(newFileTreeHeight)
-
-Deps.autorun (computation) ->
-  return unless MadEye.isRendered 'editor', 'fileTree', 'statusBar'
-  resizeEditor()
-  $(window).resize ->
-    resizeEditor()
-  computation.stop()
 
 Template.editorOverlay.helpers
   "editorIsLoading": ->
