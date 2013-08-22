@@ -15,9 +15,9 @@
  */
 
 .window {
-  border: #fafafa solid 1px;
+  border: 1px solid #AAA;
   background: #272829;
-  box-shadow: rgba(0, 0, 0, 0.8) 2px 2px 20px;
+  /*box-shadow: rgba(0, 0, 0, 0.8) 2px 2px 20px;*/
 }
 
 .maximized .window {

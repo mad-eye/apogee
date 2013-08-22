@@ -2,6 +2,10 @@
 # and cluttering up the controllers.
 windowDep = new Deps.Dependency()
 baseSpacing = 10; #px
+inactiveTerminalHeight = 20; #px
+
+terminalWindowPadding = 15 #px
+terminalWindowBorder = 2 #2*1px
 
 @windowSizeChanged = -> windowDep.changed()
 
@@ -13,8 +17,8 @@ Deps.autorun (computation) ->
   computation.stop()
 
 
-#Editor resize
 Meteor.startup ->
+  #Editor resize
   Deps.autorun ->
     return unless MadEye.isRendered 'editor', 'statusBar'
     windowDep.depend()
@@ -24,20 +28,30 @@ Meteor.startup ->
 
     totalHeight = windowHeight - editorTop - 2*baseSpacing
     editorContainer.height totalHeight
+    #Set terminal height to be 1/3rd total
+    terminalHeight = Math.floor(totalHeight / 3)
 
     if $('#terminal')
-      offset = $('#terminal').height()
+      unless Session.get 'terminalIsActive'
+        #Active terminals take up the full space
+        #Inactive terminals are just an informational bar (20px)
+        terminalHeight = inactiveTerminalHeight
+      $('#terminal').height terminalHeight
+      terminalWindow = $('#terminal .window')
+      if terminalWindow
+        terminalWindow.height terminalHeight - terminalWindowPadding - terminalWindowBorder
     else if $('#programOutput')
-      offset = $('#programOutput').height()
+      $('#programOutput').height terminalHeight
     else
-      offset = 0
-    $('#statusBar').css 'bottom', offset
-    $('#editor').css 'bottom', offset + $('#statusBar').height()
+      terminalHeight = 0
+
+    $('#statusBar').css 'bottom', terminalHeight
+    $('#editor').css 'bottom', terminalHeight + $('#statusBar').height()
 
     #Spinner placement
-    newHeight = totalHeight - offset
+    editorHeight = totalHeight - terminalHeight
     spinner = $('#editorLoadingSpinner')
-    spinner.css('top', (newHeight - spinner.height())/2 )
+    spinner.css('top', (editorHeight - spinner.height())/2 )
     spinner.css('left', (editorContainer.width() - spinner.width())/2 )
 
     ace.edit('editor').resize()
