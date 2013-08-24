@@ -1,3 +1,21 @@
+#XXXXXX BEGIN EXPERIMENTAL SECTION
+invalidatedCallbacks = []
+
+Deps.Computation.prototype.name = (name) ->
+  this.onInvalidate ->
+    for callback in invalidatedCallbacks
+      callback name
+
+#callback : (name) ->
+Deps.invalidated = (callback) ->
+  invalidatedCallbacks.push callback if callback
+
+#XXXXXX END
+
+#Log when a context has been invalidated.
+Deps.invalidated (name) ->
+  console.log "Invalidated: #{name}, this:", this
+
 # All the various resize logic goes here, instead of scattered
 # and cluttering up the controllers.
 
@@ -48,6 +66,7 @@ Meteor.startup ->
 
   #Set up windowDep listening to window resize
   Deps.autorun (computation) ->
+    @name 'setup windowDep'
     return unless MadEye.isRendered 'editor', 'fileTree', 'statusBar'
     $(window).resize ->
       windowDep.changed()
@@ -55,6 +74,7 @@ Meteor.startup ->
 
   #Set editorContainer size
   Deps.autorun ->
+    @name 'set editorContainer size'
     return unless MadEye.isRendered 'editor'
     windowDep.depend()
     windowHeight = $(window).height()
@@ -69,6 +89,7 @@ Meteor.startup ->
 
   #Set editor size
   Deps.autorun (c) ->
+    @name 'set editor size'
     return unless MadEye.isRendered 'editor', 'statusBar'
     unless $('#statusBar').length and $('#editor').length
       c.invalidate()
@@ -90,7 +111,7 @@ Meteor.startup ->
 
   #Set terminal size
   Deps.autorun (c) ->
-    console.log "Running set terminal size"
+    @name 'set terminalSize'
     return unless isTerminal() and MadEye.isRendered 'terminal'
     terminalHeight = switch
       when not Session.get('terminalIsActive')
@@ -99,7 +120,6 @@ Meteor.startup ->
         Math.min( sizes.get('leastTerminalHeight'), sizes.get('maxTerminalHeight') )
       else
         sizes.get('maxTerminalHeight')
-    console.log "Got terminalHeight", terminalHeight
 
     sizes.set 'terminalHeight', terminalHeight
     unless $('#terminal').length
@@ -120,22 +140,22 @@ Meteor.startup ->
 
   #Set projectStatus.terminalSize
   Deps.autorun ->
+    @name 'set projectStatus.terminalSize'
     projectId = Session.get("projectId")
     return unless projectId
     projectStatus = ProjectStatuses.findOne {sessionId:Session.id, projectId}
     return unless projectStatus
     if isTerminal() and Session.get 'terminalIsActive'
-      console.log "Setting terminalSize to current dimensions"
       projectStatus.update
         terminalSize:
           height: sizes.get 'maxTerminalHeight'
           width: sizes.get 'containerWidth'
     else
-      console.log "Setting terminalSize to null"
       projectStatus.update terminalSize:undefined
 
   #calculate the minimum height/width of other people's terminals
   Deps.autorun ->
+    @name 'calc leastSize'
     projectId = Session.get("projectId")
     return unless projectId
     height = width = null
@@ -156,6 +176,7 @@ Meteor.startup ->
 
   #Filetree resize
   Deps.autorun ->
+    @name 'filetree resize'
     return unless MadEye.isRendered 'fileTree'
     windowDep.depend()
     windowHeight = $(window).height()
