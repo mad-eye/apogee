@@ -89,16 +89,12 @@ Template.editorBar.helpers
   isHangout: ->
     Session.get "isHangout"
 
-Template.statusBar.created = ->
-  MadEye.rendered 'statusBar'
-
 Template.statusBar.rendered = ->
+  MadEye.rendered 'statusBar'
   windowSizeChanged()
 
-Template.editorBar.created = ->
-  MadEye.rendered 'editorBar'
-
 Template.editorBar.rendered = ->
+  MadEye.rendered 'editorBar'
   windowSizeChanged()
 
 Template.statusBar.events

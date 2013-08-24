@@ -65,7 +65,8 @@
 <template name="editorOverlay">
   {{#if editorIsLoading}}
     <div id="editorOverlay">
-      <img id="editorLoadingSpinner" src="/images/file-loader.gif" alt="Loading..." />
+      <img id="editorLoadingSpinner" src="/images/file-loader.gif" alt="Loading..."
+      style="top: {{spinnerTop}}px;left: {{spinnerLeft}}px;"/>
     </div>
   {{/if}}
 </template>
@@ -76,31 +77,21 @@
 
 <template name="editorFooter">
   {{> statusBar }}
-
   {{#if isTerminal}}
     {{> terminal}}
-  {{/if}}
-
-  {{#if isInterview}}
-    <div id="programOutput">
-      {{! would be nice to move logic from helper here into template
-      handlebars unfortunately generates a pile of whitespace that
-      breaks our pre tag }}
-      <pre id="stdout">{{{output}}}</pre>
-    </div>
   {{/if}}
 </template>
 
 <template name="terminal">
-  {{#unless Session 'terminalIsActive'}}
-    <div id="terminal" class="terminal-closed">
-      <span><a id="createTerminal" href="#">Open terminal for session.</a></span>
-    </div>
+  {{#constant}}
+  <div id="terminal">
+  {{!#unless Session 'terminalIsActive'}}
+    {{> createTerminal }}
+  {{!/unless}}
+  </div>
+  {{/constant}}
+</template>
 
-  {{else}}
-    {{#constant}}
-      <div id="terminal">
-      </div>
-    {{/constant}}
-  {{/unless}}
+<template name="createTerminal">
+  <span id="createTerminalMessage"><a id="createTerminal" href="#">Click to open terminal</a></span>
 </template>

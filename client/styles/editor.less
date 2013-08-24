@@ -63,6 +63,13 @@
   left: 0;
   bottom: 0;
   right: 0;
+  background-color: @textColorDefault;
+}
+
+#createTerminal {
+  color: #5fba3d; //Terminal green
+  font-family:monospace, prestige;
+  margin-left: @baseSpacing;
 }
 
 .window {
@@ -71,45 +78,6 @@
   background: #272829;
   position: relative;
   overflow: auto;
-}
-
-@outputHeight: 200px;
-
-#programOutput {
-  position: absolute;
-  height: @outputHeight;
-  left: 0;
-  bottom: 0;
-  right: 0;
-}
-
-#stdout {
-  padding: @baseSpacing;
-  margin: 0;
-  border: solid #aaa;
-  border-width: 1px 0 0 0;
-  border-radius: 0;
-  position: relative;
-  height: @outputHeight - 2*@baseSpacing - 1; /*border is 1px*/
-  overflow: auto;
-
-  .initial-output {
-    color: @fadedOutput;
-  }
-  
-  .output-error {
-    color: @errorRed;
-  }
-
-  .stderr {
-    color: @errorRed;
-  }
-  .stdout {
-  }
-
-  .runError {
-    color: @errorRed;
-  }
 }
 
 // EDITOR BAR

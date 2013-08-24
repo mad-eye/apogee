@@ -2,7 +2,7 @@
 #PATH_TO_FILE and LINE_NUMBER are optional
 #editRegex = /\/edit\/([-0-9a-f]+)\/?([^#]*)#?([0-9]*)?/
 #TODO should probably OR the line and session fields
-@editRegex = /\/(edit|interview|editImpressJS)\/([-\w]+)\/?([^#]*)#?(?:L([0-9]*))?(?:S([0-9a-f-]*))?/
+@editRegex = /\/(edit|editImpressJS)\/([-\w]+)\/?([^#]*)#?(?:L([0-9]*))?(?:S([0-9a-f-]*))?/
 @transitoryIssues = null
 
 @groupA = (testName)->
@@ -52,7 +52,7 @@ do ->
     return unless MadEye.fileLoader
     Deps.nonreactive ->
       isHangout = false
-      #TODO record type..edit/interview/scratch
+      #TODO record type..edit/scratch
       params = getQueryParams window.location.search
       if params.hangout
         Session.set "isHangout", true
@@ -96,24 +96,6 @@ do ->
     '/faq': ->
       recordView page: "faq"
       'faq'
-
-    '/interview': ->
-      #TODO add more info here..
-      recordView page: "create interview"
-      project = new Project()
-      project.interview = true
-      project.name = 'interview' #Needed for mongoose schema
-      project.save()
-
-      Deps.nonreactive ->
-        file = new MadEye.File
-        file.projectId = project._id
-        file.path = scratchPath
-        file.scratch = true
-        file.save()
-      Meteor.setTimeout ->
-        Meteor.Router.to "/edit/#{project._id}/#{scratchPath}"
-      , 0
 
     '/impress.js': ->
       Meteor.http.post "#{Meteor.settings.public.azkabanUrl}/newImpressJSProject", (err, result)->

@@ -1,10 +1,25 @@
 # All the various resize logic goes here, instead of scattered
 # and cluttering up the controllers.
-windowDep = new Deps.Dependency()
-#the least height/width of other sessions' terminals.
-#Store it here to only trigger reactivity if the values change.
-@leastSize = new ReactiveDict
 
+#Deps to handle resizes.  Might be nice to have reactive DOM elts.
+windowDep = new Deps.Dependency()
+@windowSizeChanged = -> windowDep.changed()
+
+#Store these here to only trigger reactivity if the values change.
+##The size of the editorContainer
+#containerHeight
+#containerWidth
+#
+##the least height/width of other sessions' terminals
+#leastTerminalHeight
+#leastTerminalWidth
+#
+##The maximum possible height of terminal (~1/3 containerHeight)
+#maxTerminalHeight
+#
+##The actual terminal height
+#terminalHeight
+@sizes = new ReactiveDict
 
 baseSpacing = 10; #px
 inactiveTerminalHeight = 20; #px
@@ -12,85 +27,111 @@ inactiveTerminalHeight = 20; #px
 terminalWindowPadding = 15 #px
 terminalWindowBorder = 2 #2*1px
 
-@windowSizeChanged = -> windowDep.changed()
+Template.statusBar.helpers
+  bottom: -> sizes.get('terminalHeight') || 0
 
-Deps.autorun (computation) ->
-  return unless MadEye.isRendered 'editor', 'fileTree', 'statusBar'
-  windowDep.changed()
-  $(window).resize ->
-    windowDep.changed()
-  computation.stop()
-
-
-Meteor.startup ->
-  windowDep.changed()
-
-  #Editor resize
-  Deps.autorun ->
-    return unless MadEye.isRendered 'editor', 'statusBar'
-    windowDep.depend()
-    windowHeight = $(window).height()
-    editorContainer = $('#editorContainer')
-    editorTop = editorContainer.offset().top
-
-    totalHeight = windowHeight - editorTop - 2*baseSpacing
-    editorContainer.height totalHeight
-    #Set terminal height to be 1/3rd total
-    terminalHeight = Math.floor(totalHeight / 3)
-    #If there are other terminals, don't be heigher than them.
-    if leastSize.get('height')?
-      terminalHeight = Math.min terminalHeight, leastSize.get('height')
-
-
-    if $('#terminal')
-      unless Session.get 'terminalIsActive'
-        #Active terminals take up the full space
-        #Inactive terminals are just an informational bar (20px)
-        terminalHeight = inactiveTerminalHeight
-      $('#terminal').height terminalHeight
-      terminalWindow = $('#terminal .window')
-      if terminalWindow
-        terminalWindow.height terminalHeight - terminalWindowPadding - terminalWindowBorder
-    else if $('#programOutput')
-      $('#programOutput').height terminalHeight
-    else
-      terminalHeight = 0
-
-    $('#statusBar').css 'bottom', terminalHeight
-    $('#editor').css 'bottom', terminalHeight + $('#statusBar').height()
-
-    #Spinner placement
-    editorHeight = totalHeight - terminalHeight
+Template.editorOverlay.helpers
+  spinnerTop: ->
+    terminalHeight = sizes.get('terminalHeight') || 0
+    editorBottom = terminalHeight + $('#statusBar').height()
+    editorHeight = sizes.get('containerHeight') - editorBottom
     spinner = $('#editorLoadingSpinner')
     spinner.css('top', (editorHeight - spinner.height())/2 )
-    spinner.css('left', (editorContainer.width() - spinner.width())/2 )
 
-    ace.edit('editor').resize()
+  spinnerLeft: ->
+    spinner = $('#editorLoadingSpinner')
+    spinner.css('left', (sizes.get('containerWidth') - spinner.width())/2 )
 
-  #Filetree resize
+Meteor.startup ->
+  #Trigger initial size calculations
+  windowDep.changed()
+
+  #Set up windowDep listening to window resize
+  Deps.autorun (computation) ->
+    return unless MadEye.isRendered 'editor', 'fileTree', 'statusBar'
+    $(window).resize ->
+      windowDep.changed()
+    computation.stop()
+
+  #Set editorContainer size
   Deps.autorun ->
-    return unless MadEye.isRendered 'fileTree'
+    return unless MadEye.isRendered 'editor'
     windowDep.depend()
     windowHeight = $(window).height()
+    container = $('#editorContainer')
+    containerTop = container.offset().top
+    containerHeight = (windowHeight - containerTop - 2*baseSpacing)
+    container.height containerHeight
+    sizes.set 'containerHeight', container.height()
+    sizes.set 'containerWidth', container.width()
+    if isTerminal()
+      sizes.set 'maxTerminalHeight', Math.floor( container.height() / 3 )
 
-    fileTreeContainer = $("#fileTreeContainer")
-    fileTreeTop = fileTreeContainer.offset().top
-    newFileTreeHeight = Math.min(windowHeight - fileTreeTop - 2*baseSpacing, $("#fileTree").height())
-    fileTreeContainer.height(newFileTreeHeight)
+  #Set editor size
+  Deps.autorun (c) ->
+    return unless MadEye.isRendered 'editor', 'statusBar'
+    unless $('#statusBar').length and $('#editor').length
+      c.invalidate()
+      return
+    terminalHeight = sizes.get('terminalHeight') || 0
 
+    #$('#statusBar').css 'bottom', terminalHeight
+    editorBottom = terminalHeight + $('#statusBar').height()
+    $('#editor').css 'bottom', editorBottom
+    ace.edit('editor').resize()
+
+    ##Spinner placement
+    #editorHeight = sizes.get('containerHeight') - editorBottom
+    #spinner = $('#editorLoadingSpinner')
+    #spinner.css('top', (editorHeight - spinner.height())/2 )
+    #spinner.css('left', (sizes.get('containerWidth') - spinner.width())/2 )
+
+
+
+  #Set terminal size
+  Deps.autorun (c) ->
+    console.log "Running set terminal size"
+    return unless isTerminal() and MadEye.isRendered 'terminal'
+    terminalHeight = switch
+      when not Session.get('terminalIsActive')
+        inactiveTerminalHeight
+      when sizes.get('leastTerminalHeight')
+        Math.min( sizes.get('leastTerminalHeight'), sizes.get('maxTerminalHeight') )
+      else
+        sizes.get('maxTerminalHeight')
+    console.log "Got terminalHeight", terminalHeight
+
+    sizes.set 'terminalHeight', terminalHeight
+    unless $('#terminal').length
+      console.error 'missing terminal'
+    $('#terminal').height terminalHeight
+
+    if Session.get('terminalIsActive')
+      unless $('#terminal .window').length
+        console.error 'missing terminal window'
+        return
+      terminalWindow = $('#terminal .window')
+      terminalWindow.height terminalHeight - terminalWindowPadding - terminalWindowBorder
+      if sizes.get('leastTerminalWidth')
+        newWidth = Math.min( sizes.get('leastTerminalWidth'), sizes.get('containerWidth') )
+      else
+        newWidth = sizes.get('containerWidth')
+      terminalWindow.width newWidth
+
+  #Set projectStatus.terminalSize
   Deps.autorun ->
     projectId = Session.get("projectId")
     return unless projectId
     projectStatus = ProjectStatuses.findOne {sessionId:Session.id, projectId}
     return unless projectStatus
-    windowDep.depend()
     if isTerminal() and Session.get 'terminalIsActive'
-      terminal = $('#terminal')
+      console.log "Setting terminalSize to current dimensions"
       projectStatus.update
         terminalSize:
-          height: terminal.height()
-          width: terminal.width()
+          height: sizes.get 'maxTerminalHeight'
+          width: sizes.get 'containerWidth'
     else
+      console.log "Setting terminalSize to null"
       projectStatus.update terminalSize:undefined
 
   #calculate the minimum height/width of other people's terminals
@@ -109,8 +150,18 @@ Meteor.startup ->
           height = Math.min height, status.terminalSize.height
           width = Math.min width, status.terminalSize.width
 
-    leastSize.set 'height', height
-    leastSize.set 'width', width
+    sizes.set 'leastTerminalHeight', height
+    sizes.set 'leastTerminalWidth', width
 
 
+  #Filetree resize
+  Deps.autorun ->
+    return unless MadEye.isRendered 'fileTree'
+    windowDep.depend()
+    windowHeight = $(window).height()
+
+    fileTreeContainer = $("#fileTreeContainer")
+    fileTreeTop = fileTreeContainer.offset().top
+    newFileTreeHeight = Math.min(windowHeight - fileTreeTop - 2*baseSpacing, $("#fileTree").height())
+    fileTreeContainer.height(newFileTreeHeight)
 
