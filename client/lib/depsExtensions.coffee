@@ -20,7 +20,7 @@ Deps.invalidated = (callback) ->
 
 #XXX application specific code
 #Log when a context has been invalidated.
-Deps.invalidated (name) ->
-  console.log "Invalidated: #{name}"
+#Deps.invalidated (name) ->
+  #console.log "Invalidated: #{name}"
 
 
