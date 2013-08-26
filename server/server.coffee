@@ -8,7 +8,7 @@ Meteor.publish "files", (projectId)->
     projectId: projectId
 
 Meteor.publish "projectStatuses", (projectId) ->
-  ProjectStatuses.find projectId: projectId
+  ProjectStatuses.find {projectId: projectId}, {fields: {heartbeat:0} }
 
 Meteor.publish "scriptOutputs", (projectId) ->
   ScriptOutputs.find projectId: projectId

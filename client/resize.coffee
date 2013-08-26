@@ -112,7 +112,7 @@ Meteor.startup ->
         newWidth = Math.min( sizes.get('leastTerminalWidth'), sizes.get('containerWidth') )
       else
         newWidth = sizes.get('containerWidth')
-      terminalWindow.width newWidth
+      terminalWindow.width newWidth - terminalWindowBorder
 
   #Set projectStatus.terminalSize
   Deps.autorun ->
