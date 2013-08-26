@@ -204,6 +204,7 @@ Meteor.startup ->
 
   #Syntax Modes from file
   Deps.autorun ->
+    @name 'syntax mode from file'
     return unless MadEye.isRendered 'editor'
     file = Files.findOne(MadEye.editorState?.fileId)
     return unless file
@@ -225,6 +226,7 @@ Meteor.startup ->
 
   #Keybinding
   Deps.autorun (computation) ->
+    @name 'keybinding'
     return unless MadEye.isRendered('editor') and MadEye.editorState
     workspace = getWorkspace()
     return unless workspace
@@ -242,6 +244,7 @@ Meteor.startup ->
         MadEye.editorState.getEditor().setKeyboardHandler handler
 
   Deps.autorun (computation) ->
+    @name 'set editor from workspace'
     return unless MadEye.isRendered('editor') and MadEye.editorState
     workspace = getWorkspace()
     return unless workspace

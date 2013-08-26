@@ -5,6 +5,7 @@
 
 #If no user, log in an anonymous user
 Deps.autorun ->
+  @name 'login anonymously'
   return if Meteor.loggingIn()
   Meteor.loginAnonymously() unless Meteor.user()
 
@@ -30,6 +31,7 @@ Template.signin.events
 
 Meteor.startup ->
   Deps.autorun ->
+    @name 'subscribe userData'
     Meteor.subscribe 'userData'
 
 
@@ -40,6 +42,7 @@ stashWorkspace = ->
 
 Meteor.startup ->
   Deps.autorun (computation) ->
+    @name 'migrate workspace'
     return unless getWorkspace() and tempWorkspace
     workspace = getWorkspace()
     for key in _.keys tempWorkspace

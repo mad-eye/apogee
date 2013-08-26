@@ -1,27 +1,11 @@
-#XXXXXX BEGIN EXPERIMENTAL SECTION
-invalidatedCallbacks = []
-
-Deps.Computation.prototype.name = (name) ->
-  this.onInvalidate ->
-    for callback in invalidatedCallbacks
-      callback name
-
-#callback : (name) ->
-Deps.invalidated = (callback) ->
-  invalidatedCallbacks.push callback if callback
-
-#XXXXXX END
-
-#Log when a context has been invalidated.
-Deps.invalidated (name) ->
-  console.log "Invalidated: #{name}, this:", this
-
 # All the various resize logic goes here, instead of scattered
 # and cluttering up the controllers.
 
 #Deps to handle resizes.  Might be nice to have reactive DOM elts.
 windowDep = new Deps.Dependency()
-@windowSizeChanged = -> windowDep.changed()
+@windowSizeChanged = ->
+  console.log "Changing windowDep"
+  windowDep.changed()
 
 #Store these here to only trigger reactivity if the values change.
 ##The size of the editorContainer
@@ -75,12 +59,14 @@ Meteor.startup ->
   #Set editorContainer size
   Deps.autorun ->
     @name 'set editorContainer size'
-    return unless MadEye.isRendered 'editor'
+    return unless isEditorPage() and MadEye.isRendered 'editor'
     windowDep.depend()
     windowHeight = $(window).height()
     container = $('#editorContainer')
+    return unless container and container.offset() #eg home doesn't have this div
     containerTop = container.offset().top
     containerHeight = (windowHeight - containerTop - 2*baseSpacing)
+    #Set container height here so we know it's complete before we store the values.
     container.height containerHeight
     sizes.set 'containerHeight', container.height()
     sizes.set 'containerWidth', container.width()
@@ -90,10 +76,8 @@ Meteor.startup ->
   #Set editor size
   Deps.autorun (c) ->
     @name 'set editor size'
-    return unless MadEye.isRendered 'editor', 'statusBar'
-    unless $('#statusBar').length and $('#editor').length
-      c.invalidate()
-      return
+    return unless isEditorPage() and MadEye.isRendered 'editor', 'statusBar'
+    return unless $('#statusBar').length and $('#editor').length #XXX: There must be a batter way
     terminalHeight = sizes.get('terminalHeight') || 0
 
     #$('#statusBar').css 'bottom', terminalHeight
@@ -101,18 +85,11 @@ Meteor.startup ->
     $('#editor').css 'bottom', editorBottom
     ace.edit('editor').resize()
 
-    ##Spinner placement
-    #editorHeight = sizes.get('containerHeight') - editorBottom
-    #spinner = $('#editorLoadingSpinner')
-    #spinner.css('top', (editorHeight - spinner.height())/2 )
-    #spinner.css('left', (sizes.get('containerWidth') - spinner.width())/2 )
-
-
 
   #Set terminal size
   Deps.autorun (c) ->
     @name 'set terminalSize'
-    return unless isTerminal() and MadEye.isRendered 'terminal'
+    return unless isEditorPage() and isTerminal() and MadEye.isRendered 'terminal'
     terminalHeight = switch
       when not Session.get('terminalIsActive')
         inactiveTerminalHeight
@@ -122,8 +99,7 @@ Meteor.startup ->
         sizes.get('maxTerminalHeight')
 
     sizes.set 'terminalHeight', terminalHeight
-    unless $('#terminal').length
-      console.error 'missing terminal'
+    return unless $('#terminal').length #homepage doesn't have terminal
     $('#terminal').height terminalHeight
 
     if Session.get('terminalIsActive')
@@ -141,6 +117,8 @@ Meteor.startup ->
   #Set projectStatus.terminalSize
   Deps.autorun ->
     @name 'set projectStatus.terminalSize'
+    #Want this to run on all pages, so that if someone leaves the editor,
+    #their terminalSize is unset.
     projectId = Session.get("projectId")
     return unless projectId
     projectStatus = ProjectStatuses.findOne {sessionId:Session.id, projectId}
@@ -156,6 +134,7 @@ Meteor.startup ->
   #calculate the minimum height/width of other people's terminals
   Deps.autorun ->
     @name 'calc leastSize'
+    return unless isEditorPage()
     projectId = Session.get("projectId")
     return unless projectId
     height = width = null
@@ -177,11 +156,12 @@ Meteor.startup ->
   #Filetree resize
   Deps.autorun ->
     @name 'filetree resize'
-    return unless MadEye.isRendered 'fileTree'
+    return unless isEditorPage() and MadEye.isRendered 'fileTree'
     windowDep.depend()
     windowHeight = $(window).height()
 
     fileTreeContainer = $("#fileTreeContainer")
+    return unless fileTreeContainer and fileTreeContainer.offset() #homepage doesn't have filetree
     fileTreeTop = fileTreeContainer.offset().top
     newFileTreeHeight = Math.min(windowHeight - fileTreeTop - 2*baseSpacing, $("#fileTree").height())
     fileTreeContainer.height(newFileTreeHeight)

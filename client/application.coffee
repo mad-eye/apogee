@@ -133,6 +133,7 @@ do ->
       "missing"
 
 Deps.autorun ->
+  @name 'subscribe block'
   projectId = Session.get "projectId"
   return unless projectId
   Meteor.subscribe "files", projectId

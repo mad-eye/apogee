@@ -10,6 +10,7 @@ MadEye.Event.prototype.collection = @Events
   event.timestamp = Date.now()
   _.extend event, params
   Deps.autorun (computation)->
+    @name 'save event'
     return unless Meteor.userId()
     event.userId = Meteor.userId()
     event.group = "a" if groupA()

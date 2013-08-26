@@ -1,5 +1,6 @@
 #Find how many files the server things, so we know if we have them all.
 Deps.autorun ->
+  @name 'set fileCount'
   Meteor.call 'getFileCount', Session.get('projectId'), (err, count)->
     if err
       Metrics.add
@@ -12,6 +13,7 @@ Deps.autorun ->
 Meteor.startup ->
   #If selected (unmodified) file is currently being edited, clear it out.
   Deps.autorun ->
+    @name 'set fileDeleted warning'
     Files.find(MadEye.fileLoader.editorFileId).observe
       removed: (removedFile) ->
         MadEye.fileLoader.clearFile()

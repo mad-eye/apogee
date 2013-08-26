@@ -40,3 +40,7 @@ Handlebars.registerHelper "isInterview", isInterview
   true or getProject()?.terminal
 
 Handlebars.registerHelper "isTerminal", isTerminal
+
+@isEditorPage = ->
+  (Meteor.Router.page() == 'edit') or (Meteor.Router.page() == 'editImpressJS')
+
