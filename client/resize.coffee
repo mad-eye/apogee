@@ -90,7 +90,7 @@ Meteor.startup ->
     @name 'set terminalSize'
     return unless isEditorPage() and isTerminal() and MadEye.isRendered 'terminal'
     terminalHeight = switch
-      when not Session.get('terminalIsActive')
+      when not MadEye.terminal
         inactiveTerminalHeight
       when sizes.get('leastTerminalHeight')
         Math.min( sizes.get('leastTerminalHeight'), sizes.get('maxTerminalHeight') )
@@ -101,7 +101,7 @@ Meteor.startup ->
     return unless $('#terminal').length #homepage doesn't have terminal
     $('#terminal').height terminalHeight
 
-    if Session.get('terminalIsActive')
+    if MadEye.terminal
       unless $('#terminal .window').length
         console.error 'missing terminal window'
         return
@@ -113,6 +113,10 @@ Meteor.startup ->
         newWidth = sizes.get('containerWidth')
       terminalWindow.width newWidth - terminalWindowBorder
 
+      #Find height of each div
+      terminalLineHeight = $('#terminal .terminal div').height()
+      
+
   #Set projectStatus.terminalSize
   Deps.autorun ->
     @name 'set projectStatus.terminalSize'
@@ -122,7 +126,7 @@ Meteor.startup ->
     return unless projectId
     projectStatus = ProjectStatuses.findOne {sessionId:Session.id, projectId}
     return unless projectStatus
-    if isTerminal() and Session.get 'terminalIsActive'
+    if MadEye.terminal
       projectStatus.update
         terminalSize:
           height: sizes.get 'maxTerminalHeight'
