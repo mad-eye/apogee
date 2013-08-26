@@ -4,7 +4,6 @@
 #Deps to handle resizes.  Might be nice to have reactive DOM elts.
 windowDep = new Deps.Dependency()
 @windowSizeChanged = ->
-  console.log "Changing windowDep"
   windowDep.changed()
 
 #Store these here to only trigger reactivity if the values change.
@@ -129,7 +128,7 @@ Meteor.startup ->
           height: sizes.get 'maxTerminalHeight'
           width: sizes.get 'containerWidth'
     else
-      projectStatus.update terminalSize:undefined
+      projectStatus.update terminalSize: null #NB: undefined breaks things!
 
   #calculate the minimum height/width of other people's terminals
   Deps.autorun ->
