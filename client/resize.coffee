@@ -36,12 +36,12 @@ Template.editorOverlay.helpers
     terminalHeight = sizes.get('terminalHeight') || 0
     editorBottom = terminalHeight + $('#statusBar').height()
     editorHeight = sizes.get('containerHeight') - editorBottom
-    spinner = $('#editorLoadingSpinner')
-    spinner.css('top', (editorHeight - spinner.height())/2 )
+    $spinner = $('#editorLoadingSpinner')
+    $spinner.css('top', (editorHeight - $spinner.height())/2 )
 
   spinnerLeft: ->
-    spinner = $('#editorLoadingSpinner')
-    spinner.css('left', (sizes.get('containerWidth') - spinner.width())/2 )
+    $spinner = $('#editorLoadingSpinner')
+    $spinner.css('left', (sizes.get('containerWidth') - $spinner.width())/2 )
 
 Meteor.startup ->
   #Trigger initial size calculations
@@ -61,16 +61,16 @@ Meteor.startup ->
     return unless isEditorPage() and MadEye.isRendered 'editor'
     windowDep.depend()
     windowHeight = $(window).height()
-    container = $('#editorContainer')
-    return unless container and container.offset() #eg home doesn't have this div
-    containerTop = container.offset().top
+    $container = $('#editorContainer')
+    return unless $container and $container.offset() #eg home doesn't have this div
+    containerTop = $container.offset().top
     containerHeight = (windowHeight - containerTop - 2*baseSpacing)
     #Set container height here so we know it's complete before we store the values.
-    container.height containerHeight
-    sizes.set 'containerHeight', Math.floor container.height()
-    sizes.set 'containerWidth', Math.floor container.width()
+    $container.height containerHeight
+    sizes.set 'containerHeight', Math.floor $container.height()
+    sizes.set 'containerWidth', Math.floor $container.width()
     if isTerminal()
-      sizes.set 'maxTerminalHeight', Math.floor( container.height() / 3 )
+      sizes.set 'maxTerminalHeight', Math.floor( $container.height() / 3 )
 
   #Set editor size
   Deps.autorun (c) ->
@@ -98,25 +98,24 @@ Meteor.startup ->
         sizes.get('maxTerminalHeight')
 
     sizes.set 'terminalHeight', terminalHeight
-    return unless $('#terminal').length #homepage doesn't have terminal
     $('#terminal').height terminalHeight
 
     if MadEye.terminal
       unless $('#terminal .window').length
         console.error 'missing terminal window'
         return
-      terminalWindow = $('#terminal .window')
+      $terminalWindow = $('#terminal .window')
       terminalWindowHeight = terminalHeight - terminalWindowPadding - terminalWindowBorder
-      terminalWindow.height terminalWindowHeight
+      $terminalWindow.height terminalWindowHeight
       if sizes.get('leastTerminalWidth')
         newWidth = Math.min( sizes.get('leastTerminalWidth'), sizes.get('containerWidth') )
       else
         newWidth = sizes.get('containerWidth')
-      terminalWindow.width newWidth - terminalWindowBorder
+      $terminalWindow.width newWidth - terminalWindowBorder
 
       #Find height of each div
-      newTerminalHeight = terminalWindow.height() #FIXME Must reduce by size of bar/etc
-      newTerminalWidth = terminalWindow.width() #FIXME Must reduce by size of border/etc
+      newTerminalHeight = $terminalWindow.height() #FIXME Must reduce by size of bar/etc
+      newTerminalWidth = $terminalWindow.width() #FIXME Must reduce by size of border/etc
       numRows = Math.floor (newTerminalHeight / initialTerminalData.height) * initialTerminalData.rows
       numCols = Math.floor (newTerminalWidth / initialTerminalData.width) * initialTerminalData.cols
       MadEye.terminal.resize numCols, numRows
@@ -169,9 +168,9 @@ Meteor.startup ->
     windowDep.depend()
     windowHeight = $(window).height()
 
-    fileTreeContainer = $("#fileTreeContainer")
-    return unless fileTreeContainer and fileTreeContainer.offset() #homepage doesn't have filetree
-    fileTreeTop = fileTreeContainer.offset().top
+    $fileTreeContainer = $("#fileTreeContainer")
+    return unless $fileTreeContainer and $fileTreeContainer.offset() #homepage doesn't have filetree
+    fileTreeTop = $fileTreeContainer.offset().top
     newFileTreeHeight = Math.min(windowHeight - fileTreeTop - 2*baseSpacing, $("#fileTree").height())
-    fileTreeContainer.height(newFileTreeHeight)
+    $fileTreeContainer.height(newFileTreeHeight)
 
