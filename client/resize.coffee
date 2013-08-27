@@ -3,8 +3,11 @@
 
 #Deps to handle resizes.  Might be nice to have reactive DOM elts.
 windowDep = new Deps.Dependency()
-@windowSizeChanged = ->
+@windowSizeChanged = (flush) ->
   windowDep.changed()
+  if flush
+    Deps.flush()
+
 
 #Store these here to only trigger reactivity if the values change.
 ##The size of the editorContainer
@@ -52,7 +55,7 @@ Meteor.startup ->
     @name 'setup windowDep'
     return unless MadEye.isRendered 'editor', 'fileTree', 'statusBar'
     $(window).resize ->
-      windowDep.changed()
+      windowSizeChanged true
     computation.stop()
 
   #Set editorContainer size
