@@ -102,18 +102,10 @@ Template.projectStatus.projectAlerts = ->
 #XXX: Unused?
 Template.editor.preserve("#editor")
 
-Template.editor.created = ->
-  MadEye.rendered 'editor'
-  #Sometimes the resize happens before everything is ready.
-  #It's idempotent and cheap, so do this for safety's sake.
-  Meteor.setTimeout ->
-    windowSizeChanged()
-  , 100
-
 Template.editor.rendered = ->
-  #console.log "Rendering editor"
   MadEye.editorState.attach()
   MadEye.editorState.rendered = true
+  MadEye.rendered 'editor'
   windowSizeChanged()
 
 Meteor.startup ->
@@ -128,6 +120,7 @@ Meteor.startup ->
 
   #TODO: Move this into internal MadEye.editorState fns
   Deps.autorun ->
+    @name 'goto cursor'
     return unless MadEye.isRendered 'editor'
     fileId = MadEye.fileLoader?.editorFileId
     return unless fileId?
@@ -140,29 +133,6 @@ Meteor.startup ->
 Template.editorOverlay.helpers
   "editorIsLoading": ->
     MadEye.editorState.loading == true
-
-Template.editorFooter.helpers
-  output: ->
-    outputs = ScriptOutputs.find {projectId: Session.get("projectId")}, {sort: {timestamp: -1}}
-    output = ""
-    if Session.get "codeExecuting"
-      output += """<div id="codeExecutingSpinner"><img src="/images/file-loader.gif" alt="Loading..." /></div>\n"""
-    unless outputs.count()
-      output += """<span class="initial-output">program output will go here</span>\n"""
-    else
-      outputs.forEach (response)->
-        if 0 == response.exitCode
-          responseClass = "faded"
-          responseMessage = "#{response.filename} returned:"
-        else
-          responseClass = "output-error"
-          responseMessage = "#{response.filename} returned error (#{response.exitCode}):"
-        output += """<span class="#{responseClass}">#{responseMessage}</span>\n"""
-        output += """<span class="stdout">#{response.stdout}</span>\n""" if response.stdout
-        
-        output += """<span class="stderr">#{response.stderr}</span>\n""" if response.stderr
-        output += """<span class="runError">#{response.runError}</span>\n""" if response.runError
-    output
 
 Template.editImpressJS.helpers
   projectId: ->

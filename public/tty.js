@@ -91,7 +91,7 @@ tty.open = function() {
   lights = tty.elements.lights;
 
   MadEye.createTerminal = function(options){
-    new Window(null, options);
+    w = new Window(null, options);
     Meteor.setTimeout(function(){
       $(".window").click(function(e){
         console.log("window clicked");
@@ -102,7 +102,7 @@ tty.open = function() {
       console.log("body clicked");
       Terminal.focus = null;
     });
-
+    return w;
   }
 
   if (open) {
