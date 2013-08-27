@@ -1,6 +1,7 @@
 Meteor.startup ->
   #Create one for the session
   Deps.autorun ->
+    @name 'touch projectStatus'
     projectId = Session.get("projectId")
     return unless projectId
     Meteor.call "touchProjectStatus", Session.id, projectId, isHangout: Session.get("isHangout")
@@ -15,6 +16,7 @@ Meteor.startup ->
 
   #Set filepath
   Deps.autorun ->
+    @name 'set filepath'
     #TODO this seems bolierplatey..
     projectId = Session.get("projectId")
     return unless projectId and MadEye.fileLoader and MadEye.editorState
@@ -26,6 +28,7 @@ Meteor.startup ->
   sessionsDep = new Deps.Dependency
 
   Deps.autorun ->
+    @name 'set sessionPaths'
     projectId = Session.get "projectId"
     sessionsDep.depend()
     sessionPaths = {}
@@ -38,6 +41,7 @@ Meteor.startup ->
   #Invalidate sessionsDep on important changes
   queryHandle = null
   Deps.autorun (computation)->
+    @name 'dirty sessions on changes'
     projectId = Session.get("projectId")
     return unless projectId
     Deps.nonreactive ->
