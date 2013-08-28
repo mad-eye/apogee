@@ -8,6 +8,15 @@ Template.terminal.events
     $('#createTerminalMessage').remove()
     MadEye.terminal = MadEye.createTerminal parent:parent
     setInitialTerminalData()
+    MadEye.terminal.on 'close', ->
+      console.log "Closing!"
+      MadEye.terminal = null
+      #add createTerminalMessage
+      frag = Meteor.render(Template.createTerminal)
+      $('#terminal').append frag
+
+      
+
     #HACK: Resize causes a redraw of the terminal contents.
     #Trivial resizes don't trigger redraw, and they need to be
     #after things settle, so need to resize twice a bit after the flush.
