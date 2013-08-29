@@ -108,17 +108,16 @@ Meteor.startup ->
         console.error 'missing terminal window'
         return
       $terminalWindow = $('#terminal .window')
-      terminalWindowHeight = terminalHeight - terminalWindowPadding - terminalWindowBorder
-      $terminalWindow.height terminalWindowHeight
+      $terminalWindow.height terminalHeight
       if sizes.get('leastTerminalWidth')
         newWidth = Math.min( sizes.get('leastTerminalWidth'), sizes.get('containerWidth') )
       else
         newWidth = sizes.get('containerWidth')
-      $terminalWindow.width newWidth - terminalWindowBorder
+      $terminalWindow.width newWidth
 
       #Find height of each div
-      newTerminalHeight = $terminalWindow.height() #FIXME Must reduce by size of bar/etc
-      newTerminalWidth = $terminalWindow.width() #FIXME Must reduce by size of border/etc
+      newTerminalHeight = $terminalWindow.height()
+      newTerminalWidth = $terminalWindow.width()
       numRows = Math.floor (newTerminalHeight / initialTerminalData.height) * initialTerminalData.rows
       numCols = Math.floor (newTerminalWidth / initialTerminalData.width) * initialTerminalData.cols
       MadEye.terminal.resize numCols, numRows

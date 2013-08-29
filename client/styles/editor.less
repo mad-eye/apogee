@@ -64,6 +64,25 @@
   bottom: 0;
   right: 0;
   background-color: @textColorDefault;
+
+  //Don't let user resize -- we need control for now.
+  .grip {
+    display: none;
+  }
+
+  //Removing the bar is the easy way to disable multiple terminals.
+  .bar {
+    display: none;
+  }
+
+  .window {
+    //padding-top: 15px; //.bar is not displayed
+    background: #272829;
+    position: relative;
+    overflow: auto;
+    border: none; //overwrite tty.css
+  }
+  
 }
 
 #createTerminal {
@@ -72,12 +91,6 @@
   margin-left: @baseSpacing;
 }
 
-.window {
-  padding-top: 15px;
-  background: #272829;
-  position: relative;
-  overflow: auto;
-}
 
 // EDITOR BAR
 #statusBar {
