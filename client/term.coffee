@@ -1,5 +1,4 @@
 Meteor.startup ->
-  console.log "startup called"
   ttyInitialized = false
   Meteor.autorun ->
     project = Projects.findOne(Session.get "projectId")
