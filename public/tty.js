@@ -54,9 +54,6 @@ tty.elements;
  */
 
 tty.open = function() {
-  Terminal.ioHost = "localhost";
-  Terminal.ioPort = "8081";
-
   var
     pathComponents = document.location.pathname.split('/'),
     // Strip last part (either index.html or "", presumably)
@@ -955,7 +952,6 @@ function load() {
 
   off(document, 'load', load);
   off(document, 'DOMContentLoaded', load);
-  tty.open();
 }
 
 on(document, 'load', load);
