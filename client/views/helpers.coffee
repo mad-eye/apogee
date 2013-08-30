@@ -36,9 +36,7 @@ Handlebars.registerHelper 'isScratch', ->
 Handlebars.registerHelper "isInterview", isInterview
 
 @isTerminal = ->
-  tunnels = getProject()?.tunnels
-  return false unless tunnels
-  return 'terminal' of tunnels
+  getProject()?.tunnels?.terminal?
 
 Handlebars.registerHelper "isTerminal", isTerminal
 
