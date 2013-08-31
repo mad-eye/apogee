@@ -32,11 +32,9 @@ Template.terminal.rendered = ->
   MadEye.rendered 'terminal'
 
 #rows, cols, height, width
-@initialTerminalData = {}
+@terminalData = {}
 
 setInitialTerminalData = ->
   tab = MadEye.terminal.focused
-  initialTerminalData.cols = tab.cols
-  initialTerminalData.rows = tab.rows
-  initialTerminalData.height = $('#terminal .terminal').height()
-  initialTerminalData.width = $('#terminal .terminal').width()
+  terminalData.characterHeight = $('#measurementDiv').height()
+  terminalData.characterWidth = $('#measurementDiv').width()/26

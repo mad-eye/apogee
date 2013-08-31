@@ -118,8 +118,8 @@ Meteor.startup ->
       #Find height of each div
       newTerminalHeight = $terminalWindow.height()
       newTerminalWidth = $terminalWindow.width()
-      numRows = Math.floor (newTerminalHeight / initialTerminalData.height) * initialTerminalData.rows
-      numCols = Math.floor (newTerminalWidth / initialTerminalData.width) * initialTerminalData.cols
+      numRows = Math.floor(newTerminalHeight / terminalData.characterHeight) - 1
+      numCols = Math.floor(newTerminalWidth / terminalData.characterWidth) - 1
       MadEye.terminal.resize numCols, numRows
 
       

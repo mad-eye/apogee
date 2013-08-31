@@ -91,12 +91,10 @@ tty.open = function() {
     w = new Window(null, options);
     Meteor.setTimeout(function(){
       $(".window").click(function(e){
-        console.log("window clicked");
         e.stopPropagation()
       })
     }, 0);
     $("body").click(function(){
-      console.log("body clicked");
       Terminal.focus = null;
     });
     return w;
