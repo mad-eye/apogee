@@ -7,7 +7,6 @@ Meteor.startup ->
     #return if a tty.js session is already active
     if project.tunnels?.terminal
       tunnel = project.tunnels.terminal
-      console.log "START THE TTY.JS SESSION"
       Terminal.ioHost = "share-test.madeye.io"
       Terminal.ioPort = tunnel.remote
       tty.open()
