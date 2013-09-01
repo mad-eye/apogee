@@ -11,3 +11,20 @@ Meteor.startup ->
       Terminal.ioPort = tunnel.remote
       tty.open()
       ttyInitialized = true
+
+
+onTerminalFocus = ->
+
+onTerminalUnfocus = ->
+
+MadEye.createTerminal = (options) ->
+  w = new tty.Window(null, options)
+  Meteor.setTimeout ->
+    $(".window").click (e) ->
+      e.stopPropagation()
+  , 0
+  $("body").click ->
+    tty.Terminal.focus = null
+    onTerminalUnfocus()
+  return w
+
