@@ -36,7 +36,6 @@
   right: 0;
   height: 13px;
   padding: 1px 0;
-  font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
   color: #fafafa;
 }
 
@@ -80,8 +79,6 @@
 
 .terminal {
   border: #000 solid 5px;
-  font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
-  font-size: 13px;
   color: #f0f0f0;
   background: #000;
 }

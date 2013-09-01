@@ -5,9 +5,7 @@
 windowDep = new Deps.Dependency()
 @windowSizeChanged = (flush) ->
   windowDep.changed()
-  if flush
-    Deps.flush()
-
+  Deps.flush() if flush
 
 #Store these here to only trigger reactivity if the values change.
 ##The size of the editorContainer
@@ -30,6 +28,7 @@ inactiveTerminalHeight = 20; #px
 
 terminalWindowPadding = 15 #px
 terminalWindowBorder = 2 #2*1px
+terminalBorder = 10 #2*5px for #terminal .terminal
 
 Template.statusBar.helpers
   bottom: -> sizes.get('terminalHeight') || 0
@@ -116,10 +115,10 @@ Meteor.startup ->
       $terminalWindow.width newWidth
 
       #Find height of each div
-      newTerminalHeight = $terminalWindow.height()
-      newTerminalWidth = $terminalWindow.width()
-      numRows = Math.floor(newTerminalHeight / terminalData.characterHeight) - 1
-      numCols = Math.floor(newTerminalWidth / terminalData.characterWidth) - 1
+      newTerminalHeight = $terminalWindow.height() - terminalBorder
+      newTerminalWidth = $terminalWindow.width() - terminalBorder
+      numRows = Math.floor(newTerminalHeight / terminalData.characterHeight)
+      numCols = Math.floor(newTerminalWidth / terminalData.characterWidth)
       MadEye.terminal.resize numCols, numRows
 
       

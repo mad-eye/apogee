@@ -85,7 +85,7 @@
 <template name="terminal">
   {{#constant}}
   <div id="terminal">
-    <span id="measurementDiv">ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+    <span id="measurementDiv">{{measurementChars}}</span>
   {{!#unless Session 'terminalIsActive'}}
     {{> createTerminal }}
   {{!/unless}}

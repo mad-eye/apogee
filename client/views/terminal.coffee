@@ -3,7 +3,7 @@ Template.terminal.events
     event.stopPropagation()
     event.preventDefault()
     parent = $('#terminal')[0]
-    #HACK: The div#terminal is constant, so that we don't kill tty's work.
+    #The div#terminal is constant, so that we don't kill tty's work.
     #Thus we have to remove the inner contents.
     $('#createTerminalMessage').remove()
     MadEye.terminal = MadEye.createTerminal parent:parent
@@ -11,7 +11,7 @@ Template.terminal.events
     MadEye.terminal.on 'close', ->
       console.log "Closing!"
       MadEye.terminal = null
-      #add createTerminalMessage
+      #Must resurrect the createTerminalMessage.
       frag = Meteor.render(Template.createTerminal)
       $('#terminal').append frag
 
@@ -24,6 +24,7 @@ Template.terminal.events
       Meteor.setTimeout ->
         cols = MadEye.terminal.focused.cols
         rows = MadEye.terminal.focused.rows
+        console.log "Resising to #{cols} cols #{rows} rows"
         MadEye.terminal.resize(cols-1, rows)
         MadEye.terminal.resize(cols, rows)
       , 100
@@ -31,10 +32,14 @@ Template.terminal.events
 Template.terminal.rendered = ->
   MadEye.rendered 'terminal'
 
+MEASUREMENT_CHARS = ',./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+Template.terminal.helpers
+  measurementChars: -> MEASUREMENT_CHARS
+
 #rows, cols, height, width
 @terminalData = {}
 
 setInitialTerminalData = ->
   tab = MadEye.terminal.focused
   terminalData.characterHeight = $('#measurementDiv').height()
-  terminalData.characterWidth = $('#measurementDiv').width()/26
+  terminalData.characterWidth = $('#measurementDiv').width()/MEASUREMENT_CHARS.length

@@ -58,19 +58,22 @@
   }
 }
 
-#terminal {
+#measurementDiv {
+  visibility: hidden;
+  position: absolute;
+  line-height: normal;
+}
 
-  #measurementDiv {
-    visibility: hidden;
-    position: absolute;
-    line-height: normal;
-  }
+#terminal {
 
   position: absolute;
   left: 0;
   bottom: 0;
   right: 0;
   background-color: @textColorDefault;
+  //font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
+  font-family: Consolas, monaco, monospace; 
+  //font-family:monospace, prestige;
 
   //Don't let user resize -- we need control for now.
   .grip {
@@ -90,11 +93,13 @@
     border: none; //overwrite tty.css
   }
   
+  .terminal {
+    font-size: 12px;
+  }
 }
 
 #createTerminal {
   color: #5fba3d; //Terminal green
-  font-family:monospace, prestige;
   margin-left: @baseSpacing;
 }
 
