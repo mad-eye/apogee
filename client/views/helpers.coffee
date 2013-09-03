@@ -18,8 +18,7 @@ Handlebars.registerHelper "hangoutLink", ->
   Projects.findOne(Session.get "projectId")
 
 @isScratch = ->
-  project = getProject()
-  project?.interview or project?.scratch
+  getProject()?.scratch
 
 Handlebars.registerHelper 'isScratch', ->
   isScratch()

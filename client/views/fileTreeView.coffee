@@ -59,7 +59,8 @@ Template.fileTree.events
     file.path = filename
     try
       file.save()
-      Meteor.Router.to "/interview/#{projectId}/#{filename}"
+      #TODO: Should route via MadEye.fileLoader.loadFileId
+      Meteor.Router.to "/edit/#{projectId}/#{filename}"
     catch e
       alert e.message
 

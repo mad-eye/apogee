@@ -19,9 +19,7 @@ class @FileLoader extends Reactor
   _route: ->
     project = getProject()
     return unless project
-    if project.interview
-      type = "interview"
-    else if project.impressJS
+    if project.impressJS
       type = "editImpressJS"
     else
       type = "edit"
