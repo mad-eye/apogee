@@ -82,6 +82,10 @@ do ->
       recordView page: "home"
       "home"
       
+    '/payment': ->
+      recordView page: "payment"      
+      "payment"
+
     '/get-started': ->
       recordView page: "get-started"
       "getStarted"
