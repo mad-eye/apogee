@@ -14,6 +14,7 @@ Meteor.startup ->
   #If selected (unmodified) file is currently being edited, clear it out.
   Deps.autorun ->
     @name 'set fileDeleted warning'
+    #FIXME: This triggers for initial load of the scratch file on a scratch project.
     Files.find(MadEye.fileLoader.editorFileId).observe
       removed: (removedFile) ->
         MadEye.fileLoader.clearFile()

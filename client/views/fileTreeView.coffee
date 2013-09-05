@@ -1,7 +1,5 @@
-Template.fileTree.created = ->
-  MadEye.rendered 'fileTree'
-
 Template.fileTree.rendered = ->
+  MadEye.rendered 'fileTree'
   Meteor.setTimeout ->
     windowSizeChanged()
   , 100

@@ -78,7 +78,7 @@ Meteor.startup ->
   Deps.autorun (c) ->
     @name 'set editor size'
     return unless isEditorPage() and MadEye.isRendered 'editor', 'statusBar'
-    return unless $('#statusBar').length and $('#editor').length #XXX: There must be a batter way
+    return unless $('#statusBar').length and $('#editor').length #XXX: There must be a better way
     terminalHeight = sizes.get('terminalHeight') || 0
 
     #$('#statusBar').css 'bottom', terminalHeight
