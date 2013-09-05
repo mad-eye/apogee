@@ -17,8 +17,8 @@ Meteor.startup ->
     #return if a tty.js session is already active
     if project.tunnels?.terminal
       tunnel = project.tunnels.terminal
-      Terminal.ioHost = Meteor.settings.public.shareSever
-      Terminal.ioPort = tunnel.remote
+      tty.Terminal.ioHost = Meteor.settings.public.shareServer
+      tty.Terminal.ioPort = tunnel.remotePort
       tty.open()
       ttyInitialized = true
 
