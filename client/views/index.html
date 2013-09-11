@@ -33,24 +33,28 @@
 <template name="signin">
 <ul class="nav nav-pills pull-right">
   {{! loginButtons}}
-  {{#if loggingIn}}
-      <li>
-      <span>Loading...</span>
-      </li>
-  {{else}}
-    {{#if isLoggedIn}}
-      <li>
-        <span>{{currentUser.name}} (<a id="signoutButton" href="#">Sign out</a>)</span>
-      </li>
-    {{else}}
-      {{#if isLoggedOut}}
+  {{#if hasGoogleLogin}}
+    {{#if loggingIn}}
         <li>
-        <span><a id="signinButton" href="#">Sign in with Google</a></span>
+        <span>Loading...</span>
         </li>
-      {{! else if in transition, show nothing}}
+    {{else}}
+      {{#if isLoggedIn}}
+        <li>
+          <span>{{currentUser.name}} (<a id="signoutButton" href="#">Sign out</a>)</span>
+        </li>
+      {{else}}
+        {{#if isLoggedOut}}
+          <li>
+          <span><a id="signinButton" href="#">Sign in with Google</a></span>
+          </li>
+        {{! else if in transition, show nothing}}
+        {{/if}}
       {{/if}}
     {{/if}}
   {{/if}}
+
+  {{! Twitter button}}
   {{#if isHomePage }}
     <li>
     {{#constant}}

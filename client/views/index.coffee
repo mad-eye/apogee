@@ -13,3 +13,5 @@ Handlebars.registerHelper "isHangout", ->
   }
   $('#alertBox').append html
 
+Template.signin.helpers
+  hasGoogleLogin: hasGoogleLogin
