@@ -2,7 +2,7 @@ MIN_DEMENTOR_VERSION = '0.1.10'
 
 
 Meteor.methods
-  'registerProject': (params) ->
+  registerProject: (params) ->
     #TODO: Check for dementor version
     #TODO: Check for node version
     if params.projectId
@@ -22,9 +22,34 @@ Meteor.methods
       project = Project.create doc
     return project._id
 
-  'addFile': (file) ->
+  closeProject: (projectId) ->
+    Projects.update projectId, closed:true
+
+  addFile: (file) ->
     Files.insert file
 
-  'removeFile': (fileId) ->
+  removeFile: (fileId) ->
     console.log "Calling removeFile", fileId
     Files.remove fileId
+
+###
+#These are commands sent to dementor instances.
+
+Commands = new Meteor.Collection 'commands'
+
+Meteor.publish 'commands', (projectId) ->
+  Commands.find projectId:projectId
+
+Commands.allow
+  insert: (userId, doc) -> true
+  remove: (userId, doc) -> true
+
+Meteor.methods
+  command: (projectId, command) ->
+    console.log "Inserting into #{projectId}: #{command}"
+    Commands.insert {projectId, command, timestamp: Date.now()}
+
+  #receivedCommand: (commandId) ->
+    #console.log "removing command", commandId
+    #Commands.remove commandId
+###
