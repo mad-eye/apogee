@@ -16,7 +16,6 @@ class Dementor
     command.projectId = @projectId
     commandId = Commands.insert command
     commandFutures[commandId] = future
-    console.log "End of issueCommand"
     return future.wait()
 
 
@@ -39,18 +38,7 @@ Commands.allow
   remove: (userId, doc) -> true
 
 commandFutures = {}
-commandCallbacks = {}
 
-#return commandPending normally; it will return a result or throw an exception.
-commandPending = (commandData, callback) ->
-  future = new Future()
-  commandData.timestamp = Date.now()
-  commandId = Commands.insert commandData
-  commandFutures[commandId] = future
-  commandCallbacks[commandId] = callback
-  console.log "End of commandPending"
-  return future.wait()
-  
 Meteor.methods
   commandReceived: (err, result) ->
     console.warn "Error received for command #{result.commandId}:", err if err
