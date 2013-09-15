@@ -17,6 +17,8 @@ Handlebars.registerHelper "hangoutLink", ->
   return null unless MadEye.startedUp
   Projects.findOne(Session.get "projectId")
 
+@getProjectId = -> Session.get "projectId"
+
 @isScratch = ->
   project = getProject()
   project?.interview or project?.scratch

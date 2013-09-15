@@ -123,7 +123,7 @@ class EditorState
       message:'loadFile'
       fileId: fileId
       filePath: file.path
-    @loading = true
+    #@loading = true
     sharejs.open fileId, "text2", "#{Meteor.settings.public.bolideUrl}/channel", (error, doc) =>
       @connectionId = doc.connection.id
       unless fileId == @fileId #abort if we've loaded another file
@@ -145,15 +145,16 @@ class EditorState
           callback?()
         #ask azkaban to fetch the file from dementor unless this is a scratch pad
         else unless file.scratch
-          Meteor.http.get @getFileUrl(fileId), timeout:5*1000, (error,response) =>
-            return callback? handleNetworkError error, response if error
-            return callback?(true) unless fileId == @fileId #Safety for multiple loadFiles running simultaneously
+          Meteor.call 'requestFile', getProjectId(), fileId, (err, result) =>
+          #Meteor.http.get @getFileUrl(fileId), timeout:5*1000, (error,response) =>
+            console.log "requestFile returned:", err, result
+            return callback? handleNetworkError error if error
+            #Safety for multiple loadFiles running simultaneously
+            return callback?(true) unless fileId == @fileId
             @doc = doc
             @attachAce(doc)
-            if response.data?.checksum?
-              file.update {checksum:response.data.checksum}
-            if response.data?.warning
-              alert = response.data?.warning
+            if result.warning
+              alert = result.warning
               alert.level = 'warn'
               displayAlert alert
             @loading = false
