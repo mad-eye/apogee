@@ -1,3 +1,5 @@
+madeyeUrl = /(https?:\/\/.*?)\//.exec(document.location.href)[1]
+
 #Takes httpResponse
 handleNetworkError = (error, response) ->
   err = response?.content?.error ? error
@@ -50,7 +52,7 @@ class EditorState
     return newEditor
 
   getFileUrl : (fileId)->
-    Meteor.settings.public.azkabanUrl + "/project/#{Projects.findOne(Session.get 'projectId')._id}/file/#{fileId}"
+    madeyeUrl + "/api" + "/project/#{Projects.findOne(Session.get 'projectId')._id}/file/#{fileId}"
 
   setCursorDestination: (connectionId)->
     @cursorDestination = connectionId
@@ -124,7 +126,7 @@ class EditorState
       fileId: fileId
       filePath: file.path
     @loading = true
-    sharejs.open fileId, "text2", "#{Meteor.settings.public.bolideUrl}/channel", (error, doc) =>
+    sharejs.open fileId, "text2", "#{madeyeUrl}/ot/channel", (error, doc) =>
       @connectionId = doc.connection.id
       unless fileId == @fileId #abort if we've loaded another file
         console.log "Loading file #{@fileId} overriding #{fileId}"
