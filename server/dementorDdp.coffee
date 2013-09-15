@@ -46,18 +46,10 @@ Meteor.methods
   requestFile: (projectId, fileId) ->
     console.log "Requesting contents for file #{fileId} and project #{projectId}"
     this.unblock()
-    ###
-    #Desired API
     results = summonDementor(projectId).requestFile(fileId)
+    console.log "Got requestFile results:", results
     setShareContents fileId, results.contents
-    return results.warning
-    ###
-    return commandPending this, {command: 'request file', projectId, fileId},
-      (err, result, future) ->
-        return future['throw'] err if err
-        response = setShareContents result.fileId, result.contents
-        console.log "OT ops submitted for version", response.data.v
-        future['return'] result
+    return results
 
   saveFile: (projectId, fileId, contents) ->
     console.log "Saving contents for file #{fileId} and project #{projectId}"
@@ -78,46 +70,5 @@ setShareContents = (fileId, contents, callback) ->
     timeout: 10*1000
   Meteor.http.post url, options
 
-#######
-# Command infrastructure
-
-Commands = new Meteor.Collection 'commands', connection:null
-
-Meteor.publish 'commands', (projectId) ->
-  Commands.find projectId:projectId
-
-Commands.allow
-  insert: (userId, doc) -> true
-  remove: (userId, doc) -> true
-
-commandFutures = {}
-commandCallbacks = {}
-
-#return commandPending normally; it will return a result or throw an exception.
-commandPending = (context, commandData, callback) ->
-  context.unblock()
-  future = new Future()
-  commandData.timestamp = Date.now()
-  commandId = Commands.insert commandData
-  commandFutures[commandId] = future
-  commandCallbacks[commandId] = callback
-  console.log "End of commandPending"
-  return future.wait()
-  
-Meteor.methods
-  commandReceived: (err, result) ->
-    console.warn "Error received for command #{result.commandId}:", err if err
-    Commands.remove result.commandId
-    future = commandFutures[result.commandId]
-    delete commandFutures[result.commandId]
-    callback = commandCallbacks[result.commandId]
-    delete commandCallbacks[result.commandId]
-    if callback
-      callback err, result, future
-    else if future
-      if err
-        future['throw'] err
-      else
-        future['return'] result
 
 
