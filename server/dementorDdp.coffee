@@ -45,13 +45,19 @@ Meteor.methods
 Meteor.methods
   requestFile: (projectId, fileId) ->
     console.log "Requesting contents for file #{fileId} and project #{projectId}"
+    this.unblock()
+    ###
+    #Desired API
+    results = summonDementor(projectId).requestFile(fileId)
+    setShareContents fileId, results.contents
+    return results.warning
+    ###
     return commandPending this, {command: 'request file', projectId, fileId},
       (err, result, future) ->
         return future['throw'] err if err
-        setShareContents result.fileId, result.contents, (err, response) ->
-          return future['throw'] err if err
-          console.log "OT ops submitted for version", response.data.v
-          future['return'] result
+        response = setShareContents result.fileId, result.contents
+        console.log "OT ops submitted for version", response.data.v
+        future['return'] result
 
   saveFile: (projectId, fileId, contents) ->
     console.log "Saving contents for file #{fileId} and project #{projectId}"
@@ -60,8 +66,8 @@ Meteor.methods
 MAX_LENGTH = 16777216 #2^24, a large number of chars
 
 setShareContents = (fileId, contents, callback) ->
-  return callback new Error "fileId required for setShareContents" unless fileId
-  return callback new Error "Contents cannot be null for file #{fileId}" unless contents
+  throw new Error "fileId required for setShareContents" unless fileId
+  throw new Error "Contents cannot be null for file #{fileId}" unless contents
   url = "#{Meteor.settings.public.bolideUrl}/doc/#{fileId}"
   ops = []
   ops.push {d:MAX_LENGTH} #delete operation, clear contents if any
@@ -70,7 +76,7 @@ setShareContents = (fileId, contents, callback) ->
     params: {v:0} #goes in query string because of data
     data: ops
     timeout: 10*1000
-  Meteor.http.post url, options, callback
+  Meteor.http.post url, options
 
 #######
 # Command infrastructure
