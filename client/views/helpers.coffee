@@ -11,7 +11,7 @@ Handlebars.registerHelper "SessionEquals", (key, value) ->
   Session.equals key, value
 
 Handlebars.registerHelper "hangoutLink", ->
-  "#{Meteor.settings.public.hangoutUrl}#{Session.get 'projectId'}"
+  "#{MadEye.azkabanUrl}/hangout/#{Session.get 'projectId'}"
 
 @getProject = ->
   return null unless MadEye.startedUp

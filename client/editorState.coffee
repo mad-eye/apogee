@@ -50,7 +50,7 @@ class EditorState
     return newEditor
 
   getFileUrl : (fileId)->
-    Meteor.settings.public.azkabanUrl + "/project/#{Projects.findOne(Session.get 'projectId')._id}/file/#{fileId}"
+    "#{MadEye.azkabanUrl}/project/#{Projects.findOne(Session.get 'projectId')._id}/file/#{fileId}"
 
   setCursorDestination: (connectionId)->
     @cursorDestination = connectionId
@@ -123,8 +123,8 @@ class EditorState
       message:'loadFile'
       fileId: fileId
       filePath: file.path
-    #@loading = true
-    sharejs.open fileId, "text2", "#{Meteor.settings.public.bolideUrl}/channel", (error, doc) =>
+    @loading = true
+    sharejs.open fileId, "text2", "#{MadEye.bolideUrl}/channel", (error, doc) =>
       @connectionId = doc.connection.id
       unless fileId == @fileId #abort if we've loaded another file
         console.log "Loading file #{@fileId} overriding #{fileId}"

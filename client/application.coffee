@@ -30,7 +30,7 @@ getQueryParams = (queryString) ->
 
 registerHangout = (projectId, hangoutUrl) ->
   return unless hangoutUrl
-  registerHangoutUrl = Meteor.settings.public.azkabanUrl + "/hangout/" + projectId
+  registerHangoutUrl = MadEye.azkabanUrl + "/hangout/" + projectId
   Meteor.http.put registerHangoutUrl, {
       data: {hangoutUrl}
       headers: {'Content-Type':'application/json'}
@@ -116,7 +116,7 @@ do ->
       , 0
 
     '/impress.js': ->
-      Meteor.http.post "#{Meteor.settings.public.azkabanUrl}/newImpressJSProject", (err, result)->
+      Meteor.http.post "#{MadEye.azkabanUrl}/newImpressJSProject", (err, result)->
         data = JSON.parse result.content
         Meteor.Router.to "/editImpressJS/#{data['projectId']}/index.html"
 
