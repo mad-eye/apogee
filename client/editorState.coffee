@@ -116,54 +116,45 @@ class EditorState
   loadFile: (file, callback) ->
     #console.log "Loading file", file
     @fileId = fileId = file._id
-    editor = @getEditor()
     @doc?.detach_ace?()
     @doc = null
-    Metrics.add
-      message:'loadFile'
-      fileId: fileId
-      filePath: file.path
+    Metrics.add message:'loadFile', fileId: fileId, filePath: file.path
     @loading = true
+    finish = (doc) =>
+      @doc = doc
+      @attachAce(doc)
+      @loading = false
+      callback?()
+
     sharejs.open fileId, "text2", "#{MadEye.bolideUrl}/channel", (error, doc) =>
-      @connectionId = doc.connection.id
-      unless fileId == @fileId #abort if we've loaded another file
-        console.log "Loading file #{@fileId} overriding #{fileId}"
-        return callback?(true)
       try
+        @connectionId = doc.connection.id
+        #abort if we've loaded another file
+        return callback?(true) unless fileId == @fileId
         #TODO: Extract this into its own autorun block
         return callback?(handleShareError error) if error?
         return callback?(true) unless @checkDocValidity(doc)
         if doc.version > 0
-          @attachAce(doc)
-          @doc = doc
-          editorChecksum = MadEye.crc32 doc.getText()
-          @loading = false
           # FIXME there's a better way to do this
           # we need to stop storing a stale file object on the MadEye.editorState
+          editorChecksum = MadEye.crc32 doc.getText()
           if file.modified_locally and file.checksum == editorChecksum
             @revertFile()
-          callback?()
+          finish doc
         #ask azkaban to fetch the file from dementor unless this is a scratch pad
         else unless file.scratch
           Meteor.call 'requestFile', getProjectId(), fileId, (err, result) =>
-          #Meteor.http.get @getFileUrl(fileId), timeout:5*1000, (error,response) =>
             console.log "requestFile returned:", err, result
             return callback? handleNetworkError error if error
             #Safety for multiple loadFiles running simultaneously
             return callback?(true) unless fileId == @fileId
-            @doc = doc
-            @attachAce(doc)
             if result.warning
               alert = result.warning
               alert.level = 'warn'
               displayAlert alert
-            @loading = false
-            callback? null
+            finish doc
         else #its a scratchPad
-          @doc = doc
-          @attachAce(doc)
-          @loading = false
-          callback?()
+          finish doc
 
       catch e
         @loading = false
