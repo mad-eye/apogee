@@ -215,7 +215,7 @@ Template.fileUpload.rendered = ->
       file.projectId = Session.get "projectId"
       try
         file.save()
-        @options.url = "#{Meteor.settings.public.azkabanUrl}/file-upload/#{file._id}"
+        @options.url = "#{MadEye.azkabanUrl}/file-upload/#{file._id}"
         done()
       catch e
         alert e.message
