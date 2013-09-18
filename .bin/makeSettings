@@ -10,7 +10,7 @@ settings = {
     boggartUrl: process.env.MADEYE_BOGGART_URL,
     nurmengardUrl: process.env.MADEYE_NURMENGARD_URL,
     hangoutUrl: process.env.MADEYE_AZKABAN_URL + "/hangout/",
-    shareServer: process.env.MADEYE_SHARE_SERVER
+    shareHost: process.env.MADEYE_SHARE_HOST
   },
   googleClientId: process.env.MADEYE_GOOGLE_CLIENT_ID,
   googleSecret: process.env.MADEYE_GOOGLE_SECRET
