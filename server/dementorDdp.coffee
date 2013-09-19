@@ -3,6 +3,7 @@ Future = null
 Meteor.startup ->
   Future = Npm.require 'fibers/future'
 
+#Methods from dementor
 Meteor.methods
   reportError: (error, projectId) ->
     #TODO: Report this somehow.
@@ -42,6 +43,7 @@ Meteor.methods
     console.log "Calling updateFile", fileId, modifier
     Files.update fileId, modifier
 
+#Methods to dementor
 Meteor.methods
   requestFile: (projectId, fileId) ->
     console.log "Requesting contents for file #{fileId} and project #{projectId}"
@@ -56,17 +58,28 @@ Meteor.methods
     this.unblock()
     summonDementor(projectId).saveFile fileId, contents
 
+  revertFile: (projectId, fileId, version) ->
+    console.log "Reverting contents for file #{fileId} and project #{projectId}"
+    this.unblock()
+    results = summonDementor(projectId).requestFile fileId
+    console.log "Got requestFile results:", results
+    setShareContents fileId, results.contents, version
+    return results
+
 MAX_LENGTH = 16777216 #2^24, a large number of chars
 
-setShareContents = (fileId, contents, callback) ->
+setShareContents = (fileId, contents, version=0, callback) ->
   throw new Error "fileId required for setShareContents" unless fileId
   throw new Error "Contents cannot be null for file #{fileId}" unless contents
+  if 'function' == typeof version
+    callback = version
+    version = 0
   url = "#{Meteor.settings.public.bolideUrl}/doc/#{fileId}"
   ops = []
   ops.push {d:MAX_LENGTH} #delete operation, clear contents if any
   ops.push contents #insert operation
   options =
-    params: {v:0} #goes in query string because of data
+    params: {v:version} #goes in query string because of data
     data: ops
     timeout: 10*1000
   Meteor.http.post url, options

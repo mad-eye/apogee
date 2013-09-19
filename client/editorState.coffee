@@ -67,6 +67,20 @@ class EditorState
       return callback? "No doc or no file"
     Events.record("revert", {file: @path, projectId: Session.get "projectId"})
     @working = true
+    fileId = @fileId
+    #Need to pass version so we know when to add the revert op
+    Meteor.call 'revertFile', getProjectId(), fileId, @doc.version, (err, result) =>
+      @working = false
+      return callback handleNetworkError error if error
+      return callback() unless fileId == @fileId
+      #abort if we've loaded another file
+      if result.warning
+        alert = result.warning
+        alert.level = 'warn'
+        displayAlert alert
+        callback()
+
+    ###
     Meteor.http.get "#{@getFileUrl(@fileId)}?reset=true", (error,response) =>
       @working = false
       if error
@@ -78,6 +92,7 @@ class EditorState
       Meteor.setTimeout =>
         @getEditor().navigateFileStart()
       ,0
+    ###
 
 
   checkDocValidity: (doc)->
@@ -143,7 +158,7 @@ class EditorState
           finish null, doc
         else
           Meteor.call 'requestFile', getProjectId(), fileId, (err, result) =>
-            return finish handleShareError error if error
+            return finish handleNetworkError error if error
             #abort if we've loaded another file
             return finish() unless fileId == @fileId
             if result.warning
