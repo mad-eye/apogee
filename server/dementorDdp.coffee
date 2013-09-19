@@ -43,6 +43,12 @@ Meteor.methods
     console.log "Calling updateFile", fileId, modifier
     Files.update fileId, modifier
 
+  updateFileContents: (fileId, contents) ->
+    console.log "Calling updateFileContents", fileId, contents
+    {version} = getShareContents fileId
+    setShareContents fileId, contents, version
+    #TODO: Accept warning and send to apogee client
+
 #Methods to dementor
 Meteor.methods
   requestFile: (projectId, fileId) ->
@@ -50,7 +56,7 @@ Meteor.methods
     console.log "Requesting contents for file #{fileId} and project #{projectId}"
     results = summonDementor(projectId).requestFile fileId
     setShareContents fileId, results.contents
-    #Might be huge, save some download time
+    #Contents might be huge, save some download time
     delete results.contents
     return results
 
@@ -61,6 +67,7 @@ Meteor.methods
 
   revertFile: (projectId, fileId, version) ->
     this.unblock()
+    #XXX: Could get version from getShareContents, at the cost of a http round-trip
     console.log "Reverting contents for file #{fileId} and project #{projectId}"
     results = summonDementor(projectId).requestFile fileId
     setShareContents fileId, results.contents, version
@@ -68,12 +75,25 @@ Meteor.methods
 
 MAX_LENGTH = 16777216 #2^24, a large number of chars
 
-setShareContents = (fileId, contents, version=0, callback) ->
+getShareContents = (fileId, callback) ->
+  throw new Error "fileId required for getShareContents" unless fileId
+  #TODO: Source this from MadEye.urls
+  url = "#{Meteor.settings.public.bolideUrl}/doc/#{fileId}"
+  options =
+    timeout: 10*1000
+  results = Meteor.http.get url, options
+  console.log "File #{fileId} results:", results
+  #Meteor downcases the header names, for some reason.
+  return {
+    version: results.headers['x-ot-version']
+    type: results.headers['x-ot-type']
+    contents: results.content
+  }
+
+setShareContents = (fileId, contents, version=0) ->
   throw new Error "fileId required for setShareContents" unless fileId
   throw new Error "Contents cannot be null for file #{fileId}" unless contents
-  if 'function' == typeof version
-    callback = version
-    version = 0
+  #TODO: Source this from MadEye.urls
   url = "#{Meteor.settings.public.bolideUrl}/doc/#{fileId}"
   ops = []
   ops.push {d:MAX_LENGTH} #delete operation, clear contents if any
