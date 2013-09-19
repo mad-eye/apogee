@@ -46,23 +46,23 @@ Meteor.methods
 #Methods to dementor
 Meteor.methods
   requestFile: (projectId, fileId) ->
-    console.log "Requesting contents for file #{fileId} and project #{projectId}"
     this.unblock()
+    console.log "Requesting contents for file #{fileId} and project #{projectId}"
     results = summonDementor(projectId).requestFile fileId
-    console.log "Got requestFile results:", results
     setShareContents fileId, results.contents
+    #Might be huge, save some download time
+    delete results.contents
     return results
 
   saveFile: (projectId, fileId, contents) ->
-    console.log "Saving contents for file #{fileId} and project #{projectId}"
     this.unblock()
+    console.log "Saving contents for file #{fileId} and project #{projectId}"
     summonDementor(projectId).saveFile fileId, contents
 
   revertFile: (projectId, fileId, version) ->
-    console.log "Reverting contents for file #{fileId} and project #{projectId}"
     this.unblock()
+    console.log "Reverting contents for file #{fileId} and project #{projectId}"
     results = summonDementor(projectId).requestFile fileId
-    console.log "Got requestFile results:", results
     setShareContents fileId, results.contents, version
     return results
 
