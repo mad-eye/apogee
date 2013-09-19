@@ -120,52 +120,41 @@ class EditorState
     @doc = null
     Metrics.add message:'loadFile', fileId: fileId, filePath: file.path
     @loading = true
-    finish = (doc) =>
-      @doc = doc
-      @attachAce(doc)
+    finish = (err, doc) =>
+      if err
+        #TODO: Handle this better.
+        console.error "Error in loading file: #{e.message}:", e
+        Metrics.add level:'error', message:'shareJsError', fileId:file._id, error:e.message
+      else if doc
+        @doc = doc
+        @attachAce(doc)
+      #else just abort
       @loading = false
-      callback?()
+      callback? err
 
     sharejs.open fileId, "text2", "#{MadEye.bolideUrl}/channel", (error, doc) =>
       try
-        @connectionId = doc.connection.id
+        return finish handleShareError error if error
         #abort if we've loaded another file
-        return callback?(true) unless fileId == @fileId
-        #TODO: Extract this into its own autorun block
-        return callback?(handleShareError error) if error?
-        return callback?(true) unless @checkDocValidity(doc)
-        if doc.version > 0
-          # FIXME there's a better way to do this
-          # we need to stop storing a stale file object on the MadEye.editorState
-          editorChecksum = MadEye.crc32 doc.getText()
-          if file.modified_locally and file.checksum == editorChecksum
-            @revertFile()
-          finish doc
+        return finish() unless fileId == @fileId
+        return finish() unless @checkDocValidity(doc)
+        #TODO: @connectionId = doc.connection.id
+        if doc.version > 0 or file.scratch
+          finish null, doc
         #ask azkaban to fetch the file from dementor unless this is a scratch pad
-        else unless file.scratch
+        else
           Meteor.call 'requestFile', getProjectId(), fileId, (err, result) =>
-            console.log "requestFile returned:", err, result
-            return callback? handleNetworkError error if error
-            #Safety for multiple loadFiles running simultaneously
-            return callback?(true) unless fileId == @fileId
+            return finish handleShareError error if error
+            #abort if we've loaded another file
+            return finish() unless fileId == @fileId
             if result.warning
               alert = result.warning
               alert.level = 'warn'
               displayAlert alert
-            finish doc
-        else #its a scratchPad
-          finish doc
+            finish null, doc
 
       catch e
-        @loading = false
-        #TODO: Handle this better.
-        console.error "Error in loading file: #{e.message}:", e
-        Metrics.add
-          level:'error'
-          message:'shareJsError'
-          fileId: file._id
-          error: e.message
-        callback? e
+        finish e
 
   #callback: (err) ->
   save : (callback) ->
@@ -176,9 +165,9 @@ class EditorState
       fileId: @fileId
     editorChecksum = @editor.checksum
     file = Files.findOne @fileId
-    return if file.checksum == editorChecksum
+    return if file.fsChecksum == editorChecksum
     @working = true
-    project = Projects.findOne Session.get "projectId"
+    project = getProject()
     Meteor.http.put @getFileUrl(@fileId), {
       data: {contents: @editor.value, static: project.impressJS}
       headers: {'Content-Type':'application/json'}
@@ -232,9 +221,9 @@ EditorState.addProperty 'connectionId', '_connectionId', '_connectionId'
 Meteor.startup ->
   Meteor.autorun ->
     file = Files.findOne(MadEye.editorState?.fileId)
-    return unless file?.checksum?
+    return unless file?.fsChecksum?
     checksum = MadEye.editorState.editor.checksum
     return unless checksum?
-    modified = checksum != file.checksum
+    modified = checksum != file.fsChecksum
     file.update {modified}
 
