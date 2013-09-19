@@ -9,14 +9,18 @@ class Dementor
   requestFile: (fileId) ->
     @issueCommand {command: 'request file', fileId}
 
+  saveFile: (fileId, contents) ->
+    @issueCommand {command: 'save file', fileId, contents}, false
+
   #command: {command:, fields...:}
-  issueCommand: (command) ->
-    future = new Future()
+  issueCommand: (command, waitForCallback=true) ->
     command.timestamp = Date.now()
     command.projectId = @projectId
     commandId = Commands.insert command
-    commandFutures[commandId] = future
-    return future.wait()
+    if waitForCallback
+      future = new Future()
+      commandFutures[commandId] = future
+      return future.wait()
 
 
 
@@ -28,6 +32,7 @@ class Dementor
 # Command infrastructure
 #######
 
+#Just keep this in-memory.  If we could just do a publish 'add', that'd be better.
 Commands = new Meteor.Collection 'commands', connection:null
 
 Meteor.publish 'commands', (projectId) ->

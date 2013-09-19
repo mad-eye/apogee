@@ -141,7 +141,6 @@ class EditorState
         #TODO: @connectionId = doc.connection.id
         if doc.version > 0 or file.scratch
           finish null, doc
-        #ask azkaban to fetch the file from dementor unless this is a scratch pad
         else
           Meteor.call 'requestFile', getProjectId(), fileId, (err, result) =>
             return finish handleShareError error if error
@@ -156,13 +155,22 @@ class EditorState
       catch e
         finish e
 
+  save : ->
+    console.log "Saving file #{@fileId}"
+    Events.record("save", {file: @fileId, projectId: Session.get("projectId")})
+    Metrics.add message:'saveFile', fileId: @fileId
+    editorChecksum = @editor.checksum
+    file = Files.findOne @fileId
+    return if file.fsChecksum == editorChecksum
+    projectId = getProjectId()
+    Meteor.call 'saveFile', projectId, @fileId, @editor.value
+
+###
   #callback: (err) ->
   save : (callback) ->
     console.log "Saving file #{@fileId}"
     Events.record("save", {file: @fileId, projectId: Session.get("projectId")})
-    Metrics.add
-      message:'saveFile'
-      fileId: @fileId
+    Metrics.add message:'saveFile', fileId: @fileId
     editorChecksum = @editor.checksum
     file = Files.findOne @fileId
     return if file.fsChecksum == editorChecksum
@@ -185,6 +193,7 @@ class EditorState
         project.lastUpdated = Date.now()
         project.save()
       callback?(error)
+###
 
 EditorState.addProperty = (name, getter, setter) ->
   descriptor = {}

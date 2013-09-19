@@ -46,14 +46,15 @@ Meteor.methods
   requestFile: (projectId, fileId) ->
     console.log "Requesting contents for file #{fileId} and project #{projectId}"
     this.unblock()
-    results = summonDementor(projectId).requestFile(fileId)
+    results = summonDementor(projectId).requestFile fileId
     console.log "Got requestFile results:", results
     setShareContents fileId, results.contents
     return results
 
   saveFile: (projectId, fileId, contents) ->
     console.log "Saving contents for file #{fileId} and project #{projectId}"
-    return commandPending {command: 'save file', projectId, fileId, contents}
+    this.unblock()
+    summonDementor(projectId).saveFile fileId, contents
 
 MAX_LENGTH = 16777216 #2^24, a large number of chars
 
