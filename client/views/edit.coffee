@@ -82,7 +82,9 @@ cursorToRange = (editorDoc, cursor) ->
     offset += line.length + 1
 
 fileIsModifiedLocally = ->
-  Files.findOne(path:MadEye.fileLoader.editorFilePath)?.modified_locally
+  file = Files.findOne MadEye.editorState.fileId
+  return false unless file and file.fsChecksum and file.loadChecksum
+  file.fsChecksum != file.loadChecksum
 
 projectIsLoading = ->
   not (Projects.findOne(Session.get "projectId")? || Session.equals 'fileCount', Files.find().count())
@@ -95,8 +97,6 @@ Template.projectStatus.projectAlerts = ->
   alerts.push projectLoadingAlert if projectIsLoading()
   alerts.push networkIssuesWarning if MadEye.transitoryIssues?.has 'networkIssues'
   alerts.push fileDeletedWarning if MadEye.transitoryIssues?.has 'fileDeleted'
-  language = MadEye.editorState.editor.syntaxMode
-  alerts.push cantRunLanguageWarning(aceModes.modesByName[language]?.caption) if isInterview() and not canRunLanguage language
   return alerts
 
 #XXX: Unused?

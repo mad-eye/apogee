@@ -45,7 +45,15 @@ Meteor.methods
 
   updateFileContents: (fileId, contents) ->
     console.log "Calling updateFileContents", fileId, contents
-    {version} = getShareContents fileId
+    try
+      {version} = getShareContents fileId
+    catch e
+      if e.response.statusCode == 404
+        console.warn "Trying to get share doc for #{fileId}, but it doesn't exist."
+      else
+        console.error "Error in getShareContents:", e
+        #TODO: Return certain errors
+      return
     setShareContents fileId, contents, version
     #TODO: Accept warning and send to apogee client
 

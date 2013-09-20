@@ -69,7 +69,7 @@ class EditorState
     @working = true
     fileId = @fileId
     #Need to pass version so we know when to add the revert op
-    Meteor.call 'revertFile', getProjectId(), fileId, @doc.version, (err, result) =>
+    Meteor.call 'revertFile', getProjectId(), fileId, @doc.version, (error, result) =>
       @working = false
       return callback handleNetworkError error if error
       return callback() unless fileId == @fileId
