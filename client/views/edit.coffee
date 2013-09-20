@@ -83,7 +83,7 @@ cursorToRange = (editorDoc, cursor) ->
 
 fileIsModifiedLocally = ->
   file = Files.findOne MadEye.editorState.fileId
-  return false unless file and file.fsChecksum and file.loadChecksum
+  return false unless file and file.fsChecksum? and file.loadChecksum?
   file.fsChecksum != file.loadChecksum
 
 projectIsLoading = ->

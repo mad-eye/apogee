@@ -30,7 +30,7 @@ Handlebars.registerHelper 'isScratch', ->
   getProject()?.closed
   
 @fileIsDeleted = ->
-  Files.findOne(path:MadEye.fileLoader.editorFilePath)?.removed
+  Files.findOne(MadEye.editorState.fileId)?.deletedInFs
 
 @isInterview = ->
   getProject()?.interview

@@ -57,7 +57,7 @@ class EditorState
 
   setLine: (@lineNumber) ->
 
-  revertFile: (callback) ->
+  revertFile: (callback=->) ->
     unless @doc and @fileId
       Metrics.add
         level:'warn'
@@ -72,13 +72,16 @@ class EditorState
     Meteor.call 'revertFile', getProjectId(), fileId, @doc.version, (error, result) =>
       @working = false
       return callback handleNetworkError error if error
-      return callback() unless fileId == @fileId
       #abort if we've loaded another file
+      return callback() unless fileId == @fileId
       if result.warning
         alert = result.warning
         alert.level = 'warn'
         displayAlert alert
-        callback()
+      callback()
+      #Meteor.setTimeout =>
+        #@getEditor().navigateFileStart()
+      #,0
 
     ###
     Meteor.http.get "#{@getFileUrl(@fileId)}?reset=true", (error,response) =>
@@ -89,9 +92,6 @@ class EditorState
         return
       #TODO this was in the timeout block below, check to make sure there's no problems
       callback?()
-      Meteor.setTimeout =>
-        @getEditor().navigateFileStart()
-      ,0
     ###
 
 
