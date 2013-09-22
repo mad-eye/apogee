@@ -1,6 +1,6 @@
-MIN_DEMENTOR_VERSION = '0.1.10'
+MIN_DEMENTOR_VERSION = '0.2.0'
 MIN_NODE_VERSION = '0.8.18'
-#semver = Npm.require 'semver'
+semver = Npm.require 'semver'
 
 #Methods from dementor
 Meteor.methods
@@ -8,8 +8,9 @@ Meteor.methods
     #TODO: Report this somehow.
     console.error "Error from project #{projectId}:", error
 
+  #params: {projectId?:, projectName:, version:}
   registerProject: (params) ->
-    #TODO: Check for dementor version
+    checkDementorVersion params.version
     #TODO: Check for node version
     if params.projectId
       project = Projects.findOne params.projectId
@@ -20,7 +21,7 @@ Meteor.methods
         lastOpened: Date.now()
     else
       doc =
-        name: params.project
+        name: params.projectName
         closed: false
         lastOpened: Date.now()
         created: Date.now()
@@ -80,3 +81,6 @@ Meteor.methods
     setShareContents fileId, results.contents, version
     return results
 
+checkDementorVersion = (version) ->
+  unless version? && semver.gte version, MIN_DEMENTOR_VERSION
+    throw MadEye.Errors.new 'VersionOutOfDate', version:version
