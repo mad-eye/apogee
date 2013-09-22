@@ -161,7 +161,7 @@ class EditorState
             return finish handleNetworkError error if error
             #abort if we've loaded another file
             return finish() unless fileId == @fileId
-            if result.warning
+            if result?.warning
               alert = result.warning
               alert.level = 'warn'
               displayAlert alert
@@ -244,7 +244,8 @@ EditorState.addProperty 'connectionId', '_connectionId', '_connectionId'
 
 Meteor.startup ->
   Meteor.autorun ->
-    file = Files.findOne(MadEye.editorState?.fileId)
+    return unless MadEye.editorState and !MadEye.editorState.loading
+    file = Files.findOne(MadEye.editorState.fileId)
     return unless file?.fsChecksum?
     checksum = MadEye.editorState.editor.checksum
     return unless checksum?
