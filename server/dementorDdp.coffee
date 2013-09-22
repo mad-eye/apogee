@@ -100,12 +100,12 @@ getShareContents = (fileId, callback) ->
 
 setShareContents = (fileId, contents, version=0) ->
   throw new Error "fileId required for setShareContents" unless fileId
-  throw new Error "Contents cannot be null for file #{fileId}" unless contents
+  throw new Error "Contents cannot be null for file #{fileId}" unless contents?
   #TODO: Source this from MadEye.urls
   url = "#{Meteor.settings.public.bolideUrl}/doc/#{fileId}"
   ops = []
   ops.push {d:MAX_LENGTH} #delete operation, clear contents if any
-  ops.push contents #insert operation
+  ops.push contents if contents #insert operation; can't insert ''
   options =
     params: {v:version} #goes in query string because of data
     data: ops
