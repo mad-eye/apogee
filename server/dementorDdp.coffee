@@ -54,7 +54,7 @@ Meteor.methods
         log.error "Error in getShareContents:", e
         #Client should be alerted that something went wrong.
         throw e
-    setShareContents fileId, contents, version
+    MadEye.Bolide.setShareContents fileId, contents, version
     #TODO: Accept warning and send to apogee client
 
 #Methods to dementor
@@ -78,7 +78,7 @@ Meteor.methods
     log.debug "Reverting contents for file #{fileId} and project #{projectId}"
     #XXX: Could get version from getShareContents, at the cost of a http round-trip
     results = MadEye.summonDementor(projectId).requestFile fileId
-    setShareContents fileId, results.contents, version
+    MadEye.Bolide.setShareContents fileId, results.contents, version
     return results
 
 checkDementorVersion = (version) ->
