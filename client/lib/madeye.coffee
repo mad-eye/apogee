@@ -20,6 +20,7 @@ addMadEyeProperty 'fileTree'
 addMadEyeProperty 'fileLoader'
 addMadEyeProperty 'transitoryIssues'
 addMadEyeProperty 'startedUp'
+addMadEyeProperty 'subscriptions'
 
 
 

@@ -7,10 +7,6 @@ getIcon = (projectId)->
     return i
 
 Meteor.methods
-  #Used for loading message.
-  getFileCount: (projectId)->
-    return Files.find(projectId: projectId).count()
-
   heartbeat: (sessionId, projectId) ->
     ProjectStatuses.update {sessionId, projectId}, {$set: {heartbeat: Date.now()}}
 

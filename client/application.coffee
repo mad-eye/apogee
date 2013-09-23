@@ -150,15 +150,6 @@ do ->
       recordView page:'missing'
       "missing"
 
-Deps.autorun ->
-  projectId = Session.get "projectId"
-  return unless projectId
-  Meteor.subscribe "files", projectId
-  Meteor.subscribe "projects", projectId
-  Meteor.subscribe "projectStatuses", projectId
-  Meteor.subscribe "scriptOutputs", projectId
-  Meteor.subscribe "workspaces", projectId
-
 Meteor.startup ->
   MadEye.transitoryIssues = new TransitoryIssues
 
