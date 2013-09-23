@@ -5,10 +5,6 @@ log = new MadEye.Logger 'dementorDdp'
 
 #Methods from dementor
 Meteor.methods
-  reportError: (error, projectId) ->
-    #TODO: Report this somehow.
-    log.error "Error from project #{projectId}:", error
-
   #params: {projectId?:, projectName:, version:}
   registerProject: (params) ->
     log.trace 'Registering project with', params
@@ -53,10 +49,11 @@ Meteor.methods
     catch e
       if e.response.statusCode == 404
         log.warn "Trying to get share doc for #{fileId}, but it doesn't exist."
+        return
       else
         log.error "Error in getShareContents:", e
-        #TODO: Return certain errors
-      return
+        #Client should be alerted that something went wrong.
+        throw e
     setShareContents fileId, contents, version
     #TODO: Accept warning and send to apogee client
 
@@ -65,7 +62,7 @@ Meteor.methods
   requestFile: (projectId, fileId) ->
     this.unblock()
     log.trace "Requesting contents for file #{fileId} and project #{projectId}"
-    results = summonDementor(projectId).requestFile fileId
+    results = MadEye.summonDementor(projectId).requestFile fileId
     MadEye.Bolide.setShareContents fileId, results.contents
     #Contents might be huge, save some download time
     delete results.contents
@@ -74,13 +71,13 @@ Meteor.methods
   saveFile: (projectId, fileId, contents) ->
     this.unblock()
     log.debug "Saving contents for file #{fileId} and project #{projectId}"
-    summonDementor(projectId).saveFile fileId, contents
+    MadEye.summonDementor(projectId).saveFile fileId, contents
 
   revertFile: (projectId, fileId, version) ->
     this.unblock()
     log.debug "Reverting contents for file #{fileId} and project #{projectId}"
     #XXX: Could get version from getShareContents, at the cost of a http round-trip
-    results = summonDementor(projectId).requestFile fileId
+    results = MadEye.summonDementor(projectId).requestFile fileId
     setShareContents fileId, results.contents, version
     return results
 

@@ -24,11 +24,3 @@ Meteor.methods
       ProjectStatuses.insert fields, (err, result)->
         console.error "ERR", err if err
 
-  markDirty: (collectionName, ids...) ->
-    switch collectionName
-      when 'projects' then collection = Projects
-      when 'files' then collection = Files
-    unless collection
-      msg = "Tried to markDirty unknown collection: #{collectionName}, #{id}"
-      throw Meteor.Error 404, msg
-    collection.update {_id: {$in: ids}}, {$set:{}}

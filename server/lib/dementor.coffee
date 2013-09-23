@@ -25,7 +25,7 @@ class Dementor
 
 
 #TODO: Cache by projectId, but find a way to expire cache
-@summonDementor = (projectId) -> new Dementor projectId
+MadEye.summonDementor = (projectId) -> new Dementor projectId
 
 
 #######

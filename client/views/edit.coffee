@@ -1,63 +1,5 @@
 aceModes = ace.require('ace/ext/modelist')
 
-@handleShareError = (err) ->
-  message = err.message ? err
-  Metrics.add
-    level:'error'
-    message:'shareJsError'
-    error: message
-  displayAlert { level: 'error', message: message }
-  
-projectClosedError =
-  level: 'error'
-  title: 'Project Closed'
-  message: 'The project has been closed on the client.'
-  uncloseable: true
-
-fileDeletedWarning =
-  level: 'warn'
-  title: 'File Deleted'
-  message: 'The file has been deleted on the client.'
-  uncloseable: true
-
-fileDeletedAndModifiedWarning =
-  level: 'warn'
-  title: 'File Deleted'
-  message: 'The file has been deleted on the client.  If you save it, it will be recreated.'
-  uncloseable: true
-
-projectLoadingAlert =
-  level: 'info'
-  title: 'Project is Loading'
-  message: "...we'll be ready in a moment!"
-  uncloseable: true
-
-fileModifiedLocallyWarning =
-  level: 'warn'
-  title: 'File Changed'
-  message: 'The file has been changed on the client.  Save it to overwrite the changes, or revert to load the changes.'
-  uncloseable: true
-
-networkIssuesWarning =
-  level: 'warn'
-  title: 'Network Issues'
-  message: "We're having trouble with the network.  We'll try to resolve it automatically, but you may want to try again later."
-  uncloseable: true
-
-cantRunLanguageWarning = (language) ->
-  titleLanguage = language ? "unknown"
-  messageLanguage = language ? "additional language"
-  return {
-    level: 'warn'
-    title: "Can't run #{titleLanguage}:"
-    message: """Currently, we only support running snippets in Ruby, Python, JavaScript, CoffeeScript, and PHP.
-      Tell us if you need #{messageLanguage} support, and we'll see what we can do!"""
-    uncloseable: true
-  }
-
-@canRunLanguage = (language) ->
-  language in ["javascript", "python", "ruby", "coffee", "php"]
-
 #TODO figure out a better way to share this from the ShareJS code
 cursorToRange = (editorDoc, cursor) ->
   Range = require("ace/range").Range
@@ -80,24 +22,6 @@ cursorToRange = (editorDoc, cursor) ->
       return range
     #+1 for newline
     offset += line.length + 1
-
-fileIsModifiedLocally = ->
-  file = Files.findOne MadEye.editorState.fileId
-  return false unless file and file.fsChecksum? and file.loadChecksum?
-  file.fsChecksum != file.loadChecksum
-
-projectIsLoading = ->
-  not MadEye.subscriptions?.get('files')?.ready()
-
-Template.projectStatus.projectAlerts = ->
-  alerts = []
-  alerts.push projectClosedError if projectIsClosed()
-  alerts.push fileDeletedAndModifiedWarning if fileIsDeleted()
-  alerts.push fileModifiedLocallyWarning if fileIsModifiedLocally()
-  alerts.push projectLoadingAlert if projectIsLoading()
-  alerts.push networkIssuesWarning if MadEye.transitoryIssues?.has 'networkIssues'
-  alerts.push fileDeletedWarning if MadEye.transitoryIssues?.has 'fileDeleted'
-  return alerts
 
 #XXX: Unused?
 Template.editor.preserve("#editor")

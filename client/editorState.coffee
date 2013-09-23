@@ -1,13 +1,3 @@
-#Takes httpResponse
-handleNetworkError = (error, response) ->
-  err = response?.content?.error ? error
-  console.error "Network Error:", err.message
-  Metrics.add
-    level:'error'
-    message:'networkError'
-    error: err.message
-  MadEye.transitoryIssues.set 'networkIssues', 10*1000
-  return err
 
 #TODO: HACK: Move to a better place
 os = (navigator.platform.match(/mac|win|linux/i) || ["other"])[0].toLowerCase()
@@ -64,15 +54,15 @@ class EditorState
         level:'warn'
         message:'revertFile with null @doc'
         fileId: @fileId
-      console.warn("revert called, but no doc selected")
-      return callback? "No doc or no file"
+      log.warn "revert called, but no doc selected"
+      return callback "No doc or no file"
     Events.record("revert", {file: @path, projectId: Session.get "projectId"})
     @working = true
     fileId = @fileId
     #Need to pass version so we know when to add the revert op
     Meteor.call 'revertFile', getProjectId(), fileId, @doc.version, (error, result) =>
       @working = false
-      return callback handleNetworkError error if error
+      return callback Errors.handleError error if error
       #abort if we've loaded another file
       return callback() unless fileId == @fileId
       if result.warning
@@ -88,7 +78,7 @@ class EditorState
     Meteor.http.get "#{@getFileUrl(@fileId)}?reset=true", (error,response) =>
       @working = false
       if error
-        handleNetworkError error, response
+        Errors.handleNetworkError error, response
         callback?(error)
         return
       #TODO this was in the timeout block below, check to make sure there's no problems
@@ -104,7 +94,7 @@ class EditorState
         message:'shareJsError'
         fileId: @fileId
         error: 'Found null doc version'
-      console.error "Found null doc version for file #{@fileId}"
+      log.error "Found null doc version for file #{@fileId}"
     return doc.version?
 
   attachAce: (doc)->
@@ -126,11 +116,10 @@ class EditorState
         message:'shareJsError'
         fileId: fileId
         error: 'Editor already attached'
-      console.error "EDITOR ALREADY ATTACHED"
+      log.warn "Editor already attached"
 
   #callback: (error) ->
   loadFile: (file, callback) ->
-    #console.log "Loading file", file
     @fileId = fileId = file._id
     @doc?.detach_ace?()
     @doc = null
@@ -138,8 +127,7 @@ class EditorState
     @loading = true
     finish = (err, doc) =>
       if err
-        #TODO: Handle this better.
-        log.error "Error in loading file: #{e.message}:", e
+        Errors.handleError "Error in loading file: #{e.message}:", e
       else if doc
         @doc = doc
         @attachAce(doc)
@@ -149,7 +137,7 @@ class EditorState
 
     sharejs.open fileId, "text2", "#{MadEye.bolideUrl}/channel", (error, doc) =>
       try
-        return finish handleShareError error if error
+        return finish Errors.wrapShareError error if error
         #abort if we've loaded another file
         return finish() unless fileId == @fileId
         return finish() unless @checkDocValidity(doc)
@@ -158,7 +146,7 @@ class EditorState
           finish null, doc
         else
           Meteor.call 'requestFile', getProjectId(), fileId, (err, result) =>
-            return finish handleNetworkError error if error
+            return finish error if error
             #abort if we've loaded another file
             return finish() unless fileId == @fileId
             if result?.warning
