@@ -1,3 +1,5 @@
+log = new MadEye.Logger 'fileLoader'
+
 class @FileLoader extends Reactor
   @property 'loadPath', get:false
   @property 'loadId', get:false
@@ -10,6 +12,7 @@ class @FileLoader extends Reactor
   @property 'alert'
 
   clearFile: ->
+    log.trace 'Clearing file'
     @_set 'selectedFileId',  null
     @_set 'selectedFilePath',  null
     @_set 'editorFileId',  null
@@ -23,7 +26,8 @@ class @FileLoader extends Reactor
       type = "editImpressJS"
     else
       type = "edit"
-    filePath = encodeURIComponent( @editorFilePath ? "" )
+    filePath = encodeURIComponent( @editorFilePath ? "" ).replace(/%2F/g, '/')
+    log.trace "Loading #{filePath}"
     Meteor.Router.to("/#{type}/#{project._id}/#{filePath}")
 
   @sentry 'loadFile', ->
@@ -34,6 +38,7 @@ class @FileLoader extends Reactor
     if loadId
       file = Files.findOne loadId unless file
     return unless file
+    log.trace "Found load file #{file.path}"
     @_set 'loadId', null, false
     @_set 'loadPath', null, false
     unless @_get('selectedFileId', false) == file._id

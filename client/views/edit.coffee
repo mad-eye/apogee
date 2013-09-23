@@ -87,7 +87,7 @@ fileIsModifiedLocally = ->
   file.fsChecksum != file.loadChecksum
 
 projectIsLoading = ->
-  not (Projects.findOne(Session.get "projectId")? || Session.equals 'fileCount', Files.find().count())
+  not MadEye.subscriptions?.get('files')?.ready()
 
 Template.projectStatus.projectAlerts = ->
   alerts = []

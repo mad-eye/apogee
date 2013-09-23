@@ -13,6 +13,7 @@ handleNetworkError = (error, response) ->
 os = (navigator.platform.match(/mac|win|linux/i) || ["other"])[0].toLowerCase()
 isMac = os == 'mac'
 
+log = new MadEye.Logger 'editorState'
 
 class EditorState
   constructor: (@editorId)->
@@ -133,13 +134,12 @@ class EditorState
     @fileId = fileId = file._id
     @doc?.detach_ace?()
     @doc = null
-    Metrics.add message:'loadFile', fileId: fileId, filePath: file.path
+    log.debug "Loading file #{file.path}"
     @loading = true
     finish = (err, doc) =>
       if err
         #TODO: Handle this better.
-        console.error "Error in loading file: #{e.message}:", e
-        Metrics.add level:'error', message:'shareJsError', fileId:file._id, error:e.message
+        log.error "Error in loading file: #{e.message}:", e
       else if doc
         @doc = doc
         @attachAce(doc)
@@ -171,9 +171,8 @@ class EditorState
         finish e
 
   save : ->
-    console.log "Saving file #{@fileId}"
+    log.info "Saving file #{@fileId}"
     Events.record("save", {file: @fileId, projectId: Session.get("projectId")})
-    Metrics.add message:'saveFile', fileId: @fileId
     editorChecksum = @editor.checksum
     file = Files.findOne @fileId
     return if file.fsChecksum == editorChecksum
