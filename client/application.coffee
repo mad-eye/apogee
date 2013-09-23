@@ -14,6 +14,7 @@
   return MadEye.crc32("#{Meteor.userId()}#{testName}") % 2 != 0
 
 MadEye.fileLoader = new FileLoader()
+log = new MadEye.Logger 'router'
 
 #queryString example: '?a=b&c&d=&a=f'
 #For right now, we ignore multiple values for a given param
@@ -36,7 +37,7 @@ registerHangout = (projectId, hangoutUrl) ->
       headers: {'Content-Type':'application/json'}
       timeout: 5*1000
     }, (error,response) =>
-      console.error "Registering hangout url failed.", error if error
+      log.error "Registering hangout url failed.", error if error
 
 if Meteor.settings.public.googleAnalyticsId
   window._gaq = window._gaq || []
@@ -52,7 +53,6 @@ do ->
     return unless MadEye.fileLoader
     Deps.nonreactive ->
       isHangout = false
-      #TODO record type..edit/interview/scratch
       params = getQueryParams window.location.search
       if params.hangout
         Session.set "isHangout", true
@@ -97,24 +97,6 @@ do ->
       recordView page: "faq"
       'faq'
 
-    '/interview': ->
-      #TODO add more info here..
-      recordView page: "create interview"
-      project = new Project()
-      project.interview = true
-      project.name = 'interview' #Needed for mongoose schema
-      project.save()
-
-      Deps.nonreactive ->
-        file = new MadEye.File
-        file.projectId = project._id
-        file.path = scratchPath
-        file.scratch = true
-        file.save()
-      Meteor.setTimeout ->
-        Meteor.Router.to "/edit/#{project._id}/#{scratchPath}"
-      , 0
-
     '/impress.js': ->
       Meteor.http.post "#{MadEye.azkabanUrl}/newImpressJSProject", (err, result)->
         data = JSON.parse result.content
@@ -146,7 +128,7 @@ do ->
       'unlinkedHangout'
 
     '*': ->
-      console.log "Found missing url", window.location
+      log.info "Found missing url", window.location
       recordView page:'missing'
       "missing"
 
