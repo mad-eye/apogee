@@ -10,12 +10,12 @@ MadEye.Azkaban =
   requestStaticFile: (projectId, fileId) ->
     log.debug "Saving static file #{fileId}"
     response = Meteor.http.get fileUrl(projectId, fileId), {
-      data: {contents, static: true}
+      data: {static: true}
       headers: {'Content-Type':'application/json'}
       timeout: 5*1000
     }
-    checksum = response.checksum
-    Files.update fileId, {fsChecksum:checksum, loadChecksum:checksum}
+    checksum = response.data.checksum
+    Files.update fileId, {$set: {lastOpened: Date.now(), fsChecksum:checksum, loadChecksum:checksum}}
     return {fileId}
 
   #@returns: nothing
@@ -27,16 +27,16 @@ MadEye.Azkaban =
       timeout: 5*1000
     }
     checksum = MadEye.crc32 contents
-    Files.update fileId, {fsChecksum:checksum, loadChecksum:checksum}
+    Files.update fileId, {$set: {fsChecksum:checksum, loadChecksum:checksum}}
 
   revertStaticFile: (projectId, fileId) ->
     log.debug "Reverting static file #{fileId}"
     response = Meteor.http.get fileUrl(projectId, fileId), {
-      data: {contents, static: true}
+      data: {static: true}
       params: {reset: true}
       headers: {'Content-Type':'application/json'}
       timeout: 5*1000
     }
     checksum = response.checksum
-    Files.update fileId, {fsChecksum:checksum, loadChecksum:checksum}
+    Files.update fileId, {$set: {fsChecksum:checksum, loadChecksum:checksum}}
     return {fileId}

@@ -66,7 +66,7 @@ Meteor.methods
     log.trace "Requesting contents for file #{fileId} and project #{projectId}"
     project = Projects.findOne projectId
     if project.impressJS
-      results = MadEye.Azaban.requestStaticFile projectId, fileId
+      results = MadEye.Azkaban.requestStaticFile projectId, fileId
     else
       results = MadEye.summonDementor(projectId).requestFile fileId
       MadEye.Bolide.setShareContents fileId, results.contents
@@ -79,7 +79,7 @@ Meteor.methods
     log.debug "Saving contents for file #{fileId} and project #{projectId}"
     project = Projects.findOne projectId
     if project.impressJS
-      MadEye.Azaban.saveStaticFile projectId, fileId
+      MadEye.Azkaban.saveStaticFile projectId, fileId, contents
     else
       MadEye.summonDementor(projectId).saveFile fileId, contents
 
@@ -88,7 +88,7 @@ Meteor.methods
     log.debug "Reverting contents for file #{fileId} and project #{projectId}"
     project = Projects.findOne projectId
     if project.impressJS
-      results = MadEye.Azaban.revertStaticFile projectId, fileId
+      results = MadEye.Azkaban.revertStaticFile projectId, fileId
     else
       #XXX: Could get version from getShareContents, at the cost of a http round-trip
       results = MadEye.summonDementor(projectId).requestFile fileId

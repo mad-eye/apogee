@@ -69,22 +69,11 @@ class EditorState
         alert = result.warning
         alert.level = 'warn'
         displayAlert alert
-      callback()
-      #Meteor.setTimeout =>
-        #@getEditor().navigateFileStart()
-      #,0
-
-    ###
-    Meteor.http.get "#{@getFileUrl(@fileId)}?reset=true", (error,response) =>
-      @working = false
-      if error
-        Errors.handleNetworkError error, response
-        callback?(error)
-        return
       #TODO this was in the timeout block below, check to make sure there's no problems
-      callback?()
-    ###
-
+      callback()
+      Meteor.setTimeout =>
+        @getEditor().navigateFileStart()
+      ,0
 
   checkDocValidity: (doc)->
     unless doc.version?
@@ -154,7 +143,6 @@ class EditorState
               alert.level = 'warn'
               displayAlert alert
             finish null, doc
-
       catch e
         finish e
 
@@ -173,31 +161,6 @@ class EditorState
         project.lastUpdated = Date.now()
         project.save()
       
-
-###
-  #callback: (err) ->
-  save : (callback) ->
-    console.log "Saving file #{@fileId}"
-    Events.record("save", {file: @fileId, projectId: Session.get("projectId")})
-    Metrics.add message:'saveFile', fileId: @fileId
-    editorChecksum = @editor.checksum
-    file = Files.findOne @fileId
-    return if file.fsChecksum == editorChecksum
-    @working = true
-    project = getProject()
-    Meteor.http.put @getFileUrl(@fileId), {
-      data: {contents: @editor.value, static: project.impressJS}
-      headers: {'Content-Type':'application/json'}
-      timeout: 5*1000
-    }, (error,response) =>
-      if error
-        handleNetworkError error, response
-      else
-        #XXX: Are we worried about race conditions if there were modifications after the save button was pressed?
-        file.update {checksum:editorChecksum}
-      @working = false
-      callback?(error)
-###
 
 EditorState.addProperty = (name, getter, setter) ->
   descriptor = {}
