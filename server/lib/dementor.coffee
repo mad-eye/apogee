@@ -6,9 +6,11 @@ Meteor.startup ->
 class Dementor
   constructor: (@projectId) ->
 
+  #@returns: {fileId:, contents:, warning:}
   requestFile: (fileId) ->
     @issueCommand {command: 'request file', fileId}
 
+  #@returns: nothing
   saveFile: (fileId, contents) ->
     @issueCommand {command: 'save file', fileId, contents}, false
 

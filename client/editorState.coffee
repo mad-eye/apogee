@@ -160,12 +160,19 @@ class EditorState
 
   save : ->
     log.info "Saving file #{@fileId}"
-    Events.record("save", {file: @fileId, projectId: Session.get("projectId")})
+    projectId = getProjectId()
     editorChecksum = @editor.checksum
     file = Files.findOne @fileId
     return if file.fsChecksum == editorChecksum
-    projectId = getProjectId()
-    Meteor.call 'saveFile', projectId, @fileId, @editor.value
+    Events.record("save", {file: @fileId, projectId})
+    Meteor.call 'saveFile', projectId, @fileId, @editor.value, (err, result) ->
+      project = Projects.findOne projectId
+      if project.impressJS
+        $("#presentationPreview")[0].contentDocument.location.reload()
+        #XXX: Should this be a global action on save?
+        project.lastUpdated = Date.now()
+        project.save()
+      
 
 ###
   #callback: (err) ->
@@ -189,11 +196,6 @@ class EditorState
         #XXX: Are we worried about race conditions if there were modifications after the save button was pressed?
         file.update {checksum:editorChecksum}
       @working = false
-      project = Projects.findOne Session.get("projectId")
-      if project.impressJS
-        $("#presentationPreview")[0].contentDocument.location.reload()
-        project.lastUpdated = Date.now()
-        project.save()
       callback?(error)
 ###
 

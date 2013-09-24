@@ -5,7 +5,7 @@ MadEye.bolideUrl = Meteor.settings.public.bolideUrl
 fileUrl = (fileId) -> "#{MadEye.bolideUrl}/doc/#{fileId}"
 
 MadEye.Bolide =
-  getShareContents: (fileId, callback) ->
+  getShareContents: (fileId) ->
     throw new Error "fileId required for getShareContents" unless fileId
     options =
       timeout: 10*1000

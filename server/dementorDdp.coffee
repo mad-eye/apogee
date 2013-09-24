@@ -50,6 +50,7 @@ Meteor.methods
       {version} = MadEye.Bolide.getShareContents fileId
     catch e
       if e.response.statusCode == 404
+        #XXX: Should we assume version=0 and set the contents here?
         log.warn "Trying to get share doc for #{fileId}, but it doesn't exist."
         return
       else
@@ -57,30 +58,41 @@ Meteor.methods
         #Client should be alerted that something went wrong.
         throw e
     MadEye.Bolide.setShareContents fileId, contents, version
-    #TODO: Accept warning and send to apogee client
 
 #Methods to dementor
 Meteor.methods
   requestFile: (projectId, fileId) ->
     this.unblock()
     log.trace "Requesting contents for file #{fileId} and project #{projectId}"
-    results = MadEye.summonDementor(projectId).requestFile fileId
-    MadEye.Bolide.setShareContents fileId, results.contents
-    #Contents might be huge, save some download time
-    delete results.contents
+    project = Projects.findOne projectId
+    if project.impressJS
+      results = MadEye.Azaban.requestStaticFile projectId, fileId
+    else
+      results = MadEye.summonDementor(projectId).requestFile fileId
+      MadEye.Bolide.setShareContents fileId, results.contents
+      #Contents might be huge, save some download time
+      delete results.contents
     return results
 
   saveFile: (projectId, fileId, contents) ->
     this.unblock()
     log.debug "Saving contents for file #{fileId} and project #{projectId}"
-    MadEye.summonDementor(projectId).saveFile fileId, contents
+    project = Projects.findOne projectId
+    if project.impressJS
+      MadEye.Azaban.saveStaticFile projectId, fileId
+    else
+      MadEye.summonDementor(projectId).saveFile fileId, contents
 
   revertFile: (projectId, fileId, version) ->
     this.unblock()
     log.debug "Reverting contents for file #{fileId} and project #{projectId}"
-    #XXX: Could get version from getShareContents, at the cost of a http round-trip
-    results = MadEye.summonDementor(projectId).requestFile fileId
-    MadEye.Bolide.setShareContents fileId, results.contents, version
+    project = Projects.findOne projectId
+    if project.impressJS
+      results = MadEye.Azaban.revertStaticFile projectId, fileId
+    else
+      #XXX: Could get version from getShareContents, at the cost of a http round-trip
+      results = MadEye.summonDementor(projectId).requestFile fileId
+      MadEye.Bolide.setShareContents fileId, results.contents, version
     return results
 
 checkDementorVersion = (version) ->
@@ -104,5 +116,4 @@ addScratchFile = (projectId) ->
     scratch:true
     orderingPath:ORDERING_PATH
   log.debug "Added scratch file #{fileId} for #{projectId}"
-
 
