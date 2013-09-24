@@ -9,7 +9,7 @@ Meteor.methods
   registerProject: (params) ->
     log.trace 'Registering project with', params
     checkDementorVersion params.version
-    #TODO: Check for node version
+    warning = checkNodeVersion params.nodeVersion
     if params.projectId
       project = Projects.findOne params.projectId
     if project
@@ -26,7 +26,9 @@ Meteor.methods
       doc._id = params.projectId if params.projectId
       project = Project.create doc
       addScratchFile project._id
-    return project._id
+    result = projectId: project._id
+    result.warning = warning if warning
+    return result
 
   closeProject: (projectId) ->
     Projects.update projectId, closed:true
@@ -85,6 +87,12 @@ checkDementorVersion = (version) ->
   unless version? && semver.gte version, MIN_DEMENTOR_VERSION
     log.info "Outdated dementor with version #{version}"
     throw MadEye.Errors.new 'VersionOutOfDate', version:version
+
+checkNodeVersion = (version) ->
+  unless version? && semver.gte version, MIN_NODE_VERSION
+    log.info "Outdated node with version #{version}"
+    return "Your Node.js version is less than required (#{MIN_NODE_VERSION}).  Please upgrade to avoid any funny business."
+  return undefined
 
 addScratchFile = (projectId) ->
   SCRATCH_PATH = "%SCRATCH%"

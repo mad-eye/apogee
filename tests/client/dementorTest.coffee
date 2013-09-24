@@ -29,6 +29,21 @@ Meteor.startup ->
         pid = Random.id()
         registerAndCheckProject projectName, pid, done
 
+      it 'should give warning if node version is out of date', (done) ->
+        projectName = "oldNodeProject-#{Random.hexString 6}"
+        Meteor.call 'registerProject',
+          version: '0.3.0'
+          projectName: projectName
+          nodeVersion: '0.8.13'
+        , (err, result) ->
+          assert.ok !err, 'Should not return an error'
+          assert.ok result
+          assert.ok result.warning
+          assert.ok result.projectId
+          done()
+
+
+
 #projectId can be null
 registerAndCheckProject = (projectName, projectId, done) ->
   assert = chai.assert
@@ -36,15 +51,17 @@ registerAndCheckProject = (projectName, projectId, done) ->
     version: '2.1.5'
     projectName: projectName
     projectId: projectId
-  , (err, pid) ->
+  , (err, results) ->
     assert.ok !err, 'Should not return an error'
-    assert.ok pid
+    assert.ok results
+    assert.ok results.projectId
     if projectId
-      assert.equal pid, projectId
-    Meteor.call 'findProject', pid, (err, project) ->
+      assert.equal results.projectId, projectId
+    Meteor.call 'findProject', results.projectId, (err, project) ->
       throw err if err
       assert.ok project
       assert.equal project.name, projectName
+      assert.equal project._id, results.projectId
       assert.ok !project.closed
       done()
 
