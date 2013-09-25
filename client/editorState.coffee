@@ -146,20 +146,22 @@ class EditorState
       catch e
         finish e
 
-  save : ->
+  save : (callback=->) ->
     log.info "Saving file #{@fileId}"
     projectId = getProjectId()
     editorChecksum = @editor.checksum
     file = Files.findOne @fileId
     return if file.fsChecksum == editorChecksum
     Events.record("save", {file: @fileId, projectId})
-    Meteor.call 'saveFile', projectId, @fileId, @editor.value, (err, result) ->
+    Meteor.call 'saveFile', projectId, @fileId, @editor.value, (error, result) ->
+      return callback Errors.handleError error if error
       project = Projects.findOne projectId
       if project.impressJS
         $("#presentationPreview")[0].contentDocument.location.reload()
         #XXX: Should this be a global action on save?
         project.lastUpdated = Date.now()
         project.save()
+      callback()
       
 
 EditorState.addProperty = (name, getter, setter) ->
