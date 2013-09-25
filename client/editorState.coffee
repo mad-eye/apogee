@@ -1,18 +1,9 @@
-#Takes httpResponse
-handleNetworkError = (error, response) ->
-  err = response?.content?.error ? error
-  console.error "Network Error:", err.message
-  Metrics.add
-    level:'error'
-    message:'networkError'
-    error: err.message
-  MadEye.transitoryIssues.set 'networkIssues', 10*1000
-  return err
 
 #TODO: HACK: Move to a better place
 os = (navigator.platform.match(/mac|win|linux/i) || ["other"])[0].toLowerCase()
 isMac = os == 'mac'
 
+log = new MadEye.Logger 'editorState'
 
 class EditorState
   constructor: (@editorId)->
@@ -57,28 +48,32 @@ class EditorState
 
   setLine: (@lineNumber) ->
 
-  revertFile: (callback) ->
+  revertFile: (callback=->) ->
     unless @doc and @fileId
       Metrics.add
         level:'warn'
         message:'revertFile with null @doc'
         fileId: @fileId
-      console.warn("revert called, but no doc selected")
-      return callback? "No doc or no file"
+      log.warn "revert called, but no doc selected"
+      return callback "No doc or no file"
     Events.record("revert", {file: @path, projectId: Session.get "projectId"})
     @working = true
-    Meteor.http.get "#{@getFileUrl(@fileId)}?reset=true", (error,response) =>
+    fileId = @fileId
+    #Need to pass version so we know when to add the revert op
+    Meteor.call 'revertFile', getProjectId(), fileId, @doc.version, (error, result) =>
       @working = false
-      if error
-        handleNetworkError error, response
-        callback?(error)
-        return
+      return callback Errors.handleError error if error
+      #abort if we've loaded another file
+      return callback() unless fileId == @fileId
+      if result.warning
+        alert = result.warning
+        alert.level = 'warn'
+        displayAlert alert
       #TODO this was in the timeout block below, check to make sure there's no problems
-      callback?()
+      callback()
       Meteor.setTimeout =>
         @getEditor().navigateFileStart()
       ,0
-
 
   checkDocValidity: (doc)->
     unless doc.version?
@@ -88,7 +83,7 @@ class EditorState
         message:'shareJsError'
         fileId: @fileId
         error: 'Found null doc version'
-      console.error "Found null doc version for file #{@fileId}"
+      log.error "Found null doc version for file #{@fileId}"
     return doc.version?
 
   attachAce: (doc)->
@@ -110,100 +105,62 @@ class EditorState
         message:'shareJsError'
         fileId: fileId
         error: 'Editor already attached'
-      console.error "EDITOR ALREADY ATTACHED"
+      log.warn "Editor already attached"
 
   #callback: (error) ->
   loadFile: (file, callback) ->
-    #console.log "Loading file", file
     @fileId = fileId = file._id
-    editor = @getEditor()
     @doc?.detach_ace?()
     @doc = null
-    Metrics.add
-      message:'loadFile'
-      fileId: fileId
-      filePath: file.path
+    log.debug "Loading file #{file.path}"
     @loading = true
+    finish = (err, doc) =>
+      if err
+        Errors.handleError "Error in loading file: #{e.message}:", e
+      else if doc
+        @doc = doc
+        @attachAce(doc)
+      #else just abort
+      @loading = false
+      callback? err
+
     sharejs.open fileId, "text2", "#{MadEye.bolideUrl}/channel", (error, doc) =>
-      @connectionId = doc.connection.id
-      unless fileId == @fileId #abort if we've loaded another file
-        console.log "Loading file #{@fileId} overriding #{fileId}"
-        return callback?(true)
       try
-        #TODO: Extract this into its own autorun block
-        return callback?(handleShareError error) if error?
-        return callback?(true) unless @checkDocValidity(doc)
-        if doc.version > 0
-          @attachAce(doc)
-          @doc = doc
-          editorChecksum = MadEye.crc32 doc.getText()
-          @loading = false
-          # FIXME there's a better way to do this
-          # we need to stop storing a stale file object on the MadEye.editorState
-          if file.modified_locally and file.checksum == editorChecksum
-            @revertFile()
-          callback?()
-        #ask azkaban to fetch the file from dementor unless this is a scratch pad
-        else unless file.scratch
-          Meteor.http.get @getFileUrl(fileId), timeout:5*1000, (error,response) =>
-            return callback? handleNetworkError error, response if error
-            return callback?(true) unless fileId == @fileId #Safety for multiple loadFiles running simultaneously
-            @doc = doc
-            @attachAce(doc)
-            if response.data?.checksum?
-              file.update {checksum:response.data.checksum}
-            if response.data?.warning
-              alert = response.data?.warning
+        return finish Errors.wrapShareError error if error
+        #abort if we've loaded another file
+        return finish() unless fileId == @fileId
+        return finish() unless @checkDocValidity(doc)
+        #TODO: @connectionId = doc.connection.id
+        if doc.version > 0 or file.scratch
+          finish null, doc
+        else
+          Meteor.call 'requestFile', getProjectId(), fileId, (err, result) =>
+            return finish error if error
+            #abort if we've loaded another file
+            return finish() unless fileId == @fileId
+            if result?.warning
+              alert = result.warning
               alert.level = 'warn'
               displayAlert alert
-            @loading = false
-            callback? null
-        else #its a scratchPad
-          @doc = doc
-          @attachAce(doc)
-          @loading = false
-          callback?()
-
+            finish null, doc
       catch e
-        @loading = false
-        #TODO: Handle this better.
-        console.error "Error in loading file: #{e.message}:", e
-        Metrics.add
-          level:'error'
-          message:'shareJsError'
-          fileId: file._id
-          error: e.message
-        callback? e
+        finish e
 
-  #callback: (err) ->
-  save : (callback) ->
-    console.log "Saving file #{@fileId}"
-    Events.record("save", {file: @fileId, projectId: Session.get("projectId")})
-    Metrics.add
-      message:'saveFile'
-      fileId: @fileId
+  save : ->
+    log.info "Saving file #{@fileId}"
+    projectId = getProjectId()
     editorChecksum = @editor.checksum
     file = Files.findOne @fileId
-    return if file.checksum == editorChecksum
-    @working = true
-    project = Projects.findOne Session.get "projectId"
-    Meteor.http.put @getFileUrl(@fileId), {
-      data: {contents: @editor.value, static: project.impressJS}
-      headers: {'Content-Type':'application/json'}
-      timeout: 5*1000
-    }, (error,response) =>
-      if error
-        handleNetworkError error, response
-      else
-        #XXX: Are we worried about race conditions if there were modifications after the save button was pressed?
-        file.update {checksum:editorChecksum}
-      @working = false
-      project = Projects.findOne Session.get("projectId")
+    return if file.fsChecksum == editorChecksum
+    Events.record("save", {file: @fileId, projectId})
+    Meteor.call 'saveFile', projectId, @fileId, @editor.value, (err, result) ->
+      project = Projects.findOne projectId
       if project.impressJS
         $("#presentationPreview")[0].contentDocument.location.reload()
+        #XXX: Should this be a global action on save?
         project.lastUpdated = Date.now()
         project.save()
-      callback?(error)
+      
 
 EditorState.addProperty = (name, getter, setter) ->
   descriptor = {}
@@ -239,10 +196,11 @@ EditorState.addProperty 'connectionId', '_connectionId', '_connectionId'
 
 Meteor.startup ->
   Meteor.autorun ->
-    file = Files.findOne(MadEye.editorState?.fileId)
-    return unless file?.checksum?
+    return unless MadEye.editorState and !MadEye.editorState.loading
+    file = Files.findOne(MadEye.editorState.fileId)
+    return unless file?.fsChecksum?
     checksum = MadEye.editorState.editor.checksum
     return unless checksum?
-    modified = checksum != file.checksum
+    modified = checksum != file.fsChecksum
     file.update {modified}
 

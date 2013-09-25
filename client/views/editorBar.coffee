@@ -48,7 +48,7 @@ Template.editorBar.events
 
   'click #discardFile': (event) ->
     file = Files.findOne MadEye.editorState.fileId
-    return unless file
+    return unless file and file.deletedInFs
     Metrics.add
       message:'discardFile'
       fileId: file._id

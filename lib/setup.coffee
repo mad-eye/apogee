@@ -1,0 +1,1 @@
+MadEye.Logger.setLevel 'trace'
