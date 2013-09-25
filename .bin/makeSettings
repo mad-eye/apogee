@@ -9,7 +9,8 @@ settings = {
     googleAnalyticsId: process.env.MADEYE_GOOGLE_ANALYTICS_ID,
     boggartUrl: process.env.MADEYE_BOGGART_URL,
     nurmengardUrl: process.env.MADEYE_NURMENGARD_URL,
-    hangoutUrl: process.env.MADEYE_AZKABAN_URL + "/hangout/"
+    hangoutUrl: process.env.MADEYE_AZKABAN_URL + "/hangout/",
+    logLevel: process.env.MADEYE_LOGLEVEL
   },
   googleClientId: process.env.MADEYE_GOOGLE_CLIENT_ID,
   googleSecret: process.env.MADEYE_GOOGLE_SECRET
