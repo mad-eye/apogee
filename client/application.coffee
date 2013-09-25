@@ -103,21 +103,11 @@ do ->
         Meteor.Router.to "/editImpressJS/#{data['projectId']}/index.html"
 
     '/scratch': ->
-      #TODO add more info here..
-      # recordView page: "create scratch"
-      project = new Project()
-      project.scratch = true
-      project.save()
-
-      Deps.nonreactive ->
-        file = new MadEye.File
-        file.projectId = project._id
-        file.path = scratchPath
-        file.scratch = true
-        file.save()
-      Meteor.setTimeout ->
-        Meteor.Router.to "/edit/#{project._id}/#{scratchPath}"
-      , 0
+      Meteor.call 'registerProject',
+        projectName: "New Project"
+        scratch: true
+      , (err, result) ->
+        Meteor.Router.to "/edit/#{result.projectId}"
 
     '/projectSelection': ->
       "projectSelection"

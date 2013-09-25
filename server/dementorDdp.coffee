@@ -8,8 +8,10 @@ Meteor.methods
   #params: {projectId?:, projectName:, version:}
   registerProject: (params) ->
     log.trace 'Registering project with', params
-    checkDementorVersion params.version
-    warning = checkNodeVersion params.nodeVersion
+    #Scratch projects don't come from a dementor
+    unless params.scratch
+      checkDementorVersion params.version
+      warning = checkNodeVersion params.nodeVersion
     if params.projectId
       project = Projects.findOne params.projectId
     if project
@@ -24,6 +26,7 @@ Meteor.methods
         lastOpened: Date.now()
         created: Date.now()
       doc._id = params.projectId if params.projectId
+      doc.scratch = params.scratch if params.scratch?
       project = Project.create doc
       addScratchFile project._id
     result = projectId: project._id
