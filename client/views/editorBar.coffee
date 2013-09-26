@@ -1,3 +1,4 @@
+log = new MadEye.Logger 'editorBar'
 aceModes = ace.require('ace/ext/modelist')
 
 @getWorkspace = ->
@@ -226,7 +227,8 @@ Meteor.startup ->
         when 'node' then 'javascript'
         #Other aliases?
         else cmd
-      mode = null unless mode in _.values(MadEye.ACE_MODES)
+      log.trace "Found mode #{mode} from shbang command #{cmd}"
+      mode = null unless mode in _.keys(aceModes.modesByName)
     MadEye.editorState.editor.syntaxMode = mode
 
   #Keybinding
