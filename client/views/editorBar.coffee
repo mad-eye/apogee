@@ -194,21 +194,6 @@ Template.themeOptions.helpers
 
 Meteor.startup ->
 
-  findShbangCmd = (contents) ->
-    if '#!' == contents[0..1]
-      cmd = null
-      firstLine = contents.split('\n', 1)[0]
-      #trim and split tokens on whitespace
-      tokens = (firstLine[2..]).replace(/^\s+|\s+$/g,'').split(/\s+/)
-      token = tokens.pop()
-      while token
-        unless '-' == token[0]
-          index = token.lastIndexOf '/'
-          cmd = token[index+1..]
-          break
-        token = tokens.pop()
-      return cmd
-
   #Syntax Modes from file
   Deps.autorun ->
     return unless MadEye.isRendered 'editor'
@@ -254,7 +239,44 @@ Meteor.startup ->
     workspace = getWorkspace()
     return unless workspace
     MadEye.editorState.editor.showInvisibles = workspace.showInvisibles
-    MadEye.editorState.editor.tabSize = workspace.tabSize
+    MadEye.editorState.editor.tabSize = workspace.tabSize ? findTabSize(MadEye.editorState.editor.value)
     MadEye.editorState.editor.theme = workspace.theme
-    MadEye.editorState.editor.useSoftTabs = workspace.useSoftTabs
+    MadEye.editorState.editor.useSoftTabs = workspace.useSoftTabs ? useSoftTabs(MadEye.editorState.editor.value)
     MadEye.editorState.editor.wordWrap = workspace.wordWrap
+
+
+findShbangCmd = (contents) ->
+  if '#!' == contents[0..1]
+    cmd = null
+    firstLine = contents.split('\n', 1)[0]
+    #trim and split tokens on whitespace
+    tokens = (firstLine[2..]).replace(/^\s+|\s+$/g,'').split(/\s+/)
+    token = tokens.pop()
+    while token
+      unless '-' == token[0]
+        index = token.lastIndexOf '/'
+        cmd = token[index+1..]
+        break
+      token = tokens.pop()
+    return cmd
+
+useSoftTabs = (contents) ->
+  unless /\t/m.test(contents)
+    log.trace 'Found no hard tabs'
+    return true
+  #look for mixed tabs by looking for spaces in initial whitespace
+  if /^ +\S/m.test(contents)
+    log.trace 'Found mixed soft/hard tabs'
+    return true
+  log.trace 'Only hard tabs found'
+  return false
+
+findTabSize = (contents) ->
+  if /^  \S/m.test contents
+    return 2
+  if /^    \S/m.test contents
+    return 4
+  if /^        \S/m.test contents
+    return 8
+  return 4
+
