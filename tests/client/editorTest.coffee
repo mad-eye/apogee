@@ -1,6 +1,8 @@
+log = MadEye.Logger 'editorTest'
+
 Meteor.methods
   cleanProject: (projectId)->
-    console.log "cleaning project", projectId
+    log.trace "cleaning project", projectId
     Projects.remove projectId
     Files.remove projectId: projectId
 
