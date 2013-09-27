@@ -12,7 +12,7 @@ class Dementor
     @dismissTimeout = Meteor.setTimeout =>
       log.debug "Dismissing dementor #{@projectId}"
       Meteor.call 'closeProject', @projectId
-    , 10*1000
+    , 30*1000
 
   #@returns: {fileId:, contents:, warning:}
   requestFile: (fileId) ->
