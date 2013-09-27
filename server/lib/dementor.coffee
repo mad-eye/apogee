@@ -2,9 +2,21 @@ Future = null
 Meteor.startup ->
   Future = Npm.require 'fibers/future'
 
+log = new MadEye.Logger 'dementor'
 
 class Dementor
   constructor: (@projectId) ->
+    @_startDismiss()
+
+  heartbeat: ->
+    Meteor.clearTimeout @dismissTimeout
+    @_startDismiss()
+
+  _startDismiss: ->
+    @dismissTimeout = Meteor.setTimeout =>
+      log.debug "Dismissing dementor #{@projectId}"
+      Meteor.call 'closeProject', @projectId
+    , 10*1000
 
   #@returns: {fileId:, contents:, warning:}
   requestFile: (fileId) ->
@@ -24,10 +36,29 @@ class Dementor
       commandFutures[commandId] = future
       return future.wait()
 
+#projectId: dementor
+dementors = {}
+
+MadEye.touchDementor = (projectId) ->
+  dementor = dementors[projectId]
+  if dementor
+    dementor.heartbeat()
+  else
+    dementors[projectId] = new Dementor projectId
+  return #if we return dementor, it can't be serialized and things crash.
+
+MadEye.dismissDementor = (projectId) ->
+  delete dementors[projectId]
+  log.trace "Dismissed dementor #{projectId}"
 
 
 #TODO: Cache by projectId, but find a way to expire cache
-MadEye.summonDementor = (projectId) -> new Dementor projectId
+MadEye.summonDementor = (projectId) ->
+  dementor = dementors[projectId]
+  unless dementor
+    Projects.update projectId, {$set: {closed:true}}
+    throw MadEye.Errors.new 'ProjectClosed'
+  return dementor
 
 
 #######
