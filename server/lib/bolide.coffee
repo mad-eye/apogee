@@ -10,7 +10,6 @@ MadEye.Bolide =
     options =
       timeout: 10*1000
     results = Meteor.http.get fileUrl(fileId), options
-    console.log "File #{fileId} results:", results
     #Meteor downcases the header names, for some reason.
     return {
       version: results.headers['x-ot-version']
