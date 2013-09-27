@@ -51,6 +51,9 @@ MadEye.touchDementor = (projectId) ->
   return #if we return dementor, it can't be serialized and things crash.
 
 MadEye.dismissDementor = (projectId) ->
+  dementor = dementors[projectId]
+  if dementor.dismissTimeout
+    Meteor.clearTimeout dementor.dismissTimeout
   delete dementors[projectId]
   log.trace "Dismissed dementor #{projectId}"
 
