@@ -38,7 +38,7 @@ Meteor.methods
 
   closeProject: (projectId) ->
     log.trace "Closing project #{projectId}"
-    Projects.update projectId, closed:true
+    Projects.update projectId, {$set: {closed:true}}
     MadEye.dismissDementor projectId
 
   dementorHeartbeat: (projectId) ->
