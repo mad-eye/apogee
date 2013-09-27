@@ -20,6 +20,7 @@ class Dementor
 
   #@returns: nothing
   saveFile: (fileId, contents) ->
+    #XXX: Not waiting for a possible error response.  Should we do that?
     @issueCommand {command: 'save file', fileId, contents}, waitForCallback:false
 
   #command: {command:, fields...:}
