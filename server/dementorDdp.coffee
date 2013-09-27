@@ -5,7 +5,7 @@ log = new MadEye.Logger 'dementorDdp'
 
 #Methods from dementor
 Meteor.methods
-  #params: {projectId?:, projectName:, version:}
+  #params: {projectId?:, projectName:, version:, dementor:}
   registerProject: (params) ->
     log.trace 'Registering project with', params
     #Scratch projects don't come from a dementor
@@ -29,12 +29,20 @@ Meteor.methods
       doc.scratch = params.scratch if params.scratch?
       project = Project.create doc
       addScratchFile project._id
+    if params.dementor
+      MadEye.touchDementor project._id
     result = projectId: project._id
     result.warning = warning if warning
     return result
 
+
   closeProject: (projectId) ->
+    log.trace "Closing project #{projectId}"
     Projects.update projectId, closed:true
+    MadEye.dismissDementor projectId
+
+  dementorHeartbeat: (projectId) ->
+    MadEye.touchDementor projectId
 
   addFile: (file) ->
     Files.insert file
