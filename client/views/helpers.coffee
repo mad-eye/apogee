@@ -17,6 +17,8 @@ Handlebars.registerHelper "hangoutLink", ->
   return null unless MadEye.startedUp
   Projects.findOne(Session.get "projectId")
 
+@getProjectId = -> Session.get "projectId"
+
 @isScratch = ->
   getProject()?.scratch
 
@@ -27,7 +29,7 @@ Handlebars.registerHelper 'isScratch', ->
   getProject()?.closed
   
 @fileIsDeleted = ->
-  Files.findOne(path:MadEye.fileLoader.editorFilePath)?.removed
+  Files.findOne(MadEye.editorState.fileId)?.deletedInFs
 
 @isInterview = ->
   getProject()?.interview

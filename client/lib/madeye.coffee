@@ -21,6 +21,7 @@ addMadEyeProperty 'fileLoader'
 addMadEyeProperty 'transitoryIssues'
 addMadEyeProperty 'startedUp'
 addMadEyeProperty 'terminal'
+addMadEyeProperty 'subscriptions'
 
 
 

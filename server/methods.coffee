@@ -7,10 +7,6 @@ getIcon = (projectId)->
     return i
 
 Meteor.methods
-  #Used for loading message.
-  getFileCount: (projectId)->
-    return Files.find(projectId: projectId).count()
-
   heartbeat: (sessionId, projectId) ->
     ProjectStatuses.update {sessionId, projectId}, {$set: {heartbeat: Date.now()}}
 
@@ -28,11 +24,3 @@ Meteor.methods
       ProjectStatuses.insert fields, (err, result)->
         console.error "ERR", err if err
 
-  markDirty: (collectionName, ids...) ->
-    switch collectionName
-      when 'projects' then collection = Projects
-      when 'files' then collection = Files
-    unless collection
-      msg = "Tried to markDirty unknown collection: #{collectionName}, #{id}"
-      throw Meteor.Error 404, msg
-    collection.update {_id: {$in: ids}}, {$set:{}}
