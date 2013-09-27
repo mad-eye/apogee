@@ -45,6 +45,7 @@ MadEye.touchDementor = (projectId) ->
     dementor.heartbeat()
   else
     dementors[projectId] = new Dementor projectId
+    Projects.update projectId, {$set: {closed:false}}
   return #if we return dementor, it can't be serialized and things crash.
 
 MadEye.dismissDementor = (projectId) ->
