@@ -45,18 +45,24 @@ Meteor.methods
     MadEye.touchDementor projectId
 
   addFile: (file) ->
+    check file, Match.ObjectIncluding path:String, orderingPath:String
     Files.insert file
 
   removeFile: (fileId) ->
     log.trace "Calling removeFile", fileId
+    check fileId, String
     Files.remove fileId
 
   updateFile: (fileId, modifier) ->
     log.trace "Calling updateFile", fileId, modifier
+    check fileId, String
+    check modifier, Object
     Files.update fileId, modifier
 
   updateFileContents: (fileId, contents) ->
     log.trace "Calling updateFileContents", fileId, contents
+    check fileId, String
+    check contents, String
     try
       {version} = MadEye.Bolide.getShareContents fileId
     catch e
@@ -69,6 +75,12 @@ Meteor.methods
         #Client should be alerted that something went wrong.
         throw e
     MadEye.Bolide.setShareContents fileId, contents, version
+
+  addTunnels: (projectId, tunnels) ->
+    check projectId, String
+    check tunnels, Object
+    Projects.update projectId, {$set: {tunnels}}
+
 
 #Methods to dementor
 Meteor.methods

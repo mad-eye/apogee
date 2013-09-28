@@ -1,11 +1,13 @@
 MEASUREMENT_CHARS = ',./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
-#
+log = new MadEye.Logger 'terminal'
+
 #rows, cols, height, width
 @terminalData = {}
 
 setInitialTerminalData = ->
   terminalData.characterHeight = $('#measurementDiv').height()
   terminalData.characterWidth = $('#measurementDiv').width()/MEASUREMENT_CHARS.length
+  log.trace "initial terminalData:", terminalData
 
 #Initialize terminal connection
 Meteor.startup ->
@@ -17,9 +19,11 @@ Meteor.startup ->
     #return if a tty.js session is already active
     if project.tunnels?.terminal
       tunnel = project.tunnels.terminal
+      log.trace "Found terminal tunnel:", tunnel
       tty.Terminal.ioHost = Meteor.settings.public.shareHost
       tty.Terminal.ioPort = tunnel.remotePort
       tty.open()
+      log.debug "Initialized terminal"
       ttyInitialized = true
 
 Template.terminal.rendered = ->
@@ -46,12 +50,14 @@ createTerminal = (options) ->
   $("body").click ->
     tty.Terminal.focus = null
     onTerminalUnfocus()
+  log.debug "Terminal window created"
   return w
 
 Template.terminal.events
   'click #createTerminal': (event, tmpl) ->
     event.stopPropagation()
     event.preventDefault()
+    log.info "Opening terminal"
     parent = $('#terminal')[0]
     #The div#terminal is constant, so that we don't kill tty's work.
     #Thus we have to remove the inner contents.
@@ -59,7 +65,7 @@ Template.terminal.events
     MadEye.terminal = createTerminal parent:parent
     setInitialTerminalData()
     MadEye.terminal.on 'close', ->
-      console.log "Closing!"
+      log.info "Closing terminal"
       MadEye.terminal = null
       #Must resurrect the createTerminalMessage.
       frag = Meteor.render(Template.createTerminal)
