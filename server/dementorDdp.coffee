@@ -42,20 +42,25 @@ Meteor.methods
     MadEye.dismissDementor projectId
 
   dementorHeartbeat: (projectId) ->
+    this.unblock()
     MadEye.touchDementor projectId
 
   addFile: (file) ->
+    this.unblock()
     Files.insert file
 
   removeFile: (fileId) ->
+    this.unblock()
     log.trace "Calling removeFile", fileId
     Files.remove fileId
 
   updateFile: (fileId, modifier) ->
+    this.unblock()
     log.trace "Calling updateFile", fileId, modifier
     Files.update fileId, modifier
 
   updateFileContents: (fileId, contents) ->
+    this.unblock()
     log.trace "Calling updateFileContents", fileId, contents
     try
       {version} = MadEye.Bolide.getShareContents fileId
