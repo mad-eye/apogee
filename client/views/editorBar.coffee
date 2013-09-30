@@ -201,13 +201,13 @@ Meteor.startup ->
     mode = file.aceMode
     #Check for shebang. We might have such lines as '#! /bin/env sh -x'
     unless mode
-      cmd = findShbangCmd MadEye.editorState.editor.value
+      cmd = findShbangCmd MadEye.editorState.editor.stableValue
       mode = switch cmd
         when 'sh', 'ksh', 'csh', 'tcsh', 'bash', 'dash', 'zsh' then 'sh'
         when 'node' then 'javascript'
         #Other aliases?
         else cmd
-      log.trace "Found mode #{mode} from shbang command #{cmd}"
+      #log.trace "Found mode #{mode} from shbang command #{cmd}"
       mode = null unless mode in _.keys(aceModes.modesByName)
     MadEye.editorState.editor.syntaxMode = mode
 
@@ -235,10 +235,14 @@ Meteor.startup ->
     return unless MadEye.isRendered('editor') and MadEye.editorState
     workspace = getWorkspace()
     return unless workspace
+    value = null
+    Deps.nonreactive ->
+      #Don't recalculate this block on every change.
+      value = MadEye.editorState.editor.value
     MadEye.editorState.editor.showInvisibles = workspace.showInvisibles
-    MadEye.editorState.editor.tabSize = workspace.tabSize ? findTabSize(MadEye.editorState.editor.value)
+    MadEye.editorState.editor.tabSize = workspace.tabSize ? findTabSize(value)
     MadEye.editorState.editor.theme = workspace.theme
-    MadEye.editorState.editor.useSoftTabs = workspace.useSoftTabs ? useSoftTabs(MadEye.editorState.editor.value)
+    MadEye.editorState.editor.useSoftTabs = workspace.useSoftTabs ? useSoftTabs(value)
     MadEye.editorState.editor.wordWrap = workspace.wordWrap
 
 
