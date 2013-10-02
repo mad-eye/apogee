@@ -1,0 +1,29 @@
+{
+  "dependencies": {
+    "webkit-devtools-agent": {
+      "version": "0.1.2",
+      "dependencies": {
+        "v8-profiler": {
+          "version": "4.0.0"
+        },
+        "ws": {
+          "version": "0.4.25",
+          "dependencies": {
+            "commander": {
+              "version": "0.6.1"
+            },
+            "tinycolor": {
+              "version": "0.0.1"
+            },
+            "options": {
+              "version": "0.0.5"
+            }
+          }
+        },
+        "underscore": {
+          "version": "1.3.3"
+        }
+      }
+    }
+  }
+}
