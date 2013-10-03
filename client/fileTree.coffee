@@ -106,3 +106,10 @@ Deps.autorun ->
   file = Files.findOne fileId
   fileTree.select file
 
+Meteor.startup ->
+  Deps.autorun ->
+    Files.find({isDir: true}).forEach (file)->
+      if fileTree.isVisible file.path
+        #upsert
+        Deps.nonreactive ->
+          Meteor.call "addActiveDirectory", getProjectId(), file.path
