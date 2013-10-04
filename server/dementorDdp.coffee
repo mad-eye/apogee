@@ -50,7 +50,7 @@ Meteor.methods
     Files.insert file
 
   markDirectoryLoaded: (projectId, path)->
-    ActiveDirectories.update {projectId, path}, {$set {loaded: true}}
+    ActiveDirectories.update({projectId:projectId, path:path}, {$set: {loaded: true}})
 
   removeFile: (fileId) ->
     this.unblock()
