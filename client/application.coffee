@@ -68,7 +68,7 @@ do ->
       filePath = scratchFile.path if scratchFile
     MadEye.fileLoader.loadPath = filePath
     #This editorFilePath probably isn't set yet, because we haven't flushed
-    fileTree.open MadEye.fileLoader.editorFilePath, true
+    MadEye.fileTree.open MadEye.fileLoader.editorFilePath, true
 
     unless page == "editImpressJS"
       return "edit"

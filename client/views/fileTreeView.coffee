@@ -14,12 +14,12 @@ Template.fileTree.helpers
     Files.find {}, {sort: {orderingPath:1} }
 
   isVisible: ->
-    fileTree.isVisible @path
+    MadEye.fileTree.isVisible @path
 
   fileEntryClass : ->
     clazz = "fileTree-item"
     if @isDir
-      clazz += " directory " + if fileTree.isOpen @path then "open" else "closed"
+      clazz += " directory " + if MadEye.fileTree.isOpen @path then "open" else "closed"
     else if @scratch
       clazz += " scratch"
     else
@@ -31,7 +31,7 @@ Template.fileTree.helpers
 
   usersInFile: (file) ->
     projectId = Session.get "projectId"
-    sessionIds = fileTree.getSessionsInFile file.path
+    sessionIds = MadEye.fileTree.getSessionsInFile file.path
     return unless sessionIds
     users = null
     Deps.nonreactive ->
@@ -49,7 +49,7 @@ Template.fileTree.events
     fileId = event.currentTarget.id
     file = Files.findOne(fileId)
     return unless file
-    fileTree.toggle file.path
+    MadEye.fileTree.toggle file.path
     MadEye.fileLoader.loadId = event.currentTarget.id
 
   "click #addFileButton": (event)->

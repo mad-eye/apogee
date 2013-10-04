@@ -97,19 +97,19 @@ class FileTree
       @_invalidatedSessionPaths path
 
 @FileTree = FileTree
-window.fileTree = new FileTree
+MadEye.fileTree = new FileTree
 
 
 Deps.autorun ->
   fileId = MadEye.fileLoader?.selectedFileId
   return unless fileId
   file = Files.findOne fileId
-  fileTree.select file
+  MadEye.fileTree.select file
 
 Meteor.startup ->
   Deps.autorun ->
     Files.find({isDir: true}).forEach (file)->
-      if fileTree.isVisible file.path
+      if MadEye.fileTree.isVisible file.path
         #upsert
         Deps.nonreactive ->
           Meteor.call "addActiveDirectory", getProjectId(), file.path
