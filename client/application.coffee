@@ -75,8 +75,6 @@ do ->
     else
       return "editImpressJS"
 
-  scratchPath = "SCRATCH.rb"
-
   Meteor.Router.add
     '/':  ->
       recordView page: "home"
