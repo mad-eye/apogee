@@ -116,10 +116,6 @@ ul.fileTree {
             font-style: italic;
         }
         
-        &.loading {
-            background-color: orange;
-        }
-
         &.file:before {
             content: url('/images/full_page.png');
         }
@@ -130,6 +126,10 @@ ul.fileTree {
 
         &.directory.closed:before {
             content: url('/images/folder.png');
+        }
+
+        &.directory.loading:before {
+            content: url('/images/ajax-loader_16.gif');
         }
 
         &.scratch:before {

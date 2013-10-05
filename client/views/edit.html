@@ -65,7 +65,11 @@
 <template name="editorOverlay">
   {{#if editorIsLoading}}
     <div id="editorOverlay">
-      <img id="editorLoadingSpinner" src="/images/file-loader.gif" alt="Loading..." />
+      {{#if editorThemeIsDark}}
+        <img id="editorLoadingSpinner" src="/images/ajax-loader-dark.gif" alt="Loading..." />
+      {{else}}
+        <img id="editorLoadingSpinner" src="/images/ajax-loader.gif" alt="Loading..." />
+      {{/if}}
     </div>
   {{/if}}
 </template>

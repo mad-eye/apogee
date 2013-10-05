@@ -19,9 +19,14 @@ Template.fileTree.helpers
   fileEntryClass : ->
     clazz = "fileTree-item"
     if @isDir
-      clazz += " directory " + if MadEye.fileTree.isOpen @path then "open" else "closed"
-      if @isLoading and MadEye.fileTree.isOpen @path
-        clazz += " loading "
+      clazz += " directory "
+      if MadEye.fileTree.isOpen @path
+        if @isLoading
+          clazz += 'loading'
+        else
+          clazz += "open"
+      else
+        clazz += "closed"
     else if @scratch
       clazz += " scratch"
     else

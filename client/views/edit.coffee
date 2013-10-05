@@ -98,8 +98,10 @@ Deps.autorun (computation) ->
   computation.stop()
 
 Template.editorOverlay.helpers
-  "editorIsLoading": ->
+  editorIsLoading: ->
     MadEye.editorState.loading == true
+
+  editorThemeIsDark: MadEye.editorState?.editor.isThemeDark
 
 Template.editorFooter.helpers
   output: ->
