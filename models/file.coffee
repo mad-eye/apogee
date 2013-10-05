@@ -17,6 +17,15 @@ class MadEye.File extends MadEye.Model
       throw new Error "A file with that path already exists"
     super()
  
+
+Object.defineProperty MadEye.File.prototype, 'isLoading',
+  get: ->
+    activeDirectory = ActiveDirectories.findOne {path: @path}
+    unless activeDirectory
+      return false
+    else
+      return not activeDirectory.loaded
+
 Object.defineProperty MadEye.File.prototype, 'filename',
   get: -> stripSlash(@path).split('/').pop()
 
