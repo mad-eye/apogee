@@ -62,7 +62,7 @@ class EditorState
     #Need to pass version so we know when to add the revert op
     Meteor.call 'revertFile', getProjectId(), fileId, @doc.version, (error, result) =>
       @working = false
-      return callback Errors.handleError error if error
+      return callback Errors.handleError error, log if error
       #abort if we've loaded another file
       return callback() unless fileId == @fileId
       if result.warning
@@ -92,6 +92,7 @@ class EditorState
       doc.attach_ace @editor._getEditor()
       @editor.newLineMode = "auto"
       doc.on 'warn', (data) =>
+        log.warn "ShareJsError", data
         Metrics.add
           level:'warn'
           message:'shareJsError'
@@ -116,7 +117,7 @@ class EditorState
     @loading = true
     finish = (err, doc) =>
       if err
-        Errors.handleError "Error in loading file: #{e.message}:", e
+        Errors.handleError "Error in loading file: #{e.message}:", e, log
       else if doc
         @doc = doc
         @attachAce(doc)
@@ -154,7 +155,7 @@ class EditorState
     return if file.fsChecksum == editorChecksum
     Events.record("save", {file: @fileId, projectId})
     Meteor.call 'saveFile', projectId, @fileId, @editor.value, (error, result) ->
-      return callback Errors.handleError error if error
+      return callback Errors.handleError error, log if error
       project = Projects.findOne projectId
       if project.impressJS
         $("#presentationPreview")[0].contentDocument.location.reload()

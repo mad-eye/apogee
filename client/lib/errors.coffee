@@ -1,20 +1,20 @@
 @Errors = {}
 
 #Handle meteor-style errors ({reason:, details:})
-Errors.handleError = (error) ->
-  log.error err.details
+Errors.handleError = (error, log) ->
+  log.error err.details if log
   displayAlert { level: 'error', title: err.reason, message: err.details }
   return err
 
-Errors.wrapShareError = (err) ->
-  log.warn "Found error from shareJS:", err
+Errors.wrapShareError = (err, log) ->
+  log.warn "Found error from shareJS:", err if log
   details = err.message ? err
   return {reason: "SyncError", details}
   
 #Takes httpResponse
-Errors.handleNetworkError = (error, response) ->
+Errors.handleNetworkError = (error, response, log) ->
   err = response?.content?.error ? error
-  console.error "Network Error:", err.message
+  log.error "Network Error:", err.message if log
   Metrics.add
     level:'error'
     message:'networkError'
