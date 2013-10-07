@@ -36,7 +36,7 @@ Meteor.startup ->
       ProjectStatuses.find({projectId}).forEach (status) ->
         sessionPaths[status.sessionId] = status.filePath if status.filePath
     #console.log "Setting sessionPaths from autorun", sessionPaths
-    fileTree.setSessionPaths sessionPaths
+    MadEye.fileTree.setSessionPaths sessionPaths
 
   #Invalidate sessionsDep on important changes
   queryHandle = null

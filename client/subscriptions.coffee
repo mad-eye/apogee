@@ -10,4 +10,4 @@ Deps.autorun ->
   Meteor.subscribe "projectStatuses", projectId
   Meteor.subscribe "scriptOutputs", projectId
   Meteor.subscribe "workspaces", projectId
-
+  Meteor.subscribe "activeDirectories", projectId

@@ -45,6 +45,8 @@ if Meteor.settings.public.googleAnalyticsId
 
 recordView = (params)->
   @Events.record "pageView", params
+  #Metrics.add _.extend({message:'load'}, params)
+  log.debug 'load', params
   _gaq.push ['_trackPageview'] if _gaq?
 
 do ->
@@ -67,14 +69,12 @@ do ->
       filePath = scratchFile.path if scratchFile
     MadEye.fileLoader.loadPath = filePath
     #This editorFilePath probably isn't set yet, because we haven't flushed
-    fileTree.open MadEye.fileLoader.editorFilePath, true
+    MadEye.fileTree.open MadEye.fileLoader.editorFilePath, true
 
     unless page == "editImpressJS"
       return "edit"
     else
       return "editImpressJS"
-
-  scratchPath = "SCRATCH.rb"
 
   Meteor.Router.add
     '/':  ->
@@ -82,7 +82,7 @@ do ->
       "home"
       
     '/payment': ->
-      recordView page: "payment"      
+      recordView page: "payment"
       "payment"
 
     '/get-started': ->

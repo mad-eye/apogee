@@ -42,24 +42,32 @@ Meteor.methods
     MadEye.dismissDementor projectId
 
   dementorHeartbeat: (projectId) ->
+    this.unblock()
     MadEye.touchDementor projectId
 
   addFile: (file) ->
+    this.unblock()
     check file, Match.ObjectIncluding path:String, orderingPath:String
     Files.insert file
 
+  markDirectoryLoaded: (projectId, path)->
+    ActiveDirectories.update({projectId:projectId, path:path}, {$set: {loaded: true}})
+
   removeFile: (fileId) ->
+    this.unblock()
     log.trace "Calling removeFile", fileId
     check fileId, String
     Files.remove fileId
 
   updateFile: (fileId, modifier) ->
+    this.unblock()
     log.trace "Calling updateFile", fileId, modifier
     check fileId, String
     check modifier, Object
     Files.update fileId, modifier
 
   updateFileContents: (fileId, contents) ->
+    this.unblock()
     log.trace "Calling updateFileContents", fileId, contents
     check fileId, String
     check contents, String

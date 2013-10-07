@@ -20,6 +20,9 @@ Meteor.publish "workspaces", (projectId) ->
 
   Workspaces.find userId: @userId
 
+Meteor.publish "activeDirectories", (projectId)->
+  ActiveDirectories.find projectId: projectId
+
 Meteor.setInterval ->
   before = Date.now() - 10*1000
   ProjectStatuses.remove({heartbeat: {$lt:before}})
@@ -56,4 +59,7 @@ Workspaces.allow
   insert: -> true
   update: -> true
 
+ActiveDirectories.allow
+  insert: -> true
+  update: -> true
 

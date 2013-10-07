@@ -1,9 +1,10 @@
 describe "FileTree", ->
-  fileTree = null
+  MadEye.fileTree = null
   assert = chai.assert
 
+  fileTree = null
   before ->
-    fileTree = new FileTree
+    fileTree = MadEye.fileTree = new FileTree
 
   describe 'open/isOpen', ->
     it 'should default to closed', ->
@@ -16,7 +17,7 @@ describe "FileTree", ->
       assert.ok !fileTree.isOpen 'a/path'
       assert.ok !fileTree.isOpen 'a'
 
-    it 'should open parents when recusive', ->
+    it 'should open parents when recursive', ->
       path = 'deeply/nested/path'
       fileTree.open path, true
       assert.isTrue fileTree.isOpen path
@@ -186,6 +187,7 @@ describe "FileTree", ->
     before ->
       file = MadEye.File.create path:'a4/b4/file.txt', isDir:false, projectId:projectId
       dir = MadEye.File.create path:'a4/b4', isDir:true, projectId:projectId
+      dir = MadEye.File.create path:'a4', isDir:true, projectId:projectId
 
     beforeEach ->
       toSpy = () ->
@@ -441,4 +443,20 @@ describe "FileTree", ->
       Deps.flush()
       assert.deepEqual path1Ids, [sessionId1]
       assert.deepEqual path2Ids, [sessionId2]
+
+  describe "opening a file should set add all its parents as active directories", ->
+    before ->
+      fileTree = MadEye.fileTree = new FileTree()
+      projectId = Meteor.uuid()
+      file = MadEye.File.create path:'snowden/classified/readme.txt', isDir:false, projectId:projectId
+      parent = MadEye.File.create path:'snowden/classified', isDir:true, projectId:projectId
+      gparent = MadEye.File.create path:'snowden', isDir:true, projectId:projectId
+
+    it "should add to active directories for file selection", ->
+      fileTree.open "snowden/classified/readme.txt", true
+      Deps.flush()
+      console.log fileTree.openedDirs.keys
+      assert.ok ActiveDirectories.findOne(path: "snowden/classified"), "gparent exists"
+      assert.ok ActiveDirectories.findOne(path: "snowden"), "parent exists"
+
 

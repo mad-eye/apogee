@@ -55,8 +55,10 @@ Meteor.startup ->
         gotoPosition(MadEye.editorState.doc.cursor)
 
 Template.editorOverlay.helpers
-  "editorIsLoading": ->
+  editorIsLoading: ->
     MadEye.editorState.loading == true
+
+  editorThemeIsDark: MadEye.editorState?.editor.isThemeDark
 
 Template.editImpressJS.helpers
   projectId: ->
