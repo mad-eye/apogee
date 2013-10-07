@@ -205,4 +205,6 @@ Meteor.startup ->
     return unless checksum?
     modified = checksum != file.fsChecksum
     file.update {modified}
-
+    if not modified and file.fsChecksum != file.loadChecksum
+      #This shouldn't happen -- let's record and consider handling it if it's common.
+      log.warn "File is modified on filesystem but not modified in editor; should correct."
