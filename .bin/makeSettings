@@ -7,7 +7,6 @@ settings = {
     azkabanUrl: process.env.MADEYE_AZKABAN_URL,
     apogeeUrl: process.env.MADEYE_APOGEE_URL,
     googleAnalyticsId: process.env.MADEYE_GOOGLE_ANALYTICS_ID,
-    nurmengardUrl: process.env.MADEYE_NURMENGARD_URL,
     hangoutUrl: process.env.MADEYE_AZKABAN_URL + "/hangout/",
     logLevel: process.env.MADEYE_LOGLEVEL
   },

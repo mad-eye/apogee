@@ -19,29 +19,6 @@ addWorkspaceModeOverride = (fileId, syntaxMode) ->
 
 
 Template.editorBar.events
-  'click #runButton': (e)->
-    Session.set "codeExecuting", true
-    editorBody = MadEye.editorState.getEditor().getValue()
-    filename = MadEye.fileLoader.editorFilePath
-    Meteor.http.post "#{Meteor.settings.public.nurmengardUrl}/run",
-      data:
-        contents: editorBody
-        language: MadEye.editorState.editor.syntaxMode
-        fileName: filename
-      headers:
-        "Content-Type": "application/json"
-      , (error, result)->
-        Session.set "codeExecuting", false
-        if error
-          #TODO handle this better
-          console.error "MADEYE ERROR", error
-        if result
-          response = JSON.parse(result.content)
-          response.filename = filename
-          response.projectId = Session.get("projectId")
-          response.timestamp = Date.now()
-          ScriptOutputs.insert response
-
   'click #revertFile': (event) ->
     el = $(event.target)
     return if el.hasClass 'disabled' or MadEye.editorState.working == true
