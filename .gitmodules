@@ -1,15 +1,9 @@
 [submodule "packages/reactive-ace"]
 	path = packages/reactive-ace
 	url = git@github.com:mad-eye/meteor-reactive-ace.git
-[submodule "packages/meteor-sharejs"]
-	path = packages/meteor-sharejs
-	url = git@github.com:mad-eye/meteor-sharejs.git
 [submodule "packages/madeye-common"]
 	path = packages/madeye-common
 	url = git@github.com:mad-eye/madeye-common.git
-[submodule "packages/sharejs/meteor-sharejs"]
-	path = packages/sharejs/meteor-sharejs
-	url = git@github.com:mad-eye/meteor-sharejs.git
 [submodule "packages/sharejs/ShareJS"]
 	path = packages/sharejs/ShareJS
 	url = git@github.com:mad-eye/ShareJS.git
