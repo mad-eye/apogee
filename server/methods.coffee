@@ -1,3 +1,5 @@
+log = new MadEye.Logger 'projectMethods'
+
 getIcon = (projectId)->
   unavailableIcons = {}
   ProjectStatuses.find({projectId}).forEach (status) ->
@@ -6,14 +8,24 @@ getIcon = (projectId)->
     continue if unavailableIcons[i]
     return i
 
+projectStatusTimeouts = {}
+
+setProjectStatusTimeout = (sessionId) ->
+  Meteor.clearTimeout projectStatusTimeouts[sessionId]
+  projectStatusTimeouts[sessionId] = Meteor.setTimeout ->
+    log.debug "Removing projectStatus", sessionId
+    ProjectStatuses.remove {sessionId}
+  , 15*1000
+  return
+
 Meteor.methods
   heartbeat: (sessionId, projectId) ->
-    ProjectStatuses.update {sessionId, projectId}, {$set: {heartbeat: Date.now()}}
+    setProjectStatusTimeout sessionId
 
   touchProjectStatus: (sessionId, projectId, fields={})->
     return unless sessionId and projectId
     status = ProjectStatuses.findOne {sessionId, projectId}
-    fields.heartbeat = Date.now()
+    log.trace "touchProjectStatus, session #{sessionId} status exists:", status?
     if status
       status.update fields
     else
@@ -21,6 +33,17 @@ Meteor.methods
         sessionId: sessionId
         projectId: projectId
         iconId: getIcon(projectId)
-      ProjectStatuses.insert fields, (err, result)->
-        console.error "ERR", err if err
+      #don't give callback, need this to block
+      ProjectStatuses.insert fields
+    setProjectStatusTimeout sessionId
+
+Meteor.publish "projectStatuses", (projectId) ->
+  ProjectStatuses.find projectId: projectId
+
+#TODO: Restrict based on userId
+ProjectStatuses.allow
+  insert: (userId, doc) -> true
+  update: (userId, doc, fields, modifier) -> true
+  remove: (userId, doc) -> true
+
 
