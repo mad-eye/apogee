@@ -14,5 +14,4 @@ HTML5-History-API
 router
 accounts-base
 accounts-anonymous
-meteor-sharejs
 accounts-google
