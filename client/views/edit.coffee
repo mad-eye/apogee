@@ -1,3 +1,4 @@
+log = new MadEye.Logger 'edit'
 aceModes = ace.require('ace/ext/modelist')
 
 #TODO figure out a better way to share this from the ShareJS code
@@ -46,7 +47,10 @@ Template.editor.rendered = ->
 
 Meteor.startup ->
   gotoPosition = (cursor)->
-    console.error "undefined cursor" unless cursor
+    unless cursor
+      log.error "undefined cursor"
+      return
+    log.trace 'Going to cursor', cursor
     editor = MadEye.editorState.getEditor()
     position = cursorToRange(editor.getSession().getDocument(), cursor)
     editor.navigateTo(position.start.row, position.start.column)

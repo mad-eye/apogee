@@ -227,6 +227,7 @@ Meteor.startup ->
 
 
 findShbangCmd = (contents) ->
+  return unless contents
   if '#!' == contents[0..1]
     cmd = null
     firstLine = contents.split('\n', 1)[0]

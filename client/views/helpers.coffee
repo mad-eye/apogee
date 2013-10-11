@@ -30,10 +30,33 @@ Handlebars.registerHelper 'isScratch', ->
   getProject()?.closed
   
 @fileIsDeleted = ->
-  Files.findOne(MadEye.editorState.fileId)?.deletedInFs
+  Files.findOne(MadEye.editorState?.fileId)?.deletedInFs
 
 @isInterview = ->
   getProject()?.interview
 
 Handlebars.registerHelper "isInterview", isInterview
+
+Handlebars.registerHelper "isHomePage", ->
+  return Meteor.Router._page in ["home", "home2", "getStarted"]
+
+Handlebars.registerHelper "isHangout", ->
+  Session.get "isHangout"
+
+@displayAlert = (alert) ->
+  return unless alert?
+  html = Template.alert {
+    level: alert.level
+    title: alert.title
+    message: alert.message
+  }
+  $('#alertBox').append html
+
+@groupA = (testName)->
+  return null unless Meteor.userId()
+  return MadEye.crc32("#{Meteor.userId()}#{testName}") % 2 == 0
+
+@groupB = (testName)->
+  return null unless Meteor.userId()
+  return MadEye.crc32("#{Meteor.userId()}#{testName}") % 2 != 0
 

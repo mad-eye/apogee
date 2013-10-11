@@ -27,8 +27,8 @@ class @FileLoader extends Reactor
     else
       type = "edit"
     filePath = encodeURIComponent( @editorFilePath ? "" ).replace(/%2F/g, '/')
-    log.trace "Loading #{filePath}"
-    Meteor.Router.to("/#{type}/#{project._id}/#{filePath}")
+    #log.trace "Loading #{filePath}"
+    Router.go type, projectId: project._id, filePath: filePath
 
   @sentry 'loadFile', ->
     loadPath = @_get 'loadPath'
