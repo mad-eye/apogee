@@ -31,8 +31,15 @@ Router.map ->
   @route 'edit',
     path: '/edit/:projectId/:filePath(*)?'
     notFoundTemplate: "missing"
+    # The data and waitOn hooks allow us to send incorrect projectIds to a
+    # missing page.
     data: ->
       Projects.findOne @params.projectId
+    waitOn: ->
+      handle = MadEye.subscriptions?.get('projects')
+      #If the subscription hasn't been set yet, return a 'false' stub.
+      handle ?= ready: -> false
+      return handle
     before: ->
       beforeEdit this, @params.projectId, @params.filePath
     
