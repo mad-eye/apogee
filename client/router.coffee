@@ -3,7 +3,6 @@ log = new MadEye.Logger 'router'
 
 Router.configure
   layout: "layout"
-  notFoundTemplate: "notFound"
   loadingTemplate: "loading"
   before: [
     ->
@@ -31,6 +30,9 @@ Router.map ->
   @route 'getStarted', path: '/get-started'
   @route 'edit',
     path: '/edit/:projectId/:filePath(*)?'
+    notFoundTemplate: "missing"
+    data: ->
+      Projects.findOne @params.projectId
     before: ->
       beforeEdit this, @params.projectId, @params.filePath
     

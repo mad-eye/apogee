@@ -56,6 +56,7 @@ class EditorState
         fileId: @fileId
       log.warn "revert called, but no doc selected"
       return callback "No doc or no file"
+    log.info "Reverting file", @fileId
     Events.record("revert", {file: @path, projectId: Session.get "projectId"})
     @working = true
     fileId = @fileId
