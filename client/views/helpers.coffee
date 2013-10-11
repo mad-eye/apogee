@@ -38,7 +38,7 @@ Handlebars.registerHelper 'isScratch', ->
 Handlebars.registerHelper "isInterview", isInterview
 
 Handlebars.registerHelper "isHomePage", ->
-  return Meteor.Router._page in ["home", "home2", "getStarted"]
+  return Router.template in ["home", "home2", "getStarted"]
 
 Handlebars.registerHelper "isHangout", ->
   Session.get "isHangout"

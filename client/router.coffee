@@ -1,5 +1,6 @@
 log = new MadEye.Logger 'router'
 
+
 Router.configure
   layout: "layout"
   notFoundTemplate: "notFound"
@@ -19,6 +20,8 @@ Router.configure
       viewData[k] = v
     viewData.page = @template
     recordView viewData
+  , ->
+    Router.template = @template
   ]
   after: ->
     @query = {}
@@ -70,6 +73,20 @@ Router.map ->
 
   @route 'missing', path: '*'
 
+## Set up reactive Router.template var
+_template = null
+_templateDep = new Deps.Dependency
+Object.defineProperty Router, 'template',
+  get: ->
+    _templateDep.depend()
+    return _template
+
+  set: (template) ->
+    return if template == _template
+    _template = template
+    _templateDep.changed()
+
+## Analytics and tracking
 if Meteor.settings.public.googleAnalyticsId
   window._gaq = window._gaq || []
   _gaq.push ['_setAccount', Meteor.settings.public.googleAnalyticsId]
@@ -79,6 +96,9 @@ recordView = (params)->
   #Metrics.add _.extend({message:'load'}, params)
   log.debug 'load', params
   _gaq.push ['_trackPageview'] if _gaq?
+
+
+## Helper fns
 
 #queryString example: '?a=b&c&d=&a=f'
 #For right now, we ignore multiple values for a given param
