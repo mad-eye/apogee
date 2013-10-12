@@ -1,6 +1,5 @@
 log = new MadEye.Logger 'azkaban'
 
-#TODO: Merge this with client/lib/urls.coffee somehow
 MadEye.azkabanUrl = Meteor.settings.public.azkabanUrl
 fileUrl = (projectId, fileId) -> "#{MadEye.azkabanUrl}/project/#{projectId}/file/#{fileId}"
 
