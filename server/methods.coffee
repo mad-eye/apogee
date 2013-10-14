@@ -46,4 +46,8 @@ ProjectStatuses.allow
   update: (userId, doc, fields, modifier) -> true
   remove: (userId, doc) -> true
 
+Meteor.startup ->
+  #In-memory collection doesn't work in 0.6.4; manually remove
+  #orphaned projectStatuses.
+  ProjectStatuses.remove {}
 
