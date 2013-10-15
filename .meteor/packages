@@ -21,3 +21,5 @@ reactive-ace
 reactiveMachine
 sessionId
 sharejs
+
+iron-router
