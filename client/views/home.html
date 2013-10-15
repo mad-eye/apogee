@@ -1,7 +1,7 @@
 <template name="home">
   <div class="container">
     <div class="row">
-      <!-- Main hero unit for a primary marketing message or call to action -->
+      {{! Main hero unit for a primary marketing message or call to action }}
       <div class="span12">
         <div class="hero-unit">
 
@@ -16,7 +16,7 @@
               <source src="videos/intro.webm" type="video/webm" />
             </video>
             <h2>Code together with MadEye</h2>
-            <p><a href="/get-started" class="btn btn-primary btn-large">Get Started &raquo;</a></p>
+            <p><a href="{{pathFor 'getStarted'}}" class="btn btn-primary btn-large">Get Started &raquo;</a></p>
           </div>
 
           <div class="span4 sellPoints">

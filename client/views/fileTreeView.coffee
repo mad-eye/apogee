@@ -69,7 +69,7 @@ Template.fileTree.events
     file.path = filename
     try
       file.save()
-      Meteor.Router.to "/interview/#{projectId}/#{filename}"
+      MadEye.fileLoader.loadId = file._id
     catch e
       alert e.message
 
@@ -81,7 +81,7 @@ Template.fileTree.events
 
   #'click img.fileTreeUserIcon': (event) ->
     #event.stopPropagation()
-    #Meteor.Router.to event.toElement.attributes.destination.value
+    #Router.go 'edit', projectId: getProjectId(), sessionId: event.toElement.attributes.destination.value
 
 @warnFirefoxHangout = ->
   if "Firefox" == BrowserDetect.browser and BrowserDetect.version < 22
