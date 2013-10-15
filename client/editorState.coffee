@@ -131,7 +131,7 @@ class EditorState
         #abort if we've loaded another file
         return finish() unless fileId == @fileId
         return finish() unless @checkDocValidity(doc)
-        #TODO: @connectionId = doc.connection.id
+        @connectionId = doc.connection.id
         if doc.version > 0 or file.scratch
           finish null, doc
         else

@@ -43,8 +43,11 @@ Template.fileTree.helpers
     users = null
     Deps.nonreactive ->
       users = ProjectStatuses.find(sessionId: {$in: sessionIds}).map (status) ->
+        return unless status.connectionId
+        shareIndex = sharejs.getIndexForSession status.connectionId
+        iconClass = "foreign_selection_#{shareIndex}"
         destination = "/edit/#{projectId}/#{file.path}#S#{status.connectionId}"
-        {img: "/images/#{USER_ICONS[status.iconId]}", destination}
+        {iconClass, destination}
     return users
 
   projectName : ->
