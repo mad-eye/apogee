@@ -16,10 +16,9 @@ accounts-google
 standard-app-packages
 madeye-common
 mocha-web
-page-js-ie-support
 reactive-ace
 reactiveMachine
 sessionId
 sharejs
-
 iron-router
+
