@@ -60,7 +60,7 @@ networkIssuesWarning =
   uncloseable: true
 
 fileIsModifiedLocally = ->
-  file = Files.findOne MadEye.editorState.fileId
+  file = Files.findOne MadEye.editorState?.fileId
   return false unless file and file.fsChecksum? and file.loadChecksum?
   file.fsChecksum != file.loadChecksum
 

@@ -56,6 +56,7 @@ class EditorState
         fileId: @fileId
       log.warn "revert called, but no doc selected"
       return callback "No doc or no file"
+    log.info "Reverting file", @fileId
     Events.record("revert", {file: @path, projectId: Session.get "projectId"})
     @working = true
     fileId = @fileId
@@ -110,6 +111,10 @@ class EditorState
 
   #callback: (error) ->
   loadFile: (file, callback) ->
+    #Abort if called twice in quick succession.
+    #XXX: is this dangerous?
+    log.trace "Loading file #{file._id}, stored fileId is #{@fileId}"
+    return if @fileId == file._id
     @fileId = fileId = file._id
     @doc?.detach_ace?()
     @doc = null
@@ -127,6 +132,7 @@ class EditorState
 
     sharejs.open fileId, "text2", "#{MadEye.bolideUrl}/channel", (error, doc) =>
       try
+        log.trace 'Returning from share.js open'
         return finish Errors.wrapShareError error if error
         #abort if we've loaded another file
         return finish() unless fileId == @fileId
