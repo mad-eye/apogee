@@ -103,7 +103,7 @@ Deps.autorun (computation) ->
 
 Template.editorOverlay.helpers
   editorIsLoading: ->
-    MadEye.editorState.loading == true
+    MadEye.editorState?.loading == true
 
   editorThemeIsDark: MadEye.editorState?.editor.isThemeDark
 

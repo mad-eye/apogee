@@ -47,12 +47,12 @@ Template.editorBar.helpers
     MadEye.fileLoader?.editorFilePath
 
   showSaveSpinner: ->
-    MadEye.editorState.working == true
+    MadEye.editorState?.working == true
 
   buttonDisabled : ->
     fileId = MadEye.editorState?.fileId
     file = Files.findOne(fileId) if fileId?
-    if !file?.modified or MadEye.editorState.working==true or projectIsClosed()
+    if !file?.modified or MadEye.editorState?.working==true or projectIsClosed()
       "disabled"
     else
       ""
@@ -60,7 +60,7 @@ Template.editorBar.helpers
   runButtonDisabled: ->
     project = Projects.findOne(Session.get("projectId"))
     disabled = "disabled"
-    if canRunLanguage MadEye.editorState.editor.syntaxMode
+    if canRunLanguage MadEye.editorState?.editor.syntaxMode
       disabled = ""
     return disabled
 
@@ -110,7 +110,7 @@ Template.statusBar.helpers
     MadEye.editorState
 
   tabSizeEquals: (size)->
-    return false unless MadEye.editorState.rendered
+    return false unless MadEye.editorState?.rendered
     MadEye.editorState?.editor.tabSize == parseInt size, 10
 
   keybinding: (binding)->
@@ -119,7 +119,7 @@ Template.statusBar.helpers
 
 Template.syntaxModeOptions.helpers
   selected: (value) ->
-    "selected" if MadEye.editorState.editor.syntaxMode == @name
+    "selected" if MadEye.editorState?.editor.syntaxMode == @name
 
   syntaxModes: ->
     aceModes.modes
@@ -129,7 +129,7 @@ Template.syntaxModeOptions.helpers
 
 Template.themeOptions.helpers
   themeEquals: (value) ->
-    MadEye.editorState.editor.theme == value
+    MadEye.editorState?.editor.theme == value
 
   brightThemes: ->
     [
