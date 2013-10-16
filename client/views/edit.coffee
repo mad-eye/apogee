@@ -1,3 +1,5 @@
+log = new MadEye.Logger 'edit'
+
 aceModes = ace.require('ace/ext/modelist')
 
 #TODO figure out a better way to share this from the ShareJS code
@@ -62,7 +64,9 @@ Meteor.startup ->
     file = Files.findOne(fileId)
     return unless file and file._id != MadEye.editorState?.fileId
     MadEye.editorState.loadFile file, ->
-      if MadEye.editorState.doc.cursor
+      return unless fileId == MadEye.editorState.fileId
+      log.warn "Editor state finished loading with no doc" unless MadEye.editorState.doc
+      if MadEye.editorState.doc?.cursor
         gotoPosition(MadEye.editorState.doc.cursor)
 
 @resizeEditor = ->
