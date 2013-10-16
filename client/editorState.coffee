@@ -108,8 +108,13 @@ class EditorState
         error: 'Editor already attached'
       log.warn "Editor already attached"
 
+  #This is how many loadFiles we've done.
+  #It allows us to bail out of stale callbacks
+  loadNumber = 0
+
   #callback: (error) ->
   loadFile: (file, callback) ->
+    @currentLoadNumber = thisLoadNumber = loadNumber++
     @fileId = fileId = file._id
     @doc?.detach_ace?()
     @doc = null
@@ -118,18 +123,22 @@ class EditorState
     finish = (err, doc) =>
       if err
         Errors.handleError "Error in loading file: #{e.message}:", e, log
+      else if thisLoadNumber != @currentLoadNumber
+        #abort; do nothing
+        0
       else if doc
+        log.trace "Finished loading; attaching doc for", file.path
         @doc = doc
         @attachAce(doc)
+        @loading = false
       #else just abort
-      @loading = false
       callback? err
 
     sharejs.open fileId, "text2", "#{MadEye.bolideUrl}/channel", (error, doc) =>
       try
         return finish Errors.wrapShareError error if error
         #abort if we've loaded another file
-        return finish() unless fileId == @fileId
+        return finish() unless thisLoadNumber == @currentLoadNumber
         return finish() unless @checkDocValidity(doc)
         #TODO: @connectionId = doc.connection.id
         if doc.version > 0 or file.scratch
@@ -138,7 +147,7 @@ class EditorState
           Meteor.call 'requestFile', getProjectId(), fileId, (err, result) =>
             return finish error if error
             #abort if we've loaded another file
-            return finish() unless fileId == @fileId
+            return finish() unless thisLoadNumber == @currentLoadNumber
             if result?.warning
               alert = result.warning
               alert.level = 'warn'
