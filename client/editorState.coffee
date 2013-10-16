@@ -115,6 +115,10 @@ class EditorState
   #callback: (error) ->
   loadFile: (file, callback) ->
     @currentLoadNumber = thisLoadNumber = loadNumber++
+    unless file._id
+      console.error "Null file._id for file", file
+      return callback "LoadFile called with null file._id for #{file.path}"
+
     @fileId = fileId = file._id
     @doc?.detach_ace?()
     @doc = null
@@ -122,7 +126,7 @@ class EditorState
     @loading = true
     finish = (err, doc) =>
       if err
-        Errors.handleError "Error in loading file: #{e.message}:", e, log
+        log.error "Error in loading file: #{e.message}:", e
       else if thisLoadNumber != @currentLoadNumber
         #abort; do nothing
         0

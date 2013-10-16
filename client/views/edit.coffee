@@ -63,7 +63,8 @@ Meteor.startup ->
     return unless fileId?
     file = Files.findOne(fileId)
     return unless file and file._id != MadEye.editorState?.fileId
-    MadEye.editorState.loadFile file, ->
+    MadEye.editorState.loadFile file, (err) ->
+      return log.error "Error loading file:", err if err
       return unless fileId == MadEye.editorState.fileId
       log.warn "Editor state finished loading with no doc" unless MadEye.editorState.doc
       if MadEye.editorState.doc?.cursor
