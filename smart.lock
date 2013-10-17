@@ -4,7 +4,7 @@
     "basePackages": {
       "mocha-web": {},
       "accounts-anonymous": {
-        "git": "git://github.com/rissem/meteor-accounts-anonymous.git",
+        "git": "git://github.com/mad-eye/meteor-accounts-anonymous.git",
         "branch": "master"
       },
       "iron-router": {
@@ -19,9 +19,9 @@
         "commit": "76583213dbea2c5459bcf5197a2267b71877b99c"
       },
       "accounts-anonymous": {
-        "git": "git://github.com/rissem/meteor-accounts-anonymous.git",
+        "git": "git://github.com/mad-eye/meteor-accounts-anonymous.git",
         "branch": "master",
-        "commit": "36f94a7909b0a09e4eb6782bdc316ced96eb4ca4"
+        "commit": "e3dbbe682dd12321a5b0b5ea66a93d8d5fde7326"
       },
       "iron-router": {
         "git": "git://github.com/mad-eye/iron-router.git",

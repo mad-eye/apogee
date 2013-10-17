@@ -2,7 +2,7 @@
   "packages": {
     "mocha-web": {},
     "accounts-anonymous": {
-      "git": "git://github.com/rissem/meteor-accounts-anonymous.git"
+      "git": "git://github.com/mad-eye/meteor-accounts-anonymous.git"
     },
     "iron-router": {
       "git": "git://github.com/mad-eye/iron-router.git",
