@@ -87,9 +87,18 @@ class EditorState
       log.error "Found null doc version for file #{@fileId}"
     return doc.version?
 
-  attachAce: (doc)->
+  detachShareDoc: ->
+    if @doc
+      log.trace "Detaching share doc", @doc.name
+      @doc.detach_ace?()
+      @doc = null
+
+  attachShareDoc: (doc)->
     fileId = @fileId
+    @detachShareDoc()
     unless doc.editorAttached
+      log.trace "Attaching share doc", doc.name
+      @doc = doc
       doc.attach_ace @editor._getEditor()
       @editor.newLineMode = "auto"
       doc.on 'warn', (data) =>
@@ -99,7 +108,8 @@ class EditorState
           message:'shareJsError'
           fileId: fileId
           error: data
-      @getEditor().navigateFileStart() unless doc.cursor #why unless doc.cursor
+      #If we don't have a position, go to the start
+      @getEditor().navigateFileStart() unless doc.cursor
       doc.emit "cursors"
     else
       Metrics.add
@@ -121,10 +131,9 @@ class EditorState
       return callback "LoadFile called with null file._id for #{file.path}"
 
     @fileId = fileId = file._id
-    @doc?.detach_ace?()
-    @doc = null
     log.debug "Loading file #{file.path}"
     @loading = true
+    @detachShareDoc()
     finish = (err, doc) =>
       if err
         log.error "Error in loading file: #{e.message}:", e
@@ -133,8 +142,7 @@ class EditorState
         0
       else if doc
         log.trace "Finished loading; attaching doc for", file.path
-        @doc = doc
-        @attachAce(doc)
+        @attachShareDoc doc
         @loading = false
       #else just abort
       callback? err
@@ -163,11 +171,11 @@ class EditorState
         finish e
 
   save : (callback=->) ->
-    log.info "Saving file #{@fileId}"
     projectId = getProjectId()
     editorChecksum = @editor.checksum
     file = Files.findOne @fileId
     return if file.fsChecksum == editorChecksum
+    log.info "Saving file #{file.path}"
     Events.record("save", {file: @fileId, projectId})
     Meteor.call 'saveFile', projectId, @fileId, @editor.value, (error, result) ->
       return callback Errors.handleError error, log if error
