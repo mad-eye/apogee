@@ -1,5 +1,5 @@
 //Default if nothing more specific is found
-@aceSelectionColor: #B5D5FF;
+@aceSelectionColor: #B5D5FF; //Light blue
 @userSelectionColor: @aceSelectionColor;
 @userCursorColor: darken(@userSelectionColor, 20%);
 
@@ -13,8 +13,15 @@
 @darkAqua: #00A3BB;
 @lightPink: #FFBFDD;
 @darkPink: #FF007A;
-@lightBlue: #DBE9FA;
-@darkBlue: #306599;
+@lightYellow: #FFFFCF;
+@darkYellow: #FEF087;
+//Too similar to user color
+//@lightBlue: #DBE9FA;
+//@darkBlue: #306599;
+
+//overflow colors
+@lightGrey: #EDEDED;
+@darkGrey: #333333;
 
 //User's own selection
 div.user_selection {
@@ -23,7 +30,7 @@ div.user_selection {
 
 //Overflow selection color
 div.foreign_selection {
-  background-color: #99cc99 !important;
+  background-color: @lightGrey !important;
 }
 
 div.foreign_selection_0 {
@@ -39,26 +46,28 @@ div.foreign_selection_2 {
 }
 
 div.foreign_selection_3 {
-  background-color: @lightBlue !important;
-}
-
-div.foreign_selection_4 {
   background-color: @lightPink !important;
 }
 
-div.foreign_selection_5 {
+div.foreign_selection_4 {
   background-color: @lightOrange !important;
 }
 
+div.foreign_selection_4 {
+  background-color: @lightYellow !important;
+}
 
 .fileTreeUserIcon {
-  border: 2px solid #B5D5FF;
+  //Use overflow color to be overwritten
+  border: 2px solid @darkGrey;
 }
 
 //User's own cursor
 div.cursor_color_00 {
   border-color: @userCursorColor !important;
 }
+
+//overflow cursors will be ace_cursor, which is black
 
 div.cursor_color_0 {
   border-color: @darkGreen !important;
@@ -73,14 +82,13 @@ div.cursor_color_2 {
 }
 
 div.cursor_color_3 {
-  border-color: @darkBlue !important;
-}
-
-div.cursor_color_4 {
   border-color: @darkPink !important;
 }
 
-div.cursor_color_5 {
+div.cursor_color_4 {
   border-color: @darkOrange !important;
 }
 
+div.cursor_color_5 {
+  border-color: @darkYellow !important;
+}
