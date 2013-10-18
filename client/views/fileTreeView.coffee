@@ -40,19 +40,23 @@ Template.fileTree.helpers
     projectId = Session.get "projectId"
     sessionIds = MadEye.fileTree.getSessionsInFile file.path
     return unless sessionIds
-    users = null
-    Deps.nonreactive ->
-      users = ProjectStatuses.find(sessionId: {$in: sessionIds}).map (status) ->
-        return unless status.connectionId
-        if status.sessionId == Session.id
-          #The user's own
-          iconClass = "user_selection cursor_color_00"
-          destination = "#"
-        else
-          shareIndex = sharejs.getIndexForConnection status.connectionId
-          iconClass = "foreign_selection foreign_selection_#{shareIndex} cursor_color_#{shareIndex}"
-          destination = "/edit/#{projectId}/#{file.path}"
-        {iconClass, destination}
+
+    users = ProjectStatuses.find(
+      {sessionId: {$in: sessionIds}},
+      {fields: {sessionId:1, connectionId:1}}
+    ).map (status) ->
+      return unless status.connectionId
+      if status.sessionId == Session.id
+        #The user's own
+        iconClass = "user_selection cursor_color_00"
+        destination = "#"
+      else
+        shareIndex = sharejs.getIndexForConnection status.connectionId
+        iconClass = "foreign_selection foreign_selection_#{shareIndex} cursor_color_#{shareIndex}"
+        destination = "/edit/#{projectId}/#{file.path}"
+      return {iconClass, destination}
+
+    users = (user for user in users when user)
     return users
 
   projectName : ->
