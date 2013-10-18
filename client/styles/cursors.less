@@ -1,7 +1,7 @@
 //Default if nothing more specific is found
-div.foreign_selection {
-  background-color: #99cc99 !important;
-}
+@aceSelectionColor: #B5D5FF;
+@userSelectionColor: @aceSelectionColor;
+@userCursorColor: darken(@userSelectionColor, 20%);
 
 @lightGreen: #D5ECCF;
 @darkGreen: #58B442;
@@ -15,6 +15,16 @@ div.foreign_selection {
 @darkPink: #FF007A;
 @lightBlue: #DBE9FA;
 @darkBlue: #306599;
+
+//User's own selection
+div.user_selection {
+  background-color: @userSelectionColor !important;
+}
+
+//Overflow selection color
+div.foreign_selection {
+  background-color: #99cc99 !important;
+}
 
 div.foreign_selection_0 {
   background-color: @lightGreen !important;
@@ -40,9 +50,14 @@ div.foreign_selection_5 {
   background-color: @lightOrange !important;
 }
 
+
+.fileTreeUserIcon {
+  border: 2px solid #B5D5FF;
+}
+
 //User's own cursor
 div.cursor_color_00 {
-  border-color: Black !important;
+  border-color: @userCursorColor !important;
 }
 
 div.cursor_color_0 {
