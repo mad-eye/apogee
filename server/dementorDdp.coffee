@@ -135,4 +135,10 @@ addScratchFile = (projectId) ->
     scratch:true
     orderingPath:ORDERING_PATH
   log.trace "Added scratch file #{fileId} for #{projectId}"
+  project = Projects.findOne projectId
+  if project.scratch
+    scratchContents = Assets.getText 'scratchProjectInstructions.txt'
+  else
+    scratchContents = Assets.getText 'instructions.txt'
+  MadEye.Bolide.createDocument fileId, scratchContents
 
