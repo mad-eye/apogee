@@ -74,7 +74,11 @@ Router.map ->
   @route 'tests'
   @route 'tos'
   @route 'faq'
-  @route 'projectSelection'
+  @route 'projectSelection',
+    path: '/projectSelection'
+    before: ->
+      Session.set "isHangout", true
+
   @route 'unlinkedHangout',
     path: '/unlinked-hangout'
     before: ->
