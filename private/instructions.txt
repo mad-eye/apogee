@@ -5,7 +5,7 @@
 #
 # 1. The file tree on the left is the project that was shared.  Clicking on a
 # file will load the contents in this editor.  Edit away; press Cmd-Z or
-# Ctrl-C to revert changes.
+# Ctrl-Z to revert changes.
 #
 # 2. Other people who go to the same URL can edit the project with you.  You
 # can see people's edits and selections as they type!
