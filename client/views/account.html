@@ -1,0 +1,27 @@
+<template name="payment">
+<h1>Plans</h1>
+
+<h3>Enterprise Edition</h3>
+<ul>
+  <li>A MadEye virtual machine that can be installed behind your firewall
+  <li>A stable update cycle
+  <li>Email and phone support, M-F 9am-6pm Pacific Time
+  <li>Just $100 per seat
+  <li>30 day free trial
+</ul>
+
+{{#constant}}
+<form id="enterpriseSubscription">
+  <input type="hidden" name="plan" value="enterprise" />
+  <select id="planSelect" name="quantity">
+    <option value="10">10 Seats ($1000/month)</option>
+    <option value="25">25 Seats ($2500/month)</option>
+    <option value="50">50 Seats ($5000/month)</option>
+    <option value="100">100 Seats ($10000/month)</option>
+  </select>
+  <button id="customButton" class="btn btn-primary">Subscribe</button>
+</form>
+{{/constant}}
+
+</template>
+

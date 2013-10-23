@@ -21,4 +21,5 @@ reactiveMachine
 sessionId
 sharejs
 iron-router
+stripe
 

@@ -8,10 +8,12 @@ settings = {
     apogeeUrl: process.env.MADEYE_APOGEE_URL,
     googleAnalyticsId: process.env.MADEYE_GOOGLE_ANALYTICS_ID,
     hangoutUrl: process.env.MADEYE_AZKABAN_URL + "/hangout/",
-    logLevel: process.env.MADEYE_LOGLEVEL
+    logLevel: process.env.MADEYE_LOGLEVEL,
+    stripePublicKey: process.env.MADEYE_STRIPE_PUBLIC_KEY
   },
   googleClientId: process.env.MADEYE_GOOGLE_CLIENT_ID,
-  googleSecret: process.env.MADEYE_GOOGLE_SECRET
+  googleSecret: process.env.MADEYE_GOOGLE_SECRET,
+  stripeSecretKey: process.env.MADEYE_STRIPE_SECRET_KEY
 
 };
 
