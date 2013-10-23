@@ -15,7 +15,6 @@ accounts-anonymous
 accounts-google
 standard-app-packages
 madeye-common
-mocha-web
 reactive-ace
 reactiveMachine
 sessionId
