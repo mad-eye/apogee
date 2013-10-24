@@ -2,7 +2,7 @@ log = new MadEye.Logger 'router'
 
 
 Router.configure
-  layout: "layout"
+  layoutTemplate: "layout"
   loadingTemplate: "loading"
   before: [
     ->
