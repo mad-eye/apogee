@@ -38,8 +38,12 @@ Template.editor.created = ->
 
 Template.editor.rendered = ->
   #console.log "Rendering editor"
-  MadEye.editorState.attach()
-  MadEye.editorState.rendered = true
+  Deps.autorun (c) ->
+    #Sometimes editorState isn't set up. Attach it when it is.
+    return unless MadEye.editorState
+    MadEye.editorState.attach()
+    MadEye.editorState.rendered = true
+    c.stop()
   #If we're displaying the program output, set the bottom of the editor
   outputOffset = if isInterview() then $('#programOutput').height() else 0
   $('#editor').css 'bottom', $('#statusBar').height() + outputOffset
@@ -48,7 +52,10 @@ Template.editor.rendered = ->
 
 Meteor.startup ->
   gotoPosition = (cursor)->
-    console.error "undefined cursor" unless cursor
+    unless cursor
+      log.error "undefined cursor"
+      return
+    log.trace 'Going to cursor', cursor
     editor = MadEye.editorState.getEditor()
     position = cursorToRange(editor.getSession().getDocument(), cursor)
     editor.navigateTo(position.start.row, position.start.column)

@@ -40,11 +40,23 @@ Template.fileTree.helpers
     projectId = Session.get "projectId"
     sessionIds = MadEye.fileTree.getSessionsInFile file.path
     return unless sessionIds
-    users = null
-    Deps.nonreactive ->
-      users = ProjectStatuses.find(sessionId: {$in: sessionIds}).map (status) ->
-        destination = "/edit/#{projectId}/#{file.path}#S#{status.connectionId}"
-        {img: "/images/#{USER_ICONS[status.iconId]}", destination}
+
+    users = ProjectStatuses.find(
+      {sessionId: {$in: sessionIds}},
+      {fields: {sessionId:1, connectionId:1}}
+    ).map (status) ->
+      return unless status.connectionId
+      if status.sessionId == Session.id
+        #The user's own
+        iconClass = "user_selection cursor_color_00"
+        destination = "#"
+      else
+        shareIndex = sharejs.getIndexForConnection status.connectionId
+        iconClass = "foreign_selection foreign_selection_#{shareIndex} cursor_color_#{shareIndex}"
+        destination = "/edit/#{projectId}/#{file.path}"
+      return {iconClass, destination}
+
+    users = (user for user in users when user)
     return users
 
   projectName : ->
@@ -69,7 +81,7 @@ Template.fileTree.events
     file.path = filename
     try
       file.save()
-      Meteor.Router.to "/interview/#{projectId}/#{filename}"
+      MadEye.fileLoader.loadId = file._id
     catch e
       alert e.message
 
@@ -81,7 +93,7 @@ Template.fileTree.events
 
   #'click img.fileTreeUserIcon': (event) ->
     #event.stopPropagation()
-    #Meteor.Router.to event.toElement.attributes.destination.value
+    #Router.go 'edit', projectId: getProjectId(), sessionId: event.toElement.attributes.destination.value
 
 @warnFirefoxHangout = ->
   if "Firefox" == BrowserDetect.browser and BrowserDetect.version < 22

@@ -29,5 +29,14 @@ MadEye.Bolide =
       timeout: 10*1000
     Meteor.http.post fileUrl(fileId), options
 
+  createDocument: (fileId, contents) ->
+    throw new Error "fileId required for createDocument" unless fileId
+    options =
+      data:
+        type: 'text2'
+      timeout: 10*1000
+    results = Meteor.http.put fileUrl(fileId), options
+    if contents
+      MadEye.Bolide.setShareContents fileId, contents
 
 

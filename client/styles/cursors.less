@@ -1,39 +1,94 @@
 //Default if nothing more specific is found
-div.foreign_selection {
-  background-color: #99cc99 !important;
+@aceSelectionColor: #B5D5FF; //Light blue
+@userSelectionColor: @aceSelectionColor;
+@userCursorColor: darken(@userSelectionColor, 20%);
+
+@lightGreen: #D5ECCF;
+@darkGreen: #58B442;
+@lightPurple: #E6CBEB;
+@darkPurple: #A13CB4;
+@lightOrange: #E3C6B0;
+@darkOrange: #FF913D;
+@lightAqua: #BCE7ED;
+@darkAqua: #00A3BB;
+@lightPink: #FFBFDD;
+@darkPink: #FF007A;
+@lightYellow: #FFFFCF;
+@darkYellow: #FEF087;
+//Too similar to user color
+//@lightBlue: #DBE9FA;
+//@darkBlue: #306599;
+
+//overflow colors
+@lightGrey: #EDEDED;
+@darkGrey: #333333;
+
+//User's own selection
+div.user_selection {
+  background-color: @userSelectionColor !important;
 }
 
+//Overflow selection color
+div.foreign_selection {
+  background-color: @lightGrey !important;
+}
 
 div.foreign_selection_0 {
-  //Light Green
-  background-color: #EBEEE5 !important;
+  background-color: @lightGreen !important;
 }
 
 div.foreign_selection_1 {
-  //Light Purple
-  background-color: #E6CBEB !important;
+  background-color: @lightPurple !important;
 }
 
 div.foreign_selection_2 {
-  //Light Orange
-  background-color: #E3C6B0 !important;
+  background-color: @lightAqua !important;
 }
 
 div.foreign_selection_3 {
-  background-color: #BCE7ED !important;
+  background-color: @lightPink !important;
 }
 
 div.foreign_selection_4 {
-  //Light Pink
-  background-color: #FFBFDD !important;
+  background-color: @lightOrange !important;
 }
 
-div.foreign_selection_5 {
-  background-color: #D5ECCF !important;
+div.foreign_selection_4 {
+  background-color: @lightYellow !important;
 }
 
-div.foreign_selection_6 {
-  background-color: #E6EADE !important;
+.fileTreeUserIcon {
+  //Use overflow color to be overwritten
+  border: 2px solid @darkGrey;
 }
 
+//User's own cursor
+div.cursor_color_00 {
+  border-color: @userCursorColor !important;
+}
 
+//overflow cursors will be ace_cursor, which is black
+
+div.cursor_color_0 {
+  border-color: @darkGreen !important;
+}
+
+div.cursor_color_1 {
+  border-color: @darkPurple !important;
+}
+
+div.cursor_color_2 {
+  border-color: @darkAqua !important;
+}
+
+div.cursor_color_3 {
+  border-color: @darkPink !important;
+}
+
+div.cursor_color_4 {
+  border-color: @darkOrange !important;
+}
+
+div.cursor_color_5 {
+  border-color: @darkYellow !important;
+}

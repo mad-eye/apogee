@@ -88,7 +88,7 @@ class FileTree
     return sessions
 
   setSessionPaths: (sessionPaths) ->
-    oldPaths = _.values @sessionPaths
+    oldPaths = if @sessionPaths then _.values @sessionPaths else []
     newPaths = _.values sessionPaths
     @sessionPaths = _.clone sessionPaths
     _.each oldPaths, (path) =>

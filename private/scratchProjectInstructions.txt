@@ -1,0 +1,30 @@
+# Welcome to MadEye!
+#
+# With MadEye you can code with your teammates in real-time.  Here are a couple
+# things to get you started:
+#
+# 1. The file tree on the left is the project that was shared.  Clicking on a
+# file will load the contents in this editor.  Edit away; press Cmd-Z or
+# Ctrl-Z to revert changes.
+#
+# 2. Other people who go to the same URL can edit the project with you.  You
+# can see people's edits and selections as they type!
+#
+# 3. You can see where your collaborators are by the colored boxes in the
+# file tree.  This is the same color as their cursor and selections.
+# Their line will also be have the gutter highlighted the same color.
+#
+# 4. If you want to video-conference with your team, click on the hangout button
+# on the top of the file tree to embed this page in a Google Hangout.  Your
+# teammates can join the Hangout by pressing their button.
+#
+# 5. The editor has many powers!  Notice you can change the syntax mode
+# (although we figure it out most of the time), color theme, tab size,
+# soft vs hard tabs, vim/emacs keybindings, and more!  Press Cmd/Ctrl-F to
+# find text in the editor, and press Cmd/Ctrl-F twice to find and replace.
+# For more details, check out Ace's documentation at http://ace.ajax.org .
+#
+# 6. You can add files to the project by either clicking "New File", or
+# dragging and dropping from your desktop to the grey area below the
+# file tree.
+#

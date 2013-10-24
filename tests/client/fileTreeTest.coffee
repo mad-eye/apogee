@@ -173,16 +173,16 @@ describe "FileTree", ->
       assert.isTrue visNow
 
   describe 'select', ->
-    #toSpy = sinon.spy()
+    #goSpy = sinon.spy()
     called = null
     calledArgs = null
-    toSpy = null
+    goSpy = null
 
 
-    oldTo = null
+    oldGo = null
     file = dir = null
     projectId = Meteor.uuid()
-    oldTo = Meteor.Router.to
+    oldGo = Router.go
 
     before ->
       file = MadEye.File.create path:'a4/b4/file.txt', isDir:false, projectId:projectId
@@ -190,17 +190,17 @@ describe "FileTree", ->
       dir = MadEye.File.create path:'a4', isDir:true, projectId:projectId
 
     beforeEach ->
-      toSpy = () ->
+      goSpy = () ->
       called = true
       calledArgs = _.toArray arguments
-      Meteor.Router.to = toSpy
+      Router.go = goSpy
 
       fileTree = new FileTree
       called = false
       calledArgs = null
 
     after ->
-      Meteor.Router.to = oldTo
+      Router.go = oldGo
 
     it 'should set fileTree.fileId for file', ->
       fileTree.select file
