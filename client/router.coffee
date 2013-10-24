@@ -84,7 +84,13 @@ Router.map ->
     before: ->
       Session.set "isHangout", true
 
-  @route 'payment'
+  @route 'payment',
+    path: '/payment'
+    before: ->
+      unless Meteor.user() and Meteor.user().type != 'anonymous'
+        @render 'login'
+        @stop()
+
   @route 'missing', path: '*'
 
 ## Set up reactive Router.template var

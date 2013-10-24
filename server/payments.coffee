@@ -1,8 +1,5 @@
 log = new MadEye.Logger 'payments'
 
-Orders = new Meteor.Collection 'orders'
-Customers = new Meteor.Collection 'customers'
-
 stripe = new Stripe Meteor.settings.stripeSecretKey
 
 Meteor.methods
@@ -27,9 +24,11 @@ Meteor.methods
         plan: order.plan
         quantity: order.quantity
       returnedCustomer = stripe.createCustomer customer
+      returnedCustomer._id = returnedCustomer.id
+      returnedCustomer.userId = @userId
       Customers.insert returnedCustomer
       console.log "inserted customer:", returnedCustomer
-      return
+    return
 
 
 
