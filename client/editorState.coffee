@@ -136,7 +136,7 @@ class EditorState
     @detachShareDoc()
     finish = (err, doc) =>
       if err
-        log.error "Error in loading file: #{e.message}:", e
+        log.error "Error in loading file:", err
       else if thisLoadNumber != @currentLoadNumber
         #abort; do nothing
         0
