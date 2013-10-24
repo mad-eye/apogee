@@ -12,7 +12,7 @@ Router.configure
       Session.set "isHangout", true
       if @params.projectId and @query.hangoutUrl
         log.debug "Registering hangoutUrl #{@query.hangoutUrl} for project #{@params.projectId}"
-        registerHangout projectId, @query.hangoutUrl
+        registerHangout @params.projectId, @query.hangoutUrl
   , ->
     viewData = _.clone @query
     for k,v of @params
