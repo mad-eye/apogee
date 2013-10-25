@@ -18,9 +18,10 @@ Template.payment.helpers
     return plans
 
   hasPlan: ->
-    plan = getCustomer()?.subscription?.plan?
-    return false unless plan
-    return getCustomer().subscription.quantity == this.seats
+    subscription = getCustomer()?.subscription
+    return false unless subscription
+    #TODO: Check for right type of plan at subscription.plan.id
+    return subscription.quantity == this.seats
 
   buttonMessage: ->
     #TODO: Have upgrade/downgrade messages

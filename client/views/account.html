@@ -38,7 +38,7 @@
         <td>${{cost}}</td>
         <td>
           {{#if hasPlan}}
-            <button class="btn btn-inactive">Your Plan</button>
+            <span>Your Plan</span>
           {{else}}
             <button class="btn btn-primary subscribe-button" data-seats="{{seats}}">{{buttonMessage}}</button>
           {{/if}}
@@ -49,7 +49,6 @@
   </table>
 
 {{!-- old
-{{#constant}}
 <form id="enterpriseSubscription">
   <input type="hidden" name="plan" value="enterprise" />
   <select id="planSelect" name="quantity">
@@ -60,7 +59,6 @@
   </select>
   <button id="customButton" class="btn btn-primary">Subscribe</button>
 </form>
-{{/constant}}
 --}}
 
 </template>
