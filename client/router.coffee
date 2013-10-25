@@ -6,24 +6,19 @@ Router.configure
   loadingTemplate: "loading"
   before: [
     ->
-      @query = getQueryParams window.location.search
+      if @params?.hangout
+        Session.set "isHangout", true
+        if @params.projectId and @params.hangoutUrl
+          log.debug "Registering hangoutUrl #{@params.hangoutUrl} for project #{@params.projectId}"
+          registerHangout @params.projectId, @params.hangoutUrl
+
   , ->
-    if @query.hangout
-      Session.set "isHangout", true
-      if @params.projectId and @query.hangoutUrl
-        log.debug "Registering hangoutUrl #{@query.hangoutUrl} for project #{@params.projectId}"
-        registerHangout @params.projectId, @query.hangoutUrl
-  , ->
-    viewData = _.clone @query
-    for k,v of @params
-      viewData[k] = v
+    viewData = _.clone(@params ? {})
     viewData.page = @template
     recordView viewData
   , ->
     Router.template = @template
   ]
-  after: ->
-    @query = {}
 
 Router.map ->
   @route 'home', path: '/'
