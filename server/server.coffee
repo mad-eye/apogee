@@ -47,5 +47,5 @@ Workspaces.allow
 ActiveDirectories.allow
   insert: -> true
   update: -> true
-  delete: -> true
+  remove: -> true
 
