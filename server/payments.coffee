@@ -14,16 +14,10 @@ Meteor.methods
     #TODO: Check for existing cusomer/plan
     customer = Customers.findOne userId: @userId
     if customer
-      if customer.subscription
-        if customer.subscription.plan.id == order.plan
-          if customer.subscription.quantity == order.quantity
-            #TODO: Return warning, nothing changed
-          else
-            #TODO: Subscribe with new quantity
-        else
-          #TODO: Change plan
-      else
-        #TODO: Add subscription
+      subscription = stripe.updateSubscription customer.id, order
+      customer.subscription = subscription
+      customer.save()
+      log.info "Updated customer #{customer.id} subscription to", subscription.quantity
     else
       #Add new customer with plan
       customer =

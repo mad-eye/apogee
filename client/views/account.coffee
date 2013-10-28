@@ -34,23 +34,30 @@ Template.payment.events
       plan: 'enterprise'
     
     log.debug "Selected #{order.quantity} seats"
-    token = (res) ->
-      order.token = res.id
-      log.debug "Submitting order", order
-      Meteor.call 'submitOrder', order, (err, res) ->
+
+    #do we have a card already?
+    if getCustomer()?.cards?.data?.length
+      Meteor.call 'submitOrder', order, (err) ->
         return log.error err if err
-        log.info 'Order submitted:', res
+        log.info 'Order submitted'
+    else
+      token = (res) ->
+        order.token = res.id
+        log.debug "Submitting order", order
+        Meteor.call 'submitOrder', order, (err) ->
+          return log.error err if err
+          log.info 'Order submitted'
 
 
-    StripeCheckout.open
-      key:         Meteor.settings.public.stripePublicKey
-      address:     true
-      amount:      10000 * order.quantity
-      currency:    'usd'
-      name:        'MadEye'
-      description: "Enterprise Edition (#{order.quantity} seats) "
-      panelLabel:  'Checkout'
-      token:       token
+      StripeCheckout.open
+        key:         Meteor.settings.public.stripePublicKey
+        address:     true
+        amount:      10000 * order.quantity
+        currency:    'usd'
+        name:        'MadEye'
+        description: "Enterprise Edition (#{order.quantity} seats) "
+        panelLabel:  'Checkout'
+        token:       token
 
 
     e.preventDefault()
