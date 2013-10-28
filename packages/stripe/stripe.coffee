@@ -22,5 +22,10 @@ class Stripe
     @stripe.customers.updateSubscription customerId, subscription, futureCallback(future)
     return future.wait()
 
+  cancelSubscription: (customerId) ->
+    future = new Future()
+    @stripe.customers.cancelSubscription customerId, futureCallback(future)
+    return future.wait()
+
 
 

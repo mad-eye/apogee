@@ -64,6 +64,16 @@ Template.payment.events
     e.stopPropagation()
     return
 
+  'click #unsubscribe' : (e, tmpl) ->
+    log.debug "Unsubscribing"
+    if confirm "Are you sure you want to cancel your subscription?"
+      Meteor.call 'cancelSubscription', (err) ->
+        return log.error err if err
+        log.info 'Subscription cancelled'
+    e.preventDefault()
+    e.stopPropagation()
+    return
+
 serializeForm = (form, originalVals) ->
   if originalVals
     formVals = _.clone(originalVals)

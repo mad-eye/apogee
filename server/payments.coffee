@@ -7,10 +7,8 @@ stripe = new Stripe Meteor.settings.stripeSecretKey
 
 Meteor.methods
   submitOrder: (order) ->
-    user = Meteor.users.findOne @userId
-    if !user or user.type == 'anonymous'
-      throw new Meteor.Error 401, 'Authentication', 'You must be logged in to submit an order'
-    log.debug "Submitting order for #{user.email}:", order
+    user = getUser @userId
+    log.info "Submitting order for #{user.email}:", order
     #TODO: Check for existing cusomer/plan
     customer = Customers.findOne userId: @userId
     if customer
@@ -37,5 +35,24 @@ Meteor.methods
 
     return
 
+  cancelSubscription: ->
+    log.info "Cancelling subscription for #{@userId}"
+    customer = Customers.findOne userId: @userId
+    unless customer
+      throw new Meteor.Error 401, 'CustomerNotFound', "No customer to cancel subscription of."
+    response = stripe.cancelSubscription customer.id
+    log.trace "cancelSubscription response:", response
+    delete customer.subscription
+    customer.save()
 
+    return
+
+
+
+getUser = (userId) ->
+  if userId
+    user = Meteor.users.findOne userId
+  if !user or user.type == 'anonymous'
+    throw new Meteor.Error 401, 'Authentication', 'You must be logged in to submit an order'
+  return user
 
