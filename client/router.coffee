@@ -1,29 +1,27 @@
 log = new MadEye.Logger 'router'
 
-
 Router.configure
-  layout: "layout"
+  layoutTemplate: "layout"
   loadingTemplate: "loading"
-  before: [
-    ->
-      @query = getQueryParams window.location.search
-  , ->
-    if @query.hangout
-      Session.set "isHangout", true
-      if @params.projectId and @query.hangoutUrl
-        log.debug "Registering hangoutUrl #{@query.hangoutUrl} for project #{@params.projectId}"
-        registerHangout projectId, @query.hangoutUrl
-  , ->
-    viewData = _.clone @query
-    for k,v of @params
-      viewData[k] = v
-    viewData.page = @template
-    recordView viewData
-  , ->
-    Router.template = @template
-  ]
-  after: ->
-    @query = {}
+
+Router.before ->
+  if @params?.hangout
+    Session.set "isHangout", true
+    if @params.projectId and @params.hangoutUrl
+      log.debug "Registering hangoutUrl #{@params.hangoutUrl} for project #{@params.projectId}"
+      registerHangout @params.projectId, @params.hangoutUrl
+
+Router.before ->
+  viewData = {}
+  for k, v of @params
+    #TODO: The positional arguments have numeric keys, but this makes
+    #things confused as to what type of object @params is
+    viewData[k] = v
+  viewData.page = @template
+  recordView viewData
+
+Router.before ->
+  Router.template = @template
 
 Router.map ->
   @route 'home', path: '/'

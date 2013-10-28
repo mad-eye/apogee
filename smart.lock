@@ -6,10 +6,7 @@
         "git": "git://github.com/mad-eye/meteor-accounts-anonymous.git",
         "branch": "master"
       },
-      "iron-router": {
-        "git": "git://github.com/mad-eye/iron-router.git",
-        "branch": "madeye"
-      }
+      "iron-router": {}
     },
     "packages": {
       "accounts-anonymous": {
@@ -18,9 +15,9 @@
         "commit": "e3dbbe682dd12321a5b0b5ea66a93d8d5fde7326"
       },
       "iron-router": {
-        "git": "git://github.com/mad-eye/iron-router.git",
-        "branch": "madeye",
-        "commit": "670c01393208f9d5c0306d6226e601b21d1e53b7"
+        "git": "https://github.com/EventedMind/iron-router.git",
+        "tag": "v0.6.0",
+        "commit": "c63e92d24c8210e2304ff5fed1b5c463394aeaf6"
       }
     }
   }
