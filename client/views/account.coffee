@@ -42,7 +42,7 @@ Template.payment.events
         log.info 'Order submitted'
     else
       token = (res) ->
-        order.token = res.id
+        order.card = res.id
         log.debug "Submitting order", order
         Meteor.call 'submitOrder', order, (err) ->
           return log.error err if err
@@ -70,6 +70,18 @@ Template.payment.events
       Meteor.call 'cancelSubscription', (err) ->
         return log.error err if err
         log.info 'Subscription cancelled'
+    e.preventDefault()
+    e.stopPropagation()
+    return
+
+  'click #deleteCard' : (e, tmpl) ->
+    log.debug "Deleting card"
+    message = "Are you sure you want to delete your card?  " +
+      "Your subscription will not renew unless you add a new card."
+    if confirm message
+      Meteor.call 'deleteCard', (err) ->
+        return log.error err if err
+        log.info 'Card deleted'
     e.preventDefault()
     e.stopPropagation()
     return
