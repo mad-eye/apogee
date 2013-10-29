@@ -4,7 +4,7 @@ getCustomer = ->
   return unless Meteor.user() and Meteor.user().type != 'anonymous'
   Customers.findOne userId:Meteor.userId()
   
-Template.payment.helpers
+Template.subscription.helpers
   customerCards: ->
     getCustomer()?.cards?.data
 
@@ -30,7 +30,7 @@ Template.payment.helpers
     #TODO: Have upgrade/downgrade messages
     return "Subscribe"
 
-Template.payment.events
+Template.subscription.events
   'click button.subscribe-button' : (e, tmpl) ->
     order =
       quantity: parseInt e.target.dataset.seats, 10
@@ -38,9 +38,11 @@ Template.payment.events
     
     log.debug "Selected #{order.quantity} seats"
 
+    Session.set 'working', true
     #do we have a card already?
     if getCustomer()?.cards?.data?.length
       Meteor.call 'submitOrder', order, (err) ->
+        Session.set 'working', false
         return log.error err if err
         log.info 'Order submitted'
     else
@@ -48,6 +50,7 @@ Template.payment.events
         order.card = res.id
         log.debug "Submitting order", order
         Meteor.call 'submitOrder', order, (err) ->
+          Session.set 'working', false
           return log.error err if err
           log.info 'Order submitted'
       StripeCheckout.open
@@ -67,7 +70,9 @@ Template.payment.events
   'click #unsubscribe' : (e, tmpl) ->
     log.debug "Unsubscribing"
     if confirm "Are you sure you want to cancel your subscription?"
+      Session.set 'working', true
       Meteor.call 'cancelSubscription', (err) ->
+        Session.set 'working', false
         return log.error err if err
         log.info 'Subscription cancelled'
     e.preventDefault()
@@ -77,10 +82,12 @@ Template.payment.events
   'click #addCard' : (e, tmpl) ->
     log.debug "Adding card"
 
+    Session.set 'working', true
     token = (res) ->
       card = res.id
       log.debug "Submitting new card", card
       Meteor.call 'addCard', card, (err) ->
+        Session.set 'working', false
         return log.error err if err
         log.info 'Card added'
     StripeCheckout.open
@@ -100,7 +107,9 @@ Template.payment.events
     message = "Are you sure you want to delete your card?  " +
       "Your subscription will not renew unless you add a new card."
     if confirm message
+      Session.set 'working', true
       Meteor.call 'deleteCard', (err) ->
+        Session.set 'working', false
         return log.error err if err
         log.info 'Card deleted'
     e.preventDefault()

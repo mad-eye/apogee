@@ -10,6 +10,13 @@
 </ul>
 
 <div id="subscriptionContainer">
+  {{> subscriptionOverlay}}
+  {{> subscription}}
+</div>
+</template>
+
+<template name="subscription">
+<div id="subscriptionData">
   <table class="table table-striped table-condensed">
     <thead>
       <tr>
@@ -66,7 +73,13 @@
     </div>
   </div>
   {{/with}}
-
 </div>
 </template>
 
+<template name="subscriptionOverlay">
+  {{#if Session 'working'}}
+    <div id="subscriptionOverlay">
+        <img id="subscriptionLoadingSpinner" src="/images/ajax-loader.gif" alt="Loading..." />
+    </div>
+  {{/if}}
+</template>
