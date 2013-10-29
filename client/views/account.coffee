@@ -8,14 +8,17 @@ Template.payment.helpers
   customerCards: ->
     getCustomer()?.cards?.data
 
-  cardDetails: ->
-    "#{@type} ending in #{@last4}, expiring #{@exp_month}/#{@exp_year}"
+  customerCard: ->
+    getCustomer()?.cards?.data[0]
 
   availableEnterprisePlans: ->
     plans = []
     for i in [10, 25, 50, 100]
       plans.push {seats:i, cost:100*i}
     return plans
+
+  customerSubscription: ->
+    return getCustomer()?.subscription
 
   hasPlan: ->
     subscription = getCustomer()?.subscription
@@ -47,8 +50,6 @@ Template.payment.events
         Meteor.call 'submitOrder', order, (err) ->
           return log.error err if err
           log.info 'Order submitted'
-
-
       StripeCheckout.open
         key:         Meteor.settings.public.stripePublicKey
         address:     true
@@ -58,7 +59,6 @@ Template.payment.events
         description: "Enterprise Edition (#{order.quantity} seats) "
         panelLabel:  'Checkout'
         token:       token
-
 
     e.preventDefault()
     e.stopPropagation()
@@ -70,6 +70,27 @@ Template.payment.events
       Meteor.call 'cancelSubscription', (err) ->
         return log.error err if err
         log.info 'Subscription cancelled'
+    e.preventDefault()
+    e.stopPropagation()
+    return
+
+  'click #addCard' : (e, tmpl) ->
+    log.debug "Adding card"
+
+    token = (res) ->
+      card = res.id
+      log.debug "Submitting new card", card
+      Meteor.call 'addCard', card, (err) ->
+        return log.error err if err
+        log.info 'Card added'
+    StripeCheckout.open
+      key:         Meteor.settings.public.stripePublicKey
+      address:     true
+      name:        'MadEye'
+      description: "Add credit card"
+      panelLabel:  'Add'
+      token:       token
+
     e.preventDefault()
     e.stopPropagation()
     return

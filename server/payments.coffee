@@ -47,6 +47,22 @@ Meteor.methods
     refreshCustomerData userId: @userId, customerId: customer.id
     return
 
+  addCard: (card) ->
+    log.info "Adding card for #{@userId}"
+    customer = Customers.findOne userId: @userId
+    unless customer
+      throw new Meteor.Error 404, 'CustomerNotFound', "No customer to add card for."
+    unless card
+      throw new Meteor.Error 404, 'CardNotFound', "No card was found to delete."
+    response = stripe.addCard customer.id, card
+    log.trace "Add card response:", response
+    customer.cards ?= {}
+    customer.cards.data ?= []
+    customer.cards.data.push response
+    customer.save()
+    refreshCustomerData userId: @userId, customerId: customer.id
+    return
+
   deleteCard: ->
     log.info "Deleting card for #{@userId}"
     customer = Customers.findOne userId: @userId

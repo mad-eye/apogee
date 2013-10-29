@@ -38,5 +38,9 @@ class Stripe
     @stripe.customers.deleteCard customerId, cardId, futureCallback(future)
     return future.wait()
 
+  addCard: (customerId, cardToken) ->
+    future = new Future()
+    @stripe.customers.createCard customerId, card:cardToken, futureCallback(future)
+    return future.wait()
 
 

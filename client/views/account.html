@@ -1,19 +1,6 @@
 <template name="payment">
-<h1>Billing</h1>
-
 <div class="account-section">
-  <h3>Credit Card</h3>
-  {{#each customerCards}}
-    {{cardDetails}}
-    <button id="deleteCard" class="btn btn-danger">Delete card</button>
-  {{else}}
-    You don&apos;t have a card on file.
-    {{!TODO: Add card button}}
-  {{/each}}
-</div>
-
-<div class="account-section">
-<h3>Enterprise Edition</h3>
+<h1>Subscribe to Enterprise Edition</h1>
 <ul>
   <li>A MadEye virtual machine that can be installed behind your firewall
   <li>A stable update cycle
@@ -22,32 +9,64 @@
   <li>30 day free trial
 </ul>
 
-  <table class="tablhaspe">
+<div id="subscriptionContainer">
+  <table class="table table-striped table-condensed">
     <thead>
       <tr>
-        <td>Plan</td>
-        <td># Seats</td>
-        <td>Cost/month</td>
+        <td class="plan-name">Plan</td>
+        <td class="plan-quantity"># Seats</td>
+        <td class="plan-cost">Cost/month</td>
       </tr>
     </thead>
     <tbody>
     {{#each availableEnterprisePlans}}
       <tr>
-        <td>Enterprise</td>
-        <td>{{seats}}</td>
-        <td>${{cost}}</td>
-        <td>
+        <td class="plan-name">Enterprise</td>
+        <td class="plan-quantity">{{seats}}</td>
+        <td class="plan-cost">${{cost}}</td>
+        <td class="plan-subscribe">
           {{#if hasPlan}}
-            <span>Your Plan</span>
+            <div class="pull-right">Your Plan</div>
           {{else}}
-            <button class="btn btn-primary subscribe-button" data-seats="{{seats}}">{{buttonMessage}}</button>
+            <button class="btn btn-primary btn-small subscribe-button pull-right" data-seats="{{seats}}">{{buttonMessage}}</button>
           {{/if}}
         </td>
       </tr>
     {{/each}}
     </tbody>
   </table>
-  <button id="unsubscribe" class="btn btn-danger">Unsubscribe</button>
 
+
+  {{#with customerCard}}
+  <div class="subscription-info clearfix">
+    You have a {{type}} ending in {{last4}}
+    (expiring {{exp_month}}/{{exp_year}}) on file.  We&apos;ll use that
+    for the monthly subscription fee.
+    <div class="pull-right">
+      <button id="deleteCard" class="btn btn-danger btn-small">Delete card</button>
+    </div>
+  </div>
+  {{else}}
+    {{#if customerSubscription}}
+      <div class="subscription-info clearfix">
+        You don't have a card on file.  You'll need to add one for
+        your subscription to remain active after the next billing.
+        <div class="pull-right">
+          <button id="addCard" class="btn btn-primary btn-small">Add card</button>
+        </div>
+      </div>
+    {{/if}}
+  {{/with}}
+
+  {{#with customerSubscription}}
+  <div class="subscription-info clearfix">
+    You are currently signed up for the {{plan.name}} for {{quantity}} seats.
+    <div class="pull-right">
+      <button id="unsubscribe" class="btn btn-danger btn-small">Unsubscribe</button>
+    </div>
+  </div>
+  {{/with}}
+
+</div>
 </template>
 
