@@ -7,7 +7,7 @@ log = new MadEye.Logger 'dementorDdp'
 Meteor.methods
   #params: {projectId?:, projectName:, version:, dementor:}
   registerProject: (params) ->
-    log.trace 'Registering project with', params
+    log.debug 'Registering project with', params
     #Scratch projects don't come from a dementor
     unless params.scratch
       checkDementorVersion params.version
@@ -47,6 +47,7 @@ Meteor.methods
 
   addFile: (file) ->
     this.unblock()
+    #TODO what is 'check'?
     check file, Match.ObjectIncluding path:String, orderingPath:String
     Files.insert file
 
@@ -68,9 +69,10 @@ Meteor.methods
 
   updateFileContents: (fileId, contents) ->
     this.unblock()
-    log.trace "Calling updateFileContents", fileId, contents
+    log.trace "Calling updateFileContents", fileId, contents.substr(0,20)
     check fileId, String
     check contents, String
+
     try
       {version} = MadEye.Bolide.getShareContents fileId
     catch e
@@ -146,5 +148,11 @@ addScratchFile = (projectId) ->
     isDir:false
     scratch:true
     orderingPath:ORDERING_PATH
-  log.debug "Added scratch file #{fileId} for #{projectId}"
+  log.trace "Added scratch file #{fileId} for #{projectId}"
+  project = Projects.findOne projectId
+  if project.scratch
+    scratchContents = Assets.getText 'scratchProjectInstructions.txt'
+  else
+    scratchContents = Assets.getText 'instructions.txt'
+  MadEye.Bolide.createDocument fileId, scratchContents
 

@@ -1,3 +1,10 @@
+getProjectStatus = ->
+  projectId = Session.get("projectId")
+  return unless projectId
+  projectStatus = ProjectStatuses.findOne {sessionId:Session.id, projectId}
+  return projectStatus
+  
+
 Meteor.startup ->
   #Create one for the session
   Deps.autorun ->
@@ -17,11 +24,8 @@ Meteor.startup ->
   #Set filepath
   Deps.autorun ->
     @name 'set filepath'
-    #TODO this seems bolierplatey..
-    projectId = Session.get("projectId")
-    return unless projectId and MadEye.fileLoader and MadEye.editorState
-    projectStatus = ProjectStatuses.findOne {sessionId:Session.id, projectId}
-    return unless projectStatus
+    projectStatus = getProjectStatus()
+    return unless projectStatus and MadEye.fileLoader and MadEye.editorState
     projectStatus.update {filePath: MadEye.fileLoader.editorFilePath, connectionId: MadEye.editorState.connectionId}
 
   #Populate fileTree with ProjectStatuses filePath
@@ -39,6 +43,7 @@ Meteor.startup ->
     MadEye.fileTree.setSessionPaths sessionPaths
 
   #Invalidate sessionsDep on important changes
+  #TODO: Use fields: to limit watching to filePath.
   queryHandle = null
   Deps.autorun (computation)->
     @name 'dirty sessions on changes'

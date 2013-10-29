@@ -29,12 +29,13 @@ Handlebars.registerHelper 'isScratch', ->
   getProject()?.closed
   
 @fileIsDeleted = ->
-  Files.findOne(MadEye.editorState.fileId)?.deletedInFs
+  Files.findOne(MadEye.editorState?.fileId)?.deletedInFs
 
 @isInterview = ->
   getProject()?.interview
 
 Handlebars.registerHelper "isInterview", isInterview
+
 
 @isTerminal = ->
   getProject()?.tunnels?.terminal?
@@ -42,5 +43,29 @@ Handlebars.registerHelper "isInterview", isInterview
 Handlebars.registerHelper "isTerminal", isTerminal
 
 @isEditorPage = ->
-  (Meteor.Router.page() == 'edit') or (Meteor.Router.page() == 'editImpressJS')
+  (Router.template == 'edit') or (Router.tempate == 'editImpressJS')
+
+Handlebars.registerHelper "isHomePage", ->
+  return Router.template in ["home", "home2", "getStarted"]
+
+Handlebars.registerHelper "isHangout", ->
+  Session.get "isHangout"
+
+@displayAlert = (alert) ->
+  return unless alert?
+  html = Template.alert {
+    level: alert.level
+    title: alert.title
+    message: alert.message
+  }
+  $('#alertBox').append html
+
+@groupA = (testName)->
+  return null unless Meteor.userId()
+  return MadEye.crc32("#{Meteor.userId()}#{testName}") % 2 == 0
+
+@groupB = (testName)->
+  return null unless Meteor.userId()
+  return MadEye.crc32("#{Meteor.userId()}#{testName}") % 2 != 0
+
 

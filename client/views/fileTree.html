@@ -12,8 +12,8 @@
         <li class="{{fileEntryClass}}" id="{{_id}}">
           <span>{{filename}} {{#if modified}}*{{/if}}</span>
           {{#each usersInFile this}}
-            <img class="fileTreeUserIcon" alt="" destination="{{this.destination}}" src="{{this.img}}"</img>
-          {{/each}}
+            <div class="fileTreeUserIcon {{this.iconClass}}" data-destination="{{this.destination}}"/></div>
+          {{/each }}
         </li>
       {{/if}}
     {{/each}}

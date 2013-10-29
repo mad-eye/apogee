@@ -9,7 +9,7 @@ Errors.handleError = (error, log) ->
 Errors.wrapShareError = (err, log) ->
   log.warn "Found error from shareJS:", err if log
   details = err.message ? err
-  return {reason: "SyncError", details}
+  return new Meteor.Error 500, "SyncError", details
   
 #Takes httpResponse
 Errors.handleNetworkError = (error, response, log) ->
@@ -60,7 +60,7 @@ networkIssuesWarning =
   uncloseable: true
 
 fileIsModifiedLocally = ->
-  file = Files.findOne MadEye.editorState.fileId
+  file = Files.findOne MadEye.editorState?.fileId
   return false unless file and file.fsChecksum? and file.loadChecksum?
   file.fsChecksum != file.loadChecksum
 

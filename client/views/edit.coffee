@@ -1,3 +1,5 @@
+log = new MadEye.Logger 'edit'
+
 aceModes = ace.require('ace/ext/modelist')
 
 #TODO figure out a better way to share this from the ShareJS code
@@ -26,15 +28,27 @@ cursorToRange = (editorDoc, cursor) ->
 #XXX: Unused?
 Template.editor.preserve("#editor")
 
+#TODO NOT SURE ABOUT THIS SECTION.. should everything be in the autorun?
 Template.editor.rendered = ->
-  MadEye.editorState.attach()
-  MadEye.editorState.rendered = true
-  MadEye.rendered 'editor'
-  windowSizeChanged()
+  Deps.autorun (c) ->
+    #Sometimes editorState isn't set up. Attach it when it is.
+    return unless MadEye.editorState
+    MadEye.editorState.attach()
+    MadEye.editorState.rendered = true
+    MadEye.rendered 'editor'
+    windowSizeChanged()
+    #If we're displaying the program output, set the bottom of the editor
+    outputOffset = if isInterview() then $('#programOutput').height() else 0
+    $('#editor').css 'bottom', $('#statusBar').height() + outputOffset
+    $('#statusBar').css 'bottom', outputOffset
+    c.stop()
 
 Meteor.startup ->
   gotoPosition = (cursor)->
-    console.error "undefined cursor" unless cursor
+    unless cursor
+      log.error "undefined cursor"
+      return
+    log.trace 'Going to cursor', cursor
     editor = MadEye.editorState.getEditor()
     position = cursorToRange(editor.getSession().getDocument(), cursor)
     editor.navigateTo(position.start.row, position.start.column)
@@ -45,18 +59,21 @@ Meteor.startup ->
   #TODO: Move this into internal MadEye.editorState fns
   Deps.autorun ->
     @name 'goto cursor'
-    return unless MadEye.isRendered 'editor'
+    return unless MadEye.isRendered 'editor' and MadEye.editorState
     fileId = MadEye.fileLoader?.editorFileId
     return unless fileId?
     file = Files.findOne(fileId)
     return unless file and file._id != MadEye.editorState?.fileId
-    MadEye.editorState.loadFile file, ->
-      if MadEye.editorState.doc.cursor
+    MadEye.editorState.loadFile file, (err) ->
+      return log.error "Error loading file:", err if err
+      return unless fileId == MadEye.editorState.fileId
+      log.warn "Editor state finished loading with no doc" unless MadEye.editorState.doc
+      if MadEye.editorState.doc?.cursor
         gotoPosition(MadEye.editorState.doc.cursor)
 
 Template.editorOverlay.helpers
   editorIsLoading: ->
-    MadEye.editorState.loading == true
+    MadEye.editorState?.loading == true
 
   editorThemeIsDark: MadEye.editorState?.editor.isThemeDark
 

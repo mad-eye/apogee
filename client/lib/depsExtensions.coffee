@@ -1,3 +1,5 @@
+log = new MadEye.Logger 'depsExtensions'
+
 #EXPERIMENTAL SECTION
 invalidatedCallbacks = []
 
@@ -17,11 +19,8 @@ Deps.Computation.prototype.name = (name) ->
 Deps.invalidated = (callback) ->
   invalidatedCallbacks.push callback if callback
 
-
 #XXX application specific code
 #Log when a context has been invalidated.
-@startDebug = ->
-  Deps.invalidated (name) ->
-    console.log "Invalidated: #{name}"
-
-
+#@startDebug = ->
+Deps.invalidated (name) ->
+  log.trace "Invalidated:", name

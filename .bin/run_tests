@@ -1,2 +1,3 @@
-which mocha-phantomjs > /dev/null || echo "Please install mocha-phantomjs: 'sudo npm install -g mocha-phantomjs'"
-mocha-phantomjs $MADEYE_APOGEE_URL/tests
+echo "TODO write tests"
+# which mocha-phantomjs > /dev/null || echo "Please install mocha-phantomjs: 'sudo npm install -g mocha-phantomjs'"
+# mocha-phantomjs $MADEYE_APOGEE_URL/tests

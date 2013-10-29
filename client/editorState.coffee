@@ -56,6 +56,7 @@ class EditorState
         fileId: @fileId
       log.warn "revert called, but no doc selected"
       return callback "No doc or no file"
+    log.info "Reverting file", @fileId
     Events.record("revert", {file: @path, projectId: Session.get "projectId"})
     @working = true
     fileId = @fileId
@@ -86,9 +87,18 @@ class EditorState
       log.error "Found null doc version for file #{@fileId}"
     return doc.version?
 
-  attachAce: (doc)->
+  detachShareDoc: ->
+    if @doc
+      log.trace "Detaching share doc", @doc.name
+      @doc.detach_ace?()
+      @doc = null
+
+  attachShareDoc: (doc)->
     fileId = @fileId
+    @detachShareDoc()
     unless doc.editorAttached
+      log.trace "Attaching share doc", doc.name
+      @doc = doc
       doc.attach_ace @editor._getEditor()
       @editor.newLineMode = "auto"
       doc.on 'warn', (data) =>
@@ -98,7 +108,8 @@ class EditorState
           message:'shareJsError'
           fileId: fileId
           error: data
-      @getEditor().navigateFileStart() unless doc.cursor #why unless doc.cursor
+      #If we don't have a position, go to the start
+      @getEditor().navigateFileStart() unless doc.cursor
       doc.emit "cursors"
     else
       Metrics.add
@@ -108,37 +119,49 @@ class EditorState
         error: 'Editor already attached'
       log.warn "Editor already attached"
 
+  #This is how many loadFiles we've done.
+  #It allows us to bail out of stale callbacks
+  loadNumber = 0
+
   #callback: (error) ->
   loadFile: (file, callback) ->
+    @currentLoadNumber = thisLoadNumber = loadNumber++
+    unless file._id
+      console.error "Null file._id for file", file
+      return callback "LoadFile called with null file._id for #{file.path}"
+
     @fileId = fileId = file._id
-    @doc?.detach_ace?()
-    @doc = null
     log.debug "Loading file #{file.path}"
     @loading = true
+    @detachShareDoc()
     finish = (err, doc) =>
       if err
-        Errors.handleError "Error in loading file: #{e.message}:", e, log
+        log.error "Error in loading file:", err
+      else if thisLoadNumber != @currentLoadNumber
+        #abort; do nothing
+        0
       else if doc
-        @doc = doc
-        @attachAce(doc)
+        log.trace "Finished loading; attaching doc for", file.path
+        @attachShareDoc doc
+        @loading = false
       #else just abort
-      @loading = false
       callback? err
 
     sharejs.open fileId, "text2", "#{MadEye.bolideUrl}/channel", (error, doc) =>
       try
+        log.trace 'Returning from share.js open'
         return finish Errors.wrapShareError error if error
         #abort if we've loaded another file
-        return finish() unless fileId == @fileId
+        return finish() unless thisLoadNumber == @currentLoadNumber
         return finish() unless @checkDocValidity(doc)
-        #TODO: @connectionId = doc.connection.id
+        @connectionId = doc.connection.id
         if doc.version > 0 or file.scratch
           finish null, doc
         else
           Meteor.call 'requestFile', getProjectId(), fileId, (err, result) =>
             return finish error if error
             #abort if we've loaded another file
-            return finish() unless fileId == @fileId
+            return finish() unless thisLoadNumber == @currentLoadNumber
             if result?.warning
               alert = result.warning
               alert.level = 'warn'
@@ -148,11 +171,11 @@ class EditorState
         finish e
 
   save : (callback=->) ->
-    log.info "Saving file #{@fileId}"
     projectId = getProjectId()
     editorChecksum = @editor.checksum
     file = Files.findOne @fileId
     return if file.fsChecksum == editorChecksum
+    log.info "Saving file #{file.path}"
     Events.record("save", {file: @fileId, projectId})
     Meteor.call 'saveFile', projectId, @fileId, @editor.value, (error, result) ->
       return callback Errors.handleError error, log if error

@@ -23,18 +23,6 @@ Meteor.publish "workspaces", (projectId) ->
 Meteor.publish "activeDirectories", (projectId)->
   ActiveDirectories.find projectId: projectId
 
-Meteor.setInterval ->
-  before = Date.now() - 10*1000
-  ProjectStatuses.remove({heartbeat: {$lt:before}})
-  ProjectStatuses.remove({heartbeat: {$exists:false}})
-, 5*1000
-
-#TODO: Restrict based on userId
-ProjectStatuses.allow
-  insert: (userId, doc) -> true
-  update: (userId, doc, fields, modifier) -> true
-  remove: (userId, doc) -> true
-
 Files.allow
   #TODO make this more restrictive  
   #For example, restrict by projectId
@@ -62,4 +50,5 @@ Workspaces.allow
 ActiveDirectories.allow
   insert: -> true
   update: -> true
+  remove: -> true
 

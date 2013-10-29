@@ -13,17 +13,21 @@
 </head>
 
 <body>
+  {{! Will be populated by ironRouter}}
+</body>
+
+<template name="layout">
   <div id="container" class="container {{#if isHangout}}hangout{{else}}nonHangout{{/if}}">
     {{> topnav }}
     <div id="alertBox">{{! Will be populated by displayAlert}}</div>
-    {{{renderPage}}}
+    {{yield}}
   </div>
-</body>
+</template>
 
 <template name="topnav">
 <div class="navbar topnav clearfix">
   <div class="title pull-left">
-      <h1><a href="/">MadEye</a> <small>Remote pair programming</small>
+    <h1><a href="{{pathFor 'home'}}">MadEye</a> <small>Remote pair programming</small>
       </h1>
   </div>
   {{> signin}}
@@ -80,10 +84,11 @@
   <footer >
     <div class="pull-right">
       <ul class="nav nav-footer">
-        <li><a href="{{settings apogeeUrl}}/get-started">Quick Install</a></li>
-        <li><a href="http://blog.madeye.io">Blog</a></li>
-        <li><a href="/faq">FAQ</a></li>
-        <li><a href="/tos">Legal Stuff</a></li>
+        <li><a href="{{pathFor 'getStarted'}}">Quick Install</a></li>
+        <li><a href="https://angel.co/madeye" target="_blank">About Us</a></li>
+        <li><a href="http://blog.madeye.io" target="_blank">Blog</a></li>
+        <li><a href="{{pathFor 'faq'}}">FAQ</a></li>
+        <li><a href="{{pathFor 'tos'}}">Legal Stuff</a></li>
         <li><a href="mailto:support@madeye.io">Contact Us</a></li>
       </ul>
     </div>

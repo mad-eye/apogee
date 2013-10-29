@@ -19,29 +19,6 @@ addWorkspaceModeOverride = (fileId, syntaxMode) ->
 
 
 Template.editorBar.events
-  'click #runButton': (e)->
-    Session.set "codeExecuting", true
-    editorBody = MadEye.editorState.getEditor().getValue()
-    filename = MadEye.fileLoader.editorFilePath
-    Meteor.http.post "#{Meteor.settings.public.nurmengardUrl}/run",
-      data:
-        contents: editorBody
-        language: MadEye.editorState.editor.syntaxMode
-        fileName: filename
-      headers:
-        "Content-Type": "application/json"
-      , (error, result)->
-        Session.set "codeExecuting", false
-        if error
-          #TODO handle this better
-          console.error "MADEYE ERROR", error
-        if result
-          response = JSON.parse(result.content)
-          response.filename = filename
-          response.projectId = Session.get("projectId")
-          response.timestamp = Date.now()
-          ScriptOutputs.insert response
-
   'click #revertFile': (event) ->
     el = $(event.target)
     return if el.hasClass 'disabled' or MadEye.editorState.working == true
@@ -70,12 +47,12 @@ Template.editorBar.helpers
     MadEye.fileLoader?.editorFilePath
 
   showSaveSpinner: ->
-    MadEye.editorState.working == true
+    MadEye.editorState?.working == true
 
   buttonDisabled : ->
     fileId = MadEye.editorState?.fileId
     file = Files.findOne(fileId) if fileId?
-    if !file?.modified or MadEye.editorState.working==true or projectIsClosed()
+    if !file?.modified or MadEye.editorState?.working==true or projectIsClosed()
       "disabled"
     else
       ""
@@ -83,7 +60,7 @@ Template.editorBar.helpers
   runButtonDisabled: ->
     project = Projects.findOne(Session.get("projectId"))
     disabled = "disabled"
-    if canRunLanguage MadEye.editorState.editor.syntaxMode
+    if canRunLanguage MadEye.editorState?.editor.syntaxMode
       disabled = ""
     return disabled
 
@@ -127,7 +104,7 @@ Template.statusBar.helpers
     MadEye.editorState
 
   tabSizeEquals: (size)->
-    return false unless MadEye.editorState.rendered
+    return false unless MadEye.editorState?.rendered
     MadEye.editorState?.editor.tabSize == parseInt size, 10
 
   keybinding: (binding)->
@@ -136,7 +113,7 @@ Template.statusBar.helpers
 
 Template.syntaxModeOptions.helpers
   selected: (value) ->
-    "selected" if MadEye.editorState.editor.syntaxMode == @name
+    "selected" if MadEye.editorState?.editor.syntaxMode == @name
 
   syntaxModes: ->
     aceModes.modes
@@ -146,7 +123,7 @@ Template.syntaxModeOptions.helpers
 
 Template.themeOptions.helpers
   themeEquals: (value) ->
-    MadEye.editorState.editor.theme == value
+    MadEye.editorState?.editor.theme == value
 
   brightThemes: ->
     [
@@ -247,6 +224,7 @@ Meteor.startup ->
 
 
 findShbangCmd = (contents) ->
+  return unless contents
   if '#!' == contents[0..1]
     cmd = null
     firstLine = contents.split('\n', 1)[0]

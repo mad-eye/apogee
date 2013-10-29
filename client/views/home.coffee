@@ -16,4 +16,6 @@ Template.getStarted.events
       #message: "We'll notify #{emailAddr} as soon as we have news."
     return false
 
+Template.home.rendered = ->
+  $("#demoVideo")[0].play()
   
