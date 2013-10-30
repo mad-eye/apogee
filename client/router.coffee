@@ -86,7 +86,7 @@ Router.map ->
     path: '/payment'
     before: ->
       unless Meteor.user() and Meteor.user().type != 'anonymous'
-        @render 'login'
+        @render 'signinPage'
         @stop()
 
   @route 'missing', path: '*'
