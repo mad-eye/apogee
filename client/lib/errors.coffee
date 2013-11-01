@@ -75,6 +75,7 @@ Template.projectStatus.projectAlerts = ->
   alerts.push projectLoadingAlert if projectIsLoading()
   alerts.push networkIssuesWarning if MadEye.transitoryIssues?.has 'networkIssues'
   alerts.push fileDeletedWarning if MadEye.transitoryIssues?.has 'fileDeleted'
+  alerts.push MadEye.fileLoader.alert if MadEye.fileLoader.alert
   return alerts
 
 
