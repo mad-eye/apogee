@@ -1,4 +1,3 @@
-#TODO: Replace this with Meteor's ReactiveDict
 class @ReactiveDict
   constructor: () ->
     @deps = {}
