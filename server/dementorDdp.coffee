@@ -125,6 +125,9 @@ checkNodeVersion = (version) ->
     return "Your Node.js version is less than required (#{MIN_NODE_VERSION}).  Please upgrade to avoid any funny business."
   return undefined
 
+# Cache instructions; don't read from disk each time.
+SCRATCH_INSTRUCTIONS = Assets.getText 'scratchProjectInstructions.txt'
+NORMAL_INSTRUCTIONS = Assets.getText 'instructions.txt'
 addScratchFile = (projectId) ->
   SCRATCH_PATH = "%SCRATCH%"
   ORDERING_PATH = "!!SCRATCH"
@@ -137,8 +140,8 @@ addScratchFile = (projectId) ->
   log.trace "Added scratch file #{fileId} for #{projectId}"
   project = Projects.findOne projectId
   if project.scratch
-    scratchContents = Assets.getText 'scratchProjectInstructions.txt'
+    scratchContents = SCRATCH_INSTRUCTIONS
   else
-    scratchContents = Assets.getText 'instructions.txt'
+    scratchContents = NORMAL_INSTRUCTIONS
   MadEye.Bolide.createDocument fileId, scratchContents
 
