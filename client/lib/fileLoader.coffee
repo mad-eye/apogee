@@ -1,5 +1,6 @@
 log = new MadEye.Logger 'fileLoader'
 
+MAX_FILE_SIZE = 1024*1024 #1 MB
 class @FileLoader extends Reactor
   @property 'loadPath', get:false
   @property 'loadId', get:false
@@ -52,14 +53,21 @@ class @FileLoader extends Reactor
     if file.isLink
       @alert =
         level: "error"
-        title: "Unable to load symbolic link"
-        message: file.path
+        title: "Unable to load"
+        message: "The file #{file.path} can't be loaded because it is a symbolic link."
       return
     if file.isBinary
       @alert =
         level: "error"
-        title: "Unable to load binary file"
+        title: "Unable to load"
         message: file.path
+        message: "The file #{file.path} can't be loaded because it is a binary file."
+      return
+    if file.size > MAX_FILE_SIZE and !file.isDir
+      @alert =
+        level: "error"
+        title: "Unable to load"
+        message: "The file #{file.path} can't be loaded because it is too large."
       return
 
     @alert = null
