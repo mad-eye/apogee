@@ -11,36 +11,36 @@ futureCallback = (future) ->
 
 class Stripe
   constructor: (stripeSecretKey) ->
-    @stripe = Npm.require("stripe")(stripeSecretKey)
+    @stripeClient = Npm.require("stripe")(stripeSecretKey)
 
   retrieveCustomer: (customerId) ->
     future = new Future()
-    @stripe.customers.retrieve customerId, futureCallback(future)
+    @stripeClient.customers.retrieve customerId, futureCallback(future)
     return future.wait()
 
   createCustomer: (customer) ->
     future = new Future()
-    @stripe.customers.create customer, futureCallback(future)
+    @stripeClient.customers.create customer, futureCallback(future)
     return future.wait()
 
   updateSubscription: (customerId, subscription) ->
     future = new Future()
-    @stripe.customers.updateSubscription customerId, subscription, futureCallback(future)
+    @stripeClient.customers.updateSubscription customerId, subscription, futureCallback(future)
     return future.wait()
 
   cancelSubscription: (customerId) ->
     future = new Future()
-    @stripe.customers.cancelSubscription customerId, futureCallback(future)
+    @stripeClient.customers.cancelSubscription customerId, futureCallback(future)
     return future.wait()
 
   deleteCard: (customerId, cardId) ->
     future = new Future()
-    @stripe.customers.deleteCard customerId, cardId, futureCallback(future)
+    @stripeClient.customers.deleteCard customerId, cardId, futureCallback(future)
     return future.wait()
 
   addCard: (customerId, cardToken) ->
     future = new Future()
-    @stripe.customers.createCard customerId, card:cardToken, futureCallback(future)
+    @stripeClient.customers.createCard customerId, card:cardToken, futureCallback(future)
     return future.wait()
 
 

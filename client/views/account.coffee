@@ -116,14 +116,4 @@ Template.subscription.events
     e.stopPropagation()
     return
 
-serializeForm = (form, originalVals) ->
-  if originalVals
-    formVals = _.clone(originalVals)
-  else
-    formVals = {}
-  valArray = $(form).serializeArray()
-  _.each valArray, (valObj) ->
-    formVals[valObj.name] = valObj.value.trim()
-  return formVals
-
 

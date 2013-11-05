@@ -1,20 +1,25 @@
+MadEye.loginWithGoogle = ->
+  stashWorkspace()
+  Meteor.logout()
+  Meteor.loginWithGoogle()
+
+MadEye.logout = ->
+  stashWorkspace()
+  Meteor.logout()
+  Meteor.loginAnonymously()
+
+
 Template.googleSigninLink.events
   'click .googleSigninButton': (e) ->
-    stashWorkspace()
-    Meteor.logout()
-    Meteor.loginWithGoogle()
+    MadEye.loginWithGoogle()
 
 Template.googleSigninButton.events
   'click .googleSigninButton': (e) ->
-    stashWorkspace()
-    Meteor.logout()
-    Meteor.loginWithGoogle()
+    MadEye.loginWithGoogle()
 
 Template.signin.events
   'click #signoutButton': (e) ->
-    stashWorkspace()
-    Meteor.logout()
-    Meteor.loginAnonymously()
+    MadEye.logout()
 
 Template.signin.helpers
   isLoggedIn: ->
@@ -26,7 +31,15 @@ Template.signin.helpers
 
   hasGoogleLogin: hasGoogleLogin
 
-#Maybe this should go somewhere else?
+###
+# Stashing workspaces
+# 
+# When a user logs in or out, we should merge the old workspace preferences
+# with the new workspace.  We do this by stashing the workspace, and then
+# when the new workspace is created (kicking off the autorun block) merging
+# the old with the new.
+###
+
 tempWorkspace = null
 stashWorkspace = ->
   tempWorkspace = getWorkspace()
