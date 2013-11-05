@@ -20,11 +20,11 @@ Meteor.methods
       #Add new customer with plan
       customer =
         card: order.card
-        description: "A Customer from Riot Games" #TODO: Fill based on user's company
+        description: "Self-hosted customer" #TODO: Company name?
         email: user.email
         metadata:
           userId: @userId
-          company: "Riot Games" #TODO: Fill based on user's company
+          licenseKey: Random.id()
         plan: order.plan
         quantity: order.quantity
       customer = stripe.createCustomer customer
