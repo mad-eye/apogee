@@ -73,13 +73,16 @@
     </div>
   </div>
   {{/with}}
+  <div>
+    <img src="/images/stripe.png" alt="Powered by Stripe" />
+  </div>
 </div>
 </template>
 
 <template name="subscriptionOverlay">
   {{#if Session 'working'}}
     <div id="subscriptionOverlay">
-        <img id="subscriptionLoadingSpinner" src="/images/ajax-loader.gif" alt="Loading..." />
+      <img id="subscriptionLoadingSpinner" src="/images/ajax-loader.gif" alt="Loading..." />
     </div>
   {{/if}}
 </template>
