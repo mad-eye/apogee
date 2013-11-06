@@ -12,7 +12,8 @@ class MadEye.Model
 
   save: ->
     if @_id
-      @collection.update @_id, {$set: @_safeJSON()}
+      #We should replace the entire document, to catch deletions
+      @collection.update @_id, @_safeJSON()
     else
       @_id = @collection.insert @_safeJSON()
 

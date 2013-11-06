@@ -17,5 +17,6 @@ Template.getStarted.events
     return false
 
 Template.home.rendered = ->
-  $("#demoVideo")[0].play()
+  #phantomjs doesn't have a play fn; just ignore.
+  $("#demoVideo")[0].play?()
   

@@ -27,3 +27,5 @@ Deps.autorun ->
   MadEye.subscribe "workspaces", projectId
   MadEye.subscribe "activeDirectories", projectId
 
+Deps.autorun ->
+  MadEye.subscribe 'customers'

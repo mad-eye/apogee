@@ -1,0 +1,46 @@
+@import "base.less";
+
+#subscriptionContainer {
+  max-width: 670px;
+  position: relative;
+
+  .plan-name {
+    width: 35%;
+  }
+
+  .plan-quantity {
+    width: 15%;
+  }
+
+  .plan-cost {
+    width: 35%;
+  }
+
+  .plan-subscribe {
+    width: 15%;
+  }
+
+  .subscription-info {
+    padding: 0 @baseSpacing/2 @baseSpacing;
+  }
+
+}
+
+#subscriptionOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color:rgba(0,0,0,0.3);
+  z-index: 9999;
+  .rounded-border;
+}
+
+#subscriptionLoadingSpinner {
+  position: absolute;
+  top: 80px;
+  left: 300px;
+}
+
+
