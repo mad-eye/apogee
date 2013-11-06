@@ -38,9 +38,9 @@ Template.subscription.events
     
     log.debug "Selected #{order.quantity} seats"
 
-    Session.set 'working', true
     #do we have a card already?
     if getCustomer()?.cards?.data?.length
+      Session.set "working", true
       Meteor.call 'submitOrder', order, (err) ->
         Session.set 'working', false
         return log.error err if err
@@ -49,6 +49,7 @@ Template.subscription.events
       token = (res) ->
         order.card = res.id
         log.debug "Submitting order", order
+        Session.set "working", true
         Meteor.call 'submitOrder', order, (err) ->
           Session.set 'working', false
           return log.error err if err
