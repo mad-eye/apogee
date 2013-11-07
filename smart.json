@@ -3,6 +3,10 @@
     "accounts-anonymous": {
       "git": "git://github.com/mad-eye/meteor-accounts-anonymous.git"
     },
-    "iron-router": {}
+    "iron-router": {},
+    "mocha-web":{
+      "git": "git://github.com/mad-eye/meteor-mocha-web.git",
+      "branch": "meteor-0.6.6"
+    }
   }
 }
