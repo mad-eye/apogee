@@ -1,0 +1,88 @@
+<template name="plans">
+<div class="account-section">
+<h1>Self Hosted MadEye</h1>
+<ul>
+  <li>A MadEye virtual machine that can be installed behind your firewall
+  <li>A stable update cycle
+  <li>Email and phone support, M-F 9am-6pm Pacific Time
+  <li>Just $100 per seat
+  <li>30 day free trial
+</ul>
+
+<div id="subscriptionContainer">
+  {{> subscriptionOverlay}}
+  {{> subscription}}
+</div>
+</template>
+
+<template name="subscription">
+<div id="subscriptionData">
+  <table class="table table-striped table-condensed">
+    <thead>
+      <tr>
+        <td class="plan-name">Plan</td>
+        <td class="plan-quantity"># Seats</td>
+        <td class="plan-cost">Cost/month</td>
+      </tr>
+    </thead>
+    <tbody>
+    {{#each availableEnterprisePlans}}
+      <tr>
+        <td class="plan-name">Self-Hosted License</td>
+        <td class="plan-quantity">{{seats}}</td>
+        <td class="plan-cost">${{cost}}</td>
+        <td class="plan-subscribe">
+          {{#if hasPlan}}
+            <div class="pull-right">Your Plan</div>
+          {{else}}
+            <button class="btn btn-primary btn-small subscribe-button pull-right" data-seats="{{seats}}">{{buttonMessage}}</button>
+          {{/if}}
+        </td>
+      </tr>
+    {{/each}}
+    </tbody>
+  </table>
+
+
+  {{#with customerCard}}
+  <div class="subscription-info clearfix">
+    You have a {{type}} ending in {{last4}}
+    (expiring {{exp_month}}/{{exp_year}}) on file.  We&apos;ll use that
+    for the monthly subscription fee.
+    <div class="pull-right">
+      <button id="deleteCard" class="btn btn-danger btn-small">Delete card</button>
+    </div>
+  </div>
+  {{else}}
+    {{#if customerSubscription}}
+      <div class="subscription-info clearfix">
+        You don't have a card on file.  You'll need to add one for
+        your subscription to remain active after the next billing.
+        <div class="pull-right">
+          <button id="addCard" class="btn btn-primary btn-small">Add card</button>
+        </div>
+      </div>
+    {{/if}}
+  {{/with}}
+
+  {{#with customerSubscription}}
+  <div class="subscription-info clearfix">
+    You are currently signed up for the {{plan.name}} for {{quantity}} seats.
+    <div class="pull-right">
+      <button id="unsubscribe" class="btn btn-danger btn-small">Unsubscribe</button>
+    </div>
+  </div>
+  {{/with}}
+  <div>
+    <img src="/images/stripe.png" alt="Powered by Stripe" />
+  </div>
+</div>
+</template>
+
+<template name="subscriptionOverlay">
+  {{#if Session 'working'}}
+    <div id="subscriptionOverlay">
+      <img id="subscriptionLoadingSpinner" src="/images/ajax-loader.gif" alt="Loading..." />
+    </div>
+  {{/if}}
+</template>

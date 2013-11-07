@@ -9,10 +9,12 @@ settings = {
     googleAnalyticsId: process.env.MADEYE_GOOGLE_ANALYTICS_ID,
     hangoutUrl: process.env.MADEYE_AZKABAN_URL + "/hangout/",
     shareHost: process.env.MADEYE_SHARE_HOST,
-    logLevel: process.env.MADEYE_LOGLEVEL
+    logLevel: process.env.MADEYE_LOGLEVEL,
+    stripePublicKey: process.env.MADEYE_STRIPE_PUBLIC_KEY
   },
   googleClientId: process.env.MADEYE_GOOGLE_CLIENT_ID,
-  googleSecret: process.env.MADEYE_GOOGLE_SECRET
+  googleSecret: process.env.MADEYE_GOOGLE_SECRET,
+  stripeSecretKey: process.env.MADEYE_STRIPE_SECRET_KEY
 
 };
 

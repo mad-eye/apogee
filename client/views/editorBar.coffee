@@ -1,4 +1,4 @@
-log = new MadEye.Logger 'editorBar'
+log = new Logger 'editorBar'
 aceModes = ace.require('ace/ext/modelist')
 
 @getWorkspace = ->
@@ -43,7 +43,7 @@ Template.editorBar.events
         console.error "Error in save request:", err
 
 Template.editorBar.helpers
-  "editorFileName": ->
+  editorFileName: ->
     MadEye.fileLoader?.editorFilePath
 
   showSaveSpinner: ->
@@ -99,6 +99,9 @@ Template.statusBar.events
   'change #themeSelect': (e) ->
     setWorkspaceConfig "theme", e.target.value
 
+  'change #fontSize': (e) ->
+    setWorkspaceConfig("fontSize", parseInt(e.target.value, 10))
+
 Template.statusBar.helpers
   editorState: ->
     MadEye.editorState
@@ -106,6 +109,10 @@ Template.statusBar.helpers
   tabSizeEquals: (size)->
     return false unless MadEye.editorState?.rendered
     MadEye.editorState?.editor.tabSize == parseInt size, 10
+
+  fontSizeEquals: (size)->
+    return false unless MadEye.editorState?.rendered
+    MadEye.editorState?.editor.fontSize == parseInt size, 10
 
   keybinding: (binding)->
     keybinding = getWorkspace()?.keybinding
@@ -218,6 +225,7 @@ Meteor.startup ->
       value = MadEye.editorState.editor.value
     MadEye.editorState.editor.showInvisibles = workspace.showInvisibles
     MadEye.editorState.editor.tabSize = workspace.tabSize ? findTabSize(value)
+    MadEye.editorState.editor.fontSize = workspace.fontSize if workspace.fontSize
     MadEye.editorState.editor.theme = workspace.theme
     MadEye.editorState.editor.useSoftTabs = workspace.useSoftTabs ? useSoftTabs(value)
     MadEye.editorState.editor.wordWrap = workspace.wordWrap

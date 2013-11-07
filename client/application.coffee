@@ -1,4 +1,4 @@
-log = new MadEye.Logger 'application'
+log = new Logger 'application'
 
 MadEye.fileLoader = new FileLoader()
 

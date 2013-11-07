@@ -1,4 +1,4 @@
-log = new MadEye.Logger 'edit'
+log = new Logger 'edit'
 
 aceModes = ace.require('ace/ext/modelist')
 

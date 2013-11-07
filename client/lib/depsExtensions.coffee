@@ -1,4 +1,4 @@
-log = new MadEye.Logger 'depsExtensions'
+log = new Logger 'depsExtensions'
 
 #EXPERIMENTAL SECTION
 invalidatedCallbacks = []

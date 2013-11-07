@@ -9,25 +9,6 @@ Deps.autorun ->
   return if Meteor.loggingIn()
   Meteor.loginAnonymously() unless Meteor.user()
 
-Template.signin.helpers
-  isLoggedIn: ->
-    Meteor.user() && Meteor.user().type != 'anonymous'
-
-  isLoggedOut: ->
-    #We view 'loggedOut' to mean using an anonymous account
-    Meteor.user() && Meteor.user().type == 'anonymous'
-
-
-Template.signin.events
-  'click #signinButton': (e) ->
-    stashWorkspace()
-    Meteor.logout()
-    Meteor.loginWithGoogle()
-
-  'click #signoutButton': (e) ->
-    stashWorkspace()
-    Meteor.logout()
-    Meteor.loginAnonymously()
 
 Meteor.startup ->
   Deps.autorun ->
@@ -58,4 +39,3 @@ Meteor.startup ->
             workspace.modeOverrides[fileId] = syntaxMode
     workspace.save()
     tempWorkspace = null
-

@@ -1,4 +1,4 @@
-log = new MadEye.Logger 'router'
+log = new Logger 'router'
 
 Router.configure
   layoutTemplate: "layout"
@@ -81,6 +81,13 @@ Router.map ->
     path: '/unlinked-hangout'
     before: ->
       Session.set "isHangout", true
+
+  @route 'plans',
+    path: '/plans'
+    before: ->
+      unless Meteor.user() and Meteor.user().type != 'anonymous'
+        @render 'signinPage'
+        @stop()
 
   @route 'missing', path: '*'
 

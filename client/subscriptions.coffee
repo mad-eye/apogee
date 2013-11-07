@@ -1,4 +1,4 @@
-log = new MadEye.Logger 'subscriptions'
+log = new Logger 'subscriptions'
 
 ##
 # A reactiveDict of subscription handles.
@@ -28,3 +28,5 @@ Deps.autorun ->
   MadEye.subscribe "workspaces", projectId
   MadEye.subscribe "activeDirectories", projectId
 
+Deps.autorun ->
+  MadEye.subscribe 'customers'

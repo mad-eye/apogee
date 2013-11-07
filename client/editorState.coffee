@@ -3,7 +3,7 @@
 os = (navigator.platform.match(/mac|win|linux/i) || ["other"])[0].toLowerCase()
 isMac = os == 'mac'
 
-log = new MadEye.Logger 'editorState'
+log = new Logger 'editorState'
 
 class EditorState
   constructor: (@editorId)->
