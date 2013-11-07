@@ -1,4 +1,4 @@
-log = new MadEye.Logger 'azkaban'
+log = new Logger 'azkaban'
 
 MadEye.azkabanUrl = Meteor.settings.public.azkabanUrl
 fileUrl = (projectId, fileId) -> "#{MadEye.azkabanUrl}/project/#{projectId}/file/#{fileId}"

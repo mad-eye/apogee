@@ -1,7 +1,7 @@
 MIN_DEMENTOR_VERSION = '0.2.0'
 MIN_NODE_VERSION = '0.8.18'
 semver = Npm.require 'semver'
-log = new MadEye.Logger 'dementorDdp'
+log = new Logger 'dementorDdp'
 
 #Methods from dementor
 Meteor.methods

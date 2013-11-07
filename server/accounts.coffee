@@ -1,4 +1,4 @@
-log = new MadEye.Logger 'accounts'
+log = new Logger 'accounts'
 
 Meteor.publish 'userData', ->
   return Meteor.users.find {_id: this.userId}, fields:

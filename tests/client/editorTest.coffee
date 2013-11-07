@@ -1,4 +1,4 @@
-log = new MadEye.Logger 'editorTest'
+log = new Logger 'editorTest'
 
 Meteor.methods
   cleanProject: (projectId)->

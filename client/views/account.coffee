@@ -1,4 +1,4 @@
-log = new MadEye.Logger 'accounts'
+log = new Logger 'accounts'
 
 getCustomer = ->
   return unless Meteor.user() and Meteor.user().type != 'anonymous'

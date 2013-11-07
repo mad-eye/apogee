@@ -1,4 +1,4 @@
-log = new MadEye.Logger 'subscriptions'
+log = new Logger 'subscriptions'
 
 ##
 # A reactiveDict of subscription handles.

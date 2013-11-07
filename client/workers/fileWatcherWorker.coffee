@@ -1,4 +1,4 @@
-log = new MadEye.Logger 'fileWatcher'
+log = new Logger 'fileWatcher'
 
 Meteor.startup ->
   #If selected (unmodified) file is currently being edited, clear it out.
