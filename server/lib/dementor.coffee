@@ -1,4 +1,4 @@
-log = new MadEye.Logger 'dementor'
+log = new Logger 'dementor'
 
 class Dementor
   constructor: (@projectId) ->

@@ -1,4 +1,4 @@
-log = new MadEye.Logger 'projectMethods'
+log = new Logger 'projectMethods'
 
 getIcon = (projectId)->
   unavailableIcons = {}

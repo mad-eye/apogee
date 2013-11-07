@@ -1,4 +1,4 @@
-log = new MadEye.Logger 'editorBar'
+log = new Logger 'editorBar'
 aceModes = ace.require('ace/ext/modelist')
 
 @getWorkspace = ->

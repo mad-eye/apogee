@@ -1,4 +1,4 @@
-log = new MadEye.Logger 'fileLoader'
+log = new Logger 'fileLoader'
 
 MAX_FILE_SIZE = 1024*1024 #1 MB
 class @FileLoader extends Reactor

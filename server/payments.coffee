@@ -1,4 +1,4 @@
-log = new MadEye.Logger 'payments'
+log = new Logger 'payments'
 
 Meteor.publish 'customers', ->
   Customers.find(userId:@userId)

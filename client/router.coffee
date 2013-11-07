@@ -1,4 +1,4 @@
-log = new MadEye.Logger 'router'
+log = new Logger 'router'
 
 Router.configure
   layoutTemplate: "layout"

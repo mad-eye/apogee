@@ -7,3 +7,6 @@
 [submodule "packages/sharejs/ShareJS"]
 	path = packages/sharejs/ShareJS
 	url = git@github.com:mad-eye/ShareJS.git
+[submodule "packages/pince"]
+	path = packages/pince
+	url = git@github.com:mad-eye/pince.git
