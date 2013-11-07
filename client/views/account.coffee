@@ -34,7 +34,7 @@ Template.subscription.events
   'click button.subscribe-button' : (e, tmpl) ->
     order =
       quantity: parseInt e.target.dataset.seats, 10
-      plan: 'enterprise'
+      plan: 'self-hosted'
     
     log.debug "Selected #{order.quantity} seats"
 
@@ -61,7 +61,7 @@ Template.subscription.events
         currency:    'usd'
         name:        'MadEye'
         image:       '/images/madeye_logo_128.png'
-        description: "Enterprise Edition (#{order.quantity} seats) "
+        description: "Self-Hosted MadEye License (#{order.quantity} seats) "
         panelLabel:  'Checkout'
         token:       token
 

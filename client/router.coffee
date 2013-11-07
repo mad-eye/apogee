@@ -82,8 +82,8 @@ Router.map ->
     before: ->
       Session.set "isHangout", true
 
-  @route 'payment',
-    path: '/payment'
+  @route 'plans',
+    path: '/plans'
     before: ->
       unless Meteor.user() and Meteor.user().type != 'anonymous'
         @render 'signinPage'
