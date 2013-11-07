@@ -22,4 +22,5 @@ sharejs
 iron-router
 stripe
 accounts-password
+mocha-web
 pince

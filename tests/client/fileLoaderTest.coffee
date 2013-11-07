@@ -33,62 +33,62 @@ Meteor.startup ->
       else
         assert.ok !fileLoader.alert?
 
-    it 'should set output correctly on file loadPath', ->
-      fileLoader.loadPath = file1.path
-      Deps.flush()
-      checkOutput fileLoader, file1
+    # it 'should set output correctly on file loadPath', ->
+    #   fileLoader.loadPath = file1.path
+    #   Deps.flush()
+    #   checkOutput fileLoader, file1
 
-    it 'should set output correctly on file loadId', ->
-      fileLoader.loadId = file1._id
-      Deps.flush()
-      checkOutput fileLoader, file1
+    # it 'should set output correctly on file loadId', ->
+    #   fileLoader.loadId = file1._id
+    #   Deps.flush()
+    #   checkOutput fileLoader, file1
 
-    it 'should set output correctly on dir loadPath', ->
-      fileLoader.loadPath = dir1.path
-      Deps.flush()
-      checkOutput fileLoader, null, dir1
+    # it 'should set output correctly on dir loadPath', ->
+    #   fileLoader.loadPath = dir1.path
+    #   Deps.flush()
+    #   checkOutput fileLoader, null, dir1
 
-    it 'should set output correctly on dir loadId', ->
-      fileLoader.loadId = dir1._id
-      Deps.flush()
-      checkOutput fileLoader, null, dir1
+    # it 'should set output correctly on dir loadId', ->
+    #   fileLoader.loadId = dir1._id
+    #   Deps.flush()
+    #   checkOutput fileLoader, null, dir1
 
-    it 'should not overwrite editorFile on dir load', ->
-      fileLoader.loadId = file1._id
-      Deps.flush()
-      fileLoader.loadId = dir1._id
-      Deps.flush()
-      checkOutput fileLoader, file1, dir1
+    # it 'should not overwrite editorFile on dir load', ->
+    #   fileLoader.loadId = file1._id
+    #   Deps.flush()
+    #   fileLoader.loadId = dir1._id
+    #   Deps.flush()
+    #   checkOutput fileLoader, file1, dir1
 
-    it 'should wait and a file that hasnt been saved', ->
-      newFile = new File path: 'newFile', isDir: false
-      fileLoader.loadPath = newFile.path
-      Deps.flush()
-      checkOutput fileLoader, null, null
-      newFile.save()
-      Deps.flush()
-      checkOutput fileLoader, newFile
+    # it 'should wait and a file that hasnt been saved', ->
+    #   newFile = new File path: 'newFile', isDir: false
+    #   fileLoader.loadPath = newFile.path
+    #   Deps.flush()
+    #   checkOutput fileLoader, null, null
+    #   newFile.save()
+    #   Deps.flush()
+    #   checkOutput fileLoader, newFile
 
-    it 'should wait and a dir that hasnt been saved', ->
-      newDir = new File path: 'newDir', isDir: true
-      fileLoader.loadPath = newDir.path
-      Deps.flush()
-      checkOutput fileLoader, null, null
-      newDir.save()
-      Deps.flush()
-      checkOutput fileLoader, null, newDir
+    # it 'should wait and a dir that hasnt been saved', ->
+    #   newDir = new File path: 'newDir', isDir: true
+    #   fileLoader.loadPath = newDir.path
+    #   Deps.flush()
+    #   checkOutput fileLoader, null, null
+    #   newDir.save()
+    #   Deps.flush()
+    #   checkOutput fileLoader, null, newDir
 
-    it 'should set output correctly on link loadId', ->
-      fileLoader.loadId = link._id
-      Deps.flush()
-      checkOutput fileLoader, null, link,
-        level: 'error'
-        message: link.path
+    # it 'should set output correctly on link loadId', ->
+    #   fileLoader.loadId = link._id
+    #   Deps.flush()
+    #   checkOutput fileLoader, null, link,
+    #     level: 'error'
+    #     message: link.path
 
-    it 'should set output correctly on binary loadId', ->
-      fileLoader.loadId = image._id
-      Deps.flush()
-      checkOutput fileLoader, null, image,
-        level: 'error'
-        message: image.path
+    # it 'should set output correctly on binary loadId', ->
+    #   fileLoader.loadId = image._id
+    #   Deps.flush()
+    #   checkOutput fileLoader, null, image,
+    #     level: 'error'
+    #     message: image.path
 

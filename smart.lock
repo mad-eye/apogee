@@ -7,7 +7,11 @@
         "branch": "master"
       },
       "iron-router": {},
-      "pince": {}
+      "pince": {},
+      "mocha-web": {
+        "git": "git://github.com/mad-eye/meteor-mocha-web.git",
+        "branch": "meteor-0.6.6"
+      }
     },
     "packages": {
       "accounts-anonymous": {
@@ -24,6 +28,11 @@
         "git": "https://github.com/mad-eye/pince.git",
         "tag": "v0.0.2",
         "commit": "ac4c09d12b850ce09f2deefbcbfd13a6620ec7aa"
+      },
+      "mocha-web": {
+        "git": "git://github.com/mad-eye/meteor-mocha-web.git",
+        "branch": "meteor-0.6.6",
+        "commit": "58e6a035b74063b2ada67f572c9188e714a82daf"
       }
     }
   }

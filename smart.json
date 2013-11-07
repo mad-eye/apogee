@@ -4,7 +4,10 @@
       "git": "git://github.com/mad-eye/meteor-accounts-anonymous.git"
     },
     "iron-router": {},
-    "pince": {}
-
+    "pince": {},
+    "mocha-web":{
+      "git": "git://github.com/mad-eye/meteor-mocha-web.git",
+      "branch": "meteor-0.6.6"
+    }
   }
 }
