@@ -3,6 +3,8 @@
     "accounts-anonymous": {
       "git": "git://github.com/mad-eye/meteor-accounts-anonymous.git"
     },
-    "iron-router": {}
+    "iron-router": {},
+    "pince": {}
+
   }
 }
