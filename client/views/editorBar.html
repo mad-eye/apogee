@@ -71,7 +71,18 @@
       </form>
     </div>
 
+    {{! Font Size  }}
+    <div id="fontSizeButton" class="statusBarButton pull-left">
+        <select id="fontSize" class="input-medium" size="1">
+          <option value="10" {{#if fontSizeEquals 10}}selected{{/if}}>Font Size: 10</option>
+          <option value="11" {{#if fontSizeEquals 11}}selected{{/if}}>Font Size: 11</option>
+          <option value="12" {{#if fontSizeEquals 12}}selected{{/if}}>Font Size: 12</option>
+          <option value="14" {{#if fontSizeEquals 14}}selected{{/if}}>Font Size: 14</option>
+          <option value="16" {{#if fontSizeEquals 16}}selected{{/if}}>Font Size: 16</option>
+        </select>
+    </div>
   </div>
+
 </template>
 
 <template name="editorBar">
