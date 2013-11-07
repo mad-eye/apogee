@@ -43,7 +43,7 @@ Template.editorBar.events
         console.error "Error in save request:", err
 
 Template.editorBar.helpers
-  "editorFileName": ->
+  editorFileName: ->
     MadEye.fileLoader?.editorFilePath
 
   showSaveSpinner: ->
