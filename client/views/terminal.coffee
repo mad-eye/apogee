@@ -1,5 +1,5 @@
 MEASUREMENT_CHARS = ',./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
-log = new MadEye.Logger 'terminal'
+log = new Logger 'terminal'
 
 #rows, cols, height, width
 @terminalData = {}
