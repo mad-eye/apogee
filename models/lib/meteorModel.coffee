@@ -30,7 +30,7 @@ class MadEye.Model
   update: (fields)->
     dirty = false
     for key,value of fields
-      dirty = true unless @[key] == value
+      dirty = true unless _.isEqual @[key], value
       @[key] = value
     @collection.update @_id, {$set: fields} if dirty
 

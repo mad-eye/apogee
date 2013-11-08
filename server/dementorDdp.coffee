@@ -47,6 +47,8 @@ Meteor.methods
 
   addFile: (file) ->
     this.unblock()
+    #TODO what is 'check'?
+    check file, Match.ObjectIncluding path:String, orderingPath:String
     Files.insert file
 
   markDirectoryLoaded: (projectId, path)->
@@ -55,16 +57,22 @@ Meteor.methods
   removeFile: (fileId) ->
     this.unblock()
     log.trace "Calling removeFile", fileId
+    check fileId, String
     Files.remove fileId
 
   updateFile: (fileId, modifier) ->
     this.unblock()
     log.trace "Calling updateFile", fileId, modifier
+    check fileId, String
+    check modifier, Object
     Files.update fileId, modifier
 
   updateFileContents: (fileId, contents) ->
     this.unblock()
     log.trace "Calling updateFileContents", fileId, contents.substr(0,20)
+    check fileId, String
+    check contents, String
+
     try
       {version} = MadEye.Bolide.getShareContents fileId
     catch e
@@ -77,6 +85,12 @@ Meteor.methods
         #Client should be alerted that something went wrong.
         throw e
     MadEye.Bolide.setShareContents fileId, contents, version
+
+  addTunnels: (projectId, tunnels) ->
+    check projectId, String
+    check tunnels, Object
+    Projects.update projectId, {$set: {tunnels}}
+
 
 #Methods to dementor
 Meteor.methods

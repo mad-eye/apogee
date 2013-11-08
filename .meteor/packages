@@ -19,6 +19,7 @@ reactive-ace
 reactiveMachine
 sessionId
 sharejs
+tty.js
 iron-router
 stripe
 accounts-password

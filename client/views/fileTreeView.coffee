@@ -1,13 +1,8 @@
-Template.fileTree.created = ->
-  MadEye.rendered 'fileTree'
-  #Sometimes the resize happens before everything is ready.
-  #It's idempotent and cheap, so do this for safety's sake.
-  Meteor.setTimeout ->
-    resizeEditor()
-  , 100
-
 Template.fileTree.rendered = ->
-  resizeEditor()
+  MadEye.rendered 'fileTree'
+  Meteor.setTimeout ->
+    windowSizeChanged()
+  , 100
 
 Template.fileTree.helpers
   files : ->

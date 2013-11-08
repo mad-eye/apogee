@@ -37,9 +37,6 @@ Meteor.methods
       ProjectStatuses.insert fields
     setProjectStatusTimeout sessionId
 
-Meteor.publish "projectStatuses", (projectId) ->
-  ProjectStatuses.find projectId: projectId
-
 #TODO: Restrict based on userId
 ProjectStatuses.allow
   insert: (userId, doc) -> true

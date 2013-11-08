@@ -18,6 +18,7 @@ MadEye.subscribe = (name, args...) ->
   MadEye.subscriptions.set name, handle
 
 Deps.autorun ->
+  @name 'subscribe block'
   projectId = Session.get "projectId"
   return unless projectId
   MadEye.subscribe "files", projectId

@@ -5,9 +5,7 @@ Template.interviewIntro.rendered = ->
 Template.interviewIntro.events
   'click #closeInterviewInstructions': (e) ->
     Session.set 'interviewInstructionsClosed', true
-    Meteor.setTimeout ->
-      resizeEditor()
-    , 0
+    windowSizeChanged()
 
   "click .hangout-link": (event) ->
     warnFirefoxHangout()

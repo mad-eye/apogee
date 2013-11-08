@@ -8,6 +8,7 @@ getProjectStatus = ->
 Meteor.startup ->
   #Create one for the session
   Deps.autorun ->
+    @name 'touch projectStatus'
     projectId = Session.get("projectId")
     return unless projectId
     Meteor.call "touchProjectStatus", Session.id, projectId, isHangout: Session.get("isHangout")
@@ -22,6 +23,7 @@ Meteor.startup ->
 
   #Set filepath
   Deps.autorun ->
+    @name 'set filepath'
     projectStatus = getProjectStatus()
     return unless projectStatus and MadEye.fileLoader and MadEye.editorState
     projectStatus.update {filePath: MadEye.fileLoader.editorFilePath, connectionId: MadEye.editorState.connectionId}
@@ -30,6 +32,7 @@ Meteor.startup ->
   sessionsDep = new Deps.Dependency
 
   Deps.autorun ->
+    @name 'set sessionPaths'
     projectId = Session.get "projectId"
     sessionsDep.depend()
     sessionPaths = {}
@@ -43,6 +46,7 @@ Meteor.startup ->
   #TODO: Use fields: to limit watching to filePath.
   queryHandle = null
   Deps.autorun (computation)->
+    @name 'dirty sessions on changes'
     projectId = Session.get("projectId")
     return unless projectId
     Deps.nonreactive ->

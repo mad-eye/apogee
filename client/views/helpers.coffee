@@ -20,8 +20,7 @@ Handlebars.registerHelper "hangoutLink", ->
 @getProjectId = -> Session.get "projectId"
 
 @isScratch = ->
-  project = getProject()
-  project?.interview or project?.scratch
+  getProject()?.scratch
 
 Handlebars.registerHelper 'isScratch', ->
   isScratch()
@@ -36,6 +35,15 @@ Handlebars.registerHelper 'isScratch', ->
   getProject()?.interview
 
 Handlebars.registerHelper "isInterview", isInterview
+
+
+@isTerminal = ->
+  getProject()?.tunnels?.terminal?
+
+Handlebars.registerHelper "isTerminal", isTerminal
+
+@isEditorPage = ->
+  (Router.template == 'edit') or (Router.tempate == 'editImpressJS')
 
 Handlebars.registerHelper "isHomePage", ->
   return Router.template in ["home", "home2", "getStarted"]
@@ -59,4 +67,5 @@ Handlebars.registerHelper "isHangout", ->
 @groupB = (testName)->
   return null unless Meteor.userId()
   return MadEye.crc32("#{Meteor.userId()}#{testName}") % 2 != 0
+
 

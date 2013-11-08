@@ -58,44 +58,51 @@
   }
 }
 
-@outputHeight: 200px;
-
-#programOutput {
+#measurementDiv {
+  visibility: hidden;
   position: absolute;
-  height: @outputHeight;
+  line-height: normal;
+}
+
+#terminal {
+
+  position: absolute;
   left: 0;
   bottom: 0;
   right: 0;
-}
+  background-color: @textColorDefault;
+  //font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
+  font-family: Consolas, monaco, monospace; 
+  //font-family:monospace, prestige;
 
-#stdout {
-  padding: @baseSpacing;
-  margin: 0;
-  border: solid #aaa;
-  border-width: 1px 0 0 0;
-  border-radius: 0;
-  position: relative;
-  height: @outputHeight - 2*@baseSpacing - 1; /*border is 1px*/
-  overflow: auto;
+  //Don't let user resize -- we need control for now.
+  .grip {
+    display: none;
+  }
 
-  .initial-output {
-    color: @fadedOutput;
+  //Removing the bar is the easy way to disable multiple terminals.
+  .bar {
+    display: none;
+  }
+
+  .window {
+    //padding-top: 15px; //.bar is not displayed
+    background: #272829;
+    position: relative;
+    overflow: auto;
+    border: none; //overwrite tty.css
   }
   
-  .output-error {
-    color: @errorRed;
-  }
-
-  .stderr {
-    color: @errorRed;
-  }
-  .stdout {
-  }
-
-  .runError {
-    color: @errorRed;
+  .terminal {
+    font-size: 12px;
   }
 }
+
+#createTerminal {
+  color: #5fba3d; //Terminal green
+  margin-left: @baseSpacing;
+}
+
 
 // EDITOR BAR
 #statusBar {

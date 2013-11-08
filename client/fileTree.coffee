@@ -12,18 +12,12 @@ class FileTree
     return unless dirPath
     @openedDirs.set dirPath, true
     @open getParentPath(dirPath), true if withParents
-    #HACK - this should be some event or reactive variable that a view pays attention to
-    Meteor.setTimeout ->
-      resizeEditor()
-    ,0
+    windowSizeChanged()
 
   close: (dirPath) ->
     return unless dirPath
     @openedDirs.set dirPath, false
-    #HACK - this should be some event or reactive variable that a view pays attention to
-    Meteor.setTimeout ->
-      resizeEditor()
-    ,0
+    windowSizeChanged()
 
   toggle: (dirPath) ->
     #Don't want the get to be reactive
@@ -101,6 +95,7 @@ MadEye.fileTree = new FileTree
 
 
 Deps.autorun ->
+  @name 'filetree select'
   fileId = MadEye.fileLoader?.selectedFileId
   return unless fileId
   file = Files.findOne fileId

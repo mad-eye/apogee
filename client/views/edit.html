@@ -66,9 +66,11 @@
   {{#if editorIsLoading}}
     <div id="editorOverlay">
       {{#if editorThemeIsDark}}
-        <img id="editorLoadingSpinner" src="/images/ajax-loader-dark.gif" alt="Loading..." />
+        <img id="editorLoadingSpinner" src="/images/ajax-loader-dark.gif" alt="Loading..."
+          style="top: {{spinnerTop}}px;left: {{spinnerLeft}}px;"/>
       {{else}}
-        <img id="editorLoadingSpinner" src="/images/ajax-loader.gif" alt="Loading..." />
+        <img id="editorLoadingSpinner" src="/images/ajax-loader.gif" alt="Loading..."
+          style="top: {{spinnerTop}}px;left: {{spinnerLeft}}px;"/>
       {{/if}}
     </div>
   {{/if}}
@@ -80,13 +82,22 @@
 
 <template name="editorFooter">
   {{> statusBar }}
-
-  {{#if isInterview}}
-    <div id="programOutput">
-      {{! would be nice to move logic from helper here into template
-      handlebars unfortunately generates a pile of whitespace that
-      breaks our pre tag }}
-      <pre id="stdout">{{{output}}}</pre>
-    </div>
+  {{#if isTerminal}}
+    {{> terminal}}
   {{/if}}
+</template>
+
+<template name="terminal">
+  {{#constant}}
+  <div id="terminal">
+    <span id="measurementDiv">{{measurementChars}}</span>
+  {{!#unless Session 'terminalIsActive'}}
+    {{> createTerminal }}
+  {{!/unless}}
+  </div>
+  {{/constant}}
+</template>
+
+<template name="createTerminal">
+  <span id="createTerminalMessage"><a id="createTerminal" href="#">Click to open terminal</a></span>
 </template>
