@@ -20,8 +20,7 @@ Meteor.startup ->
     if project.tunnels?.terminal
       tunnel = project.tunnels.terminal
       log.trace "Found terminal tunnel:", tunnel
-      tty.Terminal.ioHost = Meteor.settings.public.shareHost
-      tty.Terminal.ioPort = tunnel.remotePort
+      tty.Terminal.ioUrl = MadEye.makeTunnelUrl tunnel.remotePort
       tty.open()
       log.debug "Initialized terminal"
       ttyInitialized = true
