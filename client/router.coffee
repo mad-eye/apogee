@@ -145,9 +145,7 @@ beforeEdit = (router, {projectId, filePath, lineNumber}) ->
     filePath = scratchFile.path if scratchFile
   MadEye.editorState ?= new EditorState "editor"
   MadEye.fileLoader.loadPath = filePath
-  #This editorFilePath probably isn't set yet, because we haven't flushed
-  #XXX: Why not just use filePath?
-  MadEye.fileTree.open MadEye.fileLoader.editorFilePath, true
+  MadEye.fileTree.open filePath, true
 
 
 registerHangout = (projectId, hangoutUrl) ->
