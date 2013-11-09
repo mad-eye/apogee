@@ -42,7 +42,6 @@ Router.map ->
       beforeEdit this,
         projectId: @params.projectId
         filePath: @params.filePath
-        connectionId: @params.user
     
   @route 'scratch',
     template: 'edit'
@@ -138,17 +137,8 @@ getQueryParams = (queryString) ->
     params[key] = value
   return params
 
-beforeEdit = (router, {projectId, filePath, lineNumber, connectionId}) ->
+beforeEdit = (router, {projectId, filePath, lineNumber}) ->
   Session.set 'projectId', projectId
-  if connectionId
-    log.trace "Found user connectionId", connectionId
-    Deps.nonreactive ->
-      theirProjectStatus = ProjectStatuses.findOne({connectionId})
-      log.trace "Found projectStatus", theirProjectStatus
-      #XXX: This might overwrite filePath with null
-      filePath = theirProjectStatus?.filePath
-      lineNumber = theirProjectStatus?.lineNumber
-      log.trace "Found filePath from projectStatus", filePath
   #Grab the (a?) scratch file if we are just going to the project
   unless filePath
     scratchFile = Files.findOne {scratch:true, projectId}

@@ -46,11 +46,9 @@ Template.fileTree.helpers
       if status.sessionId == Session.id
         #The user's own
         iconClass = "user_selection cursor_color_00"
-        destination = "#"
       else
         shareIndex = sharejs.getIndexForConnection status.connectionId
         iconClass = "foreign_selection foreign_selection_#{shareIndex} cursor_color_#{shareIndex}"
-        destination = "/edit/#{projectId}/?user=#{}"
       return {iconClass, connectionId:status.connectionId}
 
     users = (user for user in users when user)
@@ -91,10 +89,12 @@ Template.fileTree.events
 
   'click .fileTreeUserIcon': (event) ->
     event.stopPropagation()
-    console.log event
     connectionId = event.target.dataset['connectionid']
-    log.trace "Going to user", connectionId
-    Router.go 'edit', projectId: getProjectId(), user: connectionId
+    theirProjectStatus = ProjectStatuses.findOne({connectionId})
+    filePath = theirProjectStatus?.filePath
+    lineNumber = theirProjectStatus?.lineNumber
+    log.trace "Going to user #{connectionId} at filePath", filePath
+    Router.go 'edit', {projectId: getProjectId(), filePath, lineNumber}
 
 @warnFirefoxHangout = ->
   if "Firefox" == BrowserDetect.browser and BrowserDetect.version < 22
