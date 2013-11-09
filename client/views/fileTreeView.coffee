@@ -1,3 +1,5 @@
+log = new Logger 'fileTreeView'
+
 Template.fileTree.rendered = ->
   MadEye.rendered 'fileTree'
   Meteor.setTimeout ->
@@ -48,8 +50,8 @@ Template.fileTree.helpers
       else
         shareIndex = sharejs.getIndexForConnection status.connectionId
         iconClass = "foreign_selection foreign_selection_#{shareIndex} cursor_color_#{shareIndex}"
-        destination = "/edit/#{projectId}/#{file.path}"
-      return {iconClass, destination}
+        destination = "/edit/#{projectId}/?user=#{}"
+      return {iconClass, connectionId:status.connectionId}
 
     users = (user for user in users when user)
     return users
@@ -63,6 +65,7 @@ Template.fileTree.events
     fileId = event.currentTarget.id
     file = Files.findOne(fileId)
     return unless file
+    log.trace "Going to file", file.path
     MadEye.fileTree.toggle file.path
     MadEye.fileLoader.loadId = event.currentTarget.id
 
@@ -86,9 +89,12 @@ Template.fileTree.events
     event.stopPropagation()
     window.location = event.target.href
 
-  #'click img.fileTreeUserIcon': (event) ->
-    #event.stopPropagation()
-    #Router.go 'edit', projectId: getProjectId(), sessionId: event.toElement.attributes.destination.value
+  'click .fileTreeUserIcon': (event) ->
+    event.stopPropagation()
+    console.log event
+    connectionId = event.target.dataset['connectionid']
+    log.trace "Going to user", connectionId
+    Router.go 'edit', projectId: getProjectId(), user: connectionId
 
 @warnFirefoxHangout = ->
   if "Firefox" == BrowserDetect.browser and BrowserDetect.version < 22

@@ -28,6 +28,14 @@ Meteor.startup ->
     return unless projectStatus and MadEye.fileLoader and MadEye.editorState
     projectStatus.update {filePath: MadEye.fileLoader.editorFilePath, connectionId: MadEye.editorState.connectionId}
 
+  Deps.autorun ->
+    @name 'set lineNumber'
+    projectStatus = getProjectStatus()
+    lineNumber = MadEye.editorState?.editor?.lineNumber
+    return unless projectStatus and lineNumber?
+    projectStatus.update {lineNumber: lineNumber, connectionId: MadEye.editorState.connectionId}
+
+
   #Populate fileTree with ProjectStatuses filePath
   sessionsDep = new Deps.Dependency
 

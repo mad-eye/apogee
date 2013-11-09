@@ -39,7 +39,10 @@ Router.map ->
       handle ?= ready: -> false
       return handle
     before: ->
-      beforeEdit this, @params.projectId, @params.filePath
+      beforeEdit this,
+        projectId: @params.projectId
+        filePath: @params.filePath
+        connectionId: @params.user
     
   @route 'scratch',
     template: 'edit'
@@ -52,7 +55,7 @@ Router.map ->
           log.error 'Error creating scratch project', err
           #TODO: Direct to an error page?
         else
-          beforeEdit this, result.projectId
+          beforeEdit this, {projectId: result.projectId}
 
   @route 'impress.js',
     template: 'editImpressJS'
@@ -62,12 +65,16 @@ Router.map ->
           log.error 'Error creating scratch project', err
           #TODO: Direct to an error page?
         else
-          beforeEdit this, result.data['projectId'], 'index.html'
+          beforeEdit this,
+            projectId: result.data['projectId']
+            filePath: 'index.html'
 
   @route 'editImpressJS',
     path: '/editImpressJS/:projectId/:filePath(*)?'
     before: ->
-      beforeEdit this, @params.projectId, @params.filePath
+      beforeEdit this,
+        projectId: @params.projectId
+        filePath: @params.filePath
 
   @route 'tests'
   @route 'tos'
@@ -131,8 +138,17 @@ getQueryParams = (queryString) ->
     params[key] = value
   return params
 
-beforeEdit = (router, projectId, filePath) ->
+beforeEdit = (router, {projectId, filePath, lineNumber, connectionId}) ->
   Session.set 'projectId', projectId
+  if connectionId
+    log.trace "Found user connectionId", connectionId
+    Deps.nonreactive ->
+      theirProjectStatus = ProjectStatuses.findOne({connectionId})
+      log.trace "Found projectStatus", theirProjectStatus
+      #XXX: This might overwrite filePath with null
+      filePath = theirProjectStatus?.filePath
+      lineNumber = theirProjectStatus?.lineNumber
+      log.trace "Found filePath from projectStatus", filePath
   #Grab the (a?) scratch file if we are just going to the project
   unless filePath
     scratchFile = Files.findOne {scratch:true, projectId}
@@ -140,6 +156,7 @@ beforeEdit = (router, projectId, filePath) ->
   MadEye.editorState ?= new EditorState "editor"
   MadEye.fileLoader.loadPath = filePath
   #This editorFilePath probably isn't set yet, because we haven't flushed
+  #XXX: Why not just use filePath?
   MadEye.fileTree.open MadEye.fileLoader.editorFilePath, true
 
 
