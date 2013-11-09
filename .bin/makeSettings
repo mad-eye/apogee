@@ -1,6 +1,19 @@
 #! /usr/bin/env node
 fs = require('fs')
 
+LOG_PREFIX = 'MADEYE_LOGLEVEL'
+var parseSpecificLogLevels = function() {
+  specificLogLevels = {}
+  for (k in process.env) {
+    if ( k.indexOf(LOG_PREFIX+"_") != 0 ) continue;
+    if (k == LOG_PREFIX) continue;
+    name = k.substr(LOG_PREFIX.length + 1);
+    name = name.split('_').join(':')
+    specificLogLevels[name] = process.env[k]
+  }
+  return specificLogLevels
+}
+
 settings = {
   public: {
     bolideUrl: process.env.MADEYE_BOLIDE_URL,
@@ -9,8 +22,9 @@ settings = {
     googleAnalyticsId: process.env.MADEYE_GOOGLE_ANALYTICS_ID,
     hangoutUrl: process.env.MADEYE_AZKABAN_URL + "/hangout/",
     tunnelHost: process.env.MADEYE_TUNNEL_HOST,
+    stripePublicKey: process.env.MADEYE_STRIPE_PUBLIC_KEY,
     logLevel: process.env.MADEYE_LOGLEVEL,
-    stripePublicKey: process.env.MADEYE_STRIPE_PUBLIC_KEY
+    specificLogLevels: parseSpecificLogLevels()
   },
   googleClientId: process.env.MADEYE_GOOGLE_CLIENT_ID,
   googleSecret: process.env.MADEYE_GOOGLE_SECRET,
