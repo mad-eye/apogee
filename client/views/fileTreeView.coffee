@@ -93,7 +93,7 @@ Template.fileTree.events
     theirProjectStatus = ProjectStatuses.findOne({connectionId})
     filePath = theirProjectStatus?.filePath
     lineNumber = theirProjectStatus?.lineNumber
-    log.trace "Going to user #{connectionId} at filePath", filePath
+    log.trace "Going to user #{connectionId} at filePath #{filePath} line #{lineNumber}"
     Router.go 'edit', {projectId: getProjectId(), filePath, lineNumber}
 
 @warnFirefoxHangout = ->

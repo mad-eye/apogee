@@ -39,9 +39,11 @@ Router.map ->
       handle ?= ready: -> false
       return handle
     before: ->
+      console.log "Going to #{@params.filePath}, line #{@params.lineNumber}"
       beforeEdit this,
         projectId: @params.projectId
         filePath: @params.filePath
+        lineNumber: @params.lineNumber
     
   @route 'scratch',
     template: 'edit'
@@ -145,6 +147,7 @@ beforeEdit = (router, {projectId, filePath, lineNumber}) ->
     filePath = scratchFile.path if scratchFile
   MadEye.editorState ?= new EditorState "editor"
   MadEye.fileLoader.loadPath = filePath
+  MadEye.fileLoader.lineNumber = lineNumber
   MadEye.fileTree.open filePath, true
 
 

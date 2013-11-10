@@ -39,7 +39,6 @@ class @FileLoader extends Reactor
     if loadId
       file = Files.findOne loadId unless file
     return unless file
-    return if file.id == @_get('selectedFileId', false) == @_get('editorFileId', false)
 
     log.trace "Found load file #{file.path}"
     @_set 'loadId', null, false

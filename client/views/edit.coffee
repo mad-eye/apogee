@@ -68,7 +68,9 @@ Meteor.startup ->
       return log.error "Error loading file:", err if err
       return unless fileId == MadEye.editorState.fileId
       log.warn "Editor state finished loading with no doc" unless MadEye.editorState.doc
-      if MadEye.editorState.doc?.cursor
+      if MadEye.fileLoader.lineNumber?
+        MadEye.editorState.gotoLine MadEye.fileLoader.lineNumber
+      else if MadEye.editorState.doc?.cursor
         gotoPosition(MadEye.editorState.doc.cursor)
 
 Template.editorOverlay.helpers

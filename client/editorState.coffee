@@ -46,7 +46,8 @@ class EditorState
   setCursorDestination: (connectionId)->
     @cursorDestination = connectionId
 
-  setLine: (@lineNumber) ->
+  gotoLine: (lineNumber) ->
+    @editor.lineNumber = lineNumber
 
   revertFile: (callback=->) ->
     unless @doc and @fileId
