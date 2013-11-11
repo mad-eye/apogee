@@ -18,7 +18,6 @@ MadEye.Event.prototype.collection = @Events
     if event.projectId
       project = Projects.findOne event.projectId
       return unless project
-      event.isInterview = project.interview
       event.isScratch = project.scratch
     event.save()
     computation.stop()

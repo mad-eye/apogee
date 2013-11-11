@@ -1,9 +1,6 @@
 Meteor.startup ->
   MadEye.startedUp = true
 
-Handlebars.registerHelper "Settings", ->
-  Settings.findOne()
-
 Handlebars.registerHelper "Session", (key) ->
   Session.get key
 
@@ -22,20 +19,13 @@ Handlebars.registerHelper "hangoutLink", ->
 @isScratch = ->
   getProject()?.scratch
 
-Handlebars.registerHelper 'isScratch', ->
-  isScratch()
+Handlebars.registerHelper 'isScratch', isScratch
 
 @projectIsClosed = ->
   getProject()?.closed
   
 @fileIsDeleted = ->
   Files.findOne(MadEye.editorState?.fileId)?.deletedInFs
-
-@isInterview = ->
-  getProject()?.interview
-
-Handlebars.registerHelper "isInterview", isInterview
-
 
 @isTerminal = ->
   getProject()?.tunnels?.terminal?
