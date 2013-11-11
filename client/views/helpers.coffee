@@ -16,24 +16,23 @@ Handlebars.registerHelper "hangoutLink", ->
 
 @getProjectId = -> Session.get "projectId"
 
-@isScratch = ->
-  getProject()?.scratch
-
-Handlebars.registerHelper 'isScratch', isScratch
-
 @projectIsClosed = ->
   getProject()?.closed
   
-@fileIsDeleted = ->
-  Files.findOne(MadEye.editorState?.fileId)?.deletedInFs
-
-@isTerminal = ->
+## Terminal helpers
+@isTerminalEnabled = ->
   project = getProject()
   return false unless project and not project.closed
   return project.tunnels?.terminal?
 
-Handlebars.registerHelper "isTerminal", isTerminal
+Handlebars.registerHelper "isTerminalEnabled", isTerminalEnabled
 
+@isTerminalOpened = ->
+  return false unless isTerminalEnabled()
+  return MadEye.terminal?
+  
+
+## Page/project Info
 @isEditorPage = ->
   (Router.template == 'edit') or (Router.tempate == 'editImpressJS')
 
@@ -43,6 +42,12 @@ Handlebars.registerHelper "isHomePage", ->
 Handlebars.registerHelper "isHangout", ->
   Session.get "isHangout"
 
+@isScratch = ->
+  getProject()?.scratch
+
+Handlebars.registerHelper 'isScratch', isScratch
+
+## Alerts
 @displayAlert = (alert) ->
   return unless alert?
   html = Template.alert {
@@ -51,6 +56,11 @@ Handlebars.registerHelper "isHangout", ->
     message: alert.message
   }
   $('#alertBox').append html
+
+@fileIsDeleted = ->
+  Files.findOne(MadEye.editorState?.fileId)?.deletedInFs
+
+## AB Testing
 
 @groupA = (testName)->
   return null unless Meteor.userId()
