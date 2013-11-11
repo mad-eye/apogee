@@ -72,7 +72,10 @@ Meteor.startup ->
     sizes.set 'containerHeight', Math.floor $container.height()
     sizes.set 'containerWidth', Math.floor $container.width()
     if isTerminal()
-      sizes.set 'maxTerminalHeight', Math.floor( $container.height() / 3 )
+      maxTerminalHeight = Math.floor( $container.height() / 3 )
+    else
+      maxTerminalHeight = 0
+    sizes.set 'maxTerminalHeight', maxTerminalHeight
 
   #Set editor size
   Deps.autorun (c) ->
@@ -90,7 +93,11 @@ Meteor.startup ->
   #Set terminal size
   Deps.autorun (c) ->
     @name 'set terminalSize'
-    return unless isEditorPage() and isTerminal() and MadEye.isRendered 'terminal'
+    return unless isEditorPage()
+    unless isTerminal() and MadEye.isRendered 'terminal'
+      sizes.set 'terminalHeight', 0
+      return
+
     terminalHeight = switch
       when not MadEye.terminal
         inactiveTerminalHeight

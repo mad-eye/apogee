@@ -28,7 +28,9 @@ Handlebars.registerHelper 'isScratch', isScratch
   Files.findOne(MadEye.editorState?.fileId)?.deletedInFs
 
 @isTerminal = ->
-  getProject()?.tunnels?.terminal?
+  project = getProject()
+  return false unless project and not project.closed
+  return project.tunnels?.terminal?
 
 Handlebars.registerHelper "isTerminal", isTerminal
 
