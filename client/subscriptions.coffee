@@ -23,7 +23,7 @@ Deps.autorun ->
   return unless projectId
   MadEye.subscribe "files", projectId
   MadEye.subscribe "projects", projectId
-  MadEye.subscribe "projectStatuses", projectId
+  MadEye.subscribe "projectStatuses", projectId, Session.id
   MadEye.subscribe "scriptOutputs", projectId
   MadEye.subscribe "workspaces", projectId
   MadEye.subscribe "activeDirectories", projectId

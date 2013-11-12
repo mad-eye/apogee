@@ -1,5 +1,14 @@
 log = new Logger 'projectMethods'
 
+Meteor.publish "projectStatuses", (projectId, sessionId) ->
+  if sessionId
+    log.debug "Subscribing to projectStatus for id", sessionId
+    Meteor.onLogout this, ->
+      log.debug "Removing projectStatus for id", sessionId
+      ProjectStatuses.remove {sessionId}
+
+  return ProjectStatuses.find {projectId: projectId}, {fields: {heartbeat:0} }
+
 getIcon = (projectId)->
   unavailableIcons = {}
   ProjectStatuses.find({projectId}).forEach (status) ->
@@ -10,6 +19,8 @@ getIcon = (projectId)->
 
 projectStatusTimeouts = {}
 
+#This might be obsolete with the onLogout hook above.
+#Keep an eye on it, and then remove it if possible.
 setProjectStatusTimeout = (sessionId) ->
   Meteor.clearTimeout projectStatusTimeouts[sessionId]
   projectStatusTimeouts[sessionId] = Meteor.setTimeout ->
@@ -44,7 +55,7 @@ ProjectStatuses.allow
   remove: (userId, doc) -> true
 
 Meteor.startup ->
-  #In-memory collection doesn't work in 0.6.4; manually remove
-  #orphaned projectStatuses.
+  #When apogee restarts the timeout doesn't get to clear projectStatuses.
+  #Manually remove orphaned projectStatuses.
   ProjectStatuses.remove {}
 
