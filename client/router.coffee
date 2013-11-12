@@ -23,6 +23,10 @@ Router.before ->
 Router.before ->
   Router.template = @template
 
+Router.before ->
+  if @params.filePath and @params.filePath[@params.filePath.length-1] == '/'
+    @params.filePath = @params.filePath.substr 0, @params.filePath.length-1
+
 Router.map ->
   @route 'home', path: '/'
   @route 'getStarted', path: '/get-started'
@@ -39,7 +43,6 @@ Router.map ->
       handle ?= ready: -> false
       return handle
     before: ->
-      console.log "Going to #{@params.filePath}, line #{@params.lineNumber}"
       beforeEdit this,
         projectId: @params.projectId
         filePath: @params.filePath

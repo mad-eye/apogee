@@ -94,7 +94,8 @@ Template.fileTree.events
     filePath = theirProjectStatus?.filePath
     lineNumber = theirProjectStatus?.lineNumber
     log.trace "Going to user #{connectionId} at filePath #{filePath} line #{lineNumber}"
-    Router.go 'edit', {projectId: getProjectId(), filePath, lineNumber}
+    #Query params have to be passed in options.
+    Router.go 'edit', {projectId: getProjectId(), filePath}, {query: {lineNumber}, hash: "L#{lineNumber}" }
 
 @warnFirefoxHangout = ->
   if "Firefox" == BrowserDetect.browser and BrowserDetect.version < 22
