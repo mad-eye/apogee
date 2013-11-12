@@ -57,13 +57,6 @@ Template.editorBar.helpers
     else
       ""
 
-  runButtonDisabled: ->
-    project = Projects.findOne(Session.get("projectId"))
-    disabled = "disabled"
-    if canRunLanguage MadEye.editorState?.editor.syntaxMode
-      disabled = ""
-    return disabled
-
   isHangout: ->
     Session.get "isHangout"
 
@@ -124,9 +117,6 @@ Template.syntaxModeOptions.helpers
 
   syntaxModes: ->
     aceModes.modes
-
-  canRunLanguage: (language) ->
-    isInterview() && canRunLanguage language
 
 Template.themeOptions.helpers
   themeEquals: (value) ->

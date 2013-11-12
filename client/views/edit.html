@@ -1,23 +1,18 @@
 <template name="edit">
   {{> projectStatus}}
-  {{#if isInterview}}
-    {{#unless Session 'isHangout'}}
-      {{> interviewIntro }}
-    {{/unless}}
-  {{/if}}
-    <div class="row">
-        <div id="leftColumn" class="span3">
-          {{> fileTree}}
+  <div class="row">
+      <div id="leftColumn" class="span3">
+        {{> fileTree}}
+      </div>
+      <div id="editorChrome" class="span9">
+        {{> editorChrome }}
+        <div id="editorContainer">
+          {{> editorOverlay }}
+          {{> editor}}
+          {{> editorFooter}}
         </div>
-        <div id="editorChrome" class="span9">
-          {{> editorChrome }}
-          <div id="editorContainer">
-            {{> editorOverlay }}
-            {{> editor}}
-            {{> editorFooter}}
-          </div>
-        </div>
-    </div>
+      </div>
+  </div>
 </template>
 
 <template name="editImpressJS">
@@ -82,7 +77,7 @@
 
 <template name="editorFooter">
   {{> statusBar }}
-  {{#if isTerminal}}
+  {{#if isTerminalEnabled}}
     {{> terminal}}
   {{/if}}
 </template>

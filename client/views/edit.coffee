@@ -37,10 +37,6 @@ Template.editor.rendered = ->
     MadEye.editorState.rendered = true
     MadEye.rendered 'editor'
     windowSizeChanged()
-    #If we're displaying the program output, set the bottom of the editor
-    outputOffset = if isInterview() then $('#programOutput').height() else 0
-    $('#editor').css 'bottom', $('#statusBar').height() + outputOffset
-    $('#statusBar').css 'bottom', outputOffset
     c.stop()
 
 Meteor.startup ->

@@ -71,8 +71,11 @@ Meteor.startup ->
     $container.height containerHeight
     sizes.set 'containerHeight', Math.floor $container.height()
     sizes.set 'containerWidth', Math.floor $container.width()
-    if isTerminal()
-      sizes.set 'maxTerminalHeight', Math.floor( $container.height() / 3 )
+    if isTerminalEnabled()
+      maxTerminalHeight = Math.floor( $container.height() / 3 )
+    else
+      maxTerminalHeight = 0
+    sizes.set 'maxTerminalHeight', maxTerminalHeight
 
   #Set editor size
   Deps.autorun (c) ->
@@ -80,8 +83,6 @@ Meteor.startup ->
     return unless isEditorPage() and MadEye.isRendered 'editor', 'statusBar'
     return unless $('#statusBar').length and $('#editor').length #XXX: There must be a better way
     terminalHeight = sizes.get('terminalHeight') || 0
-
-    #$('#statusBar').css 'bottom', terminalHeight
     editorBottom = terminalHeight + $('#statusBar').height()
     $('#editor').css 'bottom', editorBottom
     ace.edit('editor').resize()
@@ -90,19 +91,23 @@ Meteor.startup ->
   #Set terminal size
   Deps.autorun (c) ->
     @name 'set terminalSize'
-    return unless isEditorPage() and isTerminal() and MadEye.isRendered 'terminal'
+    return unless isEditorPage()
+    unless isTerminalEnabled() and MadEye.isRendered 'terminal'
+      sizes.set 'terminalHeight', 0
+      return
+
     terminalHeight = switch
-      when not MadEye.terminal
+      when not isTerminalOpened()
         inactiveTerminalHeight
       when sizes.get('leastTerminalHeight')
-        Math.min( sizes.get('leastTerminalHeight'), sizes.get('maxTerminalHeight') )
+        Math.min sizes.get('leastTerminalHeight'), sizes.get('maxTerminalHeight')
       else
         sizes.get('maxTerminalHeight')
 
     sizes.set 'terminalHeight', terminalHeight
     $('#terminal').height terminalHeight
 
-    if MadEye.terminal
+    if isTerminalOpened()
       unless $('#terminal .window').length
         console.error 'missing terminal window'
         return
