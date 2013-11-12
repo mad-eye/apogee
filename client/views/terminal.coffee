@@ -70,6 +70,7 @@ closeTerminal = ->
   frag = Meteor.render(Template.createTerminal)
   $('#terminal').append frag
   terminalStatus.set 'ttyInitialized', false
+  tty.disconnect()
 
 Template.terminal.events
   'click #createTerminal': (event, tmpl) ->
