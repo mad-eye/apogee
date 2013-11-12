@@ -34,11 +34,9 @@ Template.terminal.rendered = ->
 
 onTerminalFocus = ->
   $('#terminal').addClass('focused')
-  console.log "Focus!"
 
 onTerminalUnfocus = ->
   $('#terminal').removeClass('focused')
-  console.log "Unfocus"
 
 @refreshTerminalWindow = (w) ->
   #HACK: Resize causes a redraw of the terminal contents.
