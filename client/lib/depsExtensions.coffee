@@ -23,4 +23,5 @@ Deps.invalidated = (callback) ->
 #Log when a context has been invalidated.
 #@startDebug = ->
 Deps.invalidated (name) ->
-  log.trace "Invalidated:", name
+  #log.trace "Invalidated:", name
+  0

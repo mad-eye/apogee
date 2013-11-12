@@ -21,7 +21,7 @@ Meteor.startup ->
       tunnel = project.tunnels.terminal
       log.trace "Found terminal tunnel:", tunnel
       ioUrl = MadEye.tunnelUrl
-      ioResource = "/tunnel/#{tunnel.remotePort}/socket.io"
+      ioResource = "tunnel/#{tunnel.remotePort}/socket.io"
       log.trace "Using ioUrl", ioUrl
       tty.Terminal.ioUrl = ioUrl
       tty.Terminal.ioResource = ioResource
@@ -40,17 +40,19 @@ onTerminalUnfocus = ->
   $('#terminal').removeClass('focused')
   console.log "Unfocus"
 
+@refreshTerminalWindow = (w) ->
+  #HACK: Resize causes a redraw of the terminal contents.
+  #Trivial resizes don't trigger redraw, and they need to be
+  #after the window opens.
+  cols = w.cols
+  rows = w.rows
+  w.resize(cols-1, rows)
+  w.resize(cols, rows)
+
 createTerminal = (options) ->
   w = new tty.Window(null, options)
   w.on 'open', =>
-    #HACK: Resize causes a redraw of the terminal contents.
-    #Trivial resizes don't trigger redraw, and they need to be
-    #after the window opens.
-    cols = w.cols
-    rows = w.rows
-    w.resize(cols-1, rows)
-    w.resize(cols, rows)
-
+    refreshTerminalWindow w
     onTerminalFocus()
     $(".window").click (e) ->
       e.stopPropagation()
