@@ -3,7 +3,7 @@ log = new Logger 'projectMethods'
 Meteor.publish "projectStatuses", (projectId, sessionId) ->
   if sessionId
     log.debug "Subscribing to projectStatus for id", sessionId
-    Meteor.onLogout this, ->
+    DDP.onDisconnect this, ->
       log.debug "Removing projectStatus for id", sessionId
       ProjectStatuses.remove {sessionId}
 

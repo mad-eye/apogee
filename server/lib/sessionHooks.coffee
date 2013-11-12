@@ -1,29 +1,19 @@
 log = new Logger 'sessionHooks'
 
-loginCallbacks = []
-_onLogin = (session) ->
-  callback(session) for callback in loginCallbacks
-
+#Example usage:
+#Meteor.onConnect (session) ->
+#  console.log "Session #{session.id} connected"
 #callback: (session) ->
 #TODO: Accept context
-Meteor.onLogin = (callback) ->
+DDP.onConnect = (callback) ->
   unless typeof callback == 'function'
-    throw new Error "Meteor.onLogin must be passed a function"
-  loginCallbacks.push callback
-
-
-logoutCallbacks = {}
-_onLogout = (sessionId) ->
-  callbacks = logoutCallbacks[sessionId]
-  return unless callbacks
-  callback() for callback in callbacks
-  delete logoutCallbacks[sessionId]
-  return
+    throw new Error "Meteor.onConnect must be passed a function"
+  connectCallbacks.push callback
 
 #handle is either sessionId, session, or subscription.
 #In the end we use any of those to find the sessionId
 #callback: () ->
-Meteor.onLogout = (handle, callback) ->
+DDP.onDisconnect = (handle, callback) ->
   if typeof handle == 'string'
     sessionId = handle
   #presumably an object
@@ -35,29 +25,41 @@ Meteor.onLogout = (handle, callback) ->
     sessionId = handle.id
 
   unless sessionId
-    throw new Error "Need sessionId for logout callback"
+    throw new Error "Need sessionId for disconnect callback"
   unless typeof callback == 'function'
-    throw new Error "Meteor.onLogout must be passed a sessionId and a function"
+    throw new Error "Meteor.onDisconnect must be passed a sessionId and a function"
 
-  logoutCallbacks[sessionId] ?= []
-  logoutCallbacks[sessionId].push callback
+  disconnectCallbacks[sessionId] ?= []
+  disconnectCallbacks[sessionId].push callback
 
 
-existingSessions = []
+connectCallbacks = []
+_invokeConnectCallbacks = (session) ->
+  callback(session) for callback in connectCallbacks
+
+disconnectCallbacks = {}
+_invokeDisconnectCallbacks = (sessionId) ->
+  callbacks = disconnectCallbacks[sessionId]
+  return unless callbacks
+  callback() for callback in callbacks
+  delete disconnectCallbacks[sessionId]
+  return
+
+existingSessionIds = []
 INTERVAL = Meteor.settings.sessionInterval || 1000
 Meteor.setInterval ->
-  currentSessions = _.keys Meteor.server.sessions
-  newSessions = _.difference currentSessions, existingSessions
-  log.debug "newSessions:", newSessions if newSessions.length > 0
-  for sessionId in newSessions
+  currentSessionIds = _.keys Meteor.server.sessions
+  newSessionIds = _.difference currentSessionIds, existingSessionIds
+  log.debug "newSessions:", newSessionIds if newSessionIds.length > 0
+  for sessionId in newSessionIds
     session = Meteor.server.sessions[sessionId]
-    _onLogin(session)
+    _invokeConnectCallbacks(session)
 
-  closedSessions = _.difference existingSessions, currentSessions
-  log.debug "closedSessions:", closedSessions if closedSessions.length > 0
-  for sessionId in closedSessions
-    _onLogout(sessionId)
+  closedSessionIds = _.difference existingSessionIds, currentSessionIds
+  log.debug "closedSessions:", closedSessionIds if closedSessionIds.length > 0
+  for sessionId in closedSessionIds
+    _invokeDisconnectCallbacks(sessionId)
 
-  existingSessions = currentSessions
+  existingSessionIds = currentSessionIds
 
 , INTERVAL
