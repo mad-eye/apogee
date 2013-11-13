@@ -13,3 +13,6 @@
 [submodule "packages/pince"]
 	path = packages/pince
 	url = git@github.com:mad-eye/pince.git
+[submodule "packages/ddpHooks"]
+	path = packages/ddpHooks
+	url = git@github.com:mad-eye/ddpHooks.git
