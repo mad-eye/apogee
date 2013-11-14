@@ -39,11 +39,25 @@ Template.editorOverlay.helpers
     editorBottom = terminalHeight + $('#statusBar').height()
     editorHeight = sizes.get('containerHeight') - editorBottom
     $spinner = $('#editorLoadingSpinner')
-    $spinner.css('top', (editorHeight - $spinner.height())/2 )
+    return (editorHeight - $spinner.height())/2
 
   spinnerLeft: ->
     $spinner = $('#editorLoadingSpinner')
-    $spinner.css('left', (sizes.get('containerWidth') - $spinner.width())/2 )
+    return (sizes.get('containerWidth') - $spinner.width())/2
+
+Template.terminalOverlay.helpers
+  overlayHeight: ->
+    sizes.get('terminalHeight') || 0
+
+  spinnerTop: ->
+    terminalHeight = sizes.get('terminalHeight') || 0
+    $spinner = $('#terminalBusySpinner')
+    # /2.5 gives a more natural feeling position than /2
+    return Math.floor (terminalHeight - $spinner.height())/2.5
+
+  spinnerLeft: ->
+    $spinner = $('#terminalBusySpinner')
+    return Math.floor (sizes.get('containerWidth') - $spinner.width())/2
 
 Meteor.startup ->
   #Trigger initial size calculations
@@ -106,6 +120,7 @@ Meteor.startup ->
 
     sizes.set 'terminalHeight', terminalHeight
     $('#terminal').height terminalHeight
+    $('#terminalOverlay').height terminalHeight
 
     if isTerminalOpened()
       unless $('#terminal .window').length
