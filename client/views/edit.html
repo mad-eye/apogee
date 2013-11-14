@@ -78,6 +78,9 @@
 <template name="editorFooter">
   {{> statusBar }}
   {{#if isTerminalEnabled}}
+    {{#if isTerminalUnavailable}}
+      {{> terminalOverlay}}
+      {{/if}}
     {{> terminal}}
   {{/if}}
 </template>
@@ -86,11 +89,15 @@
   {{#constant}}
   <div id="terminal">
     <span id="measurementDiv">{{measurementChars}}</span>
-  {{!#unless Session 'terminalIsActive'}}
     {{> createTerminal }}
-  {{!/unless}}
   </div>
   {{/constant}}
+</template>
+
+<template name="terminalOverlay">
+  <div id="terminalOverlay">
+    <!-- TODO: Put in a position:absolute blocking thing -->
+  </div>
 </template>
 
 <template name="createTerminal">
