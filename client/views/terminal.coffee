@@ -102,7 +102,7 @@ Meteor.startup ->
           closeTerminal()
         else if 'tunnels' of fields
           #a removed field is in fields as undefined
-          if tunnels?.terminal == undefined
+          if fields.tunnels?.terminal == undefined
             closeTerminal()
           #might be changing unavailable, which will be handled automatically
           #TODO: Handle case where tunnel info (ie, remotePort) is changed
