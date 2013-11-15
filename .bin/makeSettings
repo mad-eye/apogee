@@ -24,7 +24,9 @@ settings = {
     tunnelHost: process.env.MADEYE_TUNNEL_HOST,
     stripePublicKey: process.env.MADEYE_STRIPE_PUBLIC_KEY,
     logLevel: process.env.MADEYE_LOGLEVEL,
-    specificLogLevels: parseSpecificLogLevels()
+    specificLogLevels: parseSpecificLogLevels(),
+    stripePublicKey: process.env.MADEYE_STRIPE_PUBLIC_KEY,
+    readWriteTerm: process.env.MADEYE_READ_WRITE_TERM
   },
   googleClientId: process.env.MADEYE_GOOGLE_CLIENT_ID,
   googleSecret: process.env.MADEYE_GOOGLE_SECRET,
