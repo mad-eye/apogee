@@ -1,3 +1,5 @@
+log = new Logger 'fileTreeView'
+
 Template.fileTree.rendered = ->
   MadEye.rendered 'fileTree'
   Meteor.setTimeout ->
@@ -44,12 +46,10 @@ Template.fileTree.helpers
       if status.sessionId == Session.id
         #The user's own
         iconClass = "user_selection cursor_color_00"
-        destination = "#"
       else
         shareIndex = sharejs.getIndexForConnection status.connectionId
         iconClass = "foreign_selection foreign_selection_#{shareIndex} cursor_color_#{shareIndex}"
-        destination = "/edit/#{projectId}/#{file.path}"
-      return {iconClass, destination}
+      return {iconClass, connectionId:status.connectionId}
 
     users = (user for user in users when user)
     return users
@@ -63,6 +63,7 @@ Template.fileTree.events
     fileId = event.currentTarget.id
     file = Files.findOne(fileId)
     return unless file
+    log.trace "Going to file", file.path
     MadEye.fileTree.toggle file.path
     MadEye.fileLoader.loadId = event.currentTarget.id
 
@@ -86,9 +87,15 @@ Template.fileTree.events
     event.stopPropagation()
     window.location = event.target.href
 
-  #'click img.fileTreeUserIcon': (event) ->
-    #event.stopPropagation()
-    #Router.go 'edit', projectId: getProjectId(), sessionId: event.toElement.attributes.destination.value
+  'click .fileTreeUserIcon': (event) ->
+    event.stopPropagation()
+    connectionId = event.target.dataset['connectionid']
+    theirProjectStatus = ProjectStatuses.findOne({connectionId})
+    filePath = theirProjectStatus?.filePath
+    lineNumber = theirProjectStatus?.lineNumber
+    log.trace "Going to user #{connectionId} at filePath #{filePath} line #{lineNumber}"
+    #Query params have to be passed in options.
+    Router.go 'edit', {projectId: getProjectId(), filePath}, {query: {lineNumber}, hash: "L#{lineNumber}" }
 
 @warnFirefoxHangout = ->
   if "Firefox" == BrowserDetect.browser and BrowserDetect.version < 22

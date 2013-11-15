@@ -27,12 +27,8 @@ class @FileLoader extends Reactor
       type = "editImpressJS"
     else
       type = "edit"
-    #filePath = encodeURIComponent( @editorFilePath ? "" ).replace(/%2F/g, '/')
-    ## ironRouter automatically escapes our params.  This means, unfortunately,
-    ## that it escapes our slashes.  We can fix this pending resolution to
-    ## https://github.com/EventedMind/iron-router/issues/198
     filePath = @editorFilePath
-    #log.trace "Loading #{filePath}"
+    log.trace "Loading #{filePath}"
     Router.go type, projectId: project._id, filePath: filePath
 
   @sentry 'loadFile', ->
@@ -43,6 +39,7 @@ class @FileLoader extends Reactor
     if loadId
       file = Files.findOne loadId unless file
     return unless file
+
     log.trace "Found load file #{file.path}"
     @_set 'loadId', null, false
     @_set 'loadPath', null, false

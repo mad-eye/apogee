@@ -23,6 +23,10 @@ Router.before ->
 Router.before ->
   Router.template = @template
 
+Router.before ->
+  if @params.filePath and @params.filePath[@params.filePath.length-1] == '/'
+    @params.filePath = @params.filePath.substr 0, @params.filePath.length-1
+
 Router.map ->
   @route 'home', path: '/'
   @route 'getStarted', path: '/get-started'
@@ -39,7 +43,10 @@ Router.map ->
       handle ?= ready: -> false
       return handle
     before: ->
-      beforeEdit this, @params.projectId, @params.filePath
+      beforeEdit this,
+        projectId: @params.projectId
+        filePath: @params.filePath
+        lineNumber: @params.lineNumber
     
   @route 'scratch',
     template: 'edit'
@@ -52,7 +59,7 @@ Router.map ->
           log.error 'Error creating scratch project', err
           #TODO: Direct to an error page?
         else
-          beforeEdit this, result.projectId
+          beforeEdit this, {projectId: result.projectId}
 
   @route 'impress.js',
     template: 'editImpressJS'
@@ -62,12 +69,16 @@ Router.map ->
           log.error 'Error creating scratch project', err
           #TODO: Direct to an error page?
         else
-          beforeEdit this, result.data['projectId'], 'index.html'
+          beforeEdit this,
+            projectId: result.data['projectId']
+            filePath: 'index.html'
 
   @route 'editImpressJS',
     path: '/editImpressJS/:projectId/:filePath(*)?'
     before: ->
-      beforeEdit this, @params.projectId, @params.filePath
+      beforeEdit this,
+        projectId: @params.projectId
+        filePath: @params.filePath
 
   @route 'tests'
   @route 'tos'
@@ -131,7 +142,7 @@ getQueryParams = (queryString) ->
     params[key] = value
   return params
 
-beforeEdit = (router, projectId, filePath) ->
+beforeEdit = (router, {projectId, filePath, lineNumber}) ->
   Session.set 'projectId', projectId
   #Grab the (a?) scratch file if we are just going to the project
   unless filePath
@@ -139,8 +150,8 @@ beforeEdit = (router, projectId, filePath) ->
     filePath = scratchFile.path if scratchFile
   MadEye.editorState ?= new EditorState "editor"
   MadEye.fileLoader.loadPath = filePath
-  #This editorFilePath probably isn't set yet, because we haven't flushed
-  MadEye.fileTree.open MadEye.fileLoader.editorFilePath, true
+  MadEye.fileLoader.lineNumber = lineNumber
+  MadEye.fileTree.open filePath, true
 
 
 registerHangout = (projectId, hangoutUrl) ->

@@ -1,7 +1,7 @@
 log = new Logger 'fileWatcher'
 
 Meteor.startup ->
-  #If selected (unmodified) file is currently being edited, clear it out.
+  #If selected (unmodified) file is currently being deleted, clear it out.
   Deps.autorun ->
     @name 'set fileDeleted warning'
     Files.find(MadEye.fileLoader.editorFileId).observe
