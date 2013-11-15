@@ -10,7 +10,8 @@ settings = {
     hangoutUrl: process.env.MADEYE_AZKABAN_URL + "/hangout/",
     tunnelHost: process.env.MADEYE_TUNNEL_HOST,
     logLevel: process.env.MADEYE_LOGLEVEL,
-    stripePublicKey: process.env.MADEYE_STRIPE_PUBLIC_KEY
+    stripePublicKey: process.env.MADEYE_STRIPE_PUBLIC_KEY,
+    readWriteTerm: process.env.MADEYE_READ_WRITE_TERM
   },
   googleClientId: process.env.MADEYE_GOOGLE_CLIENT_ID,
   googleSecret: process.env.MADEYE_GOOGLE_SECRET,
