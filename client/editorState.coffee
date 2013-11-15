@@ -176,6 +176,7 @@ class EditorState
     editorChecksum = @editor.checksum
     file = Files.findOne @fileId
     return if file.fsChecksum == editorChecksum
+    return if file.scratch
     log.info "Saving file #{file.path}"
     Events.record("save", {file: @fileId, projectId})
     Meteor.call 'saveFile', projectId, @fileId, @editor.value, (error, result) ->
