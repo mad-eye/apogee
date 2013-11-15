@@ -28,3 +28,5 @@
 # to save the file to disk.  If you don't want your changes, press revert to
 # replace the editor's contents to that of the file on disk. 
 #
+# 7. It's possible to share a read-only version of your local terminal
+# with your teammates. Just run madeye with the --term flag.
