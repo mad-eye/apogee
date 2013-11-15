@@ -67,6 +67,7 @@ closeTerminal = ->
   MadEye.terminal?.destroy()
   MadEye.terminal = null
   #Must resurrect the createTerminalMessage.
+  $('#closeTerminalButton').hide()
   frag = Meteor.render(Template.createTerminal)
   $('#terminal').append frag
   terminalStatus.set 'ttyInitialized', false
@@ -84,6 +85,13 @@ Template.terminal.events
     MadEye.terminal = createTerminal parent:parent
     setInitialTerminalData()
     MadEye.terminal.on 'close', closeTerminal
+    $('#closeTerminalButton').show()
+
+  'click #closeTerminalButton': ->
+    event.stopPropagation()
+    event.preventDefault()
+    log.debug "Closing terminal"
+    closeTerminal()
 
 Template.terminal.helpers
   measurementChars: -> MEASUREMENT_CHARS

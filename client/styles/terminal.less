@@ -1,0 +1,77 @@
+@import "base.less";
+
+//TODO: If we are using this, move to base.less
+.verticalGradient(@topColor, @bottomColor) {
+  background-image: -webkit-linear-gradient(top, @topColor, @bottomColor); /* For Chrome and Safari */
+  background-image:    -moz-linear-gradient(top, @topColor, @bottomColor); /* For old Fx (3.6 to 15) */
+  background-image:     -ms-linear-gradient(top, @topColor, @bottomColor); /* For pre-releases of IE 10*/
+  background-image:      -o-linear-gradient(top, @topColor, @bottomColor); /* For old Opera (11.1 to 12.0) */ 
+  background-image:         linear-gradient(to bottom, @topColor, @bottomColor); /* Standard syntax; must be last */
+}
+
+
+//#272829 ?
+@darkGrey: #333;
+@medDarkGrey: #666;
+@medGrey: #999;
+
+#terminal {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: @textColorDefault;
+  //font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
+  font-family: Consolas, monaco, monospace; 
+  //font-family:monospace, prestige;
+
+  //Don't let user resize -- we need control for now.
+  .grip {
+    display: none;
+  }
+
+  //Removing the bar is the easy way to disable multiple terminals.
+  .bar {
+    display: none;
+  }
+
+  .window {
+    //padding-top: 15px; //.bar is not displayed
+    background-color: @darkGrey;
+    .verticalGradient(black, @darkGrey);
+    position: relative;
+    overflow: auto;
+    border: none; //overwrite tty.css
+
+    &:hover {
+      .verticalGradient(black, @medDarkGrey);
+    }
+  }
+
+  &.focused .window {
+    .verticalGradient(black, @medGrey);
+  }
+
+  .terminal {
+    font-size: 12px;
+    border: none;
+    margin: 5px;
+
+  }
+
+}
+
+#createTerminal {
+  color: #5fba3d; //Terminal green
+  margin-left: @baseSpacing;
+}
+
+#closeTerminalButton {
+  position: absolute;
+  //Strange positions, but it looks better this way.
+  top: -4px;
+  right: 3px;
+  z-index: 10000; //Must be over overlay!
+  color: #CCC;
+  display: none;
+}
