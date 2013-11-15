@@ -83,15 +83,24 @@
 </template>
 
 <template name="terminal">
+  {{#if isTerminalUnavailable}}
+    {{> terminalOverlay}}
+  {{/if}}
   {{#constant}}
   <div id="terminal">
     <span id="measurementDiv">{{measurementChars}}</span>
     <button id="closeTerminalButton" type="button" class="close" data-dismiss="terminal">&times;</button>
-  {{!#unless Session 'terminalIsActive'}}
     {{> createTerminal }}
-  {{!/unless}}
   </div>
   {{/constant}}
+</template>
+
+<template name="terminalOverlay">
+  <div id="terminalOverlay" class="overlay" style="height: {{overlayHeight}}px;">
+    <img id="terminalBusySpinner" class="busySpinner" src="/images/ajax-loader-dark.gif" alt="Waiting..."
+      style="top: {{spinnerTop}}px;left: {{spinnerLeft}}px;"/>
+    <!-- TODO: Put in a position:absolute blocking thing -->
+  </div>
 </template>
 
 <template name="createTerminal">

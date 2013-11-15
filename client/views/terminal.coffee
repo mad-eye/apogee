@@ -67,9 +67,10 @@ closeTerminal = ->
   MadEye.terminal?.destroy()
   MadEye.terminal = null
   #Must resurrect the createTerminalMessage.
+  if $('#createTerminalMessage').length == 0
+    frag = Meteor.render(Template.createTerminal)
+    $('#terminal').append frag
   $('#closeTerminalButton').hide()
-  frag = Meteor.render(Template.createTerminal)
-  $('#terminal').append frag
   terminalStatus.set 'ttyInitialized', false
   tty.disconnect()
 
@@ -96,10 +97,20 @@ Template.terminal.events
 Template.terminal.helpers
   measurementChars: -> MEASUREMENT_CHARS
 
+  isTerminalUnavailable: ->
+    return getProject()?.tunnels?.terminal?.unavailable
+
 Meteor.startup ->
   Deps.autorun ->
     Projects.find(Session.get "projectId").observeChanges
       changed: (id, fields) ->
-        #removed field is in fields as undefined
-        if fields.closed or fields.tunnel == undefined
+        log.trace "Changes to project:", fields
+        if fields.closed
+          #This will close the terminal, and recreate the "open terminal" link
           closeTerminal()
+        else if 'tunnels' of fields
+          #a removed field is in fields as undefined
+          if fields.tunnels?.terminal == undefined
+            closeTerminal()
+          #might be changing unavailable, which will be handled automatically
+          #TODO: Handle case where tunnel info (ie, remotePort) is changed

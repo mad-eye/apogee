@@ -38,8 +38,7 @@ Meteor.methods
 
   closeProject: (projectId) ->
     log.trace "Closing project #{projectId}"
-    Projects.update projectId, {$set: {closed:true}}
-    Projects.update projectId, {$unset: {tunnels:true}}
+    Projects.update projectId, {$set: {closed:true}, $unset: {tunnels:true}}
     MadEye.dismissDementor projectId
 
   dementorHeartbeat: (projectId) ->
@@ -87,10 +86,18 @@ Meteor.methods
         throw e
     MadEye.Bolide.setShareContents fileId, contents, version
 
-  addTunnels: (projectId, tunnels) ->
+  updateTunnel: (projectId, tunnelName, tunnel) ->
     check projectId, String
-    check tunnels, Object
-    Projects.update projectId, {$set: {tunnels}}
+    check tunnelName, String
+    check tunnel, Object
+    log.trace "Updating tunnel #{tunnelName} for #{projectId}", tunnel
+    project = Projects.findOne projectId
+    project.tunnels ?= {}
+    if tunnel
+      project.tunnels[tunnelName] = tunnel
+    else
+      delete project.tunnels[tunnelName]
+    project.save()
 
 
 #Methods to dementor
