@@ -26,7 +26,7 @@ settings = {
     logLevel: process.env.MADEYE_LOGLEVEL,
     specificLogLevels: parseSpecificLogLevels(),
     stripePublicKey: process.env.MADEYE_STRIPE_PUBLIC_KEY,
-    readWriteTerm: process.env.MADEYE_FULL_TERM
+    fullTerminal: process.env.MADEYE_FULL_TERMINAL
   },
   googleClientId: process.env.MADEYE_GOOGLE_CLIENT_ID,
   googleSecret: process.env.MADEYE_GOOGLE_SECRET,
