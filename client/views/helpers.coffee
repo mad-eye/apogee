@@ -32,6 +32,9 @@ Handlebars.registerHelper "hangoutLink", ->
   return
 
 Handlebars.registerHelper "isTerminalEnabled", isTerminalEnabled
+Handlebars.registerHelper "isReadOnlyTerminal", ->
+  return getProject()?.tunnels.terminal.type == "readOnly"
+
 
 @isTerminalOpened = ->
   return false unless isTerminalEnabled()
@@ -75,5 +78,3 @@ Handlebars.registerHelper 'isScratch', isScratch
 @groupB = (testName)->
   return null unless Meteor.userId()
   return MadEye.crc32("#{Meteor.userId()}#{testName}") % 2 != 0
-
-

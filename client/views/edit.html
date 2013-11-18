@@ -90,7 +90,11 @@
   <div id="terminal">
     <span id="measurementDiv">{{measurementChars}}</span>
     <button id="closeTerminalButton" type="button" class="close" data-dismiss="terminal">&times;</button>
-    {{> createTerminal }}
+    {{#if isReadOnlyTerminal}}
+      {{> viewTerminal }}
+    {{else}}
+      {{> createTerminal }}
+    {{/if}}
   </div>
   {{/constant}}
 </template>
@@ -105,4 +109,8 @@
 
 <template name="createTerminal">
   <span id="createTerminalMessage"><a id="createTerminal" href="#">Click to open terminal</a></span>
+</template>
+
+<template name="viewTerminal">
+  <span id="createTerminalMessage"><a id="createTerminal" href="#">Click to view terminal</a></span>
 </template>
