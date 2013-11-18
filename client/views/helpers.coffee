@@ -23,7 +23,13 @@ Handlebars.registerHelper "hangoutLink", ->
 @isTerminalEnabled = ->
   project = getProject()
   return false unless project and not project.closed
-  return project.tunnels?.terminal?
+  terminal = project.tunnels?.terminal
+  if terminal?
+    if terminal.type == "readOnly"
+      return true
+    else if terminal.type == "readWrite"
+      return Meteor.settings.public.fullTerminal?
+  return
 
 Handlebars.registerHelper "isTerminalEnabled", isTerminalEnabled
 
