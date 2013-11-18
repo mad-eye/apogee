@@ -28,7 +28,7 @@ Handlebars.registerHelper "hangoutLink", ->
     if terminal.type == "readOnly"
       return true
     else if terminal.type == "readWrite"
-      return Meteor.settings.public.fullTerminal?
+      return Meteor.settings.public.fullTerminal
   return
 
 Handlebars.registerHelper "isTerminalEnabled", isTerminalEnabled
