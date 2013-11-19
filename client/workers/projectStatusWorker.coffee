@@ -1,3 +1,5 @@
+log = new Logger 'projectStatusWorker'
+
 getProjectStatus = ->
   projectId = Session.get("projectId")
   return unless projectId
@@ -23,18 +25,11 @@ Meteor.startup ->
 
   #Set filepath
   Deps.autorun ->
-    @name 'set filepath'
+    @name 'set location'
     projectStatus = getProjectStatus()
     return unless projectStatus and MadEye.fileLoader and MadEye.editorState
-    projectStatus.update {filePath: MadEye.fileLoader.editorFilePath, connectionId: MadEye.editorState.connectionId}
-
-  Deps.autorun ->
-    @name 'set lineNumber'
-    projectStatus = getProjectStatus()
-    lineNumber = MadEye.editorState?.editor?.lineNumber
-    return unless projectStatus and lineNumber?
-    projectStatus.update {lineNumber: lineNumber, connectionId: MadEye.editorState.connectionId}
-
+    lineNumber = MadEye.editorState.editor?.lineNumber || 1
+    projectStatus.update {filePath: MadEye.fileLoader.editorFilePath, lineNumber, connectionId: MadEye.editorState.connectionId}
 
   #Populate fileTree with ProjectStatuses filePath
   sessionsDep = new Deps.Dependency
@@ -74,4 +69,16 @@ Meteor.startup ->
           # console.log "REMOVED", id, fields
           sessionsDep.changed()
 
+@gotoUser = ({connectionId}) ->
+  theirProjectStatus = ProjectStatuses.findOne({connectionId})
+  filePath = theirProjectStatus?.filePath
+  lineNumber = theirProjectStatus?.lineNumber
+  log.trace "Going to user #{connectionId} at filePath #{filePath} line #{lineNumber}"
+  editorFile = Files.findOne MadEye.editorState?.fileId
+  if editorFile and editorFile.path == filePath
+    #Already in that file, just go to the line number
+    MadEye.editorState.gotoLine lineNumber
+  else
+    #Query params have to be passed in options.
+    Router.go 'edit', {projectId: getProjectId(), filePath}, {query: {lineNumber}, hash: "L#{lineNumber}" }
 

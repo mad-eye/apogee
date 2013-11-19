@@ -89,15 +89,4 @@ Template.fileTree.events
   'click .fileTreeUserIcon': (event) ->
     event.stopPropagation()
     connectionId = event.target.dataset['connectionid']
-    theirProjectStatus = ProjectStatuses.findOne({connectionId})
-    filePath = theirProjectStatus?.filePath
-    lineNumber = theirProjectStatus?.lineNumber
-    log.trace "Going to user #{connectionId} at filePath #{filePath} line #{lineNumber}"
-    editorFile = Files.findOne MadEye.editorState?.fileId
-    #TODO this logic probably doesn't belong in the view..  Extract this to a service
-    if editorFile and editorFile.path == filePath
-      #Already in that file, just go to the line number
-      MadEye.editorState.gotoLine lineNumber
-    else
-      #Query params have to be passed in options.
-      Router.go 'edit', {projectId: getProjectId(), filePath}, {query: {lineNumber}, hash: "L#{lineNumber}" }
+    gotoUser {connectionId}
