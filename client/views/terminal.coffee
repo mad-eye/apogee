@@ -88,7 +88,7 @@ Template.terminal.events
     MadEye.terminal.on 'close', closeTerminal
     $('#closeTerminalButton').show()
 
-  'click #closeTerminalButton': ->
+  'click #minimizeTerminalButton': ->
     event.stopPropagation()
     event.preventDefault()
     log.debug "Closing terminal"
