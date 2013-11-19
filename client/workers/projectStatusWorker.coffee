@@ -8,6 +8,9 @@ getProjectStatus = ->
   
 
 Meteor.startup ->
+  #Clear out any vestigial following (the connectionId will be wrong anyway)
+  unfollowUser()
+
   #Create one for the session
   Deps.autorun ->
     @name 'touch projectStatus'
@@ -23,7 +26,6 @@ Meteor.startup ->
     Meteor.call "heartbeat", Session.id, projectId
   , 2*1000
 
-  #Set filepath
   Deps.autorun ->
     @name 'set location'
     projectStatus = getProjectStatus()
@@ -69,8 +71,16 @@ Meteor.startup ->
           # console.log "REMOVED", id, fields
           sessionsDep.changed()
 
+  Deps.autorun ->
+    @name 'Follow user'
+    leaderId = Session.get 'leaderId'
+    return unless leaderId
+    log.info "Following connectionId #{leaderId}"
+    gotoUser connectionId:leaderId
+
 @gotoUser = ({connectionId}) ->
-  theirProjectStatus = ProjectStatuses.findOne({connectionId})
+  theirProjectStatus = ProjectStatuses.findOne({connectionId},
+    {fields: {filePath:1, lineNumber:1} })
   filePath = theirProjectStatus?.filePath
   lineNumber = theirProjectStatus?.lineNumber
   log.trace "Going to user #{connectionId} at filePath #{filePath} line #{lineNumber}"
@@ -82,3 +92,8 @@ Meteor.startup ->
     #Query params have to be passed in options.
     Router.go 'edit', {projectId: getProjectId(), filePath}, {query: {lineNumber}, hash: "L#{lineNumber}" }
 
+@followUser = ({connectionId}) ->
+   Session.set 'leaderId', connectionId
+
+@unfollowUser = ->
+   Session.set 'leaderId', null

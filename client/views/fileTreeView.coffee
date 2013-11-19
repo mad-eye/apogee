@@ -90,3 +90,12 @@ Template.fileTree.events
     event.stopPropagation()
     connectionId = event.target.dataset['connectionid']
     gotoUser {connectionId}
+    #This enables following a user, but currently it's magic.
+    #if Client.isMac
+      #usedModifier = event.metaKey
+    #else
+      #usedModifier = event.ctrlKey
+    #if usedModifier
+      #followUser {connectionId}
+    #else
+      #gotoUser {connectionId}

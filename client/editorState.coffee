@@ -1,8 +1,3 @@
-
-#TODO: HACK: Move to a better place
-os = (navigator.platform.match(/mac|win|linux/i) || ["other"])[0].toLowerCase()
-isMac = os == 'mac'
-
 log = new Logger 'editorState'
 
 class EditorState
@@ -23,7 +18,7 @@ class EditorState
 
   setupEvents: ->
     $(window).keydown (event) =>
-      if isMac
+      if Client.isMac
         usedModifier = event.metaKey
       else
         usedModifier = event.ctrlKey
