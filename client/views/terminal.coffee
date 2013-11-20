@@ -62,31 +62,31 @@ createTerminal = (options) ->
   log.debug "Terminal window created"
   return w
 
+openTerminal = ->
+  log.info "Opening terminal"
+  parent = $('#terminal')[0]
+  #The div#terminal is constant, so that we don't kill tty's work.
+  #Thus we have to remove the inner contents.
+  MadEye.terminal = createTerminal parent:parent
+  setInitialTerminalData()
+  MadEye.terminal.on 'close', closeTerminal
+  $('#minimizeTerminalButton').show()
+  $('#createTerminalMessage').hide()
+
 closeTerminal = ->
   log.info "Closing terminal"
   MadEye.terminal?.destroy()
   MadEye.terminal = null
-  #Must resurrect the createTerminalMessage.
-  if $('#createTerminalMessage').length == 0
-    frag = Meteor.render(Template.createTerminal)
-    $('#terminal').append frag
-  $('#minimizeTerminalButton').hide()
   terminalStatus.set 'ttyInitialized', false
   tty.disconnect()
+  $('#createTerminalMessage').show()
+  $('#minimizeTerminalButton').hide()
 
 Template.terminal.events
   'click #createTerminal': (event, tmpl) ->
     event.stopPropagation()
     event.preventDefault()
-    log.info "Opening terminal"
-    parent = $('#terminal')[0]
-    #The div#terminal is constant, so that we don't kill tty's work.
-    #Thus we have to remove the inner contents.
-    $('#createTerminalMessage').remove()
-    MadEye.terminal = createTerminal parent:parent
-    setInitialTerminalData()
-    MadEye.terminal.on 'close', closeTerminal
-    $('#minimizeTerminalButton').show()
+    openTerminal()
 
   'click #minimizeTerminalButton': ->
     event.stopPropagation()
