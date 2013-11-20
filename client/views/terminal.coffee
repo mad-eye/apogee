@@ -93,7 +93,6 @@ Template.terminal.events
   'click #minimizeTerminalButton': ->
     event.stopPropagation()
     event.preventDefault()
-    log.debug "Closing terminal"
     closeTerminal()
 
 Template.terminal.helpers
