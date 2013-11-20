@@ -70,7 +70,7 @@ closeTerminal = ->
   if $('#createTerminalMessage').length == 0
     frag = Meteor.render(Template.createTerminal)
     $('#terminal').append frag
-  $('#closeTerminalButton').hide()
+  $('#minimizeTerminalButton').hide()
   terminalStatus.set 'ttyInitialized', false
   tty.disconnect()
 
@@ -86,7 +86,7 @@ Template.terminal.events
     MadEye.terminal = createTerminal parent:parent
     setInitialTerminalData()
     MadEye.terminal.on 'close', closeTerminal
-    $('#closeTerminalButton').show()
+    $('#minimizeTerminalButton').show()
 
   'click #minimizeTerminalButton': ->
     event.stopPropagation()
