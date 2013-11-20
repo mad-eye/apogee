@@ -64,21 +64,23 @@ createTerminal = (options) ->
 
 openTerminal = ->
   log.info "Opening terminal"
-  parent = $('#terminal')[0]
+  unless MadEye.terminal
+    parent = $('#terminal')[0]
+    MadEye.terminal = createTerminal parent:parent
+    setInitialTerminalData()
+    MadEye.terminal.on 'close', closeTerminal
+  else
+    $('#terminal .window').show()
+  Session.set 'terminalOpen', true
   #The div#terminal is constant, so that we don't kill tty's work.
-  #Thus we have to remove the inner contents.
-  MadEye.terminal = createTerminal parent:parent
-  setInitialTerminalData()
-  MadEye.terminal.on 'close', closeTerminal
+  #Thus we have to hide/show elements
   $('#minimizeTerminalButton').show()
   $('#createTerminalMessage').hide()
 
 closeTerminal = ->
   log.info "Closing terminal"
-  MadEye.terminal?.destroy()
-  MadEye.terminal = null
-  terminalStatus.set 'ttyInitialized', false
-  tty.disconnect()
+  Session.set 'terminalOpen', false
+  $('#terminal .window').hide()
   $('#createTerminalMessage').show()
   $('#minimizeTerminalButton').hide()
 
