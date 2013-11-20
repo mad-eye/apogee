@@ -152,7 +152,7 @@ Meteor.startup ->
     return unless projectId
     projectStatus = ProjectStatuses.findOne {sessionId:Session.id, projectId}
     return unless projectStatus
-    if MadEye.terminal
+    if isTerminalOpened()
       projectStatus.update
         terminalSize:
           height: sizes.get 'maxTerminalHeight'
