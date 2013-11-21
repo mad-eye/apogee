@@ -83,3 +83,16 @@
     opacity: 0.8;
   }
 }
+
+#readOnlyTerminalMessage {
+  position: absolute;
+  bottom: @baseSpacing;
+  right: @baseSpacing;
+  z-index: 100; //Must be above terminal window
+  color: #FFF;
+  background-color: transparent;
+  border: none;
+  opacity: 0.5;
+  display: none;
+  font-size: 16px;
+}

@@ -7,6 +7,7 @@
     <span id="measurementDiv">{{measurementChars}}</span>
     <button id="minimizeTerminalButton" type="button" data-dismiss="terminal">&#x25BC;</button>
     {{#if isReadOnlyTerminal}}
+      <div id="readOnlyTerminalMessage">Read Only Mode</div>
       {{> viewTerminal }}
     {{else}}
       {{> createTerminal }}

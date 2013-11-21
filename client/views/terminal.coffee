@@ -76,6 +76,7 @@ openTerminal = ->
   #Thus we have to hide/show elements
   $('#minimizeTerminalButton').show()
   $('#createTerminalMessage').hide()
+  $('#readOnlyTerminalMessage').show()
 
 closeTerminal = ->
   log.info "Closing terminal"
@@ -83,6 +84,7 @@ closeTerminal = ->
   $('#terminal .window').hide()
   $('#createTerminalMessage').show()
   $('#minimizeTerminalButton').hide()
+  $('#readOnlyTerminalMessage').hide()
 
 Template.terminal.events
   'click #createTerminal': (event, tmpl) ->
