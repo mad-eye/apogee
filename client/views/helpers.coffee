@@ -32,9 +32,11 @@ Handlebars.registerHelper "hangoutLink", ->
   return
 
 Handlebars.registerHelper "isTerminalEnabled", isTerminalEnabled
-Handlebars.registerHelper "isReadOnlyTerminal", ->
+
+@isReadOnlyTerminal = ->
   return getProject()?.tunnels.terminal.type == "readOnly"
 
+Handlebars.registerHelper "isReadOnlyTerminal", isReadOnlyTerminal
 
 @isTerminalOpened = ->
   return false unless isTerminalEnabled()

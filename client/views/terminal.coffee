@@ -69,6 +69,8 @@ openTerminal = ->
     MadEye.terminal = createTerminal parent:parent
     setInitialTerminalData()
     MadEye.terminal.on 'close', closeTerminal
+    if isReadOnlyTerminal()
+      MadEye.terminal.focused.stopBlink()
   else
     $('#terminal .window').show()
   Session.set 'terminalOpen', true
