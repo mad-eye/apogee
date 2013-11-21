@@ -23,9 +23,7 @@ Meteor.startup ->
       ioUrl = MadEye.tunnelUrl
       ioResource = "tunnel/#{tunnel.remotePort}/socket.io"
       log.trace "Using ioUrl", ioUrl
-      tty.Terminal.ioUrl = ioUrl
-      tty.Terminal.ioResource = ioResource
-      tty.open()
+      tty.open(ioUrl, ioResource)
       log.debug "Initialized terminal"
       terminalStatus.set 'ttyInitialized', true
 
