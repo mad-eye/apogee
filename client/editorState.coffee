@@ -61,14 +61,15 @@ class EditorState
       @working = false
       return callback Errors.handleError error, log if error
       #abort if we've loaded another file
+      #XXX: Should we use loadNumber for this check?
       return callback() unless fileId == @fileId
       if result.warning
         alert = result.warning
         alert.level = 'warn'
         displayAlert alert
-      #TODO this was in the timeout block below, check to make sure there's no problems
-      callback()
       Meteor.setTimeout =>
+        #give tests a moment more for share to set the editor value
+        callback()
         @getEditor().navigateFileStart()
       ,0
 

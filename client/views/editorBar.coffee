@@ -22,7 +22,10 @@ Template.editorBar.events
   'click #revertFile': (event) ->
     el = $(event.target)
     return if el.hasClass 'disabled' or MadEye.editorState.working == true
-    MadEye.editorState.revertFile (error)->
+    MadEye.editorState.revertFile (err) ->
+      if err
+        #TODO: Handle error better.
+        log.error "Error in revert request:", err
 
   'click #discardFile': (event) ->
     file = Files.findOne MadEye.editorState.fileId
@@ -39,8 +42,8 @@ Template.editorBar.events
     return if el.hasClass 'disabled' or MadEye.editorState.working == true
     MadEye.editorState.save (err) ->
       if err
-        #Handle error better.
-        console.error "Error in save request:", err
+        #TODO: Handle error better.
+        log.error "Error in save request:", err
 
 Template.editorBar.helpers
   editorFileName: ->
