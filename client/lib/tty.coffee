@@ -10,28 +10,45 @@ class @METerminal
   connect: ({@ioUrl, @ioResource}) ->
     log.debug "Opening tty with resource #{@ioResource}"
     @tty.open @ioUrl, @ioResource
+    @tty.on 'connect', ->
+      log.trace 'Connected'
+    @tty.on 'open', ->
+      log.trace 'Opened'
     @tty.on 'kill', =>
       log.info 'Received kill signal'
-      #@tty.reset
+      @reset()
     @initialized = true
 
   create: ({parent}) ->
     @window = new @tty.Window(null, {parent})
     @window.on 'open', =>
+      log.debug "Window opened"
       @refreshTerminalWindow()
       @emit 'focus'
       $(".window").click (e) ->
         #Keep this from triggering the body click event
         e.stopPropagation()
 
+    @window.on 'close', ->
+      log.debug 'Window closed'
+
     @window.on 'focus', =>
       @emit 'focus'
 
     $("body").click =>
-      @tty.Terminal.focus = null
-      @emit 'unfocus'
+      @_unfocus()
 
     log.debug "Terminal window created"
+
+  reset: ->
+    @tty.reset()
+    @window = null
+    @initialized = false
+    @emit 'reset'
+    
+  _unfocus: ->
+    @tty.Terminal.focus = null
+    @emit 'unfocus'
 
   stopBlink: ->
     @window.focused.stopBlink()
@@ -39,8 +56,6 @@ class @METerminal
   resize: (numCols, numRows) ->
     @window.resize(numCols, numRows)
 
-  destroyWindow: ->
-    @window.destroy()
 
   refreshTerminalWindow: ->
     #HACK: Resize causes a redraw of the terminal contents.

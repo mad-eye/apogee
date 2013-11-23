@@ -27,6 +27,7 @@ Meteor.startup ->
     MadEye.terminal.connect({ioUrl, ioResource})
     MadEye.terminal.on 'focus', onTerminalFocus
     MadEye.terminal.on 'unfocus', onTerminalUnfocus
+    MadEye.terminal.on 'reset', minimizeTerminal
 
 Template.terminal.rendered = ->
   MadEye.rendered 'terminal'
@@ -37,30 +38,12 @@ onTerminalFocus = ->
 onTerminalUnfocus = ->
   $('#terminal').removeClass('focused')
 
-createTerminal = (options) ->
-  w = new tty.Window(null, options)
-  w.on 'open', =>
-    refreshTerminalWindow w
-    onTerminalFocus()
-    $(".window").click (e) ->
-      e.stopPropagation()
-
-  w.on 'focus', onTerminalFocus
-  $("body").click ->
-    tty.Terminal.focus = null
-    onTerminalUnfocus()
-  log.debug "Terminal window created"
-  return w
-
 openTerminal = ->
   log.info "Opening terminal"
   unless MadEye.terminal.window
     parent = $('#terminal')[0]
     MadEye.terminal.create {parent}
     setInitialTerminalData()
-    #MadEye.terminal.on 'close', ->
-      #log.trace 'Terminal received close signal'
-      #closeTerminal()
     if isReadOnlyTerminal()
       MadEye.terminal.stopBlink()
   else
@@ -109,6 +92,7 @@ Meteor.startup ->
   Deps.autorun ->
     #XXX test
     return
+
     Projects.find(Session.get "projectId").observeChanges
       changed: (id, fields) ->
         log.trace "Changes to project:", fields
