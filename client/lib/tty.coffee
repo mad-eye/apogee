@@ -42,6 +42,7 @@ class @METerminal
 
   reset: ->
     @tty.reset()
+    @tty.disconnect()
     @window = null
     @initialized = false
     @emit 'reset'

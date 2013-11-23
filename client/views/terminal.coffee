@@ -16,6 +16,7 @@ Meteor.startup ->
   MadEye.terminal = new METerminal tty
 
   Meteor.autorun ->
+    @name 'initialize terminal'
     return if MadEye.terminal.initialized
     project = getProject()
     return unless project and !project.closed and project.tunnels?.terminal
@@ -88,21 +89,3 @@ Template.terminal.helpers
   isTerminalUnavailable: ->
     return getProject()?.tunnels?.terminal?.unavailable
 
-Meteor.startup ->
-  Deps.autorun ->
-    #XXX test
-    return
-
-    Projects.find(Session.get "projectId").observeChanges
-      changed: (id, fields) ->
-        log.trace "Changes to project:", fields
-        if fields.closed
-          #This will close the terminal, and recreate the "open terminal" link
-          closeTerminal()
-        else if 'tunnels' of fields
-          #a removed field is in fields as undefined
-          unless fields.tunnels?.terminal?
-            closeTerminal()
-          else if fields.tunnels.terminal.remotePort
-            closeTerminal()
-          #might be changing unavailable, which will be handled automatically
