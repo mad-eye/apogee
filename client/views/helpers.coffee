@@ -40,7 +40,7 @@ Handlebars.registerHelper "isReadOnlyTerminal", isReadOnlyTerminal
 
 @isTerminalOpened = ->
   return false unless isTerminalEnabled()
-  return MadEye.terminal? and Session.get('terminalOpen')
+  return MadEye.terminal?.opened
   
 
 ## Page/project Info
