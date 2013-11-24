@@ -25,7 +25,7 @@ Meteor.startup ->
     log.trace "Found terminal tunnel:", tunnel
     ioUrl = MadEye.tunnelUrl
     ioResource = "tunnel/#{tunnel.remotePort}/socket.io"
-    MadEye.terminal.connect({ioUrl, ioResource})
+    MadEye.terminal.connect({tunnelUrl: MadEye.tunnelUrl, remotePort:tunnel.remotePort})
     MadEye.terminal.on 'focus', onTerminalFocus
     MadEye.terminal.on 'unfocus', onTerminalUnfocus
     MadEye.terminal.on 'reset', minimizeTerminal
@@ -58,10 +58,6 @@ openTerminal = ->
 
 closeTerminal = ->
   log.info "Closing terminal"
-  MadEye.terminal.initialized = false
-  #tty.disconnect()
-  #MadEye.terminal.destroy()
-  #MadEye.terminal = null
   minimizeTerminal()
   
 minimizeTerminal = ->
@@ -88,4 +84,21 @@ Template.terminal.helpers
 
   isTerminalUnavailable: ->
     return getProject()?.tunnels?.terminal?.unavailable
+
+Meteor.startup ->
+  Deps.autorun ->
+    Projects.find(Session.get('projectId'), {fields:{tunnels:1}}).observeChanges
+      changed: (id, fields) ->
+        log.trace "Observed project change:", fields
+        #Removing a field is signified by field:undefined
+        return unless 'tunnels' of fields
+        tunnels = fields.tunnels
+        if !tunnels
+          #tunnels was removed, possibly because the project was closed
+          log.debug "Terminal tunnel closed; resetting."
+          MadEye.terminal.reset()
+        else if tunnels.terminal?.remotePort?
+          #Changed remote port; reset the terminal and it'll reconnect automatically
+          log.debug "Terminal tunnel changed ports; resetting."
+          MadEye.terminal.reset()
 

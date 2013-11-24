@@ -7,9 +7,11 @@ class @METerminal
     Reactor.define this, 'opened'
     Reactor.define this, 'initialized'
 
-  connect: ({@ioUrl, @ioResource}) ->
-    log.debug "Opening tty with resource #{@ioResource}"
-    @tty.open @ioUrl, @ioResource
+  connect: ({tunnelUrl, remotePort}) ->
+    @remotePort = remotePort
+    ioResource = "tunnel/#{remotePort}/socket.io"
+    log.debug "Opening tty with resource #{ioResource}"
+    @tty.open tunnelUrl, ioResource
     @tty.on 'connect', ->
       log.trace 'Connected'
     @tty.on 'open', ->
@@ -66,4 +68,5 @@ class @METerminal
     rows = @window.rows
     @window.resize(cols-1, rows)
     @window.resize(cols, rows)
+
 
