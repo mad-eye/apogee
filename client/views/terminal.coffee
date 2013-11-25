@@ -24,7 +24,6 @@ Meteor.startup ->
     tunnel = project.tunnels.terminal
     log.trace "Found terminal tunnel:", tunnel
     ioUrl = MadEye.tunnelUrl
-    ioResource = "tunnel/#{tunnel.remotePort}/socket.io"
     MadEye.terminal.connect({tunnelUrl: MadEye.tunnelUrl, remotePort:tunnel.remotePort})
     MadEye.terminal.on 'focus', onTerminalFocus
     MadEye.terminal.on 'unfocus', onTerminalUnfocus
