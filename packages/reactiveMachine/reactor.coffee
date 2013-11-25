@@ -23,7 +23,7 @@ Reactor.mixin = (obj, properties) ->
   addBasicDeps obj
 
 Reactor.define = (obj, name, options={}) ->
-  defineProperty obj.__proto__, name, options
+  defineProperty obj, name, options
 
 addBasicDeps = (obj) ->
   _.extend obj,
