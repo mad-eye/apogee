@@ -92,9 +92,9 @@
     {{#unless isScratch}}
       <div id="saveBox" class="editorBarButton pull-left">
         {{#if showSaveSpinner}}
-          <img id="saveSpinner" src="/images/ajax-loader.gif" alt="Loading..." />
+          <img id="saveSpinner" src="/static/images/ajax-loader.gif" alt="Loading..." />
         {{else}}
-          <img id="saveImage" src="/images/save-file_32.png" class="{{buttonDisabled}}"  {{buttonDisabled}} alt="Save file to host computer" title="Save file" />
+          <img id="saveImage" src="/static/images/save-file_32.png" class="{{buttonDisabled}}"  {{buttonDisabled}} alt="Save file to host computer" title="Save file" />
         {{/if}}
       </div>
     {{/unless}}
@@ -121,7 +121,7 @@
     {{! EDITOR SETTINGS
     <div id="editorSettings" class="editorBarButton pull-right">
       <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-        <img alt="Settings" src="/images/cog_16.png"/>
+        <img alt="Settings" src="/static/images/cog_16.png"/>
         <span class="caret"></span>
       </a>
       <form class="dropdown-menu">

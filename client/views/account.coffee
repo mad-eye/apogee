@@ -60,7 +60,7 @@ Template.subscription.events
         amount:      10000 * order.quantity
         currency:    'usd'
         name:        'MadEye'
-        image:       '/images/madeye_logo_128.png'
+        image:       '/static/images/madeye_logo_128.png'
         description: "Self-Hosted MadEye License (#{order.quantity} seats) "
         panelLabel:  'Checkout'
         token:       token
@@ -96,7 +96,7 @@ Template.subscription.events
       key:         Meteor.settings.public.stripePublicKey
       address:     true
       name:        'MadEye'
-      image:       '/images/madeye_logo_128.png'
+      image:       '/static/images/madeye_logo_128.png'
       description: "Add credit card"
       panelLabel:  'Add'
       token:       token
