@@ -59,6 +59,12 @@ networkIssuesWarning =
   message: "We're having trouble with the network.  We'll try to resolve it automatically, but you may want to try again later."
   uncloseable: true
 
+mismatchedHangoutWarning = (hangoutUrl) ->
+  level: 'warn'
+  title: 'Wrong Hangout'
+  message: """You've ended up in a different hangout than your friends.  Go to <a href="#{hangoutUrl}">#{hangoutUrl}</a> to join them."""
+  uncloseable: true
+
 fileIsModifiedLocally = ->
   file = Files.findOne MadEye.editorState?.fileId
   return false unless file and file.fsChecksum? and file.loadChecksum?
@@ -66,6 +72,9 @@ fileIsModifiedLocally = ->
 
 projectIsLoading = ->
   not MadEye.subscriptions?.get('files')?.ready()
+
+hasMismatchedHangout = ->
+  return Session.get('isHangout') and Session.get('mismatchedHangout')
 
 Template.projectStatus.projectAlerts = ->
   alerts = []
@@ -76,6 +85,8 @@ Template.projectStatus.projectAlerts = ->
   alerts.push networkIssuesWarning if MadEye.transitoryIssues?.has 'networkIssues'
   alerts.push fileDeletedWarning if MadEye.transitoryIssues?.has 'fileDeleted'
   alerts.push MadEye.fileLoader.alert if MadEye.fileLoader.alert
+  alerts.push mismatchedHangoutWarning(getProject().hangoutUrl) if hasMismatchedHangout()
+
   return alerts
 
 
