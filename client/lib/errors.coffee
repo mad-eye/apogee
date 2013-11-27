@@ -63,6 +63,7 @@ mismatchedHangoutWarning = (hangoutUrl) ->
   level: 'warn'
   title: 'Wrong Hangout'
   message: """You've ended up in a different hangout than your friends.  Go to <a href="#{hangoutUrl}">#{hangoutUrl}</a> to join them."""
+  raw: true
   uncloseable: true
 
 fileIsModifiedLocally = ->

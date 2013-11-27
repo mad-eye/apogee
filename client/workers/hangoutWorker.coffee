@@ -10,9 +10,10 @@ Meteor.startup ->
     return unless hangoutUrl
     project = getProject()
     return unless project
+    hangoutId = Session.get 'hangoutId'
     unless project.hangoutUrl
       #We're the first; set the hangoutUrl for other people.
-      project.update {hangoutUrl}
+      project.update {hangoutUrl, hangoutId}
     else if hangoutUrl == project.hangoutUrl
       #all is ok
       Session.set 'mismatchedHangout', false

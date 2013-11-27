@@ -74,7 +74,7 @@
   {{#unless uncloseable}}
     <button type="button" class="close" data-dismiss="alert">&times;</button>
   {{/unless}}
-  <strong>{{title}}</strong> {{message}}
+  <strong>{{title}}</strong> {{#if raw}}{{{message}}} {{else}} {{message}} {{/if}}
 </div>
 </template>
 
