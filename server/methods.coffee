@@ -9,14 +9,6 @@ Meteor.publish "projectStatuses", (projectId, sessionId) ->
 
   return ProjectStatuses.find {projectId: projectId}, {fields: {heartbeat:0} }
 
-getIcon = (projectId)->
-  unavailableIcons = {}
-  ProjectStatuses.find({projectId}).forEach (status) ->
-    unavailableIcons[status.iconId] = true
-  for name, i in USER_ICONS
-    continue if unavailableIcons[i]
-    return i
-
 projectStatusTimeouts = {}
 
 #This might be obsolete with the onLogout hook above.
@@ -43,7 +35,6 @@ Meteor.methods
       fields = _.extend fields,
         sessionId: sessionId
         projectId: projectId
-        iconId: getIcon(projectId)
       #don't give callback, need this to block
       ProjectStatuses.insert fields
     setProjectStatusTimeout sessionId
