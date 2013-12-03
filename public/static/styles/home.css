@@ -42,7 +42,6 @@
 #signupFeedback {
   color: #0044cc;
   display: none;
-  margin-left: 10px;
 }
 .imageFlow {
   padding-top: 20px;
@@ -58,6 +57,9 @@
 }
 input#emailInput {
   margin-bottom: 0;
+  margin-right: 10px;
+}
+#submitEmailButton {
   margin-right: 10px;
 }
 .comingSoon {

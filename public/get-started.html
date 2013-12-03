@@ -17,11 +17,10 @@
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();
   </script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
   <script src="/static/bootstrap/js/bootstrap.min.js"></script>
 </head>
 <body>
-
-<!--empty-->
   <div id="container" class="container nonHangout">
     <div class="navbar topnav clearfix">
       <div class="title pull-left">
@@ -34,14 +33,15 @@
       </ul>
     </div>
     <div id="alertBox"></div>
+
     <div class="row">
       <div class="span12">
         <h1>Getting Started</h1>
         <hr>
       </div>
     </div>
-    <div class="row sell">
 
+    <div class="row sell">
       <div class="span4 sellPoint">
         <h4>Quick Start</h4>
         <ol>
@@ -89,8 +89,8 @@
     use this to send updates.&nbsp;  And possibly cat videos.
     </p>
     <form id="signupForm">
-      <input id="emailInput" type="email" placeholder="Email address">
-      <input type="submit" id="submitEmailButton" class="btn btn-primary" value="Notify me!">
+      <input id="emailInput" type="email" placeholder="Email address" />
+      <input type="submit" id="submitEmailButton" class="btn btn-primary" value="Notify me!" />
       <span id="signupFeedback">Received!</span>
     </form>
     <p>Follow us on twitter for releases, interesting new features, and other information!</p>
@@ -123,5 +123,28 @@ setTimeout(function(){var a=document.createElement("script");
 var b=document.getElementsByTagName("script")[0];
 a.src=document.location.protocol+"//dnn506yrbagrg.cloudfront.net/pages/scripts/0015/6374.js?"+Math.floor(new Date().getTime()/3600000);
 a.async=true;a.type="text/javascript";b.parentNode.insertBefore(a,b)}, 1);
+
+$('#signupForm').submit(function(e) {
+  e.preventDefault();
+  var email = $('#emailInput').val();
+  $.ajax({
+    url: '/api/submitEmail',
+    type: 'POST',
+    data: {email:email},
+    success: function(){
+      $('#emailInput').hide();
+      $('#submitEmailButton').hide();
+      $('#signupFeedback').css('color', '#0044cc');
+      $('#signupFeedback').html("Thank you for signing up!");
+      $('#signupFeedback').show();
+    },
+    error: function(){
+      $('#signupFeedback').html("Sorry, there was an error signing up.  Please try again.");
+      $('#signupFeedback').css('color', 'red');
+      $('#signupFeedback').show();
+    }
+  });
+  return false;
+});
 </script>
   </div></body></html>
