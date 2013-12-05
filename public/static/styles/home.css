@@ -1,0 +1,67 @@
+.hero {
+  padding-bottom: 20px;
+  padding-left: 10px;
+}
+.hero-unit {
+  padding: 10px 20px;
+}
+.hero-unit h1 {
+  font-size: 42px;
+}
+.sell,
+.signup {
+  font-size: 16px;
+  /*padding-left: @baseSpacing;*/
+  /*padding-right: @baseSpacing;*/
+}
+.sellPoint,
+.signup {
+  font-size: 16px;
+}
+.sellPoint h4,
+.signup h4 {
+  font-size: 24px;
+}
+.sellPoint p,
+.signup p,
+.sellPoint ol,
+.signup ol {
+  color: #999999;
+  /*letter-spacing: 1px;*/
+}
+.sellPic img {
+  padding: 16px 0;
+}
+.sellPic input {
+  margin: 32px 0;
+}
+.sellPic button,
+.sellPic input.btn {
+  margin-left: 24px;
+}
+#signupFeedback {
+  color: #0044cc;
+  display: none;
+}
+.imageFlow {
+  padding-top: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.downArrow img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  height: 36px;
+  width: 36px;
+}
+input#emailInput {
+  margin-bottom: 0;
+  margin-right: 10px;
+}
+#submitEmailButton {
+  margin-right: 10px;
+}
+.comingSoon {
+  margin-left: 16px;
+}
