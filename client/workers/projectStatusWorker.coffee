@@ -28,10 +28,13 @@ Meteor.startup ->
 
   Deps.autorun ->
     @name 'set location'
-    projectStatus = getProjectStatus()
-    return unless projectStatus and MadEye.fileLoader and MadEye.editorState
+    projectId = Session.get("projectId")
+    return unless projectId and MadEye.fileLoader and MadEye.editorState
     lineNumber = MadEye.editorState.editor?.lineNumber || 1
-    projectStatus.update {filePath: MadEye.fileLoader.editorFilePath, lineNumber, connectionId: MadEye.editorState.connectionId}
+    Meteor.call "touchProjectStatus", Session.id, projectId,
+      filePath: MadEye.fileLoader.editorFilePath
+      lineNumber: lineNumber
+      connectionId: MadEye.editorState.connectionId
 
   #Populate fileTree with ProjectStatuses filePath
   sessionsDep = new Deps.Dependency
