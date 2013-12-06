@@ -148,15 +148,3 @@ beforeEdit = (router, {projectId, filePath, lineNumber}) ->
   MadEye.fileLoader.loadPath = filePath
   MadEye.fileLoader.lineNumber = lineNumber
   MadEye.fileTree.open filePath, true
-
-
-registerHangout = (projectId, hangoutUrl) ->
-  return unless hangoutUrl
-  registerHangoutUrl = MadEye.azkabanUrl + "/hangout/" + projectId
-  Meteor.http.put registerHangoutUrl, {
-      data: {hangoutUrl}
-      headers: {'Content-Type':'application/json'}
-      timeout: 5*1000
-    }, (error,response) =>
-      log.error "Registering hangout url failed.", error if error
-

@@ -21,12 +21,12 @@ Meteor.startup ->
       hangoutUrl: Session.get('hangoutUrl')
       hangoutId: Session.get('hangoutId')
 
-  #return a map between file paths and open sharejs session ids
-  #Set heartbeat
+  #Make sure it's alive.
+  #XXX: Is this obsoleted by session hooks?
   Meteor.setInterval ->
     projectId = Session.get "projectId"
     return unless projectId
-    Meteor.call "heartbeat", Session.id, projectId
+    Meteor.call "touchProjectStatus", Session.id, projectId
   , 2*1000
 
   Deps.autorun ->

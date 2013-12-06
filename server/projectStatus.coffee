@@ -1,4 +1,4 @@
-log = new Logger 'projectMethods'
+log = new Logger 'projectStatuses'
 
 Meteor.publish "projectStatuses", (projectId, sessionId) ->
   if sessionId
@@ -22,9 +22,6 @@ setProjectStatusTimeout = (sessionId) ->
   return
 
 Meteor.methods
-  heartbeat: (sessionId, projectId) ->
-    setProjectStatusTimeout sessionId
-
   touchProjectStatus: (sessionId, projectId, fields={})->
     return unless sessionId and projectId
     status = ProjectStatuses.findOne {sessionId, projectId}
