@@ -5,11 +5,7 @@ Router.configure
   loadingTemplate: "loading"
 
 Router.before ->
-  if @params?.hangout
-    Session.set "isHangout", true
-    if @params.projectId and @params.hangoutUrl
-      log.debug "Registering hangoutUrl #{@params.hangoutUrl} for project #{@params.projectId}"
-      registerHangout @params.projectId, @params.hangoutUrl
+  parseHangoutParams @params
 
 Router.before ->
   viewData = {}
