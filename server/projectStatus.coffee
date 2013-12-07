@@ -25,12 +25,8 @@ Meteor.methods
   touchProjectStatus: (sessionId, projectId, fields={})->
     return unless sessionId and projectId
     status = ProjectStatuses.findOne {sessionId, projectId}
-    if _.keys(fields).length
-      log.trace "Touching projectStatus #{sessionId} for project #{projectId} with fields:", fields
     if status
       status.update fields
-      if _.keys(fields).length
-        log.trace "Updated projectStatus #{status}"
     else
       fields = _.extend fields,
         sessionId: sessionId
