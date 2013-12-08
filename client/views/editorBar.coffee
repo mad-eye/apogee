@@ -46,9 +46,6 @@ Template.statusBar.events
   'change #themeSelect': (e) ->
     Workspace.setConfig "theme", e.target.value
 
-  'change #fontSize': (e) ->
-    Workspace.setConfig("fontSize", parseInt(e.target.value, 10))
-
 Template.statusBar.helpers
   editorState: ->
     MadEye.editorState
@@ -61,9 +58,12 @@ Template.statusBar.helpers
     return false unless MadEye.editorState?.rendered
     MadEye.editorState?.editor.fontSize == parseInt size, 10
 
+Handlebars.registerHelper 'fontsize', (size) ->
+  return false unless MadEye.editorState?.rendered
+  MadEye.editorState.editor.fontSize == parseInt size, 10
+
 Handlebars.registerHelper 'keybinding', (binding) ->
   keybinding = Workspace.get()?.keybinding ? 'ace'
-  console.log "ZZZ: Checking if binding #{binding} is equal to #{keybinding}"
   keybinding == binding
 
 Template.syntaxModeOptions.helpers

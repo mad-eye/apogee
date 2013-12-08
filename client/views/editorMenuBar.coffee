@@ -33,6 +33,10 @@ Template.editorMenuBar.events
     keybinding = null if 'ace' == keybinding
     Workspace.setConfig "keybinding", keybinding
 
+  'click .fontsizeOption': (event) ->
+    fontsize = parseInt event.target.dataset['fontsize'], 10
+    Workspace.setConfig("fontSize", fontsize)
+
 Template.editorMenuBar.helpers
   saveDisabled: ->
     if MadEye.editorState?.canSave() then "" else " disabled "
