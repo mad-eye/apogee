@@ -62,6 +62,9 @@
   <div id="editorTitleBar">
     <h4>
       {{editorFileName}}
+      {{#if isModified}}
+        <small>(modified)</small>
+      {{/if}}
     </h4>
   </div>
 </template>

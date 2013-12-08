@@ -36,4 +36,4 @@ Template.editorMenuBar.helpers
 
   discardDisabled: ->
     if MadEye.editorState?.canDiscard() then "" else " disabled "
-  
+

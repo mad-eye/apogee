@@ -73,6 +73,9 @@ Template.editorTitleBar.helpers
   editorFileName: ->
     MadEye.fileLoader?.editorFilePath
 
+  isModified: ->
+    MadEye.editorState?.canSave()
+
 Template.editorOverlay.helpers
   editorIsLoading: ->
     MadEye.editorState?.loading == true
