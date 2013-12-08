@@ -99,6 +99,16 @@
     display: block; // Bring back on-screen when needed
   }
 
+  //These are grouped; the actual elements need outline-like spacing
+  li.themeOption {
+    padding-left: @baseSpacing*3/2;
+
+    //Except this one, which is not in a group.
+    &.notheme {
+      padding-left: @baseSpacing/2;
+    }
+  }
+
 }
 
 #editorContainer {

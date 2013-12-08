@@ -37,6 +37,10 @@ Template.editorMenuBar.events
     fontsize = parseInt event.target.dataset['fontsize'], 10
     Workspace.setConfig("fontSize", fontsize)
 
+  'click .themeOption': (event) ->
+    theme = event.target.dataset['theme']
+    Workspace.setConfig "theme", theme
+
 Template.editorMenuBar.helpers
   saveDisabled: ->
     if MadEye.editorState?.canSave() then "" else " disabled "
