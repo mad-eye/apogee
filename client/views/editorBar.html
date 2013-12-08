@@ -64,7 +64,7 @@
       <form>
         <!--<label class="select">:</label>-->
         <select id="keybinding" class="input-small" size="1">
-          <option value="ace" {{#unless keybinding}}selected{{/unless}}>Ace Keys</option>
+          <option value="ace" {{#if keybinding 'ace'}}selected{{/if}}>Ace Keys</option>
           <option value="vim" {{#if keybinding 'vim'}}selected{{/if}}>Vim</option>
           <option value="emacs" {{#if keybinding 'emacs'}}selected{{/if}}>Emacs</option>
         </select>

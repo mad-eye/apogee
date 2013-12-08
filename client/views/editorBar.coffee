@@ -1,96 +1,53 @@
 log = new Logger 'editorBar'
 aceModes = ace.require('ace/ext/modelist')
 
-@getWorkspace = ->
-  Workspaces.findOne {userId: Meteor.userId()}
+@Workspace =
+  get : ->
+    Workspaces.findOne {userId: Meteor.userId()}
 
-setWorkspaceConfig = (key, value)->
-  workspace = getWorkspace()
-  return unless workspace
-  workspace[key] = value
-  workspace.save()
+  setConfig : (key, value)->
+    workspace = Workspace.get()
+    return unless workspace
+    workspace[key] = value
+    workspace.save()
 
-addWorkspaceModeOverride = (fileId, syntaxMode) ->
-  workspace = getWorkspace()
-  return unless workspace
-  workspace.modeOverrides ?= {}
-  workspace.modeOverrides[fileId] = syntaxMode
-  workspace.save()
-
-
-Template.editorBar.events
-  'click #revertFile': (event) ->
-    el = $(event.target)
-    return if el.hasClass 'disabled' or MadEye.editorState.working == true
-    MadEye.editorState.revertFile (err) ->
-      if err
-        #TODO: Handle error better.
-        log.error "Error in revert request:", err
-
-  'click #discardFile': (event) ->
-    file = Files.findOne MadEye.editorState.fileId
-    return unless file and file.deletedInFs
-    Metrics.add
-      message:'discardFile'
-      fileId: file._id
-      filePath: file.path
-    file.remove()
-    MadEye.fileLoader.clearFile()
-
-  'click #saveImage' : (event) ->
-    el = $(event.target)
-    return if el.hasClass 'disabled' or MadEye.editorState.working == true
-    MadEye.editorState.save (err) ->
-      if err
-        #TODO: Handle error better.
-        log.error "Error in save request:", err
-
-Template.editorBar.helpers
-  showSaveSpinner: ->
-    MadEye.editorState?.working == true
-
-  buttonDisabled : ->
-    fileId = MadEye.editorState?.fileId
-    file = Files.findOne(fileId) if fileId?
-    if !file?.modified or MadEye.editorState?.working==true or projectIsClosed()
-      "disabled"
-    else
-      ""
+  addModeOverride : (fileId, syntaxMode) ->
+    workspace = Workspace.get()
+    return unless workspace
+    workspace.modeOverrides ?= {}
+    workspace.modeOverrides[fileId] = syntaxMode
+    workspace.save()
 
 Template.statusBar.rendered = ->
   MadEye.rendered 'statusBar'
   windowSizeChanged()
 
-Template.editorBar.rendered = ->
-  MadEye.rendered 'editorBar'
-  windowSizeChanged()
-
 Template.statusBar.events
   'change #wordWrap': (e) ->
-    setWorkspaceConfig "wordWrap", e.target.checked
+    Workspace.setConfig "wordWrap", e.target.checked
 
   'change #showInvisibles': (e) ->
-    setWorkspaceConfig "showInvisibles", e.target.checked
+    Workspace.setConfig "showInvisibles", e.target.checked
 
   'change #syntaxModeSelect': (e) ->
-    addWorkspaceModeOverride MadEye.editorState.fileId, e.target.value
+    Workspace.addModeOverride MadEye.editorState.fileId, e.target.value
 
   'change #useSoftTabs': (e) ->
-    setWorkspaceConfig "useSoftTabs", e.target.checked
+    Workspace.setConfig "useSoftTabs", e.target.checked
 
   'change #tabSize': (e) ->
-    setWorkspaceConfig("tabSize", parseInt(e.target.value, 10))
+    Workspace.setConfig("tabSize", parseInt(e.target.value, 10))
 
   'change #keybinding': (e) ->
     keybinding = e.target.value
     keybinding = null if 'ace' == keybinding
-    setWorkspaceConfig "keybinding", keybinding
+    Workspace.setConfig "keybinding", keybinding
 
   'change #themeSelect': (e) ->
-    setWorkspaceConfig "theme", e.target.value
+    Workspace.setConfig "theme", e.target.value
 
   'change #fontSize': (e) ->
-    setWorkspaceConfig("fontSize", parseInt(e.target.value, 10))
+    Workspace.setConfig("fontSize", parseInt(e.target.value, 10))
 
 Template.statusBar.helpers
   editorState: ->
@@ -104,9 +61,10 @@ Template.statusBar.helpers
     return false unless MadEye.editorState?.rendered
     MadEye.editorState?.editor.fontSize == parseInt size, 10
 
-  keybinding: (binding)->
-    keybinding = getWorkspace()?.keybinding
-    keybinding == binding
+Handlebars.registerHelper 'keybinding', (binding) ->
+  keybinding = Workspace.get()?.keybinding ? 'ace'
+  console.log "ZZZ: Checking if binding #{binding} is equal to #{keybinding}"
+  keybinding == binding
 
 Template.syntaxModeOptions.helpers
   selected: (value) ->
@@ -186,7 +144,7 @@ Meteor.startup ->
   Deps.autorun (computation) ->
     @name 'keybinding'
     return unless MadEye.isRendered('editor') and MadEye.editorState
-    workspace = getWorkspace()
+    workspace = Workspace.get()
     return unless workspace
     keybinding = workspace.keybinding
     unless keybinding
@@ -204,7 +162,7 @@ Meteor.startup ->
   Deps.autorun (computation) ->
     @name 'set editor from workspace'
     return unless MadEye.isRendered('editor') and MadEye.editorState
-    workspace = getWorkspace()
+    workspace = Workspace.get()
     return unless workspace
     value = null
     Deps.nonreactive ->

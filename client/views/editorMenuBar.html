@@ -15,6 +15,17 @@
         <li id="findReplaceAction" class="disabled">Replace&nbsp;{{{modKey}}}FF</li>
       </ul>
     </li>
+    <li>Options
+      <ul>
+        <li id="keybindingsAction">Keybindings
+          <ul id="keyBindingsMenu" class="sublist">
+            <li data-keybinding="ace" class="keybindingOption {{#if keybinding 'ace'}}selected{{/if}}">Ace</li>
+            <li data-keybinding="vim" class="keybindingOption {{#if keybinding 'vim'}}selected{{/if}}">Vim</li>
+            <li data-keybinding="emacs" class="keybindingOption {{#if keybinding 'emacs'}}selected{{/if}}">Emacs</li>
+          </ul>
+        </li>
+      </ul>
+    </li>
   </ul>
 </div>
 </template>

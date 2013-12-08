@@ -27,6 +27,12 @@ Template.editorMenuBar.events
     file.remove()
     MadEye.fileLoader.clearFile()
 
+  'click .keybindingOption': (event) ->
+    keybinding = event.target.dataset['keybinding']
+    #ace is the default
+    keybinding = null if 'ace' == keybinding
+    Workspace.setConfig "keybinding", keybinding
+
 Template.editorMenuBar.helpers
   saveDisabled: ->
     if MadEye.editorState?.canSave() then "" else " disabled "

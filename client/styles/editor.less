@@ -10,8 +10,12 @@
 #editorMenuBar {
   position: relative;
   height: @barHeight;
+  border-bottom: @standardBorder;
+  //border-bottom-color: @backgroundColorAlt; //Hide this
+  background-color: @backgroundColorDefault;
 
   ul {
+    position: absolute;
     margin: 0; //Override bootstrap
     list-style: none;
     font-weight: bold;
@@ -20,9 +24,6 @@
 
 #editorMenu {
   position: relative;
-  border-bottom: @standardBorder;
-  //border-bottom-color: @backgroundColorAlt; //Hide this
-  background-color: @backgroundColorAlt;
   z-index: 10;
 
   li {
@@ -58,30 +59,46 @@
 
   //Drop-down menus
   ul {
-    position: absolute;
-    left: -99999px;
+    top: 100%;
+    display: none;
     background-color: @backgroundColorDefault;
     border: @standardBorder;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 
     li {
+      position: relative;
       float: none;
 
       &.disabled {
         color: @textColorSub;
         font-weight: normal;
 
+        //XXX: For some reason this breaks if you take it out of this
+        //block, where it seems more natural.
+        //Bootstrap3 will probably handle all this for us when
+        //we convert.
         &:hover {
           background-color: @backgroundColorDefault;
         }
       }
+
+      &.selected {
+        background-color: @backgroundColorSelected;
+      }
+    }
+
+    //Sub menus
+    ul {
+      left: 100%;
+      top: 0;
     }
   }
 
-  li:hover ul  {
-    //Display the dropdown on hover
-    left: 0; // Bring back on-screen when needed
+  //Display a child menu on parent hover
+  li:hover > ul  {
+    display: block; // Bring back on-screen when needed
   }
+
 }
 
 #editorContainer {
@@ -99,6 +116,7 @@
   bottom: @barHeight;
   left: 0;
   right: 0;
+  border-top: @standardBorder;
 }
 
 @overlayWidth: 600px;
