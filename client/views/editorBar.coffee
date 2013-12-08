@@ -44,9 +44,6 @@ Template.statusBar.events
     Workspace.setConfig "keybinding", keybinding
 
 Template.statusBar.helpers
-  editorState: ->
-    MadEye.editorState
-
   tabSizeEquals: (size)->
     return false unless MadEye.editorState?.rendered
     MadEye.editorState?.editor.tabSize == parseInt size, 10

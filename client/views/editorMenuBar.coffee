@@ -44,6 +44,15 @@ Template.editorMenuBar.events
     theme = event.target.dataset['theme']
     Workspace.setConfig "theme", theme
 
+  'click #seeInvisibleAction': ->
+    Workspace.setConfig "showInvisibles", !MadEye.editorState.editor.showInvisibles
+
+  'click #wordWrapAction': ->
+    Workspace.setConfig "wordWrap", !MadEye.editorState.editor.wordWrap
+
+  'click #useSoftTabsAction': ->
+    Workspace.setConfig "useSoftTabs", !MadEye.editorState.editor.useSoftTabs
+
   'click .goAction': (event) ->
     id = event.target.dataset['action']
     action = goActions[id]

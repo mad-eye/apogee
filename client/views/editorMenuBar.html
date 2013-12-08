@@ -36,6 +36,12 @@
 
     <li>Options
       <ul>
+        <li id="seeInvisibleAction" class="{{#if editorState.editor.showInvisibles}}selected{{/if}}">See Invisible</li>
+
+        <li id="wordWrapAction" class="{{#if editorState.editor.wordWrap}}selected{{/if}}">Word Wrap</li>
+
+        <li id="useSoftTabsAction" class="{{#if editorState.editor.useSoftTabs}}selected{{/if}}">Use Soft Tabs</li>
+
         <li>Keybindings
           <ul>
             <li data-keybinding="ace" class="keybindingOption {{#if keybinding 'ace'}}selected{{/if}}">Ace</li>
