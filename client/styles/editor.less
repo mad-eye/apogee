@@ -6,8 +6,10 @@
   position: relative;
 }
 
+@barHeight: 18px;
 #editorMenuBar {
   position: relative;
+  height: @barHeight;
 
   ul {
     margin: 0; //Override bootstrap
@@ -16,10 +18,8 @@
   }
 }
 
-@editorMenuHeight: 18px;
 #editorMenu {
   position: relative;
-  height: @editorMenuHeight;
   border-bottom: @standardBorder;
   //border-bottom-color: @backgroundColorAlt; //Hide this
   background-color: @backgroundColorAlt;
@@ -28,6 +28,7 @@
   li {
     float: left;
     padding: 0 @baseSpacing/2;
+    line-height: @barHeight;
     position: relative;
     color: @textColorDefault;
     text-decoration: none;
@@ -84,17 +85,19 @@
 }
 
 #editorContainer {
-  position: relative;
-  height: 600px;
-  width: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
   border: @standardBorder;
 }
 
 #editor {
   position: absolute;
-  top: @editorMenuHeight;
+  top: @barHeight;
+  bottom: @barHeight;
   left: 0;
-  bottom: 0; //This will be changed if there are contents below.
   right: 0;
 }
 
@@ -134,94 +137,11 @@
   }
 }
 
-#measurementDiv {
-  visibility: hidden;
-  position: absolute;
-  line-height: normal;
-}
-
-.verticalGradient(@topColor, @bottomColor) {
-  background-image: -webkit-linear-gradient(top, @topColor, @bottomColor); /* For Chrome and Safari */
-  background-image:    -moz-linear-gradient(top, @topColor, @bottomColor); /* For old Fx (3.6 to 15) */
-  background-image:     -ms-linear-gradient(top, @topColor, @bottomColor); /* For pre-releases of IE 10*/
-  background-image:      -o-linear-gradient(top, @topColor, @bottomColor); /* For old Opera (11.1 to 12.0) */ 
-  background-image:         linear-gradient(to bottom, @topColor, @bottomColor); /* Standard syntax; must be last */
-}
-
-//#272829 ?
-@darkGrey: #333;
-@medDarkGrey: #666;
-@medGrey: #999;
-
-#terminal {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background-color: @textColorDefault;
-  //font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
-  font-family: Consolas, monaco, monospace; 
-  //font-family:monospace, prestige;
-
-  //Don't let user resize -- we need control for now.
-  .grip {
-    display: none;
-  }
-
-  //Removing the bar is the easy way to disable multiple terminals.
-  .bar {
-    display: none;
-  }
-
-  .window {
-    //padding-top: 15px; //.bar is not displayed
-    background-color: @darkGrey;
-    .verticalGradient(black, @darkGrey);
-    position: relative;
-    overflow: auto;
-    border: none; //overwrite tty.css
-
-    &:hover {
-      .verticalGradient(black, @medDarkGrey);
-    }
-  }
-
-  &.focused .window {
-    .verticalGradient(black, @medGrey);
-  }
-
-  .terminal {
-    font-size: 12px;
-    border: none;
-    margin: 5px;
-
-  }
-
-}
-
-#terminalOverlay {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background-color:rgba(0,0,0,0.3);
-  z-index: 9999;
-}
-
-#terminalBusySpinner {
-  position: absolute;
-}
-
-#createTerminal {
-  color: #5fba3d; //Terminal green
-  margin-left: @baseSpacing;
-}
-
 
 // EDITOR BAR
 #statusBar {
   position: absolute;
-  height: 18px;
+  height: @barHeight;
   left: 0;
   bottom: 0;
   right: 0;
@@ -294,33 +214,3 @@
     margin: 0;
   }
 }
-
-#saveBox {
-  margin-left: 0;
-  img {
-    width: @mediumImageSize;
-    height: @mediumImageSize;
-  }
-}
-
-#saveImage {
-  cursor: pointer;
-  
-  &.disabled {
-    .transparent(0.15);
-    cursor: default;
-  }  
-}
-
-#revertDiscard, #runCode {
-  margin-right: 0;
-}
-
-#revertFile, #discardFile {
-
-  &.disabled {
-    .transparent(0.35);
-    cursor: default;
-  }
-}
-

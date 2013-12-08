@@ -1,6 +1,11 @@
 @import "base.less";
 
+html {
+  height: 100%;
+}
+
 body {
+  height: 100%;
     padding: @baseSpacing;
     padding-top: 0px;
     font-size: @baseFontSize;
@@ -15,8 +20,12 @@ body {
   .transparent(0.20);
 }
 
-#container.nonHangout {
-  padding-top: 10px;
+#container {
+  height: 100%;
+  
+  &.nonHangout {
+    padding-top: 10px;
+  }
 }
 
 .advice {

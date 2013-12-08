@@ -4,13 +4,18 @@
       <div id="leftColumn" class="span3">
         {{> fileTree}}
       </div>
-      <div id="editorChrome" class="span9">
+      <div id="rightColumn" class="span9">
         {{> editorTitleBar }}
-        <div id="editorContainer">
-          {{> editorMenuBar }}
-          {{> editorOverlay }}
-          {{> editor}}
-          {{> editorFooter}}
+        <div id="editorChrome">
+          <div id="editorContainer">
+            {{> editorMenuBar }}
+            {{> editorOverlay }}
+            {{> editor}}
+            {{> statusBar }}
+          </div>
+          {{#if isTerminalEnabled}}
+            {{> terminal}}
+          {{/if}}
         </div>
       </div>
   </div>
@@ -41,6 +46,7 @@
         {{> editorOverlay }}
         {{> editor}}
         {{> editorFooter}}
+        {{> statusBar }}
       </div>
     </div>
   </div>
@@ -76,12 +82,5 @@
 
 <template name="editor">
   {{#constant}}<div id="editor"></div>{{/constant}}
-</template>
-
-<template name="editorFooter">
-  {{> statusBar }}
-  {{#if isTerminalEnabled}}
-    {{> terminal}}
-  {{/if}}
 </template>
 
