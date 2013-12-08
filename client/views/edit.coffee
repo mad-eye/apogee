@@ -69,6 +69,10 @@ Meteor.startup ->
       else if MadEye.editorState.doc?.cursor
         gotoPosition(MadEye.editorState.doc.cursor)
 
+Template.editorTitleBar.helpers
+  editorFileName: ->
+    MadEye.fileLoader?.editorFilePath
+
 Template.editorOverlay.helpers
   editorIsLoading: ->
     MadEye.editorState?.loading == true

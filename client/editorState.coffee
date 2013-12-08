@@ -44,6 +44,10 @@ class EditorState
   gotoLine: (lineNumber) ->
     @editor.lineNumber = lineNumber
 
+  canRevert: ->
+    #It's the same logic, for now
+    return @canSave()
+
   revertFile: (callback=->) ->
     unless @doc and @fileId
       Metrics.add
@@ -52,6 +56,11 @@ class EditorState
         fileId: @fileId
       log.warn "revert called, but no doc selected"
       return callback "No doc or no file"
+    return unless @canRevert()
+    return unless confirm(
+      """Are you sure you want to revert your file?
+      This will replace the editor contents with the
+      contents of the file on disk.""")
     log.info "Reverting file", @fileId
     Events.record("revert", {file: @path, projectId: Session.get "projectId"})
     @working = true
@@ -167,7 +176,15 @@ class EditorState
       catch e
         finish e
 
+  canSave: ->
+    return false if projectIsClosed()
+    fileId = @fileId
+    file = Files.findOne(fileId) if fileId?
+    return false unless file
+    return !file.scratch && file.modified
+
   save : (callback=->) ->
+    return unless @canSave()
     projectId = getProjectId()
     editorChecksum = @editor.checksum
     file = Files.findOne @fileId
@@ -185,6 +202,13 @@ class EditorState
         project.save()
       callback()
       
+  #Can we discard the file?
+  canDiscard: ->
+    return false if projectIsClosed()
+    fileId = @fileId
+    file = Files.findOne(fileId) if fileId?
+    return file and file.deletedInFs
+
 
 EditorState.addProperty = (name, getter, setter) ->
   descriptor = {}

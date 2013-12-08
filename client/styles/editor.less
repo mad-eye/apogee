@@ -3,7 +3,84 @@
 @fadedOutput: #999;
 
 #editorChrome {
-  position:relative;
+  position: relative;
+}
+
+#editorMenuBar {
+  position: relative;
+
+  ul {
+    margin: 0; //Override bootstrap
+    list-style: none;
+    font-weight: bold;
+  }
+}
+
+@editorMenuHeight: 18px;
+#editorMenu {
+  position: relative;
+  height: @editorMenuHeight;
+  border-bottom: @standardBorder;
+  //border-bottom-color: @backgroundColorAlt; //Hide this
+  background-color: @backgroundColorAlt;
+  z-index: 10;
+
+  li {
+    float: left;
+    padding: 0 @baseSpacing/2;
+    position: relative;
+    color: @textColorDefault;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+
+    &:hover {
+      background-color: @backgroundColorHover;
+    }
+
+    &.divider {
+      height: 1px;
+      margin: 9px 1px;
+      overflow: hidden;
+      background-color: #e5e5e5;
+      border-bottom: 1px solid #ffffff;
+    }
+
+  }
+
+  //Each li of the top nav has L/R padding 5px
+  //This makes the space left of the first the same
+  //as the spacing between each one
+  & > li:nth-child(1) {
+    margin-left: @baseSpacing/2;
+  }
+
+  //Drop-down menus
+  ul {
+    position: absolute;
+    left: -99999px;
+    background-color: @backgroundColorDefault;
+    border: @standardBorder;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+
+    li {
+      float: none;
+
+      &.disabled {
+        color: @textColorSub;
+        font-weight: normal;
+
+        &:hover {
+          background-color: @backgroundColorDefault;
+        }
+      }
+    }
+  }
+
+  li:hover ul  {
+    //Display the dropdown on hover
+    left: 0; // Bring back on-screen when needed
+  }
 }
 
 #editorContainer {
@@ -15,7 +92,7 @@
 
 #editor {
   position: absolute;
-  top: 0;
+  top: @editorMenuHeight;
   left: 0;
   bottom: 0; //This will be changed if there are contents below.
   right: 0;
@@ -46,7 +123,6 @@
 }
 
 #editorTitleBar {
-  max-width: 611px;
   vertical-align: text-bottom;
 }
 

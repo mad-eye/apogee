@@ -46,9 +46,6 @@ Template.editorBar.events
         log.error "Error in save request:", err
 
 Template.editorBar.helpers
-  editorFileName: ->
-    MadEye.fileLoader?.editorFilePath
-
   showSaveSpinner: ->
     MadEye.editorState?.working == true
 
@@ -59,9 +56,6 @@ Template.editorBar.helpers
       "disabled"
     else
       ""
-
-  isHangout: ->
-    Session.get "isHangout"
 
 Template.statusBar.rendered = ->
   MadEye.rendered 'statusBar'

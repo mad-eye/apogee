@@ -5,8 +5,9 @@
         {{> fileTree}}
       </div>
       <div id="editorChrome" class="span9">
-        {{> editorChrome }}
+        {{> editorTitleBar }}
         <div id="editorContainer">
+          {{> editorMenuBar }}
           {{> editorOverlay }}
           {{> editor}}
           {{> editorFooter}}
@@ -51,10 +52,12 @@
   {{/each}}
 </template>
 
-<template name="editorChrome">
-  <div id="editorTitleBar" class="clearfix">
+<template name="editorTitleBar">
+  <div id="editorTitleBar">
+    <h4>
+      {{editorFileName}}
+    </h4>
   </div>
-  {{> editorBar }}
 </template>
 
 <template name="editorOverlay">
