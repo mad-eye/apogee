@@ -9,12 +9,31 @@
         <li id="discardAction" class="{{discardDisabled}}">Discard File</li>
       </ul>
     </li>
+
     <li>Edit
       <ul>
-        <li id="findAction" class="disabled">Find&nbsp;{{{modKey}}}F</li>
-        <li id="findReplaceAction" class="disabled">Replace&nbsp;{{{modKey}}}FF</li>
+        {{#each editActions}}
+          {{#if break}}
+            <li class="divider"></li>
+          {{else}}
+            <li class="editAction {{#if disabled}}disabled{{/if}}" data-action="{{id}}">{{name}} {{{key}}}</li>
+          {{/if}}
+        {{/each}}
       </ul>
     </li>
+
+    <li>Go
+      <ul>
+        {{#each goActions}}
+          {{#if break}}
+            <li class="divider"></li>
+          {{else}}
+            <li class="goAction" {{#if disabled}}disabled{{/if}} data-action="{{id}}">{{name}} {{{key}}}</li>
+          {{/if}}
+        {{/each}}
+      </ul>
+    </li>
+
     <li>Options
       <ul>
         <li>Keybindings

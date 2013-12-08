@@ -43,9 +43,6 @@ Template.statusBar.events
     keybinding = null if 'ace' == keybinding
     Workspace.setConfig "keybinding", keybinding
 
-  'change #themeSelect': (e) ->
-    Workspace.setConfig "theme", e.target.value
-
 Template.statusBar.helpers
   editorState: ->
     MadEye.editorState
