@@ -1,6 +1,7 @@
 @import "base.less";
 @errorRed: rgb(153, 2, 2);
 @fadedOutput: #999;
+@editorBarBackground: #DCDCDC;
 
 #editorChrome {
   position: relative;
@@ -12,7 +13,7 @@
   height: @barHeight;
   border-bottom: @standardBorder;
   //border-bottom-color: @backgroundColorAlt; //Hide this
-  background-color: @backgroundColorDefault;
+  background-color: @editorBarBackground;
 
   ul {
     position: absolute;
@@ -194,7 +195,7 @@
   left: 0;
   bottom: 0;
   right: 0;
-  background-color: #DCDCDC;
+  background-color: @editorBarBackground;
   border-top: @standardBorder;
 
   font-size: @smallFontSize;
