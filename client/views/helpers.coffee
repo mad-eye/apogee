@@ -83,3 +83,9 @@ Handlebars.registerHelper 'isScratch', isScratch
 @groupB = (testName)->
   return null unless Meteor.userId()
   return MadEye.crc32("#{Meteor.userId()}#{testName}") % 2 != 0
+
+## CDN
+
+#Static prefix for static assets, like videos and ace js files
+Handlebars.registerHelper 'staticPrefix', ->
+  Meteor.settings.public.staticPrefix ? ''
