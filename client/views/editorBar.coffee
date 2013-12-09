@@ -147,7 +147,7 @@ Meteor.startup ->
     else
       module = require("ace/keyboard/#{keybinding}")
       unless module
-        jQuery.getScript "/ace/keybinding-#{keybinding}.js", ->
+        jQuery.getScript "#{Meteor.settings.public.acePrefix}/keybinding-#{keybinding}.js", ->
           computation.invalidate()
       else
         handler = module.handler

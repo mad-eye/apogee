@@ -1,3 +1,5 @@
+log = new Logger 'menuBar'
+
 IconCmd = "&#8984;"
 IconShift = "&#8679;"
 IconOpt = "&#8997;"
@@ -99,13 +101,18 @@ findActions = (actionList) ->
 getAceEditor = ->
  MadEye.editorState.getEditor()
 
+Meteor.startup ->
+  #load searchbox module so we can require it later
+  jQuery.getScript("#{Meteor.settings.public.acePrefix}/ext-searchbox.js").fail ->
+    log.error "Unable to load searchbox script; searching will be harder."
+
 editActions =
   'find':
     name: 'Find'
     pc: '^F'
     mac: "#{IconCmd}F"
-    #exec: (editor) ->
-      #config.loadModule("ace/ext/searchbox", (e) {e.Search(editor)})
+    exec: ->
+      require("ace/ext/searchbox").Search getAceEditor()
 
   'findnext':
     name: "Find Next",
@@ -123,8 +130,8 @@ editActions =
     name: "Replace",
     pc: '^H'
     mac: "#{IconCmd}#{IconOpt}F"
-    #exec: (editor) ->
-        #config.loadModule("ace/ext/searchbox", (e) {e.Search(editor, true)})
+    exec: ->
+      require("ace/ext/searchbox").Search getAceEditor(), true
 
   'break1' :
     break : true
