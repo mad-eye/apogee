@@ -25,7 +25,8 @@
 
 #editorMenu {
   position: relative;
-  z-index: 10;
+  //statusBar is 10, need to be higher
+  z-index: 11;
 
   li {
     float: left;
@@ -119,6 +120,8 @@
   .actionItem {
     overflow: auto;
     width: 100%;
+    //HACK: Need to give enough space for the floated actionKeys
+    margin-right: 40px;
   }
 
   .actionName {
