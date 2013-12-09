@@ -56,13 +56,11 @@ Template.editorMenuBar.events
     Workspace.setConfig "useSoftTabs", !MadEye.editorState.editor.useSoftTabs
 
   'click .goAction': (event) ->
-    id = event.target.dataset['action']
-    action = goActions[id]
+    action = goActions[this.id]
     action?.exec?()
 
   'click .editAction': (event) ->
-    id = event.target.dataset['action']
-    action = editActions[id]
+    action = editActions[this.id]
     action?.exec?()
 
 Template.editorMenuBar.helpers
