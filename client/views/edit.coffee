@@ -76,6 +76,11 @@ Template.editorTitleBar.helpers
   isModified: ->
     MadEye.editorState?.canSave()
 
+  isScratch: ->
+    fileId = MadEye.editorState?.fileId
+    return unless fileId
+    return Files.findOne(fileId)?.scratch
+
 Template.editorOverlay.helpers
   editorIsLoading: ->
     MadEye.editorState?.loading == true
