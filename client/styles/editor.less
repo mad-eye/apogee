@@ -20,6 +20,7 @@
     list-style: none;
     font-weight: bold;
   }
+
 }
 
 #editorMenu {
@@ -59,6 +60,11 @@
   //as the spacing between each one
   & > li:nth-child(1) {
     margin-left: @baseSpacing/2;
+  }
+
+  //Since we pad the sides of each li, we need to offset the drop-downs so they look right
+  & > li > ul {
+    margin-left: -@baseSpacing/2;
   }
 
   //Drop-down menus
