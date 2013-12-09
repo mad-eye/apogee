@@ -3,7 +3,7 @@
   <ul id="editorMenu" class="clearfix">
     <li>File
       <ul>
-        <li id="saveAction" class="{{saveDisabled}}">Save&nbsp;{{{modKey}}}S</li>
+        <li id="saveAction" class="{{saveDisabled}}">Save <span class="actionKey">{{{modKey}}}S</span></li>
         <li class="divider"></li>
         <li id="revertAction" class="{{revertDisabled}}">Revert Changes</li>
         <li id="discardAction" class="{{discardDisabled}}">Discard File</li>
@@ -16,7 +16,7 @@
           {{#if break}}
             <li class="divider"></li>
           {{else}}
-            <li class="editAction {{#if disabled}}disabled{{/if}}" data-action="{{id}}">{{name}} {{{key}}}</li>
+            {{> actionItem }}
           {{/if}}
         {{/each}}
       </ul>
@@ -28,7 +28,7 @@
           {{#if break}}
             <li class="divider"></li>
           {{else}}
-            <li class="goAction" {{#if disabled}}disabled{{/if}} data-action="{{id}}">{{name}} {{{key}}}</li>
+            {{> actionItem }}
           {{/if}}
         {{/each}}
       </ul>
@@ -72,3 +72,10 @@
 </div>
 </template>
 
+<template name="actionItem">
+  <li class="{{actionType}} {{#if disabled}}disabled{{/if}}" data-action="{{id}}">
+    <div class="actionItem clearfix">
+      <div class="actionName">{{name}}</div> <div class="actionKey">{{{key}}}</div>
+    </div>
+  </li>
+</template>

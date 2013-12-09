@@ -76,12 +76,12 @@ Template.editorMenuBar.helpers
     if MadEye.editorState?.canDiscard() then "" else " disabled "
 
   goActions: ->
-    findActions goActions
+    findActions goActions, "goAction"
 
   editActions: ->
-    findActions editActions
+    findActions editActions, "editAction"
 
-findActions = (actionList) ->
+findActions = (actionList, actionType) ->
   if Client.isMac
     key = 'mac'
   else
@@ -93,6 +93,7 @@ findActions = (actionList) ->
     else
       actions.push
         name:action.name
+        actionType: actionType
         key:action[key]
         id:id
         disabled:!action.exec?
