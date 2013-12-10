@@ -1,0 +1,105 @@
+<template name="editorMenuBar">
+<div id="editorMenuBar" class="clearfix">
+  <ul id="editorMenu" class="clearfix">
+    <li>File
+      <ul>
+        <li id="saveAction" class="{{saveDisabled}}">Save <span class="actionKey">{{{modKey}}}S</span></li>
+        <li class="divider"></li>
+        <li id="revertAction" class="{{revertDisabled}}">Revert Changes</li>
+        <li id="discardAction" class="{{discardDisabled}}">Discard File</li>
+      </ul>
+    </li>
+
+    <li>Edit
+      <ul>
+        {{#each editActions}}
+          {{#if break}}
+            <li class="divider"></li>
+          {{else}}
+            {{> actionItem }}
+          {{/if}}
+        {{/each}}
+      </ul>
+    </li>
+
+    <li>Go
+      <ul>
+        {{#each goActions}}
+          {{#if break}}
+            <li class="divider"></li>
+          {{else}}
+            {{> actionItem }}
+          {{/if}}
+        {{/each}}
+      </ul>
+    </li>
+
+    <li>Options
+      <ul>
+
+        {{#each toggleOptions}}
+          {{> optionItem }}
+        {{/each}}
+
+        <li>
+          <div class="actionItem clearfix">
+            <div class="actionName">Keybindings</div>
+            <div class="actionKey">&raquo;</div>
+          </div>
+
+          <ul>
+            <li data-keybinding="ace" class="keybindingOption {{#if keybinding 'ace'}}selected{{/if}}">Ace</li>
+            <li data-keybinding="vim" class="keybindingOption {{#if keybinding 'vim'}}selected{{/if}}">Vim</li>
+            <li data-keybinding="emacs" class="keybindingOption {{#if keybinding 'emacs'}}selected{{/if}}">Emacs</li>
+          </ul>
+        </li>
+
+        <li>
+          <div class="actionItem clearfix">
+            <div class="actionName">Font Size</div>
+            <div class="actionKey">&raquo;</div>
+          </div>
+
+          <ul>
+            <li data-fontsize="10" class="fontsizeOption {{#if fontsize 10}}selected{{/if}}">10</li>
+            <li data-fontsize="11" class="fontsizeOption {{#if fontsize 11}}selected{{/if}}">11</li>
+            <li data-fontsize="12" class="fontsizeOption {{#if fontsize 12}}selected{{/if}}">12</li>
+            <li data-fontsize="14" class="fontsizeOption {{#if fontsize 14}}selected{{/if}}">14</li>
+            <li data-fontsize="16" class="fontsizeOption {{#if fontsize 16}}selected{{/if}}">16</li>
+          </ul>
+        </li>
+
+        <li>
+          <div class="actionItem clearfix">
+            <div class="actionName">Theme</div>
+            <div class="actionKey">&raquo;</div>
+          </div>
+
+          <ul>
+            {{>themeOptions}}
+          </ul>
+        </li>
+
+      </ul>
+    </li>
+  </ul>
+</div>
+</template>
+
+<template name="actionItem">
+  <li class="{{actionType}} {{#if disabled}}disabled{{/if}}">
+    <div class="actionItem clearfix">
+      <div class="actionName">{{name}}</div> <div class="actionKey">{{{key}}}</div>
+    </div>
+  </li>
+</template>
+
+<template name="optionItem">
+<li id="{{id}}">
+    <div class="actionItem clearfix">
+      <div class="actionName">{{name}}</div>
+      {{#if selected}}<div class="actionKey">&#x2713;</div>{{/if}}
+    </div>
+</li>
+</template>
+

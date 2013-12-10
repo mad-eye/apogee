@@ -1,5 +1,5 @@
 <template name="statusBar">
-<div id="statusBar" class="clearfix" style="bottom: {{bottom}}px;">
+<div id="statusBar" class="clearfix">
 
     {{!-- XXX: This rerendering kills FF.  Re-enable after Meteor UI?
     XXX: Remove spaces from ending braces
@@ -50,84 +50,17 @@
         </select>     
     </div>
 
-    {{! Theme }}
-    <div class="statusBarButton pull-left">
-      <form>
-        <select id="themeSelect" class="input-medium" size="1">
-          {{> themeOptions}}
-        </select>     
-      </form>
-    </div>
-
     {{! Keybinding }}
     <div class="statusBarButton pull-left">
       <form>
         <!--<label class="select">:</label>-->
         <select id="keybinding" class="input-small" size="1">
-          <option value="ace" {{#unless keybinding}}selected{{/unless}}>Ace Keys</option>
+          <option value="ace" {{#if keybinding 'ace'}}selected{{/if}}>Ace Keys</option>
           <option value="vim" {{#if keybinding 'vim'}}selected{{/if}}>Vim</option>
           <option value="emacs" {{#if keybinding 'emacs'}}selected{{/if}}>Emacs</option>
         </select>
       </form>
     </div>
-
-    {{! Font Size  }}
-    <div id="fontSizeButton" class="statusBarButton pull-left">
-        <select id="fontSize" class="input-medium" size="1">
-          <option value="10" {{#if fontSizeEquals 10}}selected{{/if}}>Font Size: 10</option>
-          <option value="11" {{#if fontSizeEquals 11}}selected{{/if}}>Font Size: 11</option>
-          <option value="12" {{#if fontSizeEquals 12}}selected{{/if}}>Font Size: 12</option>
-          <option value="14" {{#if fontSizeEquals 14}}selected{{/if}}>Font Size: 14</option>
-          <option value="16" {{#if fontSizeEquals 16}}selected{{/if}}>Font Size: 16</option>
-        </select>
-    </div>
-  </div>
-
-</template>
-
-<template name="editorBar">
-  <div id="editorBar" class="clearfix">
-
-    {{! SAVE}}
-    {{#unless isScratch}}
-      <div id="saveBox" class="editorBarButton pull-left">
-        {{#if showSaveSpinner}}
-          <img id="saveSpinner" src="/static/images/ajax-loader.gif" alt="Loading..." />
-        {{else}}
-          <img id="saveImage" src="/static/images/save-file_32.png" class="{{buttonDisabled}}"  {{buttonDisabled}} alt="Save file to host computer" title="Save file" />
-        {{/if}}
-      </div>
-    {{/unless}}
-
-
-    <div id="editorTitle" class="pull-left">
-      <h4>
-        {{editorFileName}}
-      </h4>
-    </div>
-
-    {{#unless isScratch}}
-      {{! REVERT/DISCARD }}
-      <div id="revertDiscard" class="editorBarButton pull-right">
-        {{#unless fileIsDeleted}}
-          <a id="revertFile" class="btn {{buttonDisabled}}" {{buttonDisabled}} title="Revert the file to the state on the host computer." href="#">Revert</a>
-        {{else}}
-          <a id="discardFile" class="btn {{buttonDisabled}}" {{buttonDisabled}} title="Discard this file, removing it from the project view" href="#">Discard File</a>
-        {{/unless}}
-      </div>
-
-    {{/unless}}
-
-    {{! EDITOR SETTINGS
-    <div id="editorSettings" class="editorBarButton pull-right">
-      <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-        <img alt="Settings" src="/static/images/cog_16.png"/>
-        <span class="caret"></span>
-      </a>
-      <form class="dropdown-menu">
-      </form>
-    </div>
-   }}
 
   </div>
 
@@ -135,17 +68,15 @@
 
 
 <template name="themeOptions">
-  <option value="">Select theme&hellip;</option>
-  <optgroup label="Bright">
-    {{#each brightThemes}}
-      <option value="{{value}}" {{#if themeEquals value}}selected{{/if}}>{{name}}</option>
-    {{/each}}
-  </optgroup>
-  <optgroup label="Dark">
-    {{#each darkThemes}}
-      <option value="{{value}}" {{#if themeEquals value}}selected{{/if}}>{{name}}</option>
-    {{/each}}
-  </optgroup>
+  <li data-theme="" class="themeOption notheme {{#if themeEquals undefined}}selected{{/if}}">No Theme</li>
+  <li class="disabled">Bright</li>
+  {{#each brightThemes}}
+    <li data-theme="{{value}}" class="themeOption {{#if themeEquals value}}selected{{/if}}">{{name}}</li>
+  {{/each}}
+  <li class="disabled">Dark</li>
+  {{#each darkThemes}}
+    <li data-theme="{{value}}" class="themeOption {{#if themeEquals value}}selected{{/if}}">{{name}}</li>
+  {{/each}}
 </template>
 
 <template name="syntaxModeOptions">

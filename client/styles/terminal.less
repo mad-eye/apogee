@@ -21,8 +21,8 @@
   bottom: 0;
   right: 0;
   background-color: @textColorDefault;
-  //font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
   font-family: Consolas, monaco, monospace; 
+  //font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
   //font-family:monospace, prestige;
 
   //Don't let user resize -- we need control for now.
@@ -96,3 +96,28 @@
   display: none;
   font-size: 16px;
 }
+
+#measurementDiv {
+  visibility: hidden;
+  position: absolute;
+  line-height: normal;
+}
+
+#terminalOverlay {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color:rgba(0,0,0,0.3);
+  z-index: 9999;
+}
+
+#terminalBusySpinner {
+  position: absolute;
+}
+
+#createTerminal {
+  color: #5fba3d; //Terminal green
+  margin-left: @baseSpacing;
+}
+

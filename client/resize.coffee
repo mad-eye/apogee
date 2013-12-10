@@ -8,15 +8,15 @@ windowDep = new Deps.Dependency()
   Deps.flush() if flush
 
 #Store these here to only trigger reactivity if the values change.
-##The size of the editorContainer
-#containerHeight
-#containerWidth
+##The size of the editorChrome
+#chromeHeight
+#chromeWidth
 #
 ##the least height/width of other sessions' terminals
 #leastTerminalHeight
 #leastTerminalWidth
 #
-##The maximum possible height of terminal (~1/3 containerHeight)
+##The maximum possible height of terminal (~1/3 chromeHeight)
 #maxTerminalHeight
 #
 ##The actual terminal height
@@ -30,20 +30,17 @@ terminalWindowPadding = 15 #px
 terminalWindowBorder = 2 #2*1px
 terminalBorder = 10 #2*5px for #terminal .terminal
 
-Template.statusBar.helpers
-  bottom: -> sizes.get('terminalHeight') || 0
-
 Template.editorOverlay.helpers
   spinnerTop: ->
     terminalHeight = sizes.get('terminalHeight') || 0
     editorBottom = terminalHeight + $('#statusBar').height()
-    editorHeight = sizes.get('containerHeight') - editorBottom
+    editorHeight = sizes.get('chromeHeight') - editorBottom
     $spinner = $('#editorLoadingSpinner')
     return (editorHeight - $spinner.height())/2
 
   spinnerLeft: ->
     $spinner = $('#editorLoadingSpinner')
-    return (sizes.get('containerWidth') - $spinner.width())/2
+    return (sizes.get('chromeWidth') - $spinner.width())/2
 
 Template.terminalOverlay.helpers
   overlayHeight: ->
@@ -57,7 +54,7 @@ Template.terminalOverlay.helpers
 
   spinnerLeft: ->
     $spinner = $('#terminalBusySpinner')
-    return Math.floor (sizes.get('containerWidth') - $spinner.width())/2
+    return Math.floor (sizes.get('chromeWidth') - $spinner.width())/2
 
 Meteor.startup ->
   #Trigger initial size calculations
@@ -71,22 +68,22 @@ Meteor.startup ->
       windowSizeChanged true
     computation.stop()
 
-  #Set editorContainer size
+  #Set editorChrome size
   Deps.autorun ->
-    @name 'set editorContainer size'
+    @name 'set editorChrome size'
     return unless isEditorPage() and MadEye.isRendered 'editor'
     windowDep.depend()
     windowHeight = $(window).height()
-    $container = $('#editorContainer')
-    return unless $container and $container.offset() #eg home doesn't have this div
-    containerTop = $container.offset().top
-    containerHeight = (windowHeight - containerTop - 2*baseSpacing)
-    #Set container height here so we know it's complete before we store the values.
-    $container.height containerHeight
-    sizes.set 'containerHeight', Math.floor $container.height()
-    sizes.set 'containerWidth', Math.floor $container.width()
+    $chrome = $('#editorChrome')
+    return unless $chrome and $chrome.offset() #eg home doesn't have this div
+    chromeTop = $chrome.offset().top
+    chromeHeight = (windowHeight - chromeTop - 2*baseSpacing)
+    #Set chrome height here so we know it's complete before we store the values.
+    $chrome.height chromeHeight
+    sizes.set 'chromeHeight', Math.floor $chrome.height()
+    sizes.set 'chromeWidth', Math.floor $chrome.width()
     if isTerminalEnabled()
-      maxTerminalHeight = Math.floor( $container.height() / 3 )
+      maxTerminalHeight = Math.floor( $chrome.height() / 3 )
     else
       maxTerminalHeight = 0
     sizes.set 'maxTerminalHeight', maxTerminalHeight
@@ -97,8 +94,7 @@ Meteor.startup ->
     return unless isEditorPage() and MadEye.isRendered 'editor', 'statusBar'
     return unless $('#statusBar').length and $('#editor').length #XXX: There must be a better way
     terminalHeight = sizes.get('terminalHeight') || 0
-    editorBottom = terminalHeight + $('#statusBar').height()
-    $('#editor').css 'bottom', editorBottom
+    $('#editorContainer').css('bottom', terminalHeight)
     ace.edit('editor').resize()
 
 
@@ -129,9 +125,9 @@ Meteor.startup ->
       $terminalWindow = $('#terminal .window')
       $terminalWindow.height terminalHeight
       if sizes.get('leastTerminalWidth')
-        newWidth = Math.min( sizes.get('leastTerminalWidth'), sizes.get('containerWidth') )
+        newWidth = Math.min( sizes.get('leastTerminalWidth'), sizes.get('chromeWidth') )
       else
-        newWidth = sizes.get('containerWidth')
+        newWidth = sizes.get('chromeWidth')
       $terminalWindow.width newWidth
 
       #Find height of each div
@@ -156,7 +152,7 @@ Meteor.startup ->
       projectStatus.update
         terminalSize:
           height: sizes.get 'maxTerminalHeight'
-          width: sizes.get 'containerWidth'
+          width: sizes.get 'chromeWidth'
     else
       projectStatus.update terminalSize: null #NB: undefined breaks things!
 

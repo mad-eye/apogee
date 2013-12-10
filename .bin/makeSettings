@@ -26,7 +26,8 @@ settings = {
     logLevel: process.env.MADEYE_LOGLEVEL,
     specificLogLevels: parseSpecificLogLevels(),
     stripePublicKey: process.env.MADEYE_STRIPE_PUBLIC_KEY,
-    fullTerminal: process.env.MADEYE_FULL_TERMINAL
+    fullTerminal: process.env.MADEYE_FULL_TERMINAL,
+    acePrefix: "/packages/reactive-ace/ace-builds/src"
   },
   googleClientId: process.env.MADEYE_GOOGLE_CLIENT_ID,
   googleSecret: process.env.MADEYE_GOOGLE_SECRET,

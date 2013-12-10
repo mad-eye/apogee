@@ -7,6 +7,9 @@ Handlebars.registerHelper "Session", (key) ->
 Handlebars.registerHelper "SessionEquals", (key, value) ->
   Session.equals key, value
 
+Handlebars.registerHelper 'editorState', ->
+  MadEye.editorState
+
 Handlebars.registerHelper "hangoutLink", ->
   "#{MadEye.azkabanUrl}/hangout/#{Session.get 'projectId'}"
 

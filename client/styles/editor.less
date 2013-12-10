@@ -1,24 +1,154 @@
 @import "base.less";
 @errorRed: rgb(153, 2, 2);
 @fadedOutput: #999;
+@editorBarBackground: #DCDCDC;
 
 #editorChrome {
-  position:relative;
+  position: relative;
+}
+
+@barHeight: 18px;
+#editorMenuBar {
+  position: relative;
+  height: @barHeight;
+  border-bottom: @standardBorder;
+  //border-bottom-color: @backgroundColorAlt; //Hide this
+  background-color: @editorBarBackground;
+
+  ul {
+    position: absolute;
+    margin: 0; //Override bootstrap
+    list-style: none;
+    font-weight: bold;
+  }
+
+}
+
+#editorMenu {
+  position: relative;
+  //statusBar is 10, need to be higher
+  z-index: 11;
+
+  li {
+    float: left;
+    padding: 0 @baseSpacing/2;
+    line-height: @barHeight;
+    position: relative;
+    color: @textColorDefault;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+
+    &:hover {
+      background-color: @backgroundColorHover;
+    }
+
+    &.divider {
+      height: 1px;
+      margin: 9px 1px;
+      overflow: hidden;
+      background-color: #e5e5e5;
+      border-bottom: 1px solid #ffffff;
+    }
+
+    &.selected {
+      background-color: @backgroundColorSelected;
+      color: @textColorSelected;
+    }
+  }
+
+  //Each li of the top nav has L/R padding 5px
+  //This makes the space left of the first the same
+  //as the spacing between each one
+  & > li:nth-child(1) {
+    margin-left: @baseSpacing/2;
+  }
+
+  //Since we pad the sides of each li, we need to offset the drop-downs so they look right
+  & > li > ul {
+    margin-left: -@baseSpacing/2;
+  }
+
+  //Drop-down menus
+  ul {
+    top: 100%;
+    display: none;
+    background-color: @backgroundColorDefault;
+    border: @standardBorder;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+
+    li {
+      position: relative;
+      float: none;
+
+      &.disabled {
+        color: @textColorSub;
+        font-weight: normal;
+
+        //XXX: For some reason this breaks if you take it out of this
+        //block, where it seems more natural.
+        //Bootstrap3 will probably handle all this for us when
+        //we convert.
+        &:hover {
+          background-color: @backgroundColorDefault;
+        }
+      }
+
+    }
+
+    //Sub menus
+    ul {
+      left: 100%;
+      top: 0;
+    }
+  }
+
+  //Display a child menu on parent hover
+  li:hover > ul  {
+    display: block; // Bring back on-screen when needed
+  }
+
+  //These are grouped; the actual elements need outline-like spacing
+  li.themeOption {
+    padding-left: @baseSpacing*3/2;
+
+    //Except this one, which is not in a group.
+    &.notheme {
+      padding-left: @baseSpacing/2;
+    }
+  }
+
+  .actionItem {
+    overflow: auto;
+    width: 100%;
+    //HACK: Need to give enough space for the floated actionKeys
+    margin-right: 40px;
+  }
+
+  .actionName {
+    float: left;
+  }
+  .actionKey {
+    float: right;
+  }
 }
 
 #editorContainer {
-  position: relative;
-  height: 600px;
-  width: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
   border: @standardBorder;
 }
 
 #editor {
   position: absolute;
-  top: 0;
+  top: @barHeight;
+  bottom: @barHeight;
   left: 0;
-  bottom: 0; //This will be changed if there are contents below.
   right: 0;
+  border-top: @standardBorder;
 }
 
 @overlayWidth: 600px;
@@ -46,7 +176,6 @@
 }
 
 #editorTitleBar {
-  max-width: 611px;
   vertical-align: text-bottom;
 }
 
@@ -58,98 +187,15 @@
   }
 }
 
-#measurementDiv {
-  visibility: hidden;
-  position: absolute;
-  line-height: normal;
-}
-
-.verticalGradient(@topColor, @bottomColor) {
-  background-image: -webkit-linear-gradient(top, @topColor, @bottomColor); /* For Chrome and Safari */
-  background-image:    -moz-linear-gradient(top, @topColor, @bottomColor); /* For old Fx (3.6 to 15) */
-  background-image:     -ms-linear-gradient(top, @topColor, @bottomColor); /* For pre-releases of IE 10*/
-  background-image:      -o-linear-gradient(top, @topColor, @bottomColor); /* For old Opera (11.1 to 12.0) */ 
-  background-image:         linear-gradient(to bottom, @topColor, @bottomColor); /* Standard syntax; must be last */
-}
-
-//#272829 ?
-@darkGrey: #333;
-@medDarkGrey: #666;
-@medGrey: #999;
-
-#terminal {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background-color: @textColorDefault;
-  //font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
-  font-family: Consolas, monaco, monospace; 
-  //font-family:monospace, prestige;
-
-  //Don't let user resize -- we need control for now.
-  .grip {
-    display: none;
-  }
-
-  //Removing the bar is the easy way to disable multiple terminals.
-  .bar {
-    display: none;
-  }
-
-  .window {
-    //padding-top: 15px; //.bar is not displayed
-    background-color: @darkGrey;
-    .verticalGradient(black, @darkGrey);
-    position: relative;
-    overflow: auto;
-    border: none; //overwrite tty.css
-
-    &:hover {
-      .verticalGradient(black, @medDarkGrey);
-    }
-  }
-
-  &.focused .window {
-    .verticalGradient(black, @medGrey);
-  }
-
-  .terminal {
-    font-size: 12px;
-    border: none;
-    margin: 5px;
-
-  }
-
-}
-
-#terminalOverlay {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background-color:rgba(0,0,0,0.3);
-  z-index: 9999;
-}
-
-#terminalBusySpinner {
-  position: absolute;
-}
-
-#createTerminal {
-  color: #5fba3d; //Terminal green
-  margin-left: @baseSpacing;
-}
-
 
 // EDITOR BAR
 #statusBar {
   position: absolute;
-  height: 18px;
+  height: @barHeight;
   left: 0;
   bottom: 0;
   right: 0;
-  background-color: #DCDCDC;
+  background-color: @editorBarBackground;
   border-top: @standardBorder;
 
   font-size: @smallFontSize;
@@ -218,33 +264,3 @@
     margin: 0;
   }
 }
-
-#saveBox {
-  margin-left: 0;
-  img {
-    width: @mediumImageSize;
-    height: @mediumImageSize;
-  }
-}
-
-#saveImage {
-  cursor: pointer;
-  
-  &.disabled {
-    .transparent(0.15);
-    cursor: default;
-  }  
-}
-
-#revertDiscard, #runCode {
-  margin-right: 0;
-}
-
-#revertFile, #discardFile {
-
-  &.disabled {
-    .transparent(0.35);
-    cursor: default;
-  }
-}
-
