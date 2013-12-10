@@ -36,13 +36,17 @@
 
     <li>Options
       <ul>
-        <li id="seeInvisibleAction" class="{{#if editorState.editor.showInvisibles}}selected{{/if}}">See Invisible</li>
 
-        <li id="wordWrapAction" class="{{#if editorState.editor.wordWrap}}selected{{/if}}">Word Wrap</li>
+        {{#each toggleOptions}}
+          {{> optionItem }}
+        {{/each}}
 
-        <li id="useSoftTabsAction" class="{{#if editorState.editor.useSoftTabs}}selected{{/if}}">Use Soft Tabs</li>
+        <li>
+          <div class="actionItem clearfix">
+            <div class="actionName">Keybindings</div>
+            <div class="actionKey">&raquo;</div>
+          </div>
 
-        <li>Keybindings
           <ul>
             <li data-keybinding="ace" class="keybindingOption {{#if keybinding 'ace'}}selected{{/if}}">Ace</li>
             <li data-keybinding="vim" class="keybindingOption {{#if keybinding 'vim'}}selected{{/if}}">Vim</li>
@@ -50,7 +54,12 @@
           </ul>
         </li>
 
-        <li>Font Size
+        <li>
+          <div class="actionItem clearfix">
+            <div class="actionName">Font Size</div>
+            <div class="actionKey">&raquo;</div>
+          </div>
+
           <ul>
             <li data-fontsize="10" class="fontsizeOption {{#if fontsize 10}}selected{{/if}}">10</li>
             <li data-fontsize="11" class="fontsizeOption {{#if fontsize 11}}selected{{/if}}">11</li>
@@ -60,7 +69,12 @@
           </ul>
         </li>
 
-        <li>Theme
+        <li>
+          <div class="actionItem clearfix">
+            <div class="actionName">Theme</div>
+            <div class="actionKey">&raquo;</div>
+          </div>
+
           <ul>
             {{>themeOptions}}
           </ul>
@@ -79,3 +93,13 @@
     </div>
   </li>
 </template>
+
+<template name="optionItem">
+<li id="{{id}}">
+    <div class="actionItem clearfix">
+      <div class="actionName">{{name}}</div>
+      {{#if selected}}<div class="actionKey">&#x2713;</div>{{/if}}
+    </div>
+</li>
+</template>
+

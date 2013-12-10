@@ -73,6 +73,13 @@ Template.editorMenuBar.helpers
   discardDisabled: ->
     if MadEye.editorState?.canDiscard() then "" else " disabled "
 
+  toggleOptions: ->
+    [
+      {id:"seeInvisibleAction", name:"See Invisible", selected: MadEye.editorState.editor.showInvisibles}
+      {id:"wordWrapAction", name:"Word Wrap", selected: MadEye.editorState.editor.wordWrap}
+      {id:"useSoftTabsAction", name:"Use Soft Tabs", selected: MadEye.editorState.editor.useSoftTabs}
+    ]
+
   goActions: ->
     findActions goActions, "goAction"
 
