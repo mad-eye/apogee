@@ -13,8 +13,8 @@ Template.subscription.helpers
 
   availableEnterprisePlans: ->
     plans = []
-    for i in [10, 25, 50, 100]
-      plans.push {seats:i, cost:100*i}
+`    for i in [10, 25, 50, 100]
+      plans.push {seats:i, cost:50*i}
     return plans
 
   customerSubscription: ->
@@ -34,7 +34,7 @@ Template.subscription.events
   'click button.subscribe-button' : (e, tmpl) ->
     order =
       quantity: parseInt e.target.dataset.seats, 10
-      plan: 'self-hosted'
+      plan: 'madeyeEnterprise'
     
     log.debug "Selected #{order.quantity} seats"
 
@@ -57,7 +57,7 @@ Template.subscription.events
       StripeCheckout.open
         key:         Meteor.settings.public.stripePublicKey
         address:     true
-        amount:      10000 * order.quantity
+        amount:      5000 * order.quantity
         currency:    'usd'
         name:        'MadEye'
         image:       '/static/images/madeye_logo_128.png'
