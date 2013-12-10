@@ -184,12 +184,13 @@ class EditorState
     return !file.scratch && file.modified
 
   save : (callback=->) ->
-    return unless @canSave()
+    #TODO: Better error?
+    return callback("Can't save") unless @canSave()
     projectId = getProjectId()
     editorChecksum = @editor.checksum
     file = Files.findOne @fileId
-    return if file.fsChecksum == editorChecksum
-    return if file.scratch
+    return callback() if file.fsChecksum == editorChecksum
+    return callback() if file.scratch
     log.info "Saving file #{file.path}"
     Events.record("save", {file: @fileId, projectId})
     Meteor.call 'saveFile', projectId, @fileId, @editor.value, (error, result) ->
