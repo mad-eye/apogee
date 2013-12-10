@@ -1,3 +1,4 @@
+###
 log = new Logger 'accounts'
 
 getCustomer = ->
@@ -119,4 +120,4 @@ Template.subscription.events
     e.stopPropagation()
     return
 
-
+###

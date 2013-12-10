@@ -89,12 +89,13 @@ Router.map ->
     before: ->
       Session.set "isHangout", true
 
-  @route 'plans',
-    path: '/plans'
-    before: ->
-      unless Meteor.user() and Meteor.user().type != 'anonymous'
-        @render 'signinPage'
-        @stop()
+  #This is breaking IE, removing for now.
+  #@route 'plans',
+    #path: '/plans'
+    #before: ->
+      #unless Meteor.user() and Meteor.user().type != 'anonymous'
+        #@render 'signinPage'
+        #@stop()
 
   @route 'missing', path: '*'
 
