@@ -3,7 +3,12 @@
   <ul id="editorMenu" class="clearfix">
     <li>File
       <ul>
-        <li id="saveAction" class="{{saveDisabled}}">Save <span class="actionKey">{{{modKey}}}S</span></li>
+        <li id="saveAction" class="{{saveDisabled}}">
+          <div class="actionItem clearfix">
+            <div class="actionName">Save</div>
+            <div class="actionKey">{{{modKey}}}S</div>
+          </div>
+        </li>
         <li class="divider"></li>
         <li id="revertAction" class="{{revertDisabled}}">Revert Changes</li>
         <li id="discardAction" class="{{discardDisabled}}">Discard File</li>
