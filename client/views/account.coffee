@@ -13,7 +13,7 @@ Template.subscription.helpers
 
   availableEnterprisePlans: ->
     plans = []
-`    for i in [10, 25, 50, 100]
+    for i in [10, 25, 50, 100]
       plans.push {seats:i, cost:50*i}
     return plans
 
