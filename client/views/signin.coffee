@@ -53,10 +53,10 @@ Template.signin.helpers
 tempWorkspace = null
 stashWorkspace = ->
   log.trace 'Stashing workspace'
-  tempWorkspace = getWorkspace()
+  tempWorkspace = Workspace.get()
 
 migrateWorkspace = ->
-  workspace = getWorkspace()
+  workspace = Workspace.get()
   log.trace 'Migrating workspace'
   for key in _.keys tempWorkspace
     continue if key == '_id' or key == 'userId'
