@@ -204,9 +204,7 @@ class EditorState
       
   #Can we discard the file?
   canDiscard: ->
-    console.log 'ZZZ: canDiscard'
     return false if !getProject() or projectIsClosed()
-    console.log 'ZZZ: canDiscard projectIsClosed', projectIsClosed()
     fileId = @fileId
     file = Files.findOne(fileId) if fileId?
     return !!file and file.deletedInFs
