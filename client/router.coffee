@@ -84,11 +84,6 @@ Router.map ->
     before: ->
       Session.set "isHangout", true
 
-  @route 'unlinkedHangout',
-    path: '/unlinked-hangout'
-    before: ->
-      Session.set "isHangout", true
-
   #This is breaking IE, removing for now.
   #@route 'plans',
     #path: '/plans'
