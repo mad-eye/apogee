@@ -6,8 +6,8 @@
                   <li><a href="/get-started">Quick Install</a></li>
                   <li><a href="https://angel.co/madeye" target="_blank">About Us</a></li>
                   <li><a href="http://blog.madeye.io" target="_blank">Blog</a></li>
-                  <li><a href="/faq">FAQ</a></li>
-                  <li><a href="/tos">Legal Stuff</a></li>
+                  <li><a href="/pages/faq">FAQ</a></li>
+                  <li><a href="/pages/tos">Legal Stuff</a></li>
                   <li><a href="mailto:support@madeye.io">Contact Us</a></li>
                 </ul>
               </div>
@@ -22,6 +22,12 @@
             a.async=true;a.type="text/javascript";b.parentNode.insertBefore(a,b)}, 1);
         </script>
         -->
+        {{! Analytics and tracking }}
+        {{#if googleAnalyticsId}}
+          window._gaq = window._gaq || []
+          _gaq.push(['_setAccount', {{googleAnalyticsId}}]
+          _gaq.push(['_trackPageview'])
+        {{/if}}
 
       </div> <!-- /container -->
     </div>
