@@ -1,118 +1,120 @@
 <!DOCTYPE html>
-<html><head>
-  <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-  <link href="/static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
-  <link href="/static/styles/home.css" rel="stylesheet">
-  <link href="/static/styles/index.css" rel="stylesheet">
+<html>
+  <head>
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+    <link href="/static/styles/home.css" rel="stylesheet">
 
-  <script id="twitter-wjs" src="//platform.twitter.com/widgets.js"></script><script type="text/javascript" async="" src="https://ssl.google-analytics.com/ga.js"></script>
+    <script id="twitter-wjs" src="//platform.twitter.com/widgets.js"></script>
+    <script type="text/javascript" async="" src="https://ssl.google-analytics.com/ga.js"></script>
 
-<meta name="fragment" content="!">
-<title>MadEye</title>
-  <link href="//fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
-  <script type="text/javascript">
-    (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-  </script>
-  <script src="/static/bootstrap/js/bootstrap.min.js"></script>
-</head>
-<body data-twttr-rendered="true">
+    <meta name="fragment" content="!">
+    <title>MadEye</title>
+    <link href="//fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
+    <script type="text/javascript">
+      //Google Analytics
+      (function() {
+       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+       })();
+      </script>
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+  </head>
 
+  <body>
+    <div id="container" class="container nonHangout">
+      <!-- Topnav -->
+      <div class="navbar topnav clearfix">
+        <div class="title pull-left">
+          <h1><a href="/">MadEye</a> <small>Remote pair programming</small></h1>
+        </div>
+        <ul class="nav nav-pills pull-right">
+          <li>
+            <a href="https://twitter.com/_madeye" class="twitter-follow-button" data-show-count="false">Follow @_madeye</a>
+          </li>
+        </ul>
+      </div>
 
+      <!-- Start of main body -->
+      <div class="container">
+  <div class="row">
 
-<!--empty--><div id="container" class="container nonHangout">
-    <div class="navbar topnav clearfix">
-  <div class="title pull-left">
-    <h1><a href="/">MadEye</a> <small>Remote pair programming</small>
-      </h1>
-  </div>
-  <ul class="nav nav-pills pull-right">
-  
-    <li>
-    
-      <iframe id="twitter-widget-0" scrolling="no" frameborder="0" allowtransparency="true" src="https://platform.twitter.com/widgets/follow_button.1384994725.html#_=1386017153588&amp;id=twitter-widget-0&amp;lang=en&amp;screen_name=_madeye&amp;show_count=false&amp;show_screen_name=true&amp;size=m" class="twitter-follow-button twitter-follow-button" title="Twitter Follow Button" data-twttr-rendered="true" style="width: 119px; height: 20px;"></iframe>
-    
-    </li>
-  
-</ul>
-</div>
-    <div id="alertBox"></div>
-    <div class="container">
-    <div class="row">
-      
-      <div class="span12">
-        <div class="hero-unit">
+    <div class="span12">
+      <div class="hero-unit">
 
         <h1>A web editor designed for remote pair programming.</h1>
         <div class="row">
           <div class="span7">
             <!--<h1>Code Together with MadEye</h1>-->
             <video id="demoVideo" loop="true" preload="auto" autoplay="true" muted="" style="max-width:100%; height:auto;
-                                padding-top:25px; margin: auto">
+              padding-top:25px; margin: auto">
               <source src="/static/videos/intro.mp4" type="video/mp4">
               <source src="/static/videos/intro.webm" type="video/webm">
             </video>
             <h2>Code together with MadEye</h2>
-            <p><a href="/get-started" class="btn btn-primary btn-large">Get Started »</a></p>
+            <p><a href="/get-started" class="btn btn-primary btn-large">Get Started &raquo;</a></p>
           </div>
 
           <div class="span4 sellPoints">
             <div class="sell">
               <h3>Collaborative</h3>
               <ul>
-                  <li>Edit simultaneously</li>
-                  <li>Unlimited number of editors</li>
-                  <li>Run inside a Google Hangout</li>
+                <li>Edit simultaneously</li>
+                <li>Unlimited number of editors</li>
+                <li>Run inside a Google Hangout</li>
               </ul>
             </div>
             <div class="sell ">
               <h3>Powerful</h3>
-                <ul>
-                  <li>Syntax highlighting for major file types</li>
-                  <li>Vim/Emacs key bindings</li>
-                  <li>Powered by the awesome <a href="http://ajaxorg.github.io/ace/">Ace editor</a></li>
-                </ul>
+              <ul>
+                <li>Syntax highlighting for major file types</li>
+                <li>Vim/Emacs key bindings</li>
+                <li>Powered by the awesome <a href="http://ajaxorg.github.io/ace/">Ace editor</a></li>
+              </ul>
             </div>
             <div class="sell ">
               <h3>Lightweight</h3>
-                <ul>
-                  <li>Easy install</li>
-                  <li>One command to share your project</li>
-                  <li>Augment your existing workflow, don't replace it</li>
-                </ul>
+              <ul>
+                <li>Easy install</li>
+                <li>One command to share your project</li>
+                <li>Augment your existing workflow, don't replace it</li>
+              </ul>
             </div>
           </div>
 
+        </div> <!-- row -->
+      </div> <!-- hero-unit -->
+    </div> <!-- span -->
+  </div> <!-- row -->
+
+        <div class="row">
+          <div class="span12">
+            <footer>
+              <div class="pull-right">
+                <ul class="nav nav-footer">
+                  <li><a href="/get-started">Quick Install</a></li>
+                  <li><a href="https://angel.co/madeye" target="_blank">About Us</a></li>
+                  <li><a href="http://blog.madeye.io" target="_blank">Blog</a></li>
+                  <li><a href="/faq">FAQ</a></li>
+                  <li><a href="/tos">Legal Stuff</a></li>
+                  <li><a href="mailto:support@madeye.io">Contact Us</a></li>
+                </ul>
+              </div>
+            </footer>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
+        <!--
+        <script type="text/javascript">
+        setTimeout(function(){var a=document.createElement("script");
+            var b=document.getElementsByTagName("script")[0];
+            a.src=document.location.protocol+"//dnn506yrbagrg.cloudfront.net/pages/scripts/0015/6374.js?"+Math.floor(new Date().getTime()/3600000);
+            a.async=true;a.type="text/javascript";b.parentNode.insertBefore(a,b)}, 1);
+        </script>
+        -->
 
-    <div class="row">
-  <div class="span12">
-  <footer>
-    <div class="pull-right">
-      <ul class="nav nav-footer">
-        <li><a href="/get-started">Quick Install</a></li>
-        <li><a href="https://angel.co/madeye" target="_blank">About Us</a></li>
-        <li><a href="http://blog.madeye.io" target="_blank">Blog</a></li>
-        <li><a href="/faq">FAQ</a></li>
-        <li><a href="/tos">Legal Stuff</a></li>
-        <li><a href="mailto:support@madeye.io">Contact Us</a></li>
-      </ul>
+      </div> <!-- /container -->
     </div>
-  </footer>
-  </div>
-</div>
-<script type="text/javascript">
-setTimeout(function(){var a=document.createElement("script");
-var b=document.getElementsByTagName("script")[0];
-a.src=document.location.protocol+"//dnn506yrbagrg.cloudfront.net/pages/scripts/0015/6374.js?"+Math.floor(new Date().getTime()/3600000);
-a.async=true;a.type="text/javascript";b.parentNode.insertBefore(a,b)}, 1);
-</script>
+  </body>
+</html>
 
-  </div> <!-- /container -->
-  </div></body></html>
