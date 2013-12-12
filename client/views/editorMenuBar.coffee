@@ -74,6 +74,7 @@ Template.editorMenuBar.helpers
     if MadEye.editorState?.canDiscard() then "" else " disabled "
 
   toggleOptions: ->
+    return [] unless MadEye.editorState?.editor?
     [
       {id:"seeInvisibleAction", name:"See Invisible", selected: MadEye.editorState.editor.showInvisibles}
       {id:"wordWrapAction", name:"Word Wrap", selected: MadEye.editorState.editor.wordWrap}
