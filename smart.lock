@@ -26,8 +26,8 @@
       },
       "pince": {
         "git": "https://github.com/mad-eye/pince.git",
-        "tag": "v0.0.2",
-        "commit": "ac4c09d12b850ce09f2deefbcbfd13a6620ec7aa"
+        "tag": "v0.0.4",
+        "commit": "23f920f03b42d142ad2d53a198bf734cabe90801"
       },
       "mocha-web": {
         "git": "git://github.com/mad-eye/meteor-mocha-web.git",
