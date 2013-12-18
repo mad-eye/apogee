@@ -39,6 +39,18 @@
       </ul>
     </li>
 
+    <li>Fold
+      <ul>
+        {{#each foldActions}}
+          {{#if break}}
+            <li class="divider"></li>
+          {{else}}
+            {{> actionItem }}
+          {{/if}}
+        {{/each}}
+      </ul>
+    </li>
+
     <li>Options
       <ul>
 

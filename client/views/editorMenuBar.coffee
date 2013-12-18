@@ -63,6 +63,10 @@ Template.editorMenuBar.events
     action = editActions[this.id]
     action?.exec?()
 
+  'click .foldAction': (event) ->
+    action = foldActions[this.id]
+    action?.exec?()
+
 Template.editorMenuBar.helpers
   saveDisabled: ->
     if MadEye.editorState?.canSave() then "" else " disabled "
@@ -86,6 +90,9 @@ Template.editorMenuBar.helpers
 
   editActions: ->
     findActions editActions, "editAction"
+
+  foldActions: ->
+    findActions foldActions, "foldAction"
 
 findActions = (actionList, actionType) ->
   if Client.isMac
@@ -227,3 +234,34 @@ goActions =
     pc: "^#{IconShift}P"
     exec: -> getAceEditor().jumpToMatching(true)
 
+foldActions =
+  'toggleFold':
+    name: "Toggle Fold"
+    pc: "F2"
+    mac: "F2"
+    exec: ->
+      getAceEditor().session.toggleFoldWidget()
+
+  'foldAll':
+    name: "Fold All"
+    pc: "^Alt-0"
+    mac: "^#{IconOpt}#{IconCmd}0"
+    exec: ->
+      getAceEditor().session.foldAll()
+
+  'foldOther':
+    name: "Fold Other"
+    pc: "Alt-0"
+    mac: "#{IconOpt}#{IconCmd}0"
+    exec: ->
+      getAceEditor().session.foldAll()
+      getAceEditor().session.unfold(getAceEditor().selection.getAllRanges())
+      getAceEditor().centerSelection()
+
+  'unfoldAll':
+    name: "Unfold All"
+    pc: "Alt-#{IconShift}0"
+    mac: "#{IconShift}#{IconOpt}#{IconCmd}0"
+    exec: ->
+      getAceEditor().session.unfold()
+      getAceEditor().centerSelection()
