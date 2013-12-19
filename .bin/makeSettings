@@ -27,11 +27,13 @@ settings = {
     specificLogLevels: parseSpecificLogLevels(),
     stripePublicKey: process.env.MADEYE_STRIPE_PUBLIC_KEY,
     fullTerminal: process.env.MADEYE_FULL_TERMINAL,
-    acePrefix: "/packages/reactive-ace/ace-builds/src"
+    acePrefix: "/packages/reactive-ace/ace-builds/src",
+    staticPrefix: process.env.MADEYE_STATIC_PREFIX
   },
   googleClientId: process.env.MADEYE_GOOGLE_CLIENT_ID,
   googleSecret: process.env.MADEYE_GOOGLE_SECRET,
-  stripeSecretKey: process.env.MADEYE_STRIPE_SECRET_KEY
+  stripeSecretKey: process.env.MADEYE_STRIPE_SECRET_KEY,
+  jsCssPrefix: process.env.MADEYE_JS_CSS_PREFIX
 
 };
 
