@@ -5,11 +5,12 @@ html {
 }
 
 body {
+  position: relative;
   height: 100%;
-    padding: @baseSpacing;
-    padding-top: 0px;
-    font-size: @baseFontSize;
-    font-family: Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  padding: @baseSpacing;
+  padding-top: 0px;
+  font-size: @baseFontSize;
+  font-family: Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 .small {
@@ -37,6 +38,7 @@ body {
 }
 
 .topnav {
+  position: relative;
   border-bottom: @darkBorder;
   margin-bottom: 0;
 
@@ -52,10 +54,39 @@ body {
   }
   
   ul.nav {
+
     li {
+      white-space: nowrap;
+      cursor: pointer;
       padding-left:@baseSpacing;
       margin-top: 20px;
     }
+
+    //Drop-down menus
+    ul {
+      top: 100%;
+      display: none;
+      /*background-color: @backgroundColorDefault;*/
+      border: @standardBorder;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+
+      li {
+        position: relative;
+        float: none;
+      }
+
+      //Sub menus
+      ul {
+        left: 100%;
+        top: 0;
+      }
+    }
+
+    //Display a child menu on parent hover
+    li:hover > ul  {
+      display: block; // Bring back on-screen when needed
+    }
+
   }
 
 }
