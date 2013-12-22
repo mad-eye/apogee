@@ -46,6 +46,12 @@ ProjectStatuses.find().observe
     log.trace "Project status removed for project #{doc.projectId}"
     checkHangoutStatus doc.projectId
 
+#Clean out accidentally orphaned hangouts each minute
+Meteor.setInterval ->
+  Projects.find({hangoutUrl: {$exists: true}}).map (project) ->
+    checkHangoutStatus project._id
+, 1*60*1000
+
 checkHangoutStatus = (projectId) ->
   project = Projects.findOne projectId
   return unless project?.hangoutUrl
