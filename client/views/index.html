@@ -46,10 +46,10 @@
     {{else}}
       {{#if isLoggedIn}}
         <li>
-          <span>{{currentUser.name}} (<a id="signoutButton" href="#">Sign out</a>)</span>
+          <span>{{currentUser.name}}</span>
           <ul>
-            <li>My Account</li>
-            <li>Sign out</li>
+            <li><a href="/account">My Account</a></li>
+            <li><a id="signoutButton" href="#">Sign out</a></li>
           </ul>
         </li>
       {{else}}

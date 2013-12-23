@@ -52,27 +52,49 @@ body {
       }
     }
   }
+
+  ul {
+    margin: 0; //Override bootstrap
+    list-style: none;
+  }
   
   ul.nav {
 
     li {
       white-space: nowrap;
       cursor: pointer;
-      padding-left:@baseSpacing;
+    }
+
+    & > li {
+      padding-left: @baseSpacing;
       margin-top: 20px;
     }
 
     //Drop-down menus
     ul {
+      position: absolute;
       top: 100%;
+      right: 0%;
       display: none;
-      /*background-color: @backgroundColorDefault;*/
+      background-color: @backgroundColorDefault;
       border: @standardBorder;
       box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+      z-index: 12;
 
       li {
         position: relative;
         float: none;
+        padding: 0 @baseSpacing/2;
+
+        &:hover {
+          background-color: @backgroundColorHover;
+        }
+
+        a {
+          text-decoration: none;
+          color: @textColorDefault;
+        }
+
       }
 
       //Sub menus
