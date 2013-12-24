@@ -24,8 +24,6 @@ Router.before ->
     @params.filePath = @params.filePath.substr 0, @params.filePath.length-1
 
 Router.map ->
-  @route 'home', path: '/'
-  @route 'getStarted', path: '/get-started'
   @route 'edit',
     path: '/edit/:projectId/:filePath(*)?'
     notFoundTemplate: "missing"
@@ -77,8 +75,6 @@ Router.map ->
         filePath: @params.filePath
 
   @route 'tests'
-  @route 'tos'
-  @route 'faq'
   @route 'projectSelection',
     path: '/projectSelection'
     before: ->

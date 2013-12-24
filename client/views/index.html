@@ -28,7 +28,7 @@
 <template name="topnav">
 <div class="navbar topnav clearfix">
   <div class="title pull-left">
-    <h1><a href="{{pathFor 'home'}}">MadEye</a> <small>Remote pair programming</small>
+    <h1><a href="/">MadEye</a> <small>Remote pair programming</small>
       </h1>
   </div>
   {{> signin}}
@@ -48,7 +48,7 @@
         <li>
           <span>{{currentUser.name}}</span>
           <ul>
-            <li><a href="/account">My Account</a></li>
+            {{! <li><a href="/account">My Account</a></li> }}
             <li><a id="signoutButton" href="#">Sign out</a></li>
           </ul>
         </li>
