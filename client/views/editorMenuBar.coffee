@@ -55,6 +55,12 @@ Template.editorMenuBar.events
   'click #useSoftTabsAction': ->
     Workspace.setConfig "useSoftTabs", !MadEye.editorState.editor.useSoftTabs
 
+  'click #keywordAutocompletion': ->
+    Workspace.setConfig 'enableBasicAutocompletion', !MadEye.editorState.editor.enableBasicAutocompletion
+
+  'click #enableSnippets': ->
+    Workspace.setConfig 'enableSnippets', !MadEye.editorState.editor.enableSnippets
+
   'click .goAction': (event) ->
     action = goActions[this.id]
     action?.exec?()
@@ -83,6 +89,8 @@ Template.editorMenuBar.helpers
       {id:"seeInvisibleAction", name:"See Invisible", selected: MadEye.editorState.editor.showInvisibles}
       {id:"wordWrapAction", name:"Word Wrap", selected: MadEye.editorState.editor.wordWrap}
       {id:"useSoftTabsAction", name:"Use Soft Tabs", selected: MadEye.editorState.editor.useSoftTabs}
+      {id:"keywordAutocompletion", name:"Keyword Autocompletion", selected: MadEye.editorState.editor.enableBasicAutocompletion}
+      {id:"enableSnippets", name:"Enable Snippets", selected: MadEye.editorState.editor.enableSnippets}
     ]
 
   goActions: ->
@@ -114,11 +122,6 @@ findActions = (actionList, actionType) ->
 
 getAceEditor = ->
  MadEye.editorState.getEditor()
-
-Meteor.startup ->
-  #load searchbox module so we can require it later
-  jQuery.getScript("#{Meteor.settings.public.acePrefix}/ext-searchbox.js").fail ->
-    log.error "Unable to load searchbox script; searching will be harder."
 
 editActions =
   'find':
