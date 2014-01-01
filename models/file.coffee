@@ -47,9 +47,7 @@ Object.defineProperty MadEye.File.prototype, 'extension',
 
 Object.defineProperty MadEye.File.prototype, 'isBinary',
   get: ->
-    #coffee --lint doesn't like this being on one line.
-    re = /(bmp|gif|jpg|jpeg|png|psd|ai|ps|svg|pdf|exe|jar|dwg|dxf|7z|deb|gz|zip|dmg|iso|avi|mov|mp4|mpg|wmb|vob)$/i
-    re.test(@extension)
+    MadEye.isBinaryExt @extension
 
 
 @Files = new Meteor.Collection 'files', transform: (doc) ->
