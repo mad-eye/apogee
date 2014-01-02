@@ -32,9 +32,9 @@ Meteor.startup ->
       it 'should give warning if node version is out of date', (done) ->
         projectName = "oldNodeProject-#{Random.hexString 6}"
         Meteor.call 'registerProject',
-          version: '0.3.0'
+          version: '0.9.0'
           projectName: projectName
-          nodeVersion: '0.8.13'
+          nodeVersion: 'v0.8.13'
         , (err, result) ->
           assert.ok !err, 'Should not return an error'
           assert.ok result
