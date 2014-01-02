@@ -69,8 +69,8 @@ Template.editorMenuBar.events
     action = editActions[this.id]
     action?.exec?()
 
-  'click .foldAction': (event) ->
-    action = foldActions[this.id]
+  'click .codeAction': (event) ->
+    action = codeActions[this.id]
     action?.exec?()
 
 Template.editorMenuBar.helpers
@@ -99,8 +99,8 @@ Template.editorMenuBar.helpers
   editActions: ->
     findActions editActions, "editAction"
 
-  foldActions: ->
-    findActions foldActions, "foldAction"
+  codeActions: ->
+    findActions codeActions, "codeAction"
 
 findActions = (actionList, actionType) ->
   if Client.isMac
@@ -237,7 +237,27 @@ goActions =
     pc: "^#{IconShift}P"
     exec: -> getAceEditor().jumpToMatching(true)
 
-foldActions =
+codeActions =
+  'completeKeyword':
+    name: "Complete Keyword"
+    pc: '^-Space'
+    mac: '^-Space'
+    exec: ->
+      editor = getAceEditor()
+      if (!editor.completer)
+          editor.completer = new Autocomplete()
+      editor.completer.showPopup(editor)
+      # needed for firefox on mac
+      editor.completer.cancelContextMenu()
+
+  expandSnippet:
+    name: "Expand Snippet"
+    pc: "Tab"
+    mac: "Tab"
+
+  'break' :
+    break : true
+
   'toggleFold':
     name: "Toggle Fold"
     pc: "F2"
