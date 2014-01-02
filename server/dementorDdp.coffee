@@ -1,4 +1,4 @@
-MIN_DEMENTOR_VERSION = '0.2.0'
+MIN_DEMENTOR_VERSION = '0.4.2'
 MIN_NODE_VERSION = '0.8.18'
 semver = Npm.require 'semver'
 log = new Logger 'dementorDdp'
@@ -19,12 +19,14 @@ Meteor.methods
         name: params.projectName
         closed: false
         lastOpened: Date.now()
+        version: params.version
     else
       doc =
         name: params.projectName
         closed: false
         lastOpened: Date.now()
         created: Date.now()
+        version: params.version
       doc._id = params.projectId if params.projectId
       doc.scratch = params.scratch if params.scratch?
       project = Project.create doc
