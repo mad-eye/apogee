@@ -238,7 +238,7 @@ goActions =
     exec: -> getAceEditor().jumpToMatching(true)
 
 codeActions =
-  'completeKeyword':
+  completeKeyword:
     name: "Complete Keyword"
     pc: '^-Space'
     mac: '^-Space'
@@ -254,25 +254,27 @@ codeActions =
     name: "Expand Snippet"
     pc: "Tab"
     mac: "Tab"
+    exec: ->
+      MadEye.editorState.snippetManager.expandWithTab(getAceEditor())
 
-  'break' :
+  break :
     break : true
 
-  'toggleFold':
+  toggleFold:
     name: "Toggle Fold"
     pc: "F2"
     mac: "F2"
     exec: ->
       getAceEditor().session.toggleFoldWidget()
 
-  'foldAll':
+  foldAll:
     name: "Fold All"
     pc: "^Alt-0"
     mac: "^#{IconOpt}#{IconCmd}0"
     exec: ->
       getAceEditor().session.foldAll()
 
-  'foldOther':
+  foldOther:
     name: "Fold Other"
     pc: "Alt-0"
     mac: "#{IconOpt}#{IconCmd}0"
@@ -281,7 +283,7 @@ codeActions =
       getAceEditor().session.unfold(getAceEditor().selection.getAllRanges())
       getAceEditor().centerSelection()
 
-  'unfoldAll':
+  unfoldAll:
     name: "Unfold All"
     pc: "Alt-#{IconShift}0"
     mac: "#{IconShift}#{IconOpt}#{IconCmd}0"

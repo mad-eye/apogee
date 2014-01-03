@@ -10,10 +10,11 @@ class EditorState
       log.error "Unable to load searchbox script; searching will be harder."
     #load autocomplete/snippets
     jQuery.getScript("#{Meteor.settings.public.acePrefix}/ext-language_tools.js")
-      .fail ->
+      .fail =>
         log.error "Unable to load language tools script; autocomplete won't work."
-      .done ->
+      .done =>
         ace.require("ace/ext/language_tools")
+        @snippetManager = ace.require("ace/snippets")?.snippetManager
 
   depend: (key) ->
     @_deps[key] ?= new Deps.Dependency
