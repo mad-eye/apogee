@@ -48,7 +48,7 @@ Handlebars.registerHelper "isReadOnlyTerminal", isReadOnlyTerminal
 
 ## Page/project Info
 @isEditorPage = ->
-  (Router.template == 'edit') or (Router.tempate == 'editImpressJS')
+  (Router.template == 'edit') or (Router.template == 'editImpressJS')
 
 Handlebars.registerHelper "isHomePage", ->
   return Router.template in ["home", "home2", "getStarted"]
