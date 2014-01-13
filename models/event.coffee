@@ -5,6 +5,12 @@ class MadEye.Event extends MadEye.Model
 
 MadEye.Event.prototype.collection = @Events
 
+recordMixPanel = (name, params)->
+  if mixpanel
+    mixpanel.track name, params
+  else
+    console.info "mixPanel is not defined"
+
 @Events.record = (name, params)->
   event = new MadEye.Event(name: name)
   event.timestamp = Date.now()
@@ -20,5 +26,7 @@ MadEye.Event.prototype.collection = @Events
       return unless project
       event.isScratch = project.scratch
     event.save()
+    #XXX feels a bit hacky..
+    recordMixPanel(name, _.extend(params, {userId: event.userId, group: event.group}))
     computation.stop()
 

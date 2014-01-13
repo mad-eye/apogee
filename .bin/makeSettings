@@ -20,6 +20,7 @@ settings = {
     azkabanUrl: process.env.MADEYE_AZKABAN_URL,
     apogeeUrl: process.env.MADEYE_APOGEE_URL,
     googleAnalyticsId: process.env.MADEYE_GOOGLE_ANALYTICS_ID,
+    mixPanelToken: process.env.MADEYE_MIXPANEL_TOKEN,
     hangoutUrl: process.env.MADEYE_AZKABAN_URL + "/hangout/",
     tunnelHost: process.env.MADEYE_TUNNEL_HOST,
     stripePublicKey: process.env.MADEYE_STRIPE_PUBLIC_KEY,
