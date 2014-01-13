@@ -26,6 +26,7 @@
           window._gaq = window._gaq || [];
           _gaq.push(['_setAccount', "{{googleAnalyticsId}}"]);
           _gaq.push(['_trackPageview']);
+          mixpanel.track("pageView", {page: document.location.pathname})
         {{/if}}
         </script>
 
