@@ -6,7 +6,7 @@ class MadEye.Event extends MadEye.Model
 MadEye.Event.prototype.collection = @Events
 
 recordMixPanel = (name, params)->
-  if mixpanel
+  if mixpanel?
     mixpanel.track name, params
   else
     console.info "mixPanel is not defined"
