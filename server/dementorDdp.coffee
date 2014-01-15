@@ -10,7 +10,7 @@ Meteor.methods
     log.debug 'Registering project with', params
     #Scratch projects don't come from a dementor
     unless params.scratch
-      checkDementorVersion params.version
+      checkDementorVersion params.version, params.os
       warning = checkNodeVersion params.nodeVersion
     if params.projectId
       project = Projects.findOne params.projectId
@@ -138,10 +138,26 @@ Meteor.methods
       MadEye.Bolide.setShareContents fileId, results.contents, version
     return results
 
-checkDementorVersion = (version) ->
+checkDementorVersion = (version, os) ->
   unless version? && semver.gte version, MIN_DEMENTOR_VERSION
+    installUrl = Meteor.settings.public.apogeeUrl + '/install'
+    message = "Your version #{version} of MadEye is out of date.\n"
+    if os
+      if os.platform == 'darwin' and os.arch == 'x64'
+        supportedOS = true
+      else if os.platform == 'linux' and (os.arch == 'x64' or os.arch == 'ia32')
+        supportedOS = true
+
+      if supportedOS
+        message += "Please run 'curl #{installUrl} | sh' to get the latest."
+      else #no new installer for you!
+        message += "Please run 'sudo npm update -g madeye' to get the latest."
+    else #no os info
+      message += """On OS X or Linux, please run 'curl #{installUrl} | sh' to update.
+      On other platforms, please run 'sudo npm update -g madeye' to get the latest.
+      """
     log.info "Outdated dementor with version #{version}"
-    throw MadEye.Errors.new 'VersionOutOfDate', version:version
+    throw MadEye.Errors.new 'VersionOutOfDate', message:message
 
 checkNodeVersion = (version) ->
   unless version? && semver.gte version, MIN_NODE_VERSION
