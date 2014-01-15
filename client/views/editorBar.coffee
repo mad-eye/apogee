@@ -169,7 +169,6 @@ Meteor.startup ->
     MadEye.editorState.editor.theme = workspace.theme
     MadEye.editorState.editor.useSoftTabs = workspace.useSoftTabs ? useSoftTabs(value)
     MadEye.editorState.editor.wordWrap = workspace.wordWrap
-    MadEye.editorState.editor.enableBasicAutocompletion = workspace.enableBasicAutocompletion
     MadEye.editorState.editor.enableSnippets = workspace.enableSnippets
 
 

@@ -6,14 +6,15 @@ class EditorState
     @editor = new ReactiveAce
     @setupEvents()
     #load searchbox module so we can require it later
-    jQuery.getScript("#{Meteor.settings.public.acePrefix}/ext-searchbox.js").fail ->
-      log.error "Unable to load searchbox script; searching will be harder."
+    @editor.loadModule 'searchbox', (err, extension) ->
+      if err
+        log.error "Unable to load searchbox script; searching will be harder."
     #load autocomplete/snippets
-    jQuery.getScript("#{Meteor.settings.public.acePrefix}/ext-language_tools.js")
-      .fail =>
+    @editor.loadModule 'language_tools', (err, extension) =>
+      if err
         log.error "Unable to load language tools script; autocomplete won't work."
-      .done =>
-        ace.require("ace/ext/language_tools")
+      else
+        @editor.enableBasicAutocompletion = true
         @snippetManager = ace.require("ace/snippets")?.snippetManager
 
   depend: (key) ->

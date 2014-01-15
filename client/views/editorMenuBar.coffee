@@ -55,9 +55,6 @@ Template.editorMenuBar.events
   'click #useSoftTabsAction': ->
     Workspace.setConfig "useSoftTabs", !MadEye.editorState.editor.useSoftTabs
 
-  'click #keywordAutocompletion': ->
-    Workspace.setConfig 'enableBasicAutocompletion', !MadEye.editorState.editor.enableBasicAutocompletion
-
   'click #enableSnippets': ->
     Workspace.setConfig 'enableSnippets', !MadEye.editorState.editor.enableSnippets
 
@@ -89,7 +86,6 @@ Template.editorMenuBar.helpers
       {id:"seeInvisibleAction", name:"See Invisible", selected: MadEye.editorState.editor.showInvisibles}
       {id:"wordWrapAction", name:"Word Wrap", selected: MadEye.editorState.editor.wordWrap}
       {id:"useSoftTabsAction", name:"Use Soft Tabs", selected: MadEye.editorState.editor.useSoftTabs}
-      {id:"keywordAutocompletion", name:"Keyword Autocompletion", selected: MadEye.editorState.editor.enableBasicAutocompletion}
       {id:"enableSnippets", name:"Enable Snippets", selected: MadEye.editorState.editor.enableSnippets}
     ]
 
@@ -117,7 +113,7 @@ findActions = (actionList, actionType) ->
         actionType: actionType
         key:action[key]
         id:id
-        disabled:!action.exec?
+        disabled: action.disabled?() ? !action.exec
   return actions
 
 getAceEditor = ->
@@ -254,6 +250,8 @@ codeActions =
     name: "Expand Snippet"
     pc: "Tab"
     mac: "Tab"
+    disabled: ->
+      !MadEye.editorState?.editor.enableSnippets
     exec: ->
       MadEye.editorState.snippetManager.expandWithTab(getAceEditor())
 
