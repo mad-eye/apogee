@@ -240,11 +240,7 @@ codeActions =
     mac: '^-Space'
     exec: ->
       editor = getAceEditor()
-      if (!editor.completer)
-          editor.completer = new Autocomplete()
-      editor.completer.showPopup(editor)
-      # needed for firefox on mac
-      editor.completer.cancelContextMenu()
+      editor.commands.byName['startAutocomplete'].exec editor
 
   expandSnippet:
     name: "Expand Snippet"

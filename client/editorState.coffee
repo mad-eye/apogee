@@ -6,11 +6,11 @@ class EditorState
     @editor = new ReactiveAce
     @setupEvents()
     #load searchbox module so we can require it later
-    @editor.loadModule 'searchbox', (err, extension) ->
+    @editor.loadModule 'searchbox', (err) ->
       if err
         log.error "Unable to load searchbox script; searching will be harder."
     #load autocomplete/snippets
-    @editor.loadModule 'language_tools', (err, extension) =>
+    @editor.loadModule 'language_tools', (err) =>
       if err
         log.error "Unable to load language tools script; autocomplete won't work."
       else
