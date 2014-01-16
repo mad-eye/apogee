@@ -153,6 +153,7 @@ Meteor.startup ->
         handler = module.handler
         MadEye.editorState.getEditor().setKeyboardHandler handler
 
+  #TODO: Extract this to somewhere better
   Deps.autorun (computation) ->
     @name 'set editor from workspace'
     return unless MadEye.isRendered('editor') and MadEye.editorState
@@ -168,6 +169,7 @@ Meteor.startup ->
     MadEye.editorState.editor.theme = workspace.theme
     MadEye.editorState.editor.useSoftTabs = workspace.useSoftTabs ? useSoftTabs(value)
     MadEye.editorState.editor.wordWrap = workspace.wordWrap
+    MadEye.editorState.editor.enableSnippets = workspace.enableSnippets
 
 
 findShbangCmd = (contents) ->

@@ -5,6 +5,17 @@ class EditorState
     @_deps = {}
     @editor = new ReactiveAce
     @setupEvents()
+    #load searchbox module so we can require it later
+    @editor.loadModule 'searchbox', (err) ->
+      if err
+        log.error "Unable to load searchbox script; searching will be harder."
+    #load autocomplete/snippets
+    @editor.loadModule 'language_tools', (err) =>
+      if err
+        log.error "Unable to load language tools script; autocomplete won't work."
+      else
+        @editor.enableBasicAutocompletion = true
+        @snippetManager = ace.require("ace/snippets")?.snippetManager
 
   depend: (key) ->
     @_deps[key] ?= new Deps.Dependency

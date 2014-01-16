@@ -55,6 +55,9 @@ Template.editorMenuBar.events
   'click #useSoftTabsAction': ->
     Workspace.setConfig "useSoftTabs", !MadEye.editorState.editor.useSoftTabs
 
+  'click #enableSnippets': ->
+    Workspace.setConfig 'enableSnippets', !MadEye.editorState.editor.enableSnippets
+
   'click .goAction': (event) ->
     action = goActions[this.id]
     action?.exec?()
@@ -63,8 +66,8 @@ Template.editorMenuBar.events
     action = editActions[this.id]
     action?.exec?()
 
-  'click .foldAction': (event) ->
-    action = foldActions[this.id]
+  'click .codeAction': (event) ->
+    action = codeActions[this.id]
     action?.exec?()
 
 Template.editorMenuBar.helpers
@@ -83,6 +86,7 @@ Template.editorMenuBar.helpers
       {id:"seeInvisibleAction", name:"See Invisible", selected: MadEye.editorState.editor.showInvisibles}
       {id:"wordWrapAction", name:"Word Wrap", selected: MadEye.editorState.editor.wordWrap}
       {id:"useSoftTabsAction", name:"Use Soft Tabs", selected: MadEye.editorState.editor.useSoftTabs}
+      {id:"enableSnippets", name:"Enable Snippets", selected: MadEye.editorState.editor.enableSnippets}
     ]
 
   goActions: ->
@@ -91,8 +95,8 @@ Template.editorMenuBar.helpers
   editActions: ->
     findActions editActions, "editAction"
 
-  foldActions: ->
-    findActions foldActions, "foldAction"
+  codeActions: ->
+    findActions codeActions, "codeAction"
 
 findActions = (actionList, actionType) ->
   if Client.isMac
@@ -109,16 +113,11 @@ findActions = (actionList, actionType) ->
         actionType: actionType
         key:action[key]
         id:id
-        disabled:!action.exec?
+        disabled: action.disabled?() ? !action.exec
   return actions
 
 getAceEditor = ->
  MadEye.editorState.getEditor()
-
-Meteor.startup ->
-  #load searchbox module so we can require it later
-  jQuery.getScript("#{Meteor.settings.public.acePrefix}/ext-searchbox.js").fail ->
-    log.error "Unable to load searchbox script; searching will be harder."
 
 editActions =
   'find':
@@ -234,22 +233,42 @@ goActions =
     pc: "^#{IconShift}P"
     exec: -> getAceEditor().jumpToMatching(true)
 
-foldActions =
-  'toggleFold':
+codeActions =
+  completeKeyword:
+    name: "Complete Keyword"
+    pc: '^-Space'
+    mac: '^-Space'
+    exec: ->
+      editor = getAceEditor()
+      editor.commands.byName['startAutocomplete'].exec editor
+
+  expandSnippet:
+    name: "Expand Snippet"
+    pc: "Tab"
+    mac: "Tab"
+    disabled: ->
+      !MadEye.editorState?.editor.enableSnippets
+    exec: ->
+      MadEye.editorState.snippetManager.expandWithTab(getAceEditor())
+
+  break :
+    break : true
+
+  toggleFold:
     name: "Toggle Fold"
     pc: "F2"
     mac: "F2"
     exec: ->
       getAceEditor().session.toggleFoldWidget()
 
-  'foldAll':
+  foldAll:
     name: "Fold All"
     pc: "^Alt-0"
     mac: "^#{IconOpt}#{IconCmd}0"
     exec: ->
       getAceEditor().session.foldAll()
 
-  'foldOther':
+  foldOther:
     name: "Fold Other"
     pc: "Alt-0"
     mac: "#{IconOpt}#{IconCmd}0"
@@ -258,7 +277,7 @@ foldActions =
       getAceEditor().session.unfold(getAceEditor().selection.getAllRanges())
       getAceEditor().centerSelection()
 
-  'unfoldAll':
+  unfoldAll:
     name: "Unfold All"
     pc: "Alt-#{IconShift}0"
     mac: "#{IconShift}#{IconOpt}#{IconCmd}0"
