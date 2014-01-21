@@ -1,37 +1,80 @@
-        <div class="row">
-          <div class="span12">
-            <footer>
-              <div class="pull-right">
-                <ul class="nav nav-footer">
-                  <li><a href="/get-started">Quick Install</a></li>
-                  <li><a href="https://angel.co/madeye" target="_blank">About Us</a></li>
-                  <li><a href="http://blog.madeye.io" target="_blank">Blog</a></li>
-                  <li><a href="/pages/faq">FAQ</a></li>
-                  <li><a href="/pages/tos">Legal Stuff</a></li>
-                  <li><a href="mailto:support@madeye.io">Contact Us</a></li>
-                </ul>
-              </div>
-            </footer>
-          </div>
+    <!-- starts footer -->
+    <footer id="footer">
+        <div class="container">
+            <div class="row sections">
+                <div class="col-sm-4 recent_posts">
+                    <h3 class="footer_header">
+                        Recent Posts
+                    </h3>
+                    <div class="post">
+                        <a href="blogpost.html">
+                            <img src="img/recent_post1.png" class="img-circle" />
+                        </a>
+                        <div class="date">
+                            Wed, 12 Dec
+                        </div>
+                        <a href="blogpost.html" class="title">
+                            Randomised words which don't look embarrasing hidden.
+                        </a>
+                    </div>
+                    <div class="post">
+                        <a href="blogpost.html">
+                            <img src="img/recent_post2.png" class="img-circle" />
+                        </a>
+                        <div class="date">
+                            Mon, 12 Dec
+                        </div>
+                        <a href="blogpost.html" class="title">
+                            Randomised words which don't look embarrasing hidden.
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-4 testimonials">
+                    <h3 class="footer_header">
+                        Follow Us on Twitter
+                    </h3>
+                    <div class="wrapper">
+                        <div class="quote">
+                            <span>“</span>
+                            There are many variations of passages of randomised words which don't look even slightly believable. You need to be sure there isn't anything embarrassing of text.
+                            <span></span>
+                        </div>
+                        <div class="author">
+                            <img src="img/user-display.png" />
+                            <div class="name">Alejandra Galvan Castillo</div>
+                            <div class="info">
+                                Details Canvas
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4 contact">
+                    <h3 class="footer_header">
+                        Join Our Newsletter
+                    </h3>
+                    <form action="#" method="post">
+                        <input type="text" placeholder="Your email" />
+                        <input type="submit" value="Sign Up" />
+                    </form>
+                </div>
+            </div>
+            <div class="row credits">
+                <div class="col-md-12">
+                    <div class="row copyright">
+                        <div class="col-md-12">
+                            © 2013 MadEye Inc. All rights reserved.
+                        </div>
+                    </div>
+                </div>            
+            </div>
         </div>
-        <script type="text/javascript">
-        /*
-        setTimeout(function(){var a=document.createElement("script");
-            var b=document.getElementsByTagName("script")[0];
-            a.src=document.location.protocol+"//dnn506yrbagrg.cloudfront.net/pages/scripts/0015/6374.js?"+Math.floor(new Date().getTime()/3600000);
-            a.async=true;a.type="text/javascript";b.parentNode.insertBefore(a,b)}, 1);
-        */
-        {{! Analytics and tracking }}
-        {{#if googleAnalyticsId}}
-          window._gaq = window._gaq || [];
-          _gaq.push(['_setAccount', "{{googleAnalyticsId}}"]);
-          _gaq.push(['_trackPageview']);
-          mixpanel.track("pageView", {page: document.location.pathname})
-        {{/if}}
-        </script>
+    </footer>
 
-      </div> <!-- /container -->
-    </div>
-  </body>
+    <!-- Scripts -->
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/theme.js"></script>
+
+    <script type="text/javascript" src="/static/js/index-slider.js"></script>	
+</body>
 </html>
-

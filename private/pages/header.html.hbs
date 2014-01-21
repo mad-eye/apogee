@@ -1,48 +1,60 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="/static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
-    <link href="/static/styles/home.css" rel="stylesheet">
+<head>
+	<title>MadEye</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	
+  <!-- Styles -->
+  <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900,300italic,400italic,700italic,900italic' rel='stylesheet' type='text/css' />
+  <link rel="stylesheet" href="/static/styles/main.css" media="screen" />
 
-    <script id="twitter-wjs" src="//platform.twitter.com/widgets.js"></script>
-    <script type="text/javascript" async="" src="https://ssl.google-analytics.com/ga.js"></script>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
 
-    <title>MadEye</title>
-    <link href="//fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
+
     <script type="text/javascript">
       //Google Analytics
       (function() {
-       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-       })();
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
     </script>
 
-    {{#if mixPanelToken}}
-<!-- start Mixpanel --><script type="text/javascript">(function(e,b){if(!b.__SV){var a,f,i,g;window.mixpanel=b;a=e.createElement("script");a.type="text/javascript";a.async=!0;a.src=("https:"===e.location.protocol?"https:":"http:")+'//cdn.mxpnl.com/libs/mixpanel-2.2.min.js';f=e.getElementsByTagName("script")[0];f.parentNode.insertBefore(a,f);b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==
+    <!-- start Mixpanel --><script type="text/javascript">(function(e,b){if(!b.__SV){var a,f,i,g;window.mixpanel=b;a=e.createElement("script");a.type="text/javascript";a.async=!0;a.src=("https:"===e.location.protocol?"https:":"http:")+'//cdn.mxpnl.com/libs/mixpanel-2.2.min.js';f=e.getElementsByTagName("script")[0];f.parentNode.insertBefore(a,f);b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==
 typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.track_charge people.clear_charges people.delete_user".split(" ");for(g=0;g<i.length;g++)f(c,i[g]);
 b._i.push([a,e,d])};b.__SV=1.2}})(document,window.mixpanel||[]);
-mixpanel.init("{{mixPanelToken}}");</script><!-- end Mixpanel -->
-    {{/if}}
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
-  </head>
+mixpanel.init("1c8b6b3f98c1af0a9e6792ec930c9370");</script><!-- end Mixpanel -->
 
-  <body>
-    <div id="container" class="container nonHangout">
-      <!-- Topnav -->
-      <div class="navbar topnav clearfix">
-        <div class="title pull-left">
-          <h1><a href="/">MadEye</a> <small>Remote pair programming</small></h1>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+</head>
+<body class="pull_top">
+
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle pull-right" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="#" class="navbar-brand"><strong>MadEye</strong></a>
+            </div>
+
+            <div class="collapse navbar-collapse navbar-ex1-collapse" role="navigation">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="active"><a href="/">HOME</a></li>
+                    <li><a href="#get-started">GET STARTED</a></li>
+                    <li><a href="/pages/faq">FAQ</a></li>
+                    <li><a href="http://blog.madeye.io">BLOG</a></li>
+                    <li><a href="http://angel.co/madeye">ABOUT US</a></li>
+                    <li><a href="/pages/tos">LEGAL STUFF</a></li>
+                    <li><a href="mailto:support@madeye.io">CONTACT US</a></li>
+                </ul>
+            </div>
         </div>
-        <ul class="nav nav-pills pull-right">
-          <li>
-            <a href="https://twitter.com/_madeye" class="twitter-follow-button" data-show-count="false">Follow @_madeye</a>
-          </li>
-        </ul>
-      </div>
-
-      <!-- Start of main body -->
-      <div class="container">
+    </div>

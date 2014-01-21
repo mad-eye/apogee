@@ -1,49 +1,165 @@
-  <div class="row">
+    <section id="feature_slider" class="lol">
+        <!-- 
+            Each slide is composed by <img> and .info
+            - .info's position is customized with css in index.css
+            - each <img> parallax effect is declared by the following params inside its class:
+            
+            example: class="asset left-472 sp600 t120 z3"
+            left-472 means left: -472px from the center
+            sp600 is speed transition
+            t120 is top to 120px
+            z3 is z-index to 3
+            Note: Maintain this order of params
 
-    <div class="span12">
-      <div class="hero-unit">
-
-        <h1>A web editor designed for remote pair programming.</h1>
-        <div class="row">
-          <div class="span7">
-            <!--<h1>Code Together with MadEye</h1>-->
-            <video id="demoVideo" loop preload autoplay muted style="max-width:100%; height:auto;
-              padding-top:25px; margin: auto">
-              <source src="/static/videos/intro.mp4" type="video/mp4">
-              <source src="/static/videos/intro.webm" type="video/webm">
-            </video>
-            <h2>Code together with MadEye</h2>
-            <p><a href="/get-started" class="btn btn-primary btn-large">Get Started &raquo;</a></p>
-          </div>
-
-          <div class="span4 sellPoints">
-            <div class="sell">
-              <h3>Collaborative</h3>
-              <ul>
-                <li>Edit simultaneously</li>
-                <li>Unlimited number of editors</li>
-                <li>Run inside a Google Hangout</li>
-              </ul>
+            For the backgrounds, you can combine from the bgs folder :D
+        -->
+        <article class="slide" id="showcasing" style="background: url('img/backgrounds/landscape.png') repeat-x top center;">
+            <div class="info" style="width:900px">
+              <div style="float:left">
+                <h2><strong>MadEye</strong></h2>
+                <h2>Code Together</h2>
+              </div>
+              <video id="demoVideo" loop preload autoplay muted style="width:450px; margin-top: -73px; margin-left: 40px; height:auto;
+              padding-top:25px;">
+                <source src="/static/videos/intro.webm" type="video/webm" />
+              </video>
             </div>
-            <div class="sell ">
-              <h3>Powerful</h3>
-              <ul>
-                <li>Syntax highlighting for major file types</li>
-                <li>Vim/Emacs key bindings</li>
-                <li>Powered by the awesome <a href="http://ajaxorg.github.io/ace/">Ace editor</a></li>
-              </ul>
+        </article>
+        <article class="slide" id="ideas" style="background: url('img/backgrounds/aqua.jpg') repeat-x top center;">
+            <div class="info">
+                <h2>One command to share your project</h2>
+              <video id="demoVideo" loop preload autoplay muted style="width:900px; margin-top: 53px; margin-left: 40px; height:auto;
+              padding-top:25px;">
+                <source src="/static/videos/cmd.mp4" type="video/mp4" />
+              </video>
             </div>
-            <div class="sell ">
-              <h3>Lightweight</h3>
-              <ul>
-                <li>Easy install</li>
-                <li>One command to share your project</li>
-                <li>Augment your existing workflow, don't replace it</li>
-              </ul>
-            </div>
-          </div>
+        </article>
 
-        </div> <!-- row -->
-      </div> <!-- hero-unit -->
-    </div> <!-- span -->
-  </div> <!-- row -->
+
+        <article class="slide" id="showcasing" style="background: url('img/backgrounds/landscape.png') repeat-x top center;">
+            <div class="info" style="width:900px">
+              <div style="float:left">
+                <h2>Code Inside in a Google Hangout</h2>
+              </div>
+              <video id="demoVideo" loop preload autoplay muted style="width:450px; margin-top: -73px; margin-left: 40px; height:auto;
+              padding-top:25px;">
+                <source src="/static/videos/hangout.mp4" type="video/mp4" />                
+              </video>
+            </div>
+        </article>
+
+    </section>
+
+    <h2 id="productSummary">MadEye is a collaborative web editor backed by your filesystem.</h2>
+
+    <div id="showcase">
+        <div class="container">
+            <div class="section_header">
+                <h3>Features</h3>
+            </div>            
+            <div class="row feature_wrapper">
+                <!-- Features Row -->
+                <div class="features_op1_row">
+                    <!-- Feature -->
+                    <div class="col-sm-4 feature first">
+                        <div class="img_box">
+                            <a href="services.html">
+                                <img src="/static/images/command.png">
+                            </a>
+                        </div>
+                        <div class="text">
+                            <h6>Easy to Use</h6>
+                            <p>
+                                One-line install. Then just run <code>madeye</code>
+                                and share your project URL with your
+                                teammates.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Feature -->
+                    <div class="col-sm-4 feature">
+                        <div class="img_box">
+                          <img src="/static/images/google-docs-screenshot.png">
+                        </div>
+                        <div class="text">
+                            <h6>Designed for Collaboration</h6>
+                            <p>
+                                See your teammate's cursor and
+                                selection just like Google Docs.
+                                Optionally embed in a Google Hangout.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Feature -->
+                    <div class="col-sm-4 feature last">
+                        <div class="img_box">
+                            <a href="services.html">
+                                <img src="/static/images/ace-logo.png">
+                            </a>
+                        </div>
+                        <div class="text">
+                            <h6>Powerful Web Editor</h6>
+                            <p>
+                                MadEye uses the Ace editor to support
+                                syntax highlighting for 60+ languages,
+                                Emacs and Vim keybindings, and more.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="features">
+        <div class="container">
+            <a name="get-started"></a>
+            <div class="section_header">
+                <h3>Getting Started</h3>
+            </div> 
+            <div class="row feature" style="padding-bottom:40px">
+                <div class="col-sm-6">
+                    <img src="/static/images/dan-programming.png" class="img-responsive" />
+                </div>
+                <div class="col-sm-6 info">
+                    <h3>
+                        <img src="/static/images/number1.png"/>
+                        Install MadEye
+                    </h3>
+                    <p>
+                      <pre class="installCmd"><code>npm install -g madeye</code></pre>
+                    </p>
+                </div>
+            </div>
+            <div class="row feature" style="padding-bottom:40px">
+                <div class="col-sm-6 pic-right">
+                    <img src="/static/images/terminal3.png" class="pull-right img-responsive" />
+                </div>
+                <div class="col-sm-6 info info-left">
+                    <h3>
+                        <img src="/static/images/number2.png" />
+                        Run inside your project
+                    </h3>
+                    <p>
+                      Within your project directory, type madeye
+                        <pre><code>bash-3.2$ madeye</code></pre>
+                    </p>
+                </div>                
+            </div>
+            <div class="row feature" style="border-bottom: none">
+                <div class="col-sm-6">
+                    <img src="/static/images/hangout-screenshot.png" class="img-responsive" />
+                </div>
+                <div class="col-sm-6 info">
+                    <h3>
+                        <img src="/static/images/number3.png" />
+                        Share your MadEye URL
+                    </h3>
+                    <p>
+                      Share your MadEye URL with your teammates and
+                      edit files together. Inside or outside a Google Hangout. 
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
