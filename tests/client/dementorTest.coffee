@@ -9,6 +9,10 @@ Meteor.startup ->
         Meteor.call 'registerProject',
           version: '0.1.5'
           projectName: projectName
+          os:
+            platform: 'darwin'
+            arch: 'x64'
+
         , (err, response) ->
           assert.ok err, 'Should return an error'
           assert.equal err.reason, 'VersionOutOfDate'
