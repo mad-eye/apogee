@@ -143,12 +143,7 @@ checkDementorVersion = (version, os) ->
     installUrl = Meteor.settings.public.apogeeUrl + '/install'
     message = "Your version #{version} of MadEye is out of date.\n"
     if os
-      if os.platform == 'darwin' and os.arch == 'x64'
-        supportedOS = true
-      else if os.platform == 'linux' and (os.arch == 'x64' or os.arch == 'ia32')
-        supportedOS = true
-
-      if supportedOS
+      if MadEye.canUseInstaller os
         message += "Please run 'curl #{installUrl} | sh' to get the latest."
       else #no new installer for you!
         message += "Please run 'sudo npm update -g madeye' to get the latest."
