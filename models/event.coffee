@@ -24,7 +24,8 @@ recordMixPanel = (name, params)->
     if event.projectId
       project = Projects.findOne event.projectId
       return unless project
-      event.isScratch = project.scratch
+      event.scratch = project.scratch
+      event.impressJS = project.impressJS
     event.save()
     #XXX feels a bit hacky..
     recordMixPanel(name, _.extend(params, {userId: event.userId, group: event.group}))
