@@ -15,10 +15,6 @@ Errors.wrapShareError = (err, log) ->
 Errors.handleNetworkError = (error, response, log) ->
   err = response?.content?.error ? error
   log.error "Network Error:", err.message if log
-  Metrics.add
-    level:'error'
-    message:'networkError'
-    error: err.message
   MadEye.transitoryIssues.set 'networkIssues', 10*1000
   return err
 

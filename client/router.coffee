@@ -110,7 +110,6 @@ if Meteor.settings.public.googleAnalyticsId
 
 recordView = (params)->
   @Events.record "pageView", params
-  #Metrics.add _.extend({message:'load'}, params)
   log.debug 'load', params
   _gaq.push ['_trackPageview'] if _gaq?
 

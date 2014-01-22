@@ -61,11 +61,7 @@ class EditorState
 
   revertFile: (callback=->) ->
     unless @doc and @fileId
-      Metrics.add
-        level:'warn'
-        message:'revertFile with null @doc'
-        fileId: @fileId
-      log.warn "revert called, but no doc selected"
+      log.error "revert called, but no doc selected"
       return callback "No doc or no file"
     return unless @canRevert()
     return unless confirm(
@@ -96,11 +92,6 @@ class EditorState
   checkDocValidity: (doc)->
     unless doc.version?
       #This seems to be a spurious case when the file is opened twice quickly.
-      Metrics.add
-        level:'warn'
-        message:'shareJsError'
-        fileId: @fileId
-        error: 'Found null doc version'
       log.error "Found null doc version for file #{@fileId}"
     return doc.version?
 
@@ -120,20 +111,10 @@ class EditorState
       @editor.newLineMode = "auto"
       doc.on 'warn', (data) =>
         log.warn "ShareJsError", data
-        Metrics.add
-          level:'warn'
-          message:'shareJsError'
-          fileId: fileId
-          error: data
       #If we don't have a position, go to the start
       @getEditor().navigateFileStart() unless doc.cursor
       doc.emit "cursors"
     else
-      Metrics.add
-        level:'warn'
-        message:'shareJsError'
-        fileId: fileId
-        error: 'Editor already attached'
       log.warn "Editor already attached"
 
   #This is how many loadFiles we've done.
