@@ -69,7 +69,9 @@ class EditorState
       This will replace the editor contents with the
       contents of the file on disk.""")
     log.info "Reverting file", @fileId
-    Events.record("revert", {file: @path, projectId: Session.get "projectId"})
+    Events.record 'revertFile',
+      fileId: @fileId
+      filePath: @path
     @working = true
     fileId = @fileId
     #Need to pass version so we know when to add the revert op
@@ -130,6 +132,9 @@ class EditorState
 
     @fileId = fileId = file._id
     log.debug "Loading file #{file.path}"
+    Events.record 'loadFile',
+      fileId: fileId
+      filePath: file.path
     @loading = true
     @detachShareDoc()
     finish = (err, doc) =>
@@ -184,7 +189,9 @@ class EditorState
     return callback() if file.fsChecksum == editorChecksum
     return callback() if file.scratch
     log.info "Saving file #{file.path}"
-    Events.record("save", {file: @fileId, projectId})
+    Events.record 'saveFile',
+      fileId: file._id
+      filePath: file.path
     Meteor.call 'saveFile', projectId, @fileId, @editor.value, (error, result) ->
       return callback Errors.handleError error, log if error
       project = Projects.findOne projectId

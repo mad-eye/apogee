@@ -11,23 +11,26 @@ recordMixPanel = (name, params)->
   else
     console.info "mixPanel is not defined"
 
-@Events.record = (name, params)->
-  event = new MadEye.Event(name: name)
-  event.timestamp = Date.now()
-  _.extend event, params
-  Deps.autorun (computation)->
-    @name 'save event'
-    return unless Meteor.userId()
-    event.userId = Meteor.userId()
-    event.group = "a" if groupA()
-    event.group = "b" if groupB()
-    if event.projectId
-      project = Projects.findOne event.projectId
+if Meteor.isClient
+  @Events.record = (name, params={})->
+    event = new MadEye.Event(name: name)
+    event.timestamp = Date.now()
+    Deps.autorun (computation)->
+      @name 'save event'
+      return unless Meteor.userId()
+      params.userId = Meteor.userId()
+      params.group = "a" if groupA()
+      params.group = "b" if groupB()
+      projectId = Session.get('projectId')
+      return unless projectId
+      project = Projects.findOne projectId
       return unless project
-      event.scratch = project.scratch
-      event.impressJS = project.impressJS
-    event.save()
-    #XXX feels a bit hacky..
-    recordMixPanel(name, _.extend(params, {userId: event.userId, group: event.group}))
-    computation.stop()
+      params.projectId = projectId
+      params.scratch = project.scratch
+      params.impressJS = project.impressJS
+      params.hangout = Session.get 'isHangout'
+      _.extend event, params
+      event.save()
+      recordMixPanel(name, params)
+      computation.stop()
 
