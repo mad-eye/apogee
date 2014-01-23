@@ -233,6 +233,7 @@ $(document).ready(function () {
         }, 800)
     }
     function c() {
+        $("article.slide:first video")[0].play()
         $("#feature_slider").addClass("disabled").append('<ul id="pagination" /><a href="" id="slide-left" /><a href="" id="slide-right" />');
         $("#feature_slider article").each(function () {
             $("#pagination").append('<li><a href="#' + $(this).attr("id") + '">' + $(this).index() + "</a></li>")
@@ -281,6 +282,7 @@ $(document).ready(function () {
             }, 600)
         }
         function g() {
+            $("#feature_slider article.active video")[0].pause();
             $(".slide.active").removeClass("active").addClass("previous");
             $(".slide.previous img").not(".fade").each(function () {
                 // var l = parseInt($(this).attr("class").split(" ")[2].replace("st", ""));
@@ -299,6 +301,7 @@ $(document).ready(function () {
             // speed of transitions
             $(".slide.previous img.fade,.slide.previous .info").fadeOut(600, "easeInQuad", function () {
                 $(".slide.next").removeClass("next").addClass("active").fadeIn(500, "easeInOutQuad", function () {
+                    $("#feature_slider article.active video")[0].play();
                     $(".slide.previous").removeClass("previous").fadeOut(500, "easeInOutQuad");
                     j()
                 })
