@@ -39,5 +39,16 @@
     <script src="/static/js/theme.js"></script>
 
     <script type="text/javascript" src="/static/js/index-slider.js"></script>	
+    <script type="text/javascript">
+    {{! Analytics and tracking }}
+    {{#if googleAnalyticsId}}
+      window._gaq = window._gaq || [];
+      _gaq.push(['_setAccount', "{{googleAnalyticsId}}"]);
+      _gaq.push(['_trackPageview']);
+    {{/if}}
+    {{#if mixPanelToken}}
+      mixpanel.track("home", {page: document.location.pathname})
+    {{/if}}
+    </script>
 </body>
 </html>
