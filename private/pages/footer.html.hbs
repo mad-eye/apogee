@@ -1,33 +1,85 @@
-        <div class="row">
-          <div class="span12">
-            <footer>
-              <div class="pull-right">
-                <ul class="nav nav-footer">
-                  <li><a href="/get-started">Quick Install</a></li>
-                  <li><a href="https://angel.co/madeye" target="_blank">About Us</a></li>
-                  <li><a href="http://blog.madeye.io" target="_blank">Blog</a></li>
-                  <li><a href="/pages/faq">FAQ</a></li>
-                  <li><a href="/pages/tos">Legal Stuff</a></li>
-                  <li><a href="mailto:support@madeye.io">Contact Us</a></li>
-                </ul>
-              </div>
-            </footer>
-          </div>
+  <!-- starts footer -->
+  <footer id="footer">
+    <div class="container">
+      <div class="row sections" style="padding-bottom:40px">
+        <div class="col-sm-2">
+          &nbsp;
         </div>
-        <script type="text/javascript">
-        {{! Analytics and tracking }}
-        {{#if googleAnalyticsId}}
-          window._gaq = window._gaq || [];
-          _gaq.push(['_setAccount', "{{googleAnalyticsId}}"]);
-          _gaq.push(['_trackPageview']);
-        {{/if}}
-        {{#if mixPanelToken}}
-          mixpanel.track("home", {page: document.location.pathname})
-        {{/if}}
-        </script>
-
-      </div> <!-- /container -->
+        <div class="col-sm-4" style="text-align:center">
+          <h3 class="footer_header">
+            Follow Us on Twitter
+          </h3>
+          <a href="https://twitter.com/_madeye" class="twitter-follow-button" data-show-count="false" data-size="large">Follow @_madeye</a>
+          <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+        </div>
+        <!--<div class="col-sm-4 contact" style="text-align:center">-->
+        <div class="col-sm-4 contact">
+          <h3 class="footer_header">
+            Join Our Newsletter
+          </h3>
+          <!--<form id="signupForm" action="#" method="post">-->
+          <form id="signupForm">
+            <input id="emailInput" type="email" placeholder="Your email" />
+            <input id="submitEmailButton" type="submit" value="Sign Up" />
+            <span id="signupFeedback" style="display:none;">Received!</span>
+          </form>
+        </div>
+      </div>
+      <div class="row credits">
+        <div class="col-md-12">
+          <div class="row copyright">
+            <div class="col-md-12">
+              © 2013 MadEye Inc. All rights reserved.
+            </div>
+          </div>
+        </div>            
+      </div>
     </div>
-  </body>
-</html>
+  </footer>
 
+  <!-- Scripts -->
+  <script src="/static/js/bootstrap.min.js"></script>
+  <script src="/static/js/theme.js"></script>
+
+  <script type="text/javascript" src="/static/js/index-slider.js"></script>
+
+  {{! Enable email signup }}
+  <script type="text/javascript">
+    var animationDuration = 200;
+    $('#signupForm').submit(function(e) {
+        e.preventDefault();
+        var email = $('#emailInput').val();
+        $.ajax({
+          url: '{{apiUrl}}/submitEmail',
+          type: 'POST',
+          data: {email:email},
+          success: function(){
+            $('#emailInput').hide();
+            $('#submitEmailButton').hide();
+            $('#signupFeedback').css('color', '#C4C4C4');
+            $('#signupFeedback').html("Thank you for signing up!");
+            $('#signupFeedback').show(animationDuration, 'linear');
+          },
+          error: function(){
+            $('#signupFeedback').html("Sorry, there was an error signing up.  Please try again.");
+            $('#signupFeedback').css('color', 'red');
+            $('#signupFeedback').show(animationDuration, 'linear');
+          }
+        });
+        return false;
+    });
+  </script>
+
+  {{! Analytics and tracking }}
+  <script type="text/javascript">
+    {{#if googleAnalyticsId}}
+      window._gaq = window._gaq || [];
+    _gaq.push(['_setAccount', "{{googleAnalyticsId}}"]);
+    _gaq.push(['_trackPageview']);
+    {{/if}}
+      {{#if mixPanelToken}}
+        mixpanel.track("home", {page: document.location.pathname})
+    {{/if}}
+  </script>
+</body>
+</html>
