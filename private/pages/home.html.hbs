@@ -181,5 +181,15 @@
         }
       }
     }, 250);
+
+    var installHandled = false;
+    var installHandler = function() {
+      if (!installHandled) {
+        installHandled = true;
+        mixpanel.track('installLink');
+      }
+    };
+    $('#installBox').bind('mousedown', installHandler);
+    $('#installBox').bind('mouseup', installHandler);
   </script>
 {{/if}}
