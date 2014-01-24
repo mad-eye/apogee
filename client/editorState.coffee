@@ -5,6 +5,17 @@ class EditorState
     @_deps = {}
     @editor = new ReactiveAce
     @setupEvents()
+    #load searchbox module so we can require it later
+    @editor.loadModule 'searchbox', (err) ->
+      if err
+        log.error "Unable to load searchbox script; searching will be harder."
+    #load autocomplete/snippets
+    @editor.loadModule 'language_tools', (err) =>
+      if err
+        log.error "Unable to load language tools script; autocomplete won't work."
+      else
+        @editor.enableBasicAutocompletion = true
+        @snippetManager = ace.require("ace/snippets")?.snippetManager
 
   depend: (key) ->
     @_deps[key] ?= new Deps.Dependency
@@ -50,11 +61,7 @@ class EditorState
 
   revertFile: (callback=->) ->
     unless @doc and @fileId
-      Metrics.add
-        level:'warn'
-        message:'revertFile with null @doc'
-        fileId: @fileId
-      log.warn "revert called, but no doc selected"
+      log.error "revert called, but no doc selected"
       return callback "No doc or no file"
     return unless @canRevert()
     return unless confirm(
@@ -62,7 +69,9 @@ class EditorState
       This will replace the editor contents with the
       contents of the file on disk.""")
     log.info "Reverting file", @fileId
-    Events.record("revert", {file: @path, projectId: Session.get "projectId"})
+    Events.record 'revertFile',
+      fileId: @fileId
+      filePath: @path
     @working = true
     fileId = @fileId
     #Need to pass version so we know when to add the revert op
@@ -85,11 +94,6 @@ class EditorState
   checkDocValidity: (doc)->
     unless doc.version?
       #This seems to be a spurious case when the file is opened twice quickly.
-      Metrics.add
-        level:'warn'
-        message:'shareJsError'
-        fileId: @fileId
-        error: 'Found null doc version'
       log.error "Found null doc version for file #{@fileId}"
     return doc.version?
 
@@ -109,20 +113,10 @@ class EditorState
       @editor.newLineMode = "auto"
       doc.on 'warn', (data) =>
         log.warn "ShareJsError", data
-        Metrics.add
-          level:'warn'
-          message:'shareJsError'
-          fileId: fileId
-          error: data
       #If we don't have a position, go to the start
       @getEditor().navigateFileStart() unless doc.cursor
       doc.emit "cursors"
     else
-      Metrics.add
-        level:'warn'
-        message:'shareJsError'
-        fileId: fileId
-        error: 'Editor already attached'
       log.warn "Editor already attached"
 
   #This is how many loadFiles we've done.
@@ -138,6 +132,9 @@ class EditorState
 
     @fileId = fileId = file._id
     log.debug "Loading file #{file.path}"
+    Events.record 'loadFile',
+      fileId: fileId
+      filePath: file.path
     @loading = true
     @detachShareDoc()
     finish = (err, doc) =>
@@ -192,7 +189,9 @@ class EditorState
     return callback() if file.fsChecksum == editorChecksum
     return callback() if file.scratch
     log.info "Saving file #{file.path}"
-    Events.record("save", {file: @fileId, projectId})
+    Events.record 'saveFile',
+      fileId: file._id
+      filePath: file.path
     Meteor.call 'saveFile', projectId, @fileId, @editor.value, (error, result) ->
       return callback Errors.handleError error, log if error
       project = Projects.findOne projectId
