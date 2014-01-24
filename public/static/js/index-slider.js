@@ -363,7 +363,7 @@ $(document).ready(function () {
         });
         var f = setInterval(function () {
             i()
-        }, 5000)
+        }, 9000)
     }
     c();
     $(window).resize(function () {
