@@ -111,7 +111,7 @@
                         Install MadEye
                     </h3>
                     <p>
-                      <pre class="installCmd"><code>npm install -g madeye</code></pre>
+                      <pre id="installBox" class="installCmd"><code>npm install -g madeye</code></pre>
                     </p>
                 </div>
             </div>
@@ -163,6 +163,22 @@
     </div>
 
   <script type="text/javascript" src="/static/js/index-slider.js"></script>
+{{#if mixPanelToken}}
   <script type="text/javascript">
-    var 
+    var installBoxHeight = $('#installBox').offset().top,
+        didScroll = false;
+
+    $(window).scroll(function() { didScroll = true; });
+    var interval = setInterval(function() {
+      if (didScroll) {
+        didScroll = false;
+        var windowBottom = $(window).scrollTop() + $(window).height();
+        if (windowBottom >= installBoxHeight) {
+          console.log("Got to get started");
+          mixpanel.track("home", {page: '/get-stated'});
+          clearInterval(interval);
+        }
+      }
+    }, 250);
   </script>
+{{/if}}
