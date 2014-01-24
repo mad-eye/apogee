@@ -20,6 +20,7 @@ Meteor.startup ->
     return if MadEye.terminal.initialized
     project = getProject()
     return unless project and !project.closed and project.tunnels?.terminal
+    Events.record 'initTerminal', type: project.tunnels.terminal.type
     #return if a tty.js session is already active
     tunnel = project.tunnels.terminal
     log.trace "Found terminal tunnel:", tunnel
@@ -40,6 +41,7 @@ onTerminalUnfocus = ->
 
 openTerminal = ->
   log.info "Opening terminal"
+  Events.record 'openTerminal', type: getProject().tunnels.terminal.type
   unless MadEye.terminal.window
     parent = $('#terminal')[0]
     MadEye.terminal.create {parent}

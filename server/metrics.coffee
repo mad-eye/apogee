@@ -1,3 +1,0 @@
-Metrics.allow
-  insert: -> true
-
