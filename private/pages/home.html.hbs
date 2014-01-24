@@ -175,8 +175,7 @@
         didScroll = false;
         var windowBottom = $(window).scrollTop() + $(window).height();
         if (windowBottom >= installBoxHeight) {
-          console.log("Got to get started");
-          mixpanel.track("home", {page: '/get-stated'});
+          mixpanel.track("home", {page: '/get-started'});
           clearInterval(interval);
         }
       }
