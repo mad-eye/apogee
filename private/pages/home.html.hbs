@@ -110,10 +110,12 @@
                         <img src="/static/images/number1.png"/>
                         Install MadEye
                     </h3>
-                    <p>
-                      <pre id="installBox" class="installCmd"><code>npm install -g madeye</code></pre>
+                    <p>On OS X or Linux: <br>
+                      <pre id="installBox" class="installCmd"><code>curl https://madeye.io/install | sh</code></pre>
                     </p>
-                    <small>(requires <a href="http://nodejs.org">Node.js</a>)</small>
+                    <p>On other platforms (requires <a href="http://nodejs.org">Node.js</a>):
+                      <pre class="installCmd"><code>npm install -g madeye</code></pre>
+                    </p>
                 </div>
             </div>
             <div class="row feature" style="padding-bottom:40px">
@@ -188,7 +190,7 @@
         mixpanel.track('installLink');
       }
     };
-    $('#installBox').bind('mousedown', installHandler);
-    $('#installBox').bind('mouseup', installHandler);
+    $('.installCmd').bind('mousedown', installHandler);
+    $('.installCmd').bind('mouseup', installHandler);
   </script>
 {{/if}}

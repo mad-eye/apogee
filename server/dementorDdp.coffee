@@ -1,4 +1,4 @@
-MIN_DEMENTOR_VERSION = '0.4.2'
+MIN_DEMENTOR_VERSION = '0.5.0'
 MIN_NODE_VERSION = '0.8.18'
 semver = Npm.require 'semver'
 log = new Logger 'dementorDdp'
@@ -49,7 +49,6 @@ Meteor.methods
 
   addFile: (file) ->
     this.unblock()
-    #TODO what is 'check'?
     check file, Match.ObjectIncluding path:String, orderingPath:String
     Files.insert file
 
@@ -151,7 +150,7 @@ checkDementorVersion = (version, os) ->
       message += """On OS X or Linux, please run 'curl #{installUrl} | sh' to update.
       On other platforms, please run 'sudo npm update -g madeye' to get the latest.
       """
-    log.info "Outdated dementor with version #{version}"
+    log.info "Outdated dementor with version #{version}, os", os
     throw MadEye.Errors.new 'VersionOutOfDate', message:message
 
 checkNodeVersion = (version) ->
