@@ -18,3 +18,49 @@
   margin-top: -4px;
   margin-right: 4px;
 }
+
+//DOCS PAGE
+#commandLineOptions {
+  padding-left: 20px
+}
+
+#commandLineOptions p {
+  margin: 15px;
+  padding-left: 20px
+}
+
+#commandLineOptions code {
+  background-color: black;
+  padding: 6px;
+  color: #63c634; //terminal green
+}
+
+#commandLineOptions .commandContainer {
+  background-color:lightgray;
+  padding: 20px;
+  margin-bottom: 36px;
+  border-radius:20px;
+}
+
+#commandLineOptions p code.shortCmd {
+  background-color:inherit;
+  color:inherit;
+  font-weight: bold;
+  padding:0px;
+}
+
+#editorFeatures {
+  padding-left: 20px;
+
+  .feature {
+    background-color: lightgray;
+    padding: 20px;
+    margin-bottom: 36px;
+    border-radius: 20px;
+  }
+}
+
+#docsContainer {
+  padding-top:115px;
+}
+

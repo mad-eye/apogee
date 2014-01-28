@@ -1,0 +1,85 @@
+<div class="container" id="docsContainer">
+<h2>MadEye Documentation</h2>
+
+<h3>Command-line Options</h3>
+<div id="commandLineOptions">
+  <div class="commandContainer">
+    <h4><code>--tunnel [port]</code></h4>
+    <p>Create a tunnel from a random port on our publicly available server to
+      your machine. This is especially useful for sharing a copy of your
+      development server with your teammates.</p>
+    <p>example: <code>madeye --tunnel 8080</code></p>
+  </div>
+
+  <div class="commandContainer">
+    <h4><code>--terminal</code></h4>
+    <p>
+      [screenshot of madeye command, terminal, other command, reflection in browser window]
+      Creates a special MadEye terminal in the host's shell. Anything displayed to the host will also be displayed
+      in a web terminal inside the MadEye session. The web terminal is powered by <a href="https://github.com/chjj/tty.js">tty.js</a> so it can display commands like <code class="shortCmd">top</code> or even <code class="shortCmd">emacs</code>! The web terminal is <emphasis>read-only</emphasis>.
+    </p>
+
+    <p>example: <code>madeye --terminal</code>.</p>
+  </div>
+
+  <div class="commandContainer">
+    <h4><code>--fullTerminal</code></h4>
+    <p>Premium feature. This creates a fully capable web terminal within the MadEye
+    session. Any user in the MadEye session is able to interact with the terminal and run commands
+    against the host machine.
+    </p>
+    <p>example:<code>madeye --fullTerminal</code></p>
+  </div>
+
+  <div class="commandContainer">
+    <h4><code>--ignorefile</code></h4>
+    <p>Specify a .gitignore style file of patterns that you do not want to appear in your MadEye session.</p>
+    <p>example: <code>madeye --ignorefile .gitignore</code></p>
+  </div>
+</div>
+
+<h3>Web Editor Features</h3>
+<div id="editorFeatures">
+  <div class="feature">
+    <h4>Keybindings</h4>
+    <p>MadEye by default ships with the <a href="https://github.com/ajaxorg/ace/wiki/Default-Keyboard-ShortcutsIt">Ace keybindings</a>. It also supports VIM and Emacs modes for the power users out there.</p>
+  </div>
+
+  <div class="feature">
+    <h4>Themes</h4>
+    <p>[a couple of pictures of different themes]</p>
+  </div>
+
+  <div class="feature">
+    <h4>Persistent Preferences</h4>
+    <p>We do our best to make sure preferences are saved from one sessino to another. Sign in with Google to key your settings off of y
+our Google account.</p>
+  </div>
+
+  <div class="feature">
+    <h4>Who's Where</h4>
+    <p><pre>[small screenshot of fileTree and squares]</pre> MadEye uses these colored squares to indicate where your teammates are within the project. You can click these squares to be teleported to your teammate's location.</p>
+  </div>
+
+  <div class="feature">
+    <h4>Autocomplete</h4>
+    <p>Autocomplete is activated by pressing [ctrl-space].</p>
+  </div>
+
+  <div class="feature">
+  <h4>Snippets</h4>
+  <p>Snippets can be activated from the options menu. Once activated, snippets are used by pressing the Tab key. For example <code>for&#60;TAB&#62;</code> will expand to
+    <pre><code>for (var i = 0; i < Things.length; i++) {
+	Things[i]
+}</code></pre>
+  </p>
+  </div>
+</div>
+
+<h3>Enterprise Offering</h3>
+<h5>If you are interested in running MadEye behind a company firewall, <a href="mailto:support@madeye.io">talk to us</a>. </h5>
+
+<h3>Scratch Projects</h3>
+<h5>If you want to try out Madeye, but aren't quite ready to install the daemon on your system, you can try out the editor with a <a href="https://madeye.io/scratch">scratch project</a>. Scratch projects are not backed by a file system so the project will not be persisted, but they can be a great way to quickly collaborate with someone on a snippet of code.</h5>
+
+</div>
