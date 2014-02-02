@@ -137,6 +137,21 @@
             }
         }
 
+        /* Slide 4 */
+        &#terminal {
+            .info {
+                position: relative;
+                top: 102px;
+                text-align: center;
+
+                h2 {
+                    color: #fff;
+                    font-weight: normal;
+                }
+            }
+        }
+
+
         .info {
             display: none;
             z-index: 10;
