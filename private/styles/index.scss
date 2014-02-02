@@ -435,6 +435,7 @@
                 border-radius: 5px;
                 -webkit-transition: all .2s linear;
                 -moz-transition: all .2s linear;
+                transition: all .2s linear;
 
                 &:hover {
                     background: #252528;
@@ -499,6 +500,7 @@
             background: #252528;
             -webkit-transition: all .2s linear;
             -moz-transition: all .2s linear;
+            transition: all .2s linear;
 
             &:hover {
                 background: #2190DB;
@@ -544,6 +546,7 @@
         top: -5px;
         -webkit-transition: background-color .2s linear;
         -moz-transition: background-color .2s linear;
+        transition: background-color .2s linear;
 
         &:hover {
             background-color: rgb(103, 118, 177);

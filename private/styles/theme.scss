@@ -276,6 +276,7 @@ header {
 			width: 95%;
 			-webkit-transition: background-color .2s linear;
 			-moz-transition: background-color .2s linear;
+			transition: background-color .2s linear;
 			margin-bottom: 10px;
 
 			&:focus {
@@ -307,6 +308,7 @@ header {
 			font-weight: bold;
 			-webkit-transition: background-color .2s linear;
 			-moz-transition: background-color .2s linear;
+			transition: background-color .2s linear;
 
 			&:hover {
 				background-color:#2190DB;
