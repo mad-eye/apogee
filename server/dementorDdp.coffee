@@ -20,6 +20,7 @@ Meteor.methods
         closed: false
         lastOpened: Date.now()
         version: params.version
+        os: params.os
     else
       doc =
         name: params.projectName
@@ -27,6 +28,7 @@ Meteor.methods
         lastOpened: Date.now()
         created: Date.now()
         version: params.version
+        os: params.os
       doc._id = params.projectId if params.projectId
       doc.scratch = params.scratch if params.scratch?
       project = Project.create doc
