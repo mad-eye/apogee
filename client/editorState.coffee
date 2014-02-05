@@ -14,6 +14,7 @@ class EditorState
       if err
         log.error "Unable to load language tools script; autocomplete won't work."
       else
+        log.trace "Enabling autocomplete."
         @editor.enableBasicAutocompletion = true
         @snippetManager = ace.require("ace/snippets")?.snippetManager
 
