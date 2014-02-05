@@ -1,5 +1,3 @@
-log = new Logger 'editorStateTest'
-
 makeProject = (data) ->
   project = new Project
     name: Random.hexString(6)
@@ -97,3 +95,5 @@ describe "EditorState", ->
       Deps.flush()
       assert.isTrue MadEye.editorState.canDiscard()
 
+  describe "save", ->
+    it "should learn the saving skill when a file is saved"
