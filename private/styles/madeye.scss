@@ -1,3 +1,14 @@
+$baseSpacing: 10px;
+$smallSpacing: $baseSpacing/2;
+$bigSpacing: $baseSpacing*2;
+$reallyBigSpacing: $baseSpacing*3;
+
+$grey: #AAA;
+$lightgrey: #C9C9C9;
+$standardBorder: 1px solid $grey;
+
+
+
 #faqContainer {
   padding-top: 115px;
 
@@ -9,8 +20,8 @@
 #productSummary {
   margin: 44px;
   margin-top: 115px;
-  padding:15px;
-  text-align:center;
+  padding: 15px;
+  text-align: center;
   font-size: 31.5px;
 }
 
@@ -18,3 +29,51 @@
   margin-top: -4px;
   margin-right: 4px;
 }
+
+//DOCS PAGE
+#docsContainer {
+  padding-top: 115px;
+
+  section {
+    & > div {
+      margin-left: $reallyBigSpacing;
+    }
+    
+    .feature {
+      background-color: $lightgrey;
+      padding: $bigSpacing;
+      margin-bottom: $reallyBigSpacing;
+      border-radius: 5px;
+  
+      p, img, pre {
+        margin: $bigSpacing;
+      }
+    }
+
+  }
+
+  #howMadeyeWorks {
+    width: 99%; //100% is discontinuously big, for some reason.
+    box-shadow: 5px 5px 2px #aaaaaa;
+    border: $standardBorder;
+    padding: $baseSpacing;
+    margin-bottom: $reallyBigSpacing;
+  }
+}
+
+#commandLineOptions {
+  code {
+    background-color: black;
+    padding: $smallSpacing;
+    color: #63c634; //terminal green
+  }
+
+  p code.shortCmd {
+    background-color: inherit;
+    color: inherit;
+    font-weight: bold;
+    padding: 0px;
+  }
+}
+
+
