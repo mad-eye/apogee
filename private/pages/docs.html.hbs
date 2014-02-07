@@ -4,10 +4,16 @@
 <section>
   <h3>What is MadEye?</h3>
   <div>
-    <p>MadEye is a collaborative editor backed by your local filesystem.
-    After installling MadEye on your machine, you can create madeye
-    sessions by simply running <code>madeye</code> in a project directory.</p>
-  </div>
+    <p>MadEye lets you program collaboratively -- think Google Docs for code.
+      MadEye syncs with a project on your file system, letting you and your
+      teammates edit together in real-time. It incorporates the fully-featured
+      Ace editor. An in-browser terminal allows you to run tests, tail logs,
+      and run web servers. All this can be embedded in a Google Hangout.</p>
+
+    <p>Installing MadEye is just one step.  After
+      installing MadEye on your machine, you can create MadEye sessions by
+      simply running <code>madeye</code> in a project directory.</p>
+</div>
 
 
 </section>
@@ -18,14 +24,31 @@
     <img id="howMadeyeWorks" src="/static/images/howMadEyeWorks.png" alt="How MadEye Works" />
   
     <p>MadEye works via a small daemon that runs on your system. This daemon
-      is responsible for retrieving files, saving the contents of the editor
-      back to disk, and sharing terminal output into the web browser.</p>
+      communicates with the MadEye server. When a user opens a file in the webapp, a 
+      request is sent to the daemon asking for the file contents. When a user saves
+      a file in the webapp, the contents of the web editor are written to disk.
+    </p>
+    <p>When the madeye daemon is started with the <code>--terminal</code> flag,
+    you are given a special prompt. Any input and output at this prmopt is mirrored to
+    a read-only terminal present in the MadEye webapp.
+    </p>
+    <p>
+      When madeye is started with the <code>--tunnel [PORT]</code> flag, an SSH tunnel
+      is created from one of our public-facing servers to <code>PORT</code> on your local dev machine.
+      This is useful when you want to share your local webserver with your teammates.
+    </p>
   </div>
 
 </section>
 <section>
 
   <h3>Installing MadEye</h3>
+  <div>
+    <p>To install MadEye on Linux or Mac OS X, just type <code>curl https://madeye.io/install | sh</code> in your terminal.</p>
+    <p>For Windows and SunOS systems, install the latest version of <a href="http://nodejs.org/">Node,js</a>.  Then install the
+      <code>madeye</code> npm package with <code>npm install -g madeye</code>.  It's possible, depending on your setup, that you
+      might need to use <code>sudo</code> to install <code>madeye</code> globally.
+  </div>
 
 </section>
 <section>
@@ -43,7 +66,7 @@
 
     <div class="feature">
       <h4><code>--terminal</code></h4>
-      <img src="/static/images/browserTerminal.png" />
+      <img src="/static/images/browserTerminal.png" alt="In-browser terminal" />
       <p>Creates a special MadEye terminal in the host's shell. Anything displayed to the host will also be displayed
         in a web terminal inside the MadEye session. The web terminal is powered by <a href="https://github.com/chjj/tty.js">tty.js</a> so it can display commands like <code class="shortCmd">top</code> or even <code class="shortCmd">emacs</code>! The web terminal is <emphasis>read-only</emphasis>.
       </p>
@@ -88,7 +111,7 @@
   
     <div class="feature">
       <h4>Who's Where</h4>
-      <img src="/static/images/whosWhere.png" />
+      <img src="/static/images/whosWhere.png" alt="Showing who's where in the project" />
       <p> MadEye uses these colored squares to indicate where your teammates are within the project. You can click these squares to be teleported to your teammate's location.</p>
     </div>
   
