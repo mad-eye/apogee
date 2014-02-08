@@ -75,6 +75,7 @@ Template.fileTree.events
     projectId = Session.get "projectId"
     file.projectId = projectId
     file.path = filename
+    file.orderingPath = MadEye.normalizePath filename
     try
       file.save()
       MadEye.fileLoader.loadId = file._id
