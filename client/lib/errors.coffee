@@ -84,6 +84,13 @@ Template.projectStatus.projectAlerts = ->
   alerts.push MadEye.fileLoader.alert if MadEye.fileLoader.alert
   alerts.push mismatchedHangoutWarning(getProject().hangoutUrl) if hasMismatchedHangout()
 
-  return alerts
+  if alerts.length > 0
+    return alerts
+  else if promo = MadEye.featurePromoter.getPromo()
+    return [promo]
+  else
+    return []
 
-
+Template.alert.events
+  "click button.close": ->
+    @onClose?()
