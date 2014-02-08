@@ -1,12 +1,5 @@
 log = new Logger 'projectStatusWorker'
 
-getProjectStatus = ->
-  projectId = Session.get("projectId")
-  return unless projectId
-  projectStatus = ProjectStatuses.findOne {sessionId:Session.id, projectId}
-  return projectStatus
-  
-
 Meteor.startup ->
   #Clear out any vestigial following (the connectionId will be wrong anyway)
   unfollowUser()
@@ -103,3 +96,4 @@ Meteor.startup ->
 
 @unfollowUser = ->
    Session.set 'leaderId', null
+

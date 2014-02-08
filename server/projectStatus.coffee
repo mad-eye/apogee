@@ -7,7 +7,7 @@ Meteor.publish "projectStatuses", (projectId, sessionId) ->
       log.debug "Removing projectStatus for id", sessionId
       ProjectStatuses.remove {sessionId}
 
-  return ProjectStatuses.find {projectId: projectId}, {fields: {heartbeat:0} }
+  return ProjectStatuses.find {projectId: projectId}
 
 projectStatusTimeouts = {}
 
@@ -24,6 +24,7 @@ setProjectStatusTimeout = (sessionId) ->
 Meteor.methods
   touchProjectStatus: (sessionId, projectId, fields={})->
     return unless sessionId and projectId
+    log.trace "Calling touchProjectStatus"
     status = ProjectStatuses.findOne {sessionId, projectId}
     if status
       status.update fields
@@ -31,15 +32,14 @@ Meteor.methods
       fields = _.extend fields,
         sessionId: sessionId
         projectId: projectId
+      log.debug "Inserting projectStatus fields", fields
       #don't give callback, need this to block
-      ProjectStatuses.insert fields
-    setProjectStatusTimeout sessionId
-
-#TODO: Restrict based on userId
-ProjectStatuses.allow
-  insert: (userId, doc) -> true
-  update: (userId, doc, fields, modifier) -> true
-  remove: (userId, doc) -> true
+      ProjectStatuses.insert fields, (err, id) ->
+        log.error "Error inserting:", err if err
+        log.debug "Insert callback with id #{id}" unless err
+      log.debug "Finsihed inserting projectStatus fields"
+    #setProjectStatusTimeout sessionId
+    return
 
 ProjectStatuses.find().observe
   removed: (doc) ->
@@ -61,9 +61,14 @@ checkHangoutStatus = (projectId) ->
     log.debug "Removing hangout info for project #{projectId}"
     Projects.update projectId, {$unset: {hangoutUrl:true, hangoutId:true}}
 
+##TODO: Restrict based on userId
+ProjectStatuses.allow
+  insert: (userId, doc) -> true
+  update: (userId, doc, fields, modifier) -> true
+  remove: (userId, doc) -> true
 
-Meteor.startup ->
-  #When apogee restarts the timeout doesn't get to clear projectStatuses.
-  #Manually remove orphaned projectStatuses.
-  ProjectStatuses.remove {}
+#Meteor.startup ->
+  ##When apogee restarts the timeout doesn't get to clear projectStatuses.
+  ##Manually remove orphaned projectStatuses.
+  #ProjectStatuses.remove {}
 

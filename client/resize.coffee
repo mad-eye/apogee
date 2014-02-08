@@ -153,8 +153,12 @@ Meteor.startup ->
         terminalSize:
           height: sizes.get 'maxTerminalHeight'
           width: sizes.get 'chromeWidth'
-    else
-      projectStatus.update terminalSize: null #NB: undefined breaks things!
+    else if projectStatus.terminalSize
+      #Clear out old terminalSize
+      #NB: undefined breaks things!  Also, if you set null when it is already
+      #null, it looks 'different' to the collection, and this block becomes
+      #an infinite loop.
+      projectStatus.update terminalSize: null
 
   #calculate the minimum height/width of other people's terminals
   Deps.autorun ->
