@@ -193,6 +193,9 @@ class EditorState
     Events.record 'saveFile',
       fileId: file._id
       filePath: file.path
+
+    MadEye.featurePromoter.addSkill "saving"
+
     Meteor.call 'saveFile', projectId, @fileId, @editor.value, (error, result) ->
       return callback Errors.handleError error, log if error
       project = Projects.findOne projectId
