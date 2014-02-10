@@ -22,6 +22,9 @@ Accounts.onCreateUser (options, user) ->
       #TODO: Parse; use user.profile.name ?
       user.name = user.username || user.email
 
+  # Give admin powers to madeye people
+  if user.email && user.email.indexOf('@') > -1
+    user.admin = true if user.email.split('@')[1] == 'madeye.io'
 
   Workspaces.insert userId: user._id
   return user

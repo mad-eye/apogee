@@ -75,6 +75,9 @@ Router.map ->
         filePath: @params.filePath
 
   @route 'tests'
+
+  @route 'facts'
+
   @route 'projectSelection',
     path: '/projectSelection'
     before: ->
