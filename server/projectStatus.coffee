@@ -24,7 +24,6 @@ setProjectStatusTimeout = (sessionId) ->
 Meteor.methods
   touchProjectStatus: (sessionId, projectId, fields={})->
     return unless sessionId and projectId
-    log.trace "Calling touchProjectStatus"
     status = ProjectStatuses.findOne {sessionId, projectId}
     if status
       status.update fields
@@ -32,13 +31,10 @@ Meteor.methods
       fields = _.extend fields,
         sessionId: sessionId
         projectId: projectId
-      log.debug "Inserting projectStatus fields", fields
       #don't give callback, need this to block
       ProjectStatuses.insert fields, (err, id) ->
         log.error "Error inserting:", err if err
-        log.debug "Insert callback with id #{id}" unless err
-      log.debug "Finsihed inserting projectStatus fields"
-    #setProjectStatusTimeout sessionId
+    setProjectStatusTimeout sessionId
     return
 
 ProjectStatuses.find().observe
@@ -61,7 +57,7 @@ checkHangoutStatus = (projectId) ->
     log.debug "Removing hangout info for project #{projectId}"
     Projects.update projectId, {$unset: {hangoutUrl:true, hangoutId:true}}
 
-##TODO: Restrict based on userId
+#TODO: Restrict based on userId
 ProjectStatuses.allow
   insert: (userId, doc) -> true
   update: (userId, doc, fields, modifier) -> true
