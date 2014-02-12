@@ -33,33 +33,38 @@ class @FeaturePromoter
       nextSkill.onClose = =>
         @addSkill nextSkill.handle
       nextSkill.level = "info"
-      return nextSkill 
-    
+      return nextSkill
+
   skillOrder: ["saving", "sharing", "terminal", "tunnel"]
 
   skills: ->
-    saving: 
-      message: 'Try saving a file! Files are saved right back to the file system where madeye is running'
+    saving:
+      title: 'This file has been modified.'
+      message: 'Try saving a file! Files are saved right back to the file system where <code>madeye</code> is running'
+      raw: true
       teachable: =>
         return @_isStandardProject(@project) and MadEye.editorState.canSave()
-        
+
     sharing:
-      message: "Share your project's URL. MadEye is more fun with your teammates"
+      title: "Share your project's URL."
+      message: "MadEye is more fun with your teammates"
       teachable: ->
         true
 
     terminal:
-      message: "Did you know you can share you terminal output? Try `madeye --terminal`"
+      message: "Did you know you can share you terminal output?  Try <code>madeye --terminal</code>"
+      raw: true
       teachable: =>
-        @_isStandardProject(@project)        
+        @_isStandardProject(@project)
 
-    tunnel: 
-      message: "You can share your local web server with your teammates. Try `madeye --tunnel [PORT]`"
+    tunnel:
+      message: "You can share your local web server with your teammates. Try <code>madeye --tunnel [PORT]</code>"
+      raw: true
       teachable: =>
         @_isStandardProject(@project)
 
   _isStandardProject: (project)->
-    not project.impressJS and not project.scratch
+    project and not project.impressJS and not project.scratch
 
 Reactor.mixin FeaturePromoter.prototype
 Reactor.define FeaturePromoter.prototype, 'project'
