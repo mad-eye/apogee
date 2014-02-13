@@ -15,9 +15,11 @@ Meteor.startup ->
       featurePromoter = new FeaturePromoter()
       featurePromoter.project = project
       featurePromoter.workspace = workspace
+      Session.set "skillLearned", undefined
       
     afterEach ->
       MadEye.editorState = _oldEditorState
+      Session.set "skillLearned", undefined
 
     it "should suggest saving a file to a new user with a modified file", ->
       promo = featurePromoter.getPromo()
@@ -30,6 +32,7 @@ Meteor.startup ->
 
     it "should suggest sharing if the user has saved", ->
       featurePromoter.addSkill "saving"
+      Session.set "skillLearned", undefined
       promo = featurePromoter.getPromo()
       assert.equal promo.handle, "sharing"
       
