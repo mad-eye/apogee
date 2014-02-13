@@ -53,11 +53,17 @@ Template.signin.helpers
 tempWorkspace = null
 stashWorkspace = ->
   log.trace 'Stashing workspace'
-  tempWorkspace = Workspace.get() || {}
+  tempWorkspace = Workspace.get()
 
 migrateWorkspace = ->
+  #FIXME: This fails on certain race conditions.  Should handle those better.
+  unless tempWorkspace
+    log.info "No stashed workspace to migrate. Skipping."
+    return
   workspace = Workspace.get()
-  log.trace 'Migrating workspace'
+  unless workspace
+    log.info "No workspace found to migrate to. Skipping."
+    return
   for key in _.keys tempWorkspace
     continue if key == '_id' or key == 'userId'
     unless key == 'modeOverrides'
