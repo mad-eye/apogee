@@ -53,7 +53,7 @@ Template.signin.helpers
 tempWorkspace = null
 stashWorkspace = ->
   log.trace 'Stashing workspace'
-  tempWorkspace = Workspace.get()
+  tempWorkspace = Workspace.get() || {}
 
 migrateWorkspace = ->
   workspace = Workspace.get()
