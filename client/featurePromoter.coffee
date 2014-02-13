@@ -13,6 +13,7 @@ class @FeaturePromoter
         @addSkill("sharing")
 
   addSkill: (skill)->
+    Session.set "skillLearned", true
     Events.record "skillLearned", skill: skill
     @workspace.addSkill skill
 
@@ -28,6 +29,7 @@ class @FeaturePromoter
         return nextSkill
 
   getPromo: ->
+    return if Session.get "skillLearned"
     nextSkill = @nextUnlearnedSkill()
     if nextSkill?.teachable()
       nextSkill.onClose = =>
