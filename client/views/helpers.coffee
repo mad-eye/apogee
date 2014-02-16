@@ -13,6 +13,11 @@ Handlebars.registerHelper 'editorState', ->
 Handlebars.registerHelper "hangoutLink", ->
   "#{MadEye.azkabanUrl}/hangout/#{Session.get 'projectId'}"
 
+Handlebars.registerHelper 'showTopnav', ->
+  return false if Session.get "isHangout"
+  return false if Session.get 'zen'
+  return true
+
 @getProject = ->
   return null unless MadEye.startedUp
   Projects.findOne(Session.get "projectId")
@@ -24,6 +29,7 @@ Handlebars.registerHelper "hangoutLink", ->
   
 ## Terminal helpers
 @isTerminalEnabled = ->
+  return false if Session.get 'fileOnly'
   project = getProject()
   return false unless project and not project.closed
   terminal = project.tunnels?.terminal
@@ -48,7 +54,9 @@ Handlebars.registerHelper "isReadOnlyTerminal", isReadOnlyTerminal
 
 ## Page/project Info
 @isEditorPage = ->
-  (Router.template == 'edit') or (Router.template == 'editImpressJS')
+  (Router.template == 'edit') or
+    (Router.template == 'wholeEditor') or
+    (Router.template == 'editImpressJS')
 
 Handlebars.registerHelper "isHangout", ->
   Session.get "isHangout"

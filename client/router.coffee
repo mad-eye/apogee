@@ -17,6 +17,7 @@ Router.before ->
   recordView viewData
 
 Router.before ->
+  log.trace "Setting template to", @template
   Router.template = @template
 
 Router.before ->
@@ -42,6 +43,18 @@ Router.map ->
         filePath: @params.filePath
         lineNumber: @params.lineNumber
     
+  @route 'file',
+    template: 'wholeEditor'
+    path: '/file/:projectId/:filePath(*)?'
+    before: ->
+      beforeEdit this,
+        projectId: @params.projectId
+        filePath: @params.filePath
+        lineNumber: @params.lineNumber
+        fileOnly: true
+        zen: true
+
+
   @route 'scratch',
     template: 'edit'
     before: ->
@@ -131,7 +144,7 @@ getQueryParams = (queryString) ->
     params[key] = value
   return params
 
-beforeEdit = (router, {projectId, filePath, lineNumber}) ->
+beforeEdit = (router, {projectId, filePath, lineNumber, fileOnly, zen}) ->
   Session.set 'projectId', projectId
   #Grab the (a?) scratch file if we are just going to the project
   unless filePath
@@ -140,4 +153,7 @@ beforeEdit = (router, {projectId, filePath, lineNumber}) ->
   MadEye.editorState ?= new EditorState "editor"
   MadEye.fileLoader.loadPath = filePath
   MadEye.fileLoader.lineNumber = lineNumber
-  MadEye.fileTree.open filePath, true
+  Session.set 'fileOnly', fileOnly
+  Session.set 'zen', zen
+  unless fileOnly
+    MadEye.fileTree.open filePath, true

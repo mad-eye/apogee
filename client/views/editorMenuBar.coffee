@@ -98,6 +98,17 @@ Template.editorMenuBar.helpers
   codeActions: ->
     findActions codeActions, "codeAction"
 
+  isMaximized: ->
+    return Session.get 'fileOnly'
+
+  maximizeLink: ->
+    file = Files.findOne(MadEye.editorState?.fileId)
+    "/file/#{Session.get 'projectId'}/#{file?.escapedPath}"
+
+  minimizeLink: ->
+    file = Files.findOne(MadEye.editorState?.fileId)
+    "/edit/#{Session.get 'projectId'}/#{file?.escapedPath}"
+
 findActions = (actionList, actionType) ->
   if Client.isMac
     key = 'mac'

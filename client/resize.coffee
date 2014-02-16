@@ -63,7 +63,9 @@ Meteor.startup ->
   #Set up windowDep listening to window resize
   Deps.autorun (computation) ->
     @name 'setup windowDep'
-    return unless MadEye.isRendered 'editor', 'fileTree', 'statusBar'
+    #XXX: Is this necessary?  For terminal/editor only windows, these might not
+    #be rendered.
+    #return unless MadEye.isRendered 'editor', 'fileTree', 'statusBar'
     $(window).resize ->
       windowSizeChanged true
     computation.stop()

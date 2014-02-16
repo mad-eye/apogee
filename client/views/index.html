@@ -18,7 +18,7 @@
 </body>
 
 <template name="layout">
-  <div id="container" class="container {{#if isHangout}}hangout{{else}}nonHangout{{/if}}">
+  <div id="container" class="container">
     {{> topnav }}
     <div id="alertBox">{{! Will be populated by displayAlert}}</div>
     {{yield}}
@@ -26,13 +26,15 @@
 </template>
 
 <template name="topnav">
-<div class="navbar topnav clearfix">
-  <div class="title pull-left">
-    <h1><a href="/">MadEye</a> <small>Remote pair programming</small>
-      </h1>
-  </div>
-  {{> signin}}
-</div>
+  {{#if showTopnav }}
+    <div class="navbar topnav clearfix">
+      <div class="title pull-left">
+        <h1><a href="/">MadEye</a> <small>Remote pair programming</small>
+          </h1>
+      </div>
+      {{> signin}}
+    </div>
+  {{/if}}
 </template>
 
 <template name="signin">

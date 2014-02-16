@@ -5,18 +5,7 @@
         {{> fileTree}}
       </div>
       <div id="rightColumn" class="span9">
-        {{> editorTitleBar }}
-        <div id="editorChrome">
-          <div id="editorContainer">
-            {{> editorMenuBar }}
-            {{> editorOverlay }}
-            {{> editor}}
-            {{> statusBar }}
-          </div>
-          {{#if isTerminalEnabled}}
-            {{> terminal}}
-          {{/if}}
-        </div>
+        {{> wholeEditor }}
       </div>
   </div>
 </template>
@@ -56,6 +45,22 @@
   {{#each projectAlerts}}
     {{> alert this}}
   {{/each}}
+</template>
+
+<template name="wholeEditor">
+  {{> editorTitleBar }}
+  <div id="editorChrome">
+    <div id="editorContainer">
+      {{> editorMenuBar }}
+      {{> editorOverlay }}
+      {{> editor}}
+      {{> statusBar }}
+    </div>
+    {{! XXX: Might need to extract the terminal }}
+    {{#if isTerminalEnabled}}
+      {{> terminal}}
+    {{/if}}
+  </div>
 </template>
 
 <template name="editorTitleBar">
