@@ -5,3 +5,6 @@ page-js-ie-support
 mocha-web
 pince
 /iron-router
+/accounts-anonymous
+/pince
+/mocha-web
