@@ -66,7 +66,6 @@ describe "EditorState", ->
 
   describe 'canDiscard', ->
     it 'should be false when there is no project fweep', ->
-      console.log 'ZZZ: first canDiscard'
       Session.set 'projectId', Random.id()
       Deps.flush()
       assert.isFalse MadEye.editorState.canDiscard()

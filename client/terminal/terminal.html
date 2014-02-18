@@ -1,19 +1,21 @@
 <template name="terminal">
-  {{#if isTerminalUnavailable}}
-    {{> terminalOverlay}}
-  {{/if}}
-  {{#constant}}
-  <div id="terminal">
-    <span id="measurementDiv">{{measurementChars}}</span>
-    <button id="minimizeTerminalButton" type="button" data-dismiss="terminal">&#x25BC;</button>
-    {{#if isReadOnlyTerminal}}
-      <div id="readOnlyTerminalMessage">Read Only Mode</div>
-      {{> viewTerminal }}
-    {{else}}
-      {{> createTerminal }}
+  {{#if showTerminal}}
+    {{#if isTerminalUnavailable}}
+      {{> terminalOverlay}}
     {{/if}}
-  </div>
-  {{/constant}}
+    {{#constant}}
+    <div id="terminal">
+      <span id="measurementDiv">{{measurementChars}}</span>
+      <button id="minimizeTerminalButton" type="button" data-dismiss="terminal">&#x25BC;</button>
+      {{#if isReadOnlyTerminal}}
+        <div id="readOnlyTerminalMessage">Read Only Mode</div>
+        <span id="createTerminalMessage"><a id="createTerminal" href="#">Click to view terminal</a></span>
+      {{else}}
+        <span id="createTerminalMessage"><a id="createTerminal" href="#">Click to open terminal</a></span>
+      {{/if}}
+    </div>
+    {{/constant}}
+  {{/if}}
 </template>
 
 <template name="terminalOverlay">
@@ -22,13 +24,5 @@
       style="top: {{spinnerTop}}px;left: {{spinnerLeft}}px;"/>
     <!-- TODO: Put in a position:absolute blocking thing -->
   </div>
-</template>
-
-<template name="createTerminal">
-  <span id="createTerminalMessage"><a id="createTerminal" href="#">Click to open terminal</a></span>
-</template>
-
-<template name="viewTerminal">
-  <span id="createTerminalMessage"><a id="createTerminal" href="#">Click to view terminal</a></span>
 </template>
 

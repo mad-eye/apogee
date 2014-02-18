@@ -21,50 +21,106 @@ windowDep = new Deps.Dependency()
 #
 ##The actual terminal height
 #terminalHeight
-@sizes = new ReactiveDict
 
 baseSpacing = 10; #px
 inactiveTerminalHeight = 20; #px
 
-terminalWindowPadding = 15 #px
-terminalWindowBorder = 2 #2*1px
 terminalBorder = 10 #2*5px for #terminal .terminal
+
+class @Resizer extends Reactor
+  @property 'chromeHeight'
+  @property 'chromeWidth'
+
+  @property 'terminalEnabled'
+  @property 'terminalOpened'
+  @property 'terminalShown'
+
+  #[{height:, width:}, ...]
+  @property 'otherTerminalSizes'
+  _minOtherTerminalHeight: ->
+    heights = _.pluck @otherTerminalSizes, 'height'
+    return null unless heights.length
+    return Math.min.apply(null, heights)
+  _minOtherTerminalWidth: ->
+    widths = _.pluck @otherTerminalSizes, 'width'
+    return null unless widths.length
+    return Math.min.apply(null, widths)
+
+  @property 'terminalHeight', set:false, get: ->
+    switch
+      when !@terminalEnabled then 0
+      when !@terminalShown then 0
+      when !@terminalOpened then inactiveTerminalHeight
+      when minHeight = @_minOtherTerminalHeight()
+        return Math.min minHeight, @maxTerminalHeight
+      else
+        @maxTerminalHeight
+
+  @property 'terminalWidth', set:false, get: ->
+    switch
+      when !@terminalEnabled then 0
+      when !@terminalShown then 0
+      when !@terminalOpened then @maxTerminalWidth
+      when minWidth = @_minOtherTerminalWidth()
+        return Math.min minWidth, @maxTerminalWidth
+      else
+        @maxTerminalWidth
+
+  @property 'maxTerminalHeight', set:false, get: ->
+    Math.floor( @chromeHeight / 3 )
+
+  @property 'maxTerminalWidth', set:false, get: ->
+    Math.floor( @chromeWidth )
+
+MadEye.resizer = resizer = new Resizer
+
+Template.wholeEditor.helpers
+  editorContainerBottom: ->
+    Meteor.setTimeout ->
+      ace.edit('editor').resize()
+    , 1
+    resizer.terminalHeight
 
 Template.editorOverlay.helpers
   spinnerTop: ->
-    terminalHeight = sizes.get('terminalHeight') || 0
-    editorBottom = terminalHeight + $('#statusBar').height()
-    editorHeight = sizes.get('chromeHeight') - editorBottom
+    editorBottom = resizer.terminalHeight + $('#statusBar').height()
+    editorHeight = resizer.chromeHeight - editorBottom
     $spinner = $('#editorLoadingSpinner')
     return (editorHeight - $spinner.height())/2
 
   spinnerLeft: ->
     $spinner = $('#editorLoadingSpinner')
-    return (sizes.get('chromeWidth') - $spinner.width())/2
+    return (resizer.chromeWidth - $spinner.width())/2
 
 Template.terminalOverlay.helpers
   overlayHeight: ->
-    sizes.get('terminalHeight') || 0
+    resizer.terminalHeight
 
   spinnerTop: ->
-    terminalHeight = sizes.get('terminalHeight') || 0
     $spinner = $('#terminalBusySpinner')
     # /2.5 gives a more natural feeling position than /2
-    return Math.floor (terminalHeight - $spinner.height())/2.5
+    return Math.floor (resizer.terminalHeight - $spinner.height())/2.5
 
   spinnerLeft: ->
     $spinner = $('#terminalBusySpinner')
-    return Math.floor (sizes.get('chromeWidth') - $spinner.width())/2
+    return Math.floor (resizer.chromeWidth - $spinner.width())/2
 
 Meteor.startup ->
   #Trigger initial size calculations
   windowDep.changed()
+
+  Deps.autorun ->
+    @name 'set resizer terminal status'
+    resizer.terminalEnabled = MadEye.terminal?.initialized
+    resizer.terminalOpened = MadEye.terminal?.opened
+    resizer.terminalShown = pageHasTerminal()
 
   #Set up windowDep listening to window resize
   Deps.autorun (computation) ->
     @name 'setup windowDep'
     #XXX: Is this necessary?  For terminal/editor only windows, these might not
     #be rendered.
+    # Presumably it is cheaper to only do this on pages with the resizer.
     #return unless MadEye.isRendered 'editor', 'fileTree', 'statusBar'
     $(window).resize ->
       windowSizeChanged true
@@ -82,62 +138,47 @@ Meteor.startup ->
     chromeHeight = (windowHeight - chromeTop - 2*baseSpacing)
     #Set chrome height here so we know it's complete before we store the values.
     $chrome.height chromeHeight
-    sizes.set 'chromeHeight', Math.floor $chrome.height()
-    sizes.set 'chromeWidth', Math.floor $chrome.width()
-    if isTerminalEnabled()
-      maxTerminalHeight = Math.floor( $chrome.height() / 3 )
-    else
-      maxTerminalHeight = 0
-    sizes.set 'maxTerminalHeight', maxTerminalHeight
+    resizer.chromeHeight = Math.floor $chrome.height()
+    resizer.chromeWidth = Math.floor $chrome.width()
 
+  ###
   #Set editor size
+  #Done now in the template.
   Deps.autorun (c) ->
     @name 'set editor size'
     return unless isEditorPage() and MadEye.isRendered 'editor', 'statusBar'
-    return unless $('#statusBar').length and $('#editor').length #XXX: There must be a better way
-    terminalHeight = sizes.get('terminalHeight') || 0
-    $('#editorContainer').css('bottom', terminalHeight)
+    #return unless $('#statusBar').length and $('#editor').length #XXX: There must be a better way
+    $('#editorContainer').css('bottom', resizer.terminalHeight)
     ace.edit('editor').resize()
+  ###
 
-
+  #HACK: Need to poke this explicitly
+  @terminalSizeDep = new Deps.Dependency()
   #Set terminal size
   Deps.autorun (c) ->
     @name 'set terminalSize'
     return unless isEditorPage()
-    unless isTerminalEnabled() and MadEye.isRendered 'terminal'
-      sizes.set 'terminalHeight', 0
+    terminalSizeDep.depend()
+
+
+    $('#terminal').height resizer.terminalHeight
+    $('#terminalOverlay').height resizer.terminalHeight
+
+  Deps.autorun ->
+    return unless MadEye.terminal?.opened
+    unless $('#terminal .window').length
+      console.error 'missing terminal window'
       return
+    $terminalWindow = $('#terminal .window')
+    $terminalWindow.height resizer.terminalHeight
+    $terminalWindow.width resizer.terminalWidth
 
-    terminalHeight = switch
-      when not isTerminalOpened()
-        inactiveTerminalHeight
-      when sizes.get('leastTerminalHeight')
-        Math.min sizes.get('leastTerminalHeight'), sizes.get('maxTerminalHeight')
-      else
-        sizes.get('maxTerminalHeight')
-
-    sizes.set 'terminalHeight', terminalHeight
-    $('#terminal').height terminalHeight
-    $('#terminalOverlay').height terminalHeight
-
-    if isTerminalOpened()
-      unless $('#terminal .window').length
-        console.error 'missing terminal window'
-        return
-      $terminalWindow = $('#terminal .window')
-      $terminalWindow.height terminalHeight
-      if sizes.get('leastTerminalWidth')
-        newWidth = Math.min( sizes.get('leastTerminalWidth'), sizes.get('chromeWidth') )
-      else
-        newWidth = sizes.get('chromeWidth')
-      $terminalWindow.width newWidth
-
-      #Find height of each div
-      newTerminalHeight = $terminalWindow.height() - terminalBorder
-      newTerminalWidth = $terminalWindow.width() - terminalBorder
-      numRows = Math.floor(newTerminalHeight / terminalData.characterHeight)
-      numCols = Math.floor(newTerminalWidth / terminalData.characterWidth) - 5
-      MadEye.terminal.resize numCols, numRows
+    #Find height of each div
+    newTerminalHeight = $terminalWindow.height() - terminalBorder
+    newTerminalWidth = $terminalWindow.width() - terminalBorder
+    numRows = Math.floor(newTerminalHeight / terminalData.characterHeight)
+    numCols = Math.floor(newTerminalWidth / terminalData.characterWidth) - 5
+    MadEye.terminal.resize numCols, numRows
 
       
 
@@ -150,11 +191,11 @@ Meteor.startup ->
     return unless projectId
     projectStatus = ProjectStatuses.findOne {sessionId:Session.id, projectId}
     return unless projectStatus
-    if isTerminalOpened()
+    if resizer.terminalOpened
       projectStatus.update
         terminalSize:
-          height: sizes.get 'maxTerminalHeight'
-          width: sizes.get 'chromeWidth'
+          height: resizer.maxTerminalHeight
+          width: resizer.maxTerminalWidth
     else if projectStatus.terminalSize
       #Clear out old terminalSize
       #NB: undefined breaks things!  Also, if you set null when it is already
@@ -162,26 +203,19 @@ Meteor.startup ->
       #an infinite loop.
       projectStatus.update terminalSize: null
 
-  #calculate the minimum height/width of other people's terminals
+  #set other sessions terminal sizes on resizer
   Deps.autorun ->
     @name 'calc leastSize'
     return unless isEditorPage()
     projectId = Session.get("projectId")
     return unless projectId
-    height = width = null
     
-    ProjectStatuses.find({projectId, sessionId: {$ne: Session.id}})
-      .forEach (status) ->
-        return unless status.terminalSize?
-        unless height?
-          height = status.terminalSize.height
-          width = status.terminalSize.width
-        else
-          height = Math.min height, status.terminalSize.height
-          width = Math.min width, status.terminalSize.width
+    sizes = ProjectStatuses.find({projectId, sessionId: {$ne: Session.id}}, {fields:{terminalSize:1}})
+      .map (status) ->
+        status.terminalSize
 
-    sizes.set 'leastTerminalHeight', height
-    sizes.set 'leastTerminalWidth', width
+    sizes = (size for size in sizes when size)
+    resizer.otherTerminalSizes = sizes
 
 
   #Filetree resize

@@ -11,7 +11,6 @@ Handlebars.registerHelper 'modKey', ->
 
 Template.editorMenuBar.events
   'click #saveAction' : (event) ->
-    console.log "ZZZ: Save"
     return unless MadEye.editorState?.canSave()
     MadEye.editorState.save (err) ->
       if err

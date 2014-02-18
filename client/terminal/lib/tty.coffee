@@ -4,8 +4,10 @@ class @METerminal
   constructor: (@tty) ->
     MicroEvent.mixin this
     Reactor.mixin this
-    Reactor.define this, 'opened'
+    # initialized means the terminal has successfully connected
     Reactor.define this, 'initialized'
+    # opened means the terminal pane has been opened
+    Reactor.define this, 'opened'
 
   connect: ({tunnelUrl, remotePort}) ->
     @remotePort = remotePort
@@ -26,13 +28,15 @@ class @METerminal
     @window.on 'open', =>
       log.debug "Window opened"
       @refreshTerminalWindow()
+      @opened = true
       @emit 'focus'
       $(".window").click (e) ->
         #Keep this from triggering the body click event
         e.stopPropagation()
 
-    @window.on 'close', ->
+    @window.on 'close', =>
       log.debug 'Window closed'
+      @opened = false
 
     @window.on 'focus', =>
       @emit 'focus'
@@ -47,6 +51,7 @@ class @METerminal
     @tty.disconnect()
     @window = null
     @initialized = false
+    @opened = false
     @emit 'reset'
     
   _unfocus: ->

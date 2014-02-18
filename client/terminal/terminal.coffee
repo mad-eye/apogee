@@ -1,33 +1,70 @@
-MEASUREMENT_CHARS = ',./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 log = new Logger 'terminal'
+MEASUREMENT_CHARS = ',./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 
 #rows, cols, height, width
 @terminalData = {}
 
-setInitialTerminalData = ->
+## Terminal helpers
+
+__setInitialTerminalData = ->
   terminalData.characterHeight = $('#measurementDiv').height()
   terminalData.characterWidth = $('#measurementDiv').width()/MEASUREMENT_CHARS.length
   log.trace "initial terminalData:", terminalData
 
+# The project can have a terminal if the client has set one up,
+# of a type allowed
+__isTerminalEnabled = ->
+  project = getProject()
+  return false unless project and not project.closed
+  terminal = project.tunnels?.terminal
+  if terminal?
+    if terminal.type == "readOnly"
+      return true
+    else if terminal.type == "readWrite"
+      return Meteor.settings.public.fullTerminal
+  return false
+
+# Some pages don't show a terminal
+# Needed for resizer
+@pageHasTerminal = ->
+  Router.template in ['edit']
+
+__isReadOnlyTerminal = ->
+  return getProject()?.tunnels.terminal.type == "readOnly"
+
+Handlebars.registerHelper "showTerminal", ->
+  return __isTerminalEnabled() && pageHasTerminal()
+
+Handlebars.registerHelper "isReadOnlyTerminal", __isReadOnlyTerminal
 
 MadEye.terminal = null
 #Initialize terminal connection
 Meteor.startup ->
-  MadEye.terminal = new METerminal tty
+  # We'll instantiate terminal if the project can have a terminal
+  Deps.autorun (c) ->
+    return unless __isTerminalEnabled()
+    #No need to instantiate it if we are on another page
+    return unless pageHasTerminal()
+    MadEye.terminal = new METerminal tty
+    c.stop()
 
-  Meteor.autorun ->
+  Deps.autorun ->
     @name 'initialize terminal'
-    return if MadEye.terminal.initialized
+    return unless MadEye.terminal and not MadEye.terminal.initialized
     project = getProject()
-    return unless project and !project.closed and project.tunnels?.terminal
+    return unless project and not project.closed
+    #As a sanity check, let's log an error if we don't have terminal data
+    unless project.tunnels?.terminal
+      log.error "Project has enabled terminal, but no terminal data:", project
+      return
     Events.record 'initTerminal', type: project.tunnels.terminal.type
     #return if a tty.js session is already active
     tunnel = project.tunnels.terminal
     log.trace "Found terminal tunnel:", tunnel
-    ioUrl = MadEye.tunnelUrl
     MadEye.terminal.connect({tunnelUrl: MadEye.tunnelUrl, remotePort:tunnel.remotePort})
     MadEye.terminal.on 'focus', onTerminalFocus
     MadEye.terminal.on 'unfocus', onTerminalUnfocus
+    #XXX: This is stateful, and possibly causing some of our issues.
     MadEye.terminal.on 'reset', minimizeTerminal
 
 Template.terminal.rendered = ->
@@ -45,12 +82,12 @@ openTerminal = ->
   unless MadEye.terminal.window
     parent = $('#terminal')[0]
     MadEye.terminal.create {parent}
-    setInitialTerminalData()
-    if isReadOnlyTerminal()
+    __setInitialTerminalData()
+    if __isReadOnlyTerminal()
       MadEye.terminal.stopBlink()
   else
     $('#terminal .window').show()
-  MadEye.terminal.opened = true
+    MadEye.terminal.opened = true
   #The div#terminal is constant, so that we don't kill tty's work.
   #Thus we have to hide/show elements
   $('#minimizeTerminalButton').show()
@@ -87,6 +124,7 @@ Template.terminal.helpers
     return getProject()?.tunnels?.terminal?.unavailable
 
 Meteor.startup ->
+  #XXX: This is stateful, and possibly causing some of our issues.
   Deps.autorun ->
     Projects.find(Session.get('projectId'), {fields:{tunnels:1}}).observeChanges
       changed: (id, fields) ->
@@ -103,3 +141,11 @@ Meteor.startup ->
           log.debug "Terminal tunnel changed ports; resetting."
           MadEye.terminal.reset()
 
+Handlebars.registerHelper 'debug', (str) ->
+  log.debug str
+  return
+
+Template.wholeEditor.rendered = ->
+  #HACK: Need to poke the autoruns after it's rendered.
+  #Should be unnecessary when blaze lands.
+  terminalSizeDep?.changed()
