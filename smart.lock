@@ -1,12 +1,19 @@
 {
-  "meteor": {},
+  "meteor": {
+    "git": "https://github.com/meteor/meteor.git",
+    "branch": "shark",
+    "commit": "1d24565fb5ed6a5571cd6c037f1a60a092be8eaa"
+  },
   "dependencies": {
     "basePackages": {
       "accounts-anonymous": {
         "git": "git://github.com/mad-eye/meteor-accounts-anonymous.git",
         "branch": "master"
       },
-      "iron-router": {},
+      "iron-router": {
+        "git": "git@github.com:EventedMind/iron-router.git",
+        "branch": "dev"
+      },
       "pince": {},
       "mocha-web": {
         "git": "git://github.com/mad-eye/meteor-mocha-web.git",
@@ -20,9 +27,9 @@
         "commit": "e3dbbe682dd12321a5b0b5ea66a93d8d5fde7326"
       },
       "iron-router": {
-        "git": "https://github.com/EventedMind/iron-router.git",
-        "tag": "v0.6.2",
-        "commit": "ce56e58b45624dce992490f3a1c10f10d3948bae"
+        "git": "git@github.com:EventedMind/iron-router.git",
+        "branch": "dev",
+        "commit": "f82468ff627bd1a3c424d094a277556a1049ccd0"
       },
       "pince": {
         "git": "https://github.com/mad-eye/pince.git",
