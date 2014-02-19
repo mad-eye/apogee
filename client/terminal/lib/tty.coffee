@@ -46,13 +46,12 @@ class @METerminal
 
     log.debug "Terminal window created"
 
-  reset: ->
+  shutdown: ->
     @tty.reset()
     @tty.disconnect()
     @window = null
     @initialized = false
     @opened = false
-    @emit 'reset'
     
   _unfocus: ->
     @tty.Terminal.focus = null

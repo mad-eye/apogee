@@ -159,8 +159,6 @@ Meteor.startup ->
     @name 'set terminalSize'
     return unless isEditorPage()
     terminalSizeDep.depend()
-
-
     $('#terminal').height resizer.terminalHeight
     $('#terminalOverlay').height resizer.terminalHeight
 
@@ -189,19 +187,14 @@ Meteor.startup ->
     #their terminalSize is unset.
     projectId = Session.get("projectId")
     return unless projectId
-    projectStatus = ProjectStatuses.findOne {sessionId:Session.id, projectId}
-    return unless projectStatus
     if resizer.terminalOpened
-      projectStatus.update
-        terminalSize:
-          height: resizer.maxTerminalHeight
-          width: resizer.maxTerminalWidth
-    else if projectStatus.terminalSize
+      terminalSize =
+        height: resizer.maxTerminalHeight
+        width: resizer.maxTerminalWidth
+    else
       #Clear out old terminalSize
-      #NB: undefined breaks things!  Also, if you set null when it is already
-      #null, it looks 'different' to the collection, and this block becomes
-      #an infinite loop.
-      projectStatus.update terminalSize: null
+      terminalSize = undefined
+    Meteor.call "touchProjectStatus", Session.id, projectId, {terminalSize}
 
   #set other sessions terminal sizes on resizer
   Deps.autorun ->
