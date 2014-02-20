@@ -20,7 +20,7 @@
 <template name="layout">
   <div id="container" class="container {{#if isHangout}}hangout{{else}}nonHangout{{/if}}">
     {{> topnav }}
-    <div id="alertBox">{{! Will be populated by displayAlert}}</div>
+    <div id="alertBox"></div>{{! Will be populated by displayAlert}}
     {{yield}}
   </div>
 </template>
