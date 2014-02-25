@@ -1,3 +1,7 @@
+#Deps to handle resizes.  Might be nice to have reactive DOM elts.
+windowDep = new Deps.Dependency()
+
+#
 #Store these here to only trigger reactivity if the values change.
 ##The size of the editorChrome
 #chromeHeight
@@ -61,6 +65,25 @@ class @Resizer extends Reactor
 
   @property 'maxTerminalWidth', set:false, get: ->
     Math.floor( @chromeWidth )
+
+@resizer = new Resizer()
+
+Meteor.startup ->
+  #Trigger initial size calculations
+  windowDep.changed()
+
+  #Set up windowDep listening to window resize
+  Deps.autorun (computation) ->
+    @name 'setup windowDep'
+    $(window).resize ->
+      windowSizeChanged true
+    computation.stop()
+
+
+  Deps.autorun ->
+    return unless MadEye.isRendered 'terminal'
+    windowDep.depend()
+
 
 
 Template.terminalOverlay.helpers

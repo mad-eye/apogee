@@ -9,13 +9,14 @@ class @METerminal
     # opened means the terminal pane has been opened
     Reactor.define this, 'opened'
 
-  connect: ({tunnelUrl, remotePort}) ->
+  connect: ({tunnelUrl, remotePort}, callback = ->) ->
     @remotePort = remotePort
     ioResource = "tunnel/#{remotePort}/socket.io"
     log.debug "Opening tty with resource #{ioResource}"
     @tty.open tunnelUrl, ioResource
     @tty.on 'connect', ->
       log.trace 'Connected'
+      callback()
     @tty.on 'open', ->
       log.trace 'Opened'
     @tty.on 'kill', =>

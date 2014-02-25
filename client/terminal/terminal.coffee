@@ -30,7 +30,7 @@ __isTerminalEnabled = ->
   Router.template in ['edit']
 
 __isReadOnlyTerminal = ->
-  return getProject()?.tunnels.terminal.type == "readOnly"
+  return getProject()?.tunnels?.terminal.type == "readOnly"
 
 Handlebars.registerHelper "showTerminal", ->
   return __isTerminalEnabled() && pageHasTerminal()
@@ -44,82 +44,44 @@ Meteor.startup ->
   # MadEye.terminal should exist iff the terminal is enabled
   Deps.autorun (c) ->
     @name 'enable terminal'
-    if __isTerminalEnabled()
-      #create a terminal if it doesn't exist. This might mean initializing it
-      tunnel = getProject().tunnels.terminal
-      unless MadEye.terminal
-        log.debug "Creating terminal with", tunnel
-        Events.record 'initTerminal', type: tunnel.type
-        MadEye.terminal = new METerminal tty
-        MadEye.terminal.connect({tunnelUrl: MadEye.tunnelUrl, remotePort:tunnel.remotePort})
-        MadEye.terminal.on 'focus', onTerminalFocus
-        MadEye.terminal.on 'unfocus', onTerminalUnfocus
-        #XXX: This is stateful, and possibly causing some of our issues.
-        #MadEye.terminal.on 'reset', minimizeTerminal
-      else if MadEye.terminal.remotePort != tunnel.remotePort
-        #TODO: check for port change
-        log.info "Terminal port switched to #{tunnel.remotePort}, reconnecting"
-        #Shut it down; it should recreate itself
-        MadEye.terminal.shutdown()
-        MadEye.terminal = null
-    else
-      if MadEye.terminal
-        #Can't support it; get rid of it
-        MadEye.terminal.shutdown()
-        MadEye.terminal = null
-
+    return unless __isTerminalEnabled()
+    return if MadEye.terminal
+    tunnel = getProject().tunnels.terminal
+    log.debug "Creating terminal with", tunnel
+    Events.record 'initTerminal', type: tunnel.type
+    MadEye.terminal = new METerminal tty
+    MadEye.terminal.connect
+      tunnelUrl: MadEye.tunnelUrl,
+      remotePort:tunnel.remotePort
+    , ->
+      openTerminal()
+    #XXX: This is stateful, and possibly causing some of our issues.
+    #MadEye.terminal.on 'reset', minimizeTerminal
 
   Deps.autorun ->
-    @name 'initialize terminal'
-    return unless MadEye.terminal and not MadEye.terminal.initialized
-    project = getProject()
-    return unless project and not project.closed
-    #As a sanity check, let's log an error if we don't have terminal data
-    unless project.tunnels?.terminal
-      log.error "Project has enabled terminal, but no terminal data:", project
-      return
-    #return if a tty.js session is already active
-    tunnel = project.tunnels.terminal
+    @name "Update terminal port"
+    return unless __isTerminalEnabled()
+    tunnel = getProject().tunnels.terminal
+    return unless MadEye.terminal?.remotePort != tunnel.remotePort
+    log.error "Terminal port switched to #{tunnel.remotePort}, should reconnect"
+    #TODO: Shut it down; it should recreate itself
 
 Template.terminal.rendered = ->
   MadEye.rendered 'terminal'
 
-onTerminalFocus = ->
-  $('#terminal').addClass('focused')
-
-onTerminalUnfocus = ->
-  $('#terminal').removeClass('focused')
-
 openTerminal = ->
   log.info "Opening terminal"
   Events.record 'openTerminal', type: getProject().tunnels.terminal.type
-  unless MadEye.terminal.window
-    parent = $('#terminal')[0]
-    MadEye.terminal.create {parent}
-    __setInitialTerminalData()
-    if __isReadOnlyTerminal()
-      MadEye.terminal.stopBlink()
-  else
-    $('#terminal .window').show()
-    MadEye.terminal.opened = true
-  #The div#terminal is constant, so that we don't kill tty's work.
-  #Thus we have to hide/show elements
-  $('#minimizeTerminalButton').show()
-  $('#createTerminalMessage').hide()
-  $('#readOnlyTerminalMessage').show()
+  parent = $('#terminal')[0]
+  MadEye.terminal.create {parent}
+  __setInitialTerminalData()
+  if __isReadOnlyTerminal()
+    MadEye.terminal.stopBlink()
 
 closeTerminal = ->
   log.info "Closing terminal"
   minimizeTerminal()
   
-minimizeTerminal = ->
-  log.info "Minimizing terminal"
-  MadEye.terminal.opened = false
-  $('#terminal .window').hide()
-  $('#createTerminalMessage').show()
-  $('#minimizeTerminalButton').hide()
-  $('#readOnlyTerminalMessage').hide()
-
 Template.terminal.events
   'click #createTerminal': (event, tmpl) ->
     event.stopPropagation()
@@ -137,34 +99,11 @@ Template.terminal.helpers
   isTerminalUnavailable: ->
     return getProject()?.tunnels?.terminal?.unavailable
 
-###
-Meteor.startup ->
-  #XXX: This is stateful, and possibly causing some of our issues.
-  Deps.autorun ->
-    Projects.find(Session.get('projectId'), {fields:{tunnels:1}}).observeChanges
-      changed: (id, fields) ->
-        log.trace "Observed project change:", fields
-        #Removing a field is signified by field:undefined
-        return unless 'tunnels' of fields
-        tunnels = fields.tunnels
-        if !tunnels
-          #tunnels was removed, possibly because the project was closed
-          log.debug "Terminal tunnel closed; resetting."
-          MadEye.terminal.reset()
-        else if tunnels.terminal?.remotePort?
-          #Changed remote port; reset the terminal and it'll reconnect automatically
-          log.debug "Terminal tunnel changed ports; resetting."
-          MadEye.terminal.reset()
-###
+  isTerminalEnabled: __isTerminalEnabled
 
 Handlebars.registerHelper 'debug', (str) ->
   log.debug str
   return
-
-Template.wholeEditor.rendered = ->
-  #HACK: Need to poke the autoruns after it's rendered.
-  #Should be unnecessary when blaze lands.
-  terminalSizeDep?.changed()
 
 ###
 Terminal logic

@@ -1,20 +1,20 @@
 <template name="terminal">
   <div id="terminalChrome">
-    {{#if isTerminalUnavailable}}
-      {{> terminalOverlay}}
+    {{#if isTerminalEnabled}}
+      {{#constant}}
+      <div id="terminal">
+        <span id="measurementDiv">{{measurementChars}}</span>
+        {{! <button id="minimizeTerminalButton" type="button" data-dismiss="terminal">&#x25BC;</button> }}
+        {{#if isReadOnlyTerminal}}
+          <div id="readOnlyTerminalMessage">Read Only Mode</div>
+        {{/if}}
+      </div>
+      {{/constant}}
+    {{else}}
+      <div id="terminal">
+        <span id="createTerminalMessage">The terminal is not enabled for this project.  To enable it, please restart madeye with the --terminal flag.</span>
+      </div>
     {{/if}}
-    {{#constant}}
-    <div id="terminal">
-      <span id="measurementDiv">{{measurementChars}}</span>
-      <button id="minimizeTerminalButton" type="button" data-dismiss="terminal">&#x25BC;</button>
-      {{#if isReadOnlyTerminal}}
-        <div id="readOnlyTerminalMessage">Read Only Mode</div>
-        <span id="createTerminalMessage"><a id="createTerminal" href="#">Click to view terminal</a></span>
-      {{else}}
-        <span id="createTerminalMessage"><a id="createTerminal" href="#">Click to open terminal</a></span>
-      {{/if}}
-    </div>
-    {{/constant}}
   </div>
 </template>
 
