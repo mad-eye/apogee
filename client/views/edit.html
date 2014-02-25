@@ -1,43 +1,12 @@
 <template name="edit">
   {{> projectStatus}}
-  <div class="row">
+  <div id="projectContainer" class="row">
       <div id="leftColumn" class="span3">
         {{> fileTree}}
       </div>
       <div id="rightColumn" class="span9">
         {{> wholeEditor }}
       </div>
-  </div>
-</template>
-
-<template name="editImpressJS">
-  {{> projectStatus}}
-  <div class="row">
-    <div id="leftColumn" class="span5">
-      <div class="row">
-        <div class="span5">
-          {{> fileTree}}
-        </div>
-      </div>
-      <div class="row">
-        <div class="span5">
-          <div class='wrapper'>
-            <iframe id="presentationPreview" src="/userStatic/{{projectId}}"/>
-          </div>
-          <a id="fullPresentationLink" href = "/userStatic/{{projectId}}/index.html">View full presentation</a>
-        </div>
-      </div>
-    </div>
-
-    <div id="editorChrome" class="span7">
-      {{> editorTitleBar }}
-      <div id="editorContainer">
-        {{> editorMenuBar }}
-        {{> editorOverlay }}
-        {{> editor}}
-        {{> statusBar }}
-      </div>
-    </div>
   </div>
 </template>
 
@@ -50,14 +19,10 @@
 <template name="wholeEditor">
   {{> editorTitleBar }}
   <div id="editorChrome">
-    <div id="editorContainer" style="bottom: {{editorContainerBottom}}px">
       {{> editorMenuBar }}
       {{> editorOverlay }}
       {{> editor}}
       {{> statusBar }}
-    </div>
-    {{! XXX: Might need to extract the terminal }}
-    {{> terminal}}
   </div>
 </template>
 
@@ -92,4 +57,36 @@
 <template name="editor">
   {{#constant}}<div id="editor"></div>{{/constant}}
 </template>
+
+<template name="editImpressJS">
+  {{> projectStatus}}
+  <div class="row">
+    <div id="leftColumn" class="span5">
+      <div class="row">
+        <div class="span5">
+          {{> fileTree}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="span5">
+          <div class='wrapper'>
+            <iframe id="presentationPreview" src="/userStatic/{{projectId}}"/>
+          </div>
+          <a id="fullPresentationLink" href = "/userStatic/{{projectId}}/index.html">View full presentation</a>
+        </div>
+      </div>
+    </div>
+
+    <div id="editorChrome" class="span7">
+      {{> editorTitleBar }}
+      <div id="editorContainer">
+        {{> editorMenuBar }}
+        {{> editorOverlay }}
+        {{> editor}}
+        {{> statusBar }}
+      </div>
+    </div>
+  </div>
+</template>
+
 

@@ -3,8 +3,27 @@
 @fadedOutput: #999;
 @editorBarBackground: #DCDCDC;
 
+#projectContainer {
+  height: 100%;
+
+  #leftColumn {
+    height: 100%;
+  }
+
+  #rightColumn {
+    //height: 100%;
+    height: 85%;
+    // XXX: Less requires this weird syntax for now
+    height: calc(~"100% - 60px");
+  }
+}
+
 #editorChrome {
   position: relative;
+  border: @standardBorder;
+  height: 85%;
+  // XXX: Less requires this weird syntax for now
+  height: calc(~"100% - 60px");
 }
 
 @barHeight: 18px;
@@ -137,15 +156,6 @@
     float: right;
   }
 
-}
-
-#editorContainer {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  border: @standardBorder;
 }
 
 #editor {

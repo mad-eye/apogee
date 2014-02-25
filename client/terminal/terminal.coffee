@@ -45,11 +45,6 @@ Meteor.startup ->
   Deps.autorun (c) ->
     @name 'enable terminal'
     if __isTerminalEnabled()
-      #No need to do anything (but possibly close the terminal) if we are on
-      #another page
-      if !pageHasTerminal()
-        minimizeTerminal()
-        return
       #create a terminal if it doesn't exist. This might mean initializing it
       tunnel = getProject().tunnels.terminal
       unless MadEye.terminal

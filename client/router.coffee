@@ -54,6 +54,13 @@ Router.map ->
         fileOnly: true
         zen: true
 
+  @route 'terminal',
+    template: 'terminal'
+    path: '/terminal/:projectId'
+    before: ->
+      Session.set 'projectId', @params.projectId
+      Session.set 'zen', true
+      Session.set 'terminalOnly', true
 
   @route 'scratch',
     template: 'edit'
