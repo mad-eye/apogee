@@ -24,6 +24,8 @@ Handlebars.registerHelper 'showTopnav', ->
 
 @getProjectId = -> Session.get "projectId"
 
+Handlebars.registerHelper 'projectId', getProjectId
+
 @projectIsClosed = ->
   getProject()?.closed
   
