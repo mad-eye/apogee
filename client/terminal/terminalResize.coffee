@@ -17,17 +17,11 @@ windowDep = new Deps.Dependency()
 ##The actual terminal height
 #terminalHeight
 
-inactiveTerminalHeight = 20; #px
-
 terminalBorder = 10 #2*5px for #terminal .terminal
 
 class @Resizer extends Reactor
   @property 'chromeHeight'
   @property 'chromeWidth'
-
-  @property 'terminalEnabled'
-  @property 'terminalOpened'
-  @property 'terminalShown'
 
   #[{height:, width:}, ...]
   @property 'otherTerminalSizes'
@@ -42,9 +36,6 @@ class @Resizer extends Reactor
 
   @property 'terminalHeight', set:false, get: ->
     switch
-      when !@terminalEnabled then 0
-      when !@terminalShown then 0
-      when !@terminalOpened then inactiveTerminalHeight
       when minHeight = @_minOtherTerminalHeight()
         return Math.min minHeight, @maxTerminalHeight
       else
@@ -52,16 +43,13 @@ class @Resizer extends Reactor
 
   @property 'terminalWidth', set:false, get: ->
     switch
-      when !@terminalEnabled then 0
-      when !@terminalShown then 0
-      when !@terminalOpened then @maxTerminalWidth
       when minWidth = @_minOtherTerminalWidth()
         return Math.min minWidth, @maxTerminalWidth
       else
         @maxTerminalWidth
 
   @property 'maxTerminalHeight', set:false, get: ->
-    Math.floor( @chromeHeight / 3 )
+    Math.floor( @chromeHeight )
 
   @property 'maxTerminalWidth', set:false, get: ->
     Math.floor( @chromeWidth )
@@ -76,14 +64,8 @@ Meteor.startup ->
   Deps.autorun (computation) ->
     @name 'setup windowDep'
     $(window).resize ->
-      windowSizeChanged true
+      windowDep.changed()
     computation.stop()
-
-
-  Deps.autorun ->
-    return unless MadEye.isRendered 'terminal'
-    windowDep.depend()
-
 
 
 Template.terminalOverlay.helpers
@@ -102,23 +84,12 @@ Template.terminalOverlay.helpers
 
 Meteor.startup ->
 
-  resizer = {}
-
   Deps.autorun ->
-    @name 'set resizer terminal status'
-    resizer.terminalEnabled = MadEye.terminal?.initialized
-    resizer.terminalOpened = MadEye.terminal?.opened
-    resizer.terminalShown = pageHasTerminal()
-
-  #HACK: Need to poke this explicitly
-  @terminalSizeDep = new Deps.Dependency()
-  #Set terminal size
-  Deps.autorun (c) ->
-    @name 'set terminalSize'
-    return unless isEditorPage()
-    terminalSizeDep.depend()
-    $('#terminal').height resizer.terminalHeight
-    $('#terminalOverlay').height resizer.terminalHeight
+    return unless MadEye.terminal
+    windowDep.depend()
+    $chrome = $('#terminalChrome')
+    resizer.chromeHeight = $chrome.height()
+    resizer.chromeWidth = $chrome.width()
 
   Deps.autorun ->
     return unless MadEye.terminal?.opened
@@ -136,31 +107,28 @@ Meteor.startup ->
     numCols = Math.floor(newTerminalWidth / terminalData.characterWidth) - 5
     MadEye.terminal.resize numCols, numRows
 
-      
+
 
   #Set projectStatus.terminalSize
   Deps.autorun ->
+    return unless MadEye.terminal
     @name 'set projectStatus.terminalSize'
     #Want this to run on all pages, so that if someone leaves the editor,
     #their terminalSize is unset.
     projectId = Session.get("projectId")
     return unless projectId
-    if resizer.terminalOpened
-      terminalSize =
-        height: resizer.maxTerminalHeight
-        width: resizer.maxTerminalWidth
-    else
-      #Clear out old terminalSize
-      terminalSize = undefined
+    terminalSize =
+      height: resizer.maxTerminalHeight
+      width: resizer.maxTerminalWidth
     Meteor.call "touchProjectStatus", Session.id, projectId, {terminalSize}
 
   #set other sessions terminal sizes on resizer
   Deps.autorun ->
+    return unless MadEye.terminal
     @name 'calc leastSize'
-    return unless isEditorPage()
     projectId = Session.get("projectId")
     return unless projectId
-    
+
     sizes = ProjectStatuses.find({projectId, sessionId: {$ne: Session.id}}, {fields:{terminalSize:1}})
       .map (status) ->
         status.terminalSize
