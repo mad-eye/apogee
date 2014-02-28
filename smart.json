@@ -9,12 +9,13 @@
     },
     "iron-router": {
       "git": "git@github.com:EventedMind/iron-router.git",
-      "branch": "dev"
+      "branch": "blaze-integration"
     },
     "pince": {},
-    "mocha-web":{
+    "mocha-web": {
       "git": "git://github.com/mad-eye/meteor-mocha-web.git",
       "branch": "meteor-0.6.6"
-    }
+    },
+    "blaze-layout": {}
   }
 }

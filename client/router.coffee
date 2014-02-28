@@ -1,8 +1,11 @@
 log = new Logger 'router'
 
+RouteController.prototype.layoutTemplate = "layout"
+
 Router.configure
-  layoutTemplate: "layout"
+  #layoutTemplate: "layout"
   loadingTemplate: "loading"
+
 
 Router.before ->
   parseHangoutParams @params
