@@ -30,7 +30,7 @@
   left: 0;
   bottom: 0;
   right: 0;
-  background-color: @textColorDefault;
+  //background-color: @darkGrey;
   font-family: Consolas, monaco, monospace; 
   //font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
   //font-family:monospace, prestige;
@@ -48,23 +48,13 @@
   .window {
     //padding-top: 15px; //.bar is not displayed
     background-color: @darkGrey;
-    .verticalGradient(black, @darkGrey);
     position: relative;
     overflow: auto;
-    border: none; //overwrite tty.css
 
-    &:hover {
-      .verticalGradient(black, @medDarkGrey);
-    }
-  }
-
-  &.focused .window {
-    .verticalGradient(black, @medGrey);
   }
 
   .terminal {
     font-size: 12px;
-    border: none;
     margin: 5px;
 
   }

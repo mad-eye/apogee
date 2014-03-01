@@ -12,8 +12,8 @@ describe 'Resizer', ->
       resizer.chromeHeight = chromeHeight
       resizer.chromeWidth = chromeWidth
 
-    it 'should be chromeHeight/3', ->
-      assert.equal resizer.maxTerminalHeight, chromeHeight/3
+    it 'should be chromeHeight', ->
+      assert.equal resizer.maxTerminalHeight, chromeHeight
 
   describe 'maxTerminalWidth', ->
     resizer = null
@@ -38,21 +38,6 @@ describe 'Resizer', ->
       resizer = new Resizer()
       resizer.chromeHeight = chromeHeight
       resizer.chromeWidth = chromeWidth
-
-    it 'should be 0 when !terminalEnabled', ->
-      resizer.terminalEnabled = false
-      assert.equal resizer.terminalHeight, 0
-
-    it 'should be 0 when !terminalShown', ->
-      resizer.terminalEnabled = true
-      resizer.terminalShown = false
-      assert.equal resizer.terminalHeight, 0
-
-    it 'should be 20 when terminalEnabled and terminalShown and !terminalOpened', ->
-      resizer.terminalEnabled = true
-      resizer.terminalShown = true
-      resizer.terminalOpened = false
-      assert.equal resizer.terminalHeight, 20
 
     it 'should be maxTerminaHeight when terminalOpened', ->
       resizer.terminalEnabled = true
@@ -84,10 +69,10 @@ describe 'Resizer', ->
 
     it 'should be its max if other terminals are bigger', ->
       resizer.otherTerminalSizes = [
-        {height: 210, width: 450},
-        {height: 300, width: 600}
+        {height: 610, width: 450},
+        {height: 700, width: 600}
       ]
-      assert.equal resizer.terminalHeight, 200
+      assert.equal resizer.terminalHeight, 600
       assert.equal resizer.terminalWidth, 400
 
 

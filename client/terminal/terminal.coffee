@@ -14,6 +14,8 @@ __setInitialTerminalData = ->
 # The project can have a terminal if the client has set one up,
 # of a type allowed
 __isTerminalEnabled = ->
+  #HACK: Make a better page check
+  return false unless Router.template == 'terminal'
   project = getProject()
   return false unless project and not project.closed
   terminal = project.tunnels?.terminal
@@ -31,9 +33,6 @@ __isTerminalEnabled = ->
 
 __isReadOnlyTerminal = ->
   return getProject()?.tunnels?.terminal.type == "readOnly"
-
-Handlebars.registerHelper "showTerminal", ->
-  return __isTerminalEnabled() && pageHasTerminal()
 
 Handlebars.registerHelper "isReadOnlyTerminal", __isReadOnlyTerminal
 
