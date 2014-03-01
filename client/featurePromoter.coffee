@@ -12,15 +12,16 @@ class @FeaturePromoter
       if ProjectStatuses.find(projectId: @project._id).count() >= 2
         @addSkill("sharing")
       if @project.scratch
-        @addSkill("scratchProject")
+        @addSkill("scratchProject", silent:true)
       if !(@project.scratch or @project.impressJS)
-        @addSkill("standardProject")
+        @addSkill("standardProject", silent:true)
 
   #options:
-  #  dismissed: false
+  #  dismissed: false # if learned from dismissing an alert
+  #  silent: false    # if learned passively (ie, loading a standard project)
   addSkill: (skill, options={})->
     return if @hasLearnedSkill skill
-    Session.set "skillLearned", true
+    Session.set "skillLearned", true unless options.silent
     if options.dismissed
       Events.record "skillDismissed", skill: skill
     else
