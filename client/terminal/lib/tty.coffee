@@ -7,9 +7,8 @@ class @METerminal
     Reactor.define this, 'opened'
     Reactor.define this, 'initialized'
 
-  connect: ({tunnelUrl, remotePort}) ->
-    @remotePort = remotePort
-    ioResource = "tunnel/#{remotePort}/socket.io"
+  connect: ({tunnelUrl, projectId}) ->
+    ioResource = "tunnel/#{projectId}/socket.io"
     log.debug "Opening tty with resource #{ioResource}"
     @tty.open tunnelUrl, ioResource
     @tty.on 'connect', ->
@@ -48,7 +47,7 @@ class @METerminal
     @window = null
     @initialized = false
     @emit 'reset'
-    
+
   _unfocus: ->
     @tty.Terminal.focus = null
     @emit 'unfocus'
@@ -68,5 +67,3 @@ class @METerminal
     rows = @window.rows
     @window.resize(cols-1, rows)
     @window.resize(cols, rows)
-
-

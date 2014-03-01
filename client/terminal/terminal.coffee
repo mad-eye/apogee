@@ -25,7 +25,7 @@ Meteor.startup ->
     tunnel = project.tunnels.terminal
     log.trace "Found terminal tunnel:", tunnel
     ioUrl = MadEye.tunnelUrl
-    MadEye.terminal.connect({tunnelUrl: MadEye.tunnelUrl, remotePort:tunnel.remotePort})
+    MadEye.terminal.connect({tunnelUrl: MadEye.tunnelUrl, projectId:project._id})
     MadEye.terminal.on 'focus', onTerminalFocus
     MadEye.terminal.on 'unfocus', onTerminalUnfocus
     MadEye.terminal.on 'reset', minimizeTerminal
@@ -60,7 +60,7 @@ openTerminal = ->
 closeTerminal = ->
   log.info "Closing terminal"
   minimizeTerminal()
-  
+
 minimizeTerminal = ->
   log.info "Minimizing terminal"
   MadEye.terminal.opened = false
@@ -102,4 +102,3 @@ Meteor.startup ->
           #Changed remote port; reset the terminal and it'll reconnect automatically
           log.debug "Terminal tunnel changed ports; resetting."
           MadEye.terminal.reset()
-

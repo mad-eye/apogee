@@ -22,7 +22,7 @@ settings = {
     googleAnalyticsId: process.env.MADEYE_GOOGLE_ANALYTICS_ID,
     mixPanelToken: process.env.MADEYE_MIXPANEL_TOKEN,
     hangoutUrl: process.env.MADEYE_AZKABAN_URL + "/hangout/",
-    tunnelHost: process.env.MADEYE_TUNNEL_HOST,
+    proxyUrl: process.env.MADEYE_PROXY_URL,
     stripePublicKey: process.env.MADEYE_STRIPE_PUBLIC_KEY,
     logLevel: process.env.MADEYE_LOGLEVEL,
     specificLogLevels: parseSpecificLogLevels(),
