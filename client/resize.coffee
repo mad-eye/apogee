@@ -9,19 +9,6 @@ windowDep = new Deps.Dependency()
 
 baseSpacing = 10; #px
 
-Template.editorOverlay.helpers
-  spinnerTop: ->
-    windowDep.depend()
-    editorBottom = $('#statusBar').height()
-    editorHeight = $('#editorChrome').height() - editorBottom
-    $spinner = $('#editorLoadingSpinner')
-    return (editorHeight - $spinner.height())/2
-
-  spinnerLeft: ->
-    windowDep.depend()
-    $spinner = $('#editorLoadingSpinner')
-    return ($('#editorChrome').width() - $spinner.width())/2
-
 Meteor.startup ->
   #Trigger initial size calculations
   windowDep.changed()

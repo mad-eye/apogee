@@ -43,15 +43,10 @@
 
 <template name="editorOverlay">
   {{#if editorIsLoading}}
-    <div id="editorOverlay">
-      {{#if editorThemeIsDark}}
-        <img id="editorLoadingSpinner" src="{{staticPrefix}}/static/images/ajax-loader-dark.gif" alt="Loading..."
-          style="top: {{spinnerTop}}px;left: {{spinnerLeft}}px;"/>
-      {{else}}
-        <img id="editorLoadingSpinner" src="{{staticPrefix}}/static/images/ajax-loader.gif" alt="Loading..."
-          style="top: {{spinnerTop}}px;left: {{spinnerLeft}}px;"/>
-      {{/if}}
-    </div>
+    {{#constant}}
+      <div id="editorOverlay">
+      </div>
+    {{/constant}}
   {{/if}}
 </template>
 
