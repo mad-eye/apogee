@@ -72,7 +72,7 @@ Meteor.startup ->
     it 'should suggest share skill on scratch projects', ->
       project = new Project {scratch:true}
       featurePromoter.project = project
-      Deps.flush()
       promo = featurePromoter.getPromo()
-      assert.equal promo.handle, "sharing"
+      assert.ok promo, "Should have a Promotion"
+      assert.equal promo.handle, "sharing", "Promotion should have handle sharing, but has #{promo.handle}"
 
