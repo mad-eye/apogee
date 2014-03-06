@@ -2,7 +2,6 @@ log = new Logger 'signin'
 
 MadEye.loginWithGoogle = ->
   stashWorkspace()
-  #Meteor.logout()
   Meteor.loginWithGoogle (err) ->
     if err
       log.error "Error in loginWithGoogle:", err
@@ -11,7 +10,6 @@ MadEye.loginWithGoogle = ->
 
 MadEye.logout = ->
   stashWorkspace()
-  #Meteor.logout()
   Meteor.loginAnonymously (err) ->
     if err
       log.error "Error in loginAnonymously:", err
