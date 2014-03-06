@@ -43,6 +43,13 @@ Handlebars.registerHelper "isHangout", ->
 
 Handlebars.registerHelper 'isScratch', isScratch
 
+@isStandardProject = (project)->
+  project ?= getProject()
+  project and not project.impressJS and not project.scratch
+
+Handlebars.registerHelper 'isStandardProject', ->
+  isStandardProject()
+
 ## Alerts
 @displayAlert = (alert) ->
   return unless alert?
