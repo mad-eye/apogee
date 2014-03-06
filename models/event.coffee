@@ -26,8 +26,9 @@ if Meteor.isClient
       project = Projects.findOne projectId
       return unless project
       params.projectId = projectId
-      params.scratch = project.scratch
-      params.impressJS = project.impressJS
+      params.scratch = !!project.scratch
+      params.impressJS = !!project.impressJS
+      params.standard = !(project.scratch or project.impressJS)
       params.hangout = Session.get 'isHangout'
       _.extend event, params
       event.save()

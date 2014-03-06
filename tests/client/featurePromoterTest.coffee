@@ -25,10 +25,10 @@ Meteor.startup ->
       promo = featurePromoter.getPromo()
       assert.equal promo.handle, "saving"
 
-    it "should suggest no promotions if the user has no save skill and the current file is unmodified", ->
+    it "should suggest sharing if the user has no save skill and the current file is unmodified", ->
       MadEye.editorState = canSave: -> false
       promo = featurePromoter.getPromo()
-      assert.ok !promo
+      assert.equal promo.handle, "sharing"
 
     it "should suggest sharing if the user has saved", ->
       featurePromoter.addSkill "saving"
@@ -68,3 +68,11 @@ Meteor.startup ->
       Deps.flush()
       console.log "ALL EVENTS", Events.find(projectId: project._id).fetch()
       assert Events.findOne {projectId: project._id, skill: "blades"}
+
+    it 'should suggest share skill on scratch projects', ->
+      project = new Project {scratch:true}
+      featurePromoter.project = project
+      Deps.flush()
+      promo = featurePromoter.getPromo()
+      assert.equal promo.handle, "sharing"
+
