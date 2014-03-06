@@ -21,7 +21,7 @@ class @FeaturePromoter
   #  silent: false    # if learned passively (ie, loading a standard project)
   addSkill: (skill, options={})->
     return if @hasLearnedSkill skill
-    Session.set "skillLearned", true unless options.silent
+    Session.set "skillLearned", Date.now() unless options.silent
     if options.dismissed
       Events.record "skillDismissed", skill: skill
     else
