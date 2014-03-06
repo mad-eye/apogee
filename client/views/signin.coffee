@@ -2,7 +2,6 @@ log = new Logger 'signin'
 
 MadEye.loginWithGoogle = ->
   stashWorkspace()
-  Meteor.logout()
   Meteor.loginWithGoogle (err) ->
     if err
       log.error "Error in loginWithGoogle:", err
@@ -11,7 +10,6 @@ MadEye.loginWithGoogle = ->
 
 MadEye.logout = ->
   stashWorkspace()
-  Meteor.logout()
   Meteor.loginAnonymously (err) ->
     if err
       log.error "Error in loginAnonymously:", err
@@ -43,7 +41,7 @@ Template.signin.helpers
 
 ###
 # Stashing workspaces
-# 
+#
 # When a user logs in or out, we should merge the old workspace preferences
 # with the new workspace.  We do this by stashing the workspace, and then,
 # when the new workspace is created, merging
@@ -77,4 +75,3 @@ migrateWorkspace = ->
           workspace.modeOverrides[fileId] = syntaxMode
   workspace.save()
   tempWorkspace = null
-

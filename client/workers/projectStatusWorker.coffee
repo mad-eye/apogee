@@ -10,6 +10,7 @@ Meteor.startup ->
     projectId = Session.get("projectId")
     return unless projectId
     Meteor.call "touchProjectStatus", Session.id, projectId,
+      name: Meteor.user()?.name
       isHangout: Session.get("isHangout")
       hangoutUrl: Session.get('hangoutUrl')
       hangoutId: Session.get('hangoutId')
