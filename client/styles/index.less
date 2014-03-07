@@ -22,24 +22,18 @@ body {
 
 #container {
   height: 100%;
-  
-  &.nonHangout {
-    padding-top: 10px;
-  }
+  position: relative; 
 }
 
 .advice {
   font-size: @bigFontSize;
 }
 
-.hangout .topnav {
-  display: none;
-}
-
 .topnav {
   position: relative;
   border-bottom: @darkBorder;
   margin-bottom: 0;
+  padding-top: @baseSpacing;
 
   .title {
 

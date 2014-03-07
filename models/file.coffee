@@ -32,6 +32,12 @@ Object.defineProperty MadEye.File.prototype, 'filename',
 Object.defineProperty MadEye.File.prototype, 'depth',
   get: -> stripSlash(@path).split('/').length - 1 #don't count directory itself or leading /
 
+Object.defineProperty MadEye.File.prototype, 'escapedPath',
+  get: ->
+    escapedValue = _.map(@path.split('/'), (segment) ->
+      return encodeURIComponent(segment)
+    ).join('/')
+    
 Object.defineProperty MadEye.File.prototype, 'parentPath',
   get: ->
     rightSlash = @path.lastIndexOf('/')

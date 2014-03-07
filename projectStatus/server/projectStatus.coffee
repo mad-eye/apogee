@@ -63,8 +63,3 @@ ProjectStatuses.allow
   update: (userId, doc, fields, modifier) -> true
   remove: (userId, doc) -> true
 
-#Meteor.startup ->
-  ##When apogee restarts the timeout doesn't get to clear projectStatuses.
-  ##Manually remove orphaned projectStatuses.
-  #ProjectStatuses.remove {}
-

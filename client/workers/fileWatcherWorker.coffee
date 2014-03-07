@@ -17,7 +17,9 @@ Meteor.startup ->
 
   #Go to a scratch file if we haven't selected anything.
   #Is this dangerous?
+  # TODO: Should have a better check that there's an editor/filetree
   Deps.autorun ->
+    return if Session.get('terminalOnly') # XXX: Need a better check
     return unless MadEye.subscriptions.get('files')?.ready()
     return if MadEye.fileLoader.selectedFileId
     scratchFile = Files.findOne {projectId: getProjectId(), scratch: true}

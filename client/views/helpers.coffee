@@ -13,42 +13,27 @@ Handlebars.registerHelper 'editorState', ->
 Handlebars.registerHelper "hangoutLink", ->
   "#{MadEye.azkabanUrl}/hangout/#{Session.get 'projectId'}"
 
+Handlebars.registerHelper 'showTopnav', ->
+  return false if Session.get "isHangout"
+  return false if Session.get 'zen'
+  return true
+
 @getProject = ->
   return null unless MadEye.startedUp
   Projects.findOne(Session.get "projectId")
 
 @getProjectId = -> Session.get "projectId"
 
+Handlebars.registerHelper 'projectId', getProjectId
+
 @projectIsClosed = ->
   getProject()?.closed
   
-## Terminal helpers
-@isTerminalEnabled = ->
-  project = getProject()
-  return false unless project and not project.closed
-  terminal = project.tunnels?.terminal
-  if terminal?
-    if terminal.type == "readOnly"
-      return true
-    else if terminal.type == "readWrite"
-      return Meteor.settings.public.fullTerminal
-  return
-
-Handlebars.registerHelper "isTerminalEnabled", isTerminalEnabled
-
-@isReadOnlyTerminal = ->
-  return getProject()?.tunnels.terminal.type == "readOnly"
-
-Handlebars.registerHelper "isReadOnlyTerminal", isReadOnlyTerminal
-
-@isTerminalOpened = ->
-  return false unless isTerminalEnabled()
-  return MadEye.terminal?.opened
-  
-
 ## Page/project Info
 @isEditorPage = ->
-  (Router.template == 'edit') or (Router.template == 'editImpressJS')
+  (Router.template == 'edit') or
+    (Router.template == 'wholeEditor') or
+    (Router.template == 'editImpressJS')
 
 Handlebars.registerHelper "isHangout", ->
   Session.get "isHangout"
@@ -57,6 +42,13 @@ Handlebars.registerHelper "isHangout", ->
   getProject()?.scratch
 
 Handlebars.registerHelper 'isScratch', isScratch
+
+@isStandardProject = (project)->
+  project ?= getProject()
+  project and not project.impressJS and not project.scratch
+
+Handlebars.registerHelper 'isStandardProject', ->
+  isStandardProject()
 
 ## Alerts
 @displayAlert = (alert) ->

@@ -1,34 +1,28 @@
 <template name="terminal">
-  {{#if isTerminalUnavailable}}
-    {{> terminalOverlay}}
-  {{/if}}
-  {{#constant}}
-  <div id="terminal">
-    <span id="measurementDiv">{{measurementChars}}</span>
-    <button id="minimizeTerminalButton" type="button" data-dismiss="terminal">&#x25BC;</button>
-    {{#if isReadOnlyTerminal}}
-      <div id="readOnlyTerminalMessage">Read Only Mode</div>
-      {{> viewTerminal }}
+  <div id="terminalChrome">
+    {{#if isTerminalEnabled}}
+      {{#constant}}
+      <div id="terminal">
+        <span id="measurementDiv">{{measurementChars}}</span>
+        {{! <button id="minimizeTerminalButton" type="button" data-dismiss="terminal">&#x25BC;</button> }}
+        {{#if isReadOnlyTerminal}}
+          <div id="readOnlyTerminalMessage">Read Only Mode</div>
+        {{/if}}
+      </div>
+      {{/constant}}
     {{else}}
-      {{> createTerminal }}
+      <div id="terminal">
+        <span id="createTerminalMessage">This project has no enabled terminal.  To have an enabled terminal, please start madeye with the --terminal flag.</span>
+      </div>
     {{/if}}
   </div>
-  {{/constant}}
 </template>
 
 <template name="terminalOverlay">
-  <div id="terminalOverlay" class="overlay" style="height: {{overlayHeight}}px;">
+  <div id="terminalOverlay" class="overlay">
     <img id="terminalBusySpinner" class="busySpinner" src="{{staticPrefix}}/static/images/ajax-loader-dark.gif" alt="Waiting..."
       style="top: {{spinnerTop}}px;left: {{spinnerLeft}}px;"/>
     <!-- TODO: Put in a position:absolute blocking thing -->
   </div>
-</template>
-
-<template name="createTerminal">
-  <span id="createTerminalMessage"><a id="createTerminal" href="#">Click to open terminal</a></span>
-</template>
-
-<template name="viewTerminal">
-  <span id="createTerminalMessage"><a id="createTerminal" href="#">Click to view terminal</a></span>
 </template>
 

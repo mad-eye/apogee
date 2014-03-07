@@ -53,7 +53,7 @@ class @FeaturePromoter
       message: 'Try saving a file! Files are saved right back to the file system where <code>madeye</code> is running'
       raw: true
       teachable: =>
-        return _isStandardProject(@project) and MadEye.editorState.canSave()
+        return isStandardProject(@project) and MadEye.editorState.canSave()
 
     sharing:
       title: "Share your project's URL."
@@ -79,16 +79,13 @@ class @FeaturePromoter
       message: "Did you know you can share you terminal output?  Try <code>madeye --terminal</code>"
       raw: true
       teachable: =>
-        _isStandardProject(@project)
+        isStandardProject(@project)
 
     tunnel:
       message: "You can share your local web server with your teammates. Try <code>madeye --tunnel [PORT]</code>"
       raw: true
       teachable: =>
-        _isStandardProject(@project)
-
-_isStandardProject = (project)->
-  project and not project.impressJS and not project.scratch
+        isStandardProject(@project)
 
 Reactor.mixin FeaturePromoter.prototype
 Reactor.define FeaturePromoter.prototype, 'project'

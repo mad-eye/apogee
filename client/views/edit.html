@@ -1,24 +1,59 @@
 <template name="edit">
   {{> projectStatus}}
-  <div class="row">
+  <div id="projectContainer" class="row">
       <div id="leftColumn" class="span3">
         {{> fileTree}}
       </div>
       <div id="rightColumn" class="span9">
-        {{> editorTitleBar }}
-        <div id="editorChrome">
-          <div id="editorContainer">
-            {{> editorMenuBar }}
-            {{> editorOverlay }}
-            {{> editor}}
-            {{> statusBar }}
-          </div>
-          {{#if isTerminalEnabled}}
-            {{> terminal}}
-          {{/if}}
-        </div>
+        {{> wholeEditor }}
       </div>
   </div>
+</template>
+
+<template name="projectStatus">
+  {{#each projectAlerts}}
+    {{> alert this}}
+  {{/each}}
+</template>
+
+<template name="wholeEditor">
+  {{> editorTitleBar }}
+  <div id="editorChrome">
+      {{> editorMenuBar }}
+      {{> editorOverlay }}
+      {{> editor}}
+      {{> statusBar }}
+  </div>
+</template>
+
+<template name="editorTitleBar">
+  <div id="editorTitleBar">
+    <h4>
+      {{editorFileName}}
+      {{#if isModified}}
+        <small>(modified)</small>
+      {{/if}}
+      {{#if isScratch}}
+        <small>(scratch)</small>
+      {{/if}}
+      {{#if isStandardProject}}
+        <a target="terminal" href="/terminal/{{projectId}}"><img id="terminalIcon" src="{{staticPrefix}}/static/images/terminal_icon_64x64.png" alt="Open Terminal" title="Open Terminal" /></a>
+      {{/if}}
+    </h4>
+  </div>
+</template>
+
+<template name="editorOverlay">
+  {{#if editorIsLoading}}
+    {{#constant}}
+      <div id="editorOverlay">
+      </div>
+    {{/constant}}
+  {{/if}}
+</template>
+
+<template name="editor">
+  {{#constant}}<div id="editor"></div>{{/constant}}
 </template>
 
 <template name="editImpressJS">
@@ -33,7 +68,7 @@
       <div class="row">
         <div class="span5">
           <div class='wrapper'>
-            <iframe id="presentationPreview" src="/userStatic/{{projectId}}"> </iframe>
+            <iframe id="presentationPreview" src="/userStatic/{{projectId}}"/>
           </div>
           <a id="fullPresentationLink" href = "/userStatic/{{projectId}}/index.html">View full presentation</a>
         </div>
@@ -52,41 +87,4 @@
   </div>
 </template>
 
-<template name="projectStatus">
-  {{#each projectAlerts}}
-    {{> alert this}}
-  {{/each}}
-</template>
-
-<template name="editorTitleBar">
-  <div id="editorTitleBar">
-    <h4>
-      {{editorFileName}}
-      {{#if isModified}}
-        <small>(modified)</small>
-      {{/if}}
-      {{#if isScratch}}
-        <small>(scratch)</small>
-      {{/if}}
-    </h4>
-  </div>
-</template>
-
-<template name="editorOverlay">
-  {{#if editorIsLoading}}
-    <div id="editorOverlay">
-      {{#if editorThemeIsDark}}
-        <img id="editorLoadingSpinner" src="{{staticPrefix}}/static/images/ajax-loader-dark.gif" alt="Loading..."
-          style="top: {{spinnerTop}}px;left: {{spinnerLeft}}px;"/>
-      {{else}}
-        <img id="editorLoadingSpinner" src="{{staticPrefix}}/static/images/ajax-loader.gif" alt="Loading..."
-          style="top: {{spinnerTop}}px;left: {{spinnerLeft}}px;"/>
-      {{/if}}
-    </div>
-  {{/if}}
-</template>
-
-<template name="editor">
-  {{#constant}}<div id="editor"></div>{{/constant}}
-</template>
 
