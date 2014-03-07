@@ -66,14 +66,14 @@ class @FeaturePromoter
       message: 'MadEye can be used on projects on your own filesystem.  Go to <a target="_blank" href="/">madeye.io</a> for more details.'
       raw: true
       teachable: ->
-        !_isStandardProject(@project)
+        !isStandardProject(@project)
 
     scratchProject:
       title: "Make a scratch project."
       message: 'MadEye can be used for scratch projects, not tied to any filesystem.  Go to <a target="_blank" href="/scratch">Try it out now!</a>'
       raw: true
       teachable: ->
-        !_isStandardProject(@project)
+        isStandardProject(@project)
 
     terminal:
       message: "Did you know you can share you terminal output?  Try <code>madeye --terminal</code>"
@@ -82,6 +82,7 @@ class @FeaturePromoter
         isStandardProject(@project)
 
     tunnel:
+      title: "Share localhost."
       message: "You can share your local web server with your teammates. Try <code>madeye --tunnel [PORT]</code>"
       raw: true
       teachable: =>
