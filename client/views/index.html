@@ -56,8 +56,10 @@
         </li>
       {{else}}
         {{#if isLoggedOut}}
-          <li>
-          {{> googleSigninLink}}
+          <li><span>{{currentUser.name}} (Sign in)</span>
+            <ul>
+              <li>{{> googleSigninLink}}</li>
+            </ul>
           </li>
         {{! else if in transition, show nothing}}
         {{/if}}
