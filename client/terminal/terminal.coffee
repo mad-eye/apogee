@@ -26,16 +26,12 @@ __isTerminalEnabled = ->
       return Meteor.settings.public.fullTerminal
   return false
 
-# Some pages don't show a terminal
-# Needed for resizer
-@pageHasTerminal = ->
-  Router.template in ['edit']
-
 __isReadOnlyTerminal = ->
   return getProject()?.tunnels?.terminal.type == "readOnly"
 
 Handlebars.registerHelper "isReadOnlyTerminal", __isReadOnlyTerminal
 
+#terminal should be non-null if this page has a visible terminal
 MadEye.terminal = null
 #Initialize terminal connection
 Meteor.startup ->
@@ -54,8 +50,6 @@ Meteor.startup ->
       remotePort:tunnel.remotePort
     , ->
       openTerminal()
-    #XXX: This is stateful, and possibly causing some of our issues.
-    #MadEye.terminal.on 'reset', minimizeTerminal
 
   Deps.autorun ->
     @name "Update terminal port"
@@ -76,21 +70,6 @@ openTerminal = ->
   __setInitialTerminalData()
   if __isReadOnlyTerminal()
     MadEye.terminal.stopBlink()
-
-closeTerminal = ->
-  log.info "Closing terminal"
-  minimizeTerminal()
-  
-Template.terminal.events
-  'click #createTerminal': (event, tmpl) ->
-    event.stopPropagation()
-    event.preventDefault()
-    openTerminal()
-
-  'click #minimizeTerminalButton': ->
-    event.stopPropagation()
-    event.preventDefault()
-    minimizeTerminal()
 
 Template.terminal.helpers
   measurementChars: -> MEASUREMENT_CHARS
