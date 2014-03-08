@@ -68,20 +68,6 @@ Meteor.startup ->
     computation.stop()
 
 
-Template.terminalOverlay.helpers
-  overlayHeight: ->
-    resizer.terminalHeight
-
-  spinnerTop: ->
-    $spinner = $('#terminalBusySpinner')
-    # /2.5 gives a more natural feeling position than /2
-    return Math.floor (resizer.terminalHeight - $spinner.height())/2.5
-
-  spinnerLeft: ->
-    $spinner = $('#terminalBusySpinner')
-    return Math.floor (resizer.chromeWidth - $spinner.width())/2
-
-
 Meteor.startup ->
 
   Deps.autorun ->
