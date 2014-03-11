@@ -4,26 +4,24 @@
 @editorBarBackground: #DCDCDC;
 
 #projectContainer {
-  height: 100%;
-
-  #leftColumn {
-    height: 100%;
-  }
-
-  #rightColumn {
-    //height: 100%;
-    height: 85%;
-    // XXX: Less requires this weird syntax for now
-    height: calc(~"100% - 60px");
-  }
 }
+
+#leftColumn {
+  height: 100%;
+}
+
+#rightColumn {
+  height: 100%;
+}
+
+@titleBarHeight : 20px + 20px; //20 for span, 20 for spacing
 
 #editorChrome {
   position: relative;
   border: @standardBorder;
   height: 85%;
   // XXX: Less requires this weird syntax for now
-  height: calc(~"100% - 60px");
+  height: calc(~"100% - "@titleBarHeight + 2*@baseSpacing);
 }
 
 @barHeight: 18px;

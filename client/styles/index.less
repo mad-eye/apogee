@@ -29,11 +29,24 @@ body {
   font-size: @bigFontSize;
 }
 
+@titleHeight: 50px;
+@topNavHeight: @titleHeight + @baseSpacing + 1; //Padding plus border.
+
+.noTopnav .contentContainer {
+  height: 100%;
+}
+
+.withTopnav .contentContainer {
+  //Less requires this weird syntax
+  height: calc(~"100% - "@topNavHeight);
+}
+
 .topnav {
   position: relative;
   border-bottom: @darkBorder;
   margin-bottom: 0;
   padding-top: @baseSpacing;
+  height: @titleHeight;
 
   .title {
 
