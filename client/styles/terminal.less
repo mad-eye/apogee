@@ -15,12 +15,22 @@
 @medDarkGrey: #666;
 @medGrey: #999;
 
+#terminalChrome {
+  position: absolute;
+  top: @baseSpacing;
+  left: 0;
+  bottom: @baseSpacing;
+  right: 0;
+
+}
+
 #terminal {
   position: absolute;
+  top: 0;
   left: 0;
   bottom: 0;
   right: 0;
-  background-color: @textColorDefault;
+  background-color: @darkGrey;
   font-family: Consolas, monaco, monospace; 
   //font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
   //font-family:monospace, prestige;
@@ -38,30 +48,21 @@
   .window {
     //padding-top: 15px; //.bar is not displayed
     background-color: @darkGrey;
-    .verticalGradient(black, @darkGrey);
     position: relative;
     overflow: auto;
-    border: none; //overwrite tty.css
+    border: none;
 
-    &:hover {
-      .verticalGradient(black, @medDarkGrey);
-    }
-  }
-
-  &.focused .window {
-    .verticalGradient(black, @medGrey);
   }
 
   .terminal {
     font-size: 12px;
-    border: none;
     margin: 5px;
 
   }
 
 }
 
-#createTerminal {
+#createTerminalMessage {
   color: #5fba3d; //Terminal green
   margin-left: @baseSpacing;
 }
@@ -93,7 +94,7 @@
   background-color: transparent;
   border: none;
   opacity: 0.5;
-  display: none;
+  //display: none;
   font-size: 16px;
 }
 
@@ -101,23 +102,5 @@
   visibility: hidden;
   position: absolute;
   line-height: normal;
-}
-
-#terminalOverlay {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background-color:rgba(0,0,0,0.3);
-  z-index: 9999;
-}
-
-#terminalBusySpinner {
-  position: absolute;
-}
-
-#createTerminal {
-  color: #5fba3d; //Terminal green
-  margin-left: @baseSpacing;
 }
 

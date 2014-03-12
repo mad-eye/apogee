@@ -40,7 +40,13 @@ Template.fileTree.helpers
 
     users = ProjectStatuses.find(
       {sessionId: {$in: sessionIds}},
-      {fields: {sessionId:1, connectionId:1}}
+      {fields:
+        sessionId:1,
+        connectionId:1,
+        name:1,
+        filePath:1,
+        lineNumber:1
+      }
     ).map (status) ->
       return unless status.connectionId
       if status.sessionId == Session.id
@@ -49,7 +55,9 @@ Template.fileTree.helpers
       else
         shareIndex = sharejs.getIndexForConnection status.connectionId
         iconClass = "foreign_selection foreign_selection_#{shareIndex} cursor_color_#{shareIndex}"
-      return {iconClass, connectionId:status.connectionId}
+      # XXX: lineNumber might be too intense for FireFox before Blaze
+      title = "#{status.name} in #{status.filePath}:#{status.lineNumber}"
+      return {iconClass, connectionId:status.connectionId, title}
 
     users = (user for user in users when user)
     return users

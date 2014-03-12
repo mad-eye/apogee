@@ -12,7 +12,10 @@
         <li class="{{fileEntryClass}}" id="{{_id}}">
           <span>{{filename}} {{#if modified}}*{{/if}}</span>
           {{#each usersInFile this}}
-            <div class="fileTreeUserIcon {{this.iconClass}}" data-connectionid="{{this.connectionId}}"></div>
+            <div class="fileTreeUserIcon {{this.iconClass}}"
+              data-connectionid="{{this.connectionId}}"
+              title="{{this.title}}"
+            ></div>
           {{/each }}
         </li>
       {{/if}}

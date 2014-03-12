@@ -15,3 +15,9 @@ Meteor.startup ->
     @name 'subscribe userData'
     Meteor.subscribe 'userData'
 
+  Deps.autorun ->
+    @name 'backfill anonyous account names'
+    if Meteor.user()?.type == 'anonymous' and !Meteor.user().name
+      Meteor.call 'assignName'
+
+

@@ -11,7 +11,6 @@ Handlebars.registerHelper 'modKey', ->
 
 Template.editorMenuBar.events
   'click #saveAction' : (event) ->
-    console.log "ZZZ: Save"
     return unless MadEye.editorState?.canSave()
     MadEye.editorState.save (err) ->
       if err
@@ -97,6 +96,17 @@ Template.editorMenuBar.helpers
 
   codeActions: ->
     findActions codeActions, "codeAction"
+
+  isMaximized: ->
+    return Session.get 'fileOnly'
+
+  maximizeLink: ->
+    file = Files.findOne(MadEye.editorState?.fileId)
+    "/file/#{Session.get 'projectId'}/#{file?.escapedPath}"
+
+  minimizeLink: ->
+    file = Files.findOne(MadEye.editorState?.fileId)
+    "/edit/#{Session.get 'projectId'}/#{file?.escapedPath}"
 
 findActions = (actionList, actionType) ->
   if Client.isMac

@@ -21,6 +21,8 @@ Accounts.onCreateUser (options, user) ->
       user.email = user.emails[0].address
       #TODO: Parse; use user.profile.name ?
       user.name = user.username || user.email
+    when 'anonymous'
+      user.name = generateRandomName()
 
   # Give admin powers to madeye people
   if user.email && user.email.indexOf('@') > -1
@@ -42,3 +44,29 @@ Meteor.startup ->
     service: 'google'
     clientId: Meteor.settings.googleClientId
     secret: Meteor.settings.googleSecret
+
+# XXX: This is to assign names to pre-name anonymous accounts
+# If we had login hooks, we'd use that instead.
+Meteor.methods
+  assignName: ->
+    return if Meteor.user()?.name
+    Meteor.users.update(Meteor.userId(), name: generateRandomName())
+
+
+##
+# Generate a name such as "Icy Panda" or "Stubborn Newt"
+generateRandomName = ->
+  adjective = ADJECTIVES[Math.floor(Random.fraction()*ADJECTIVES.length)]
+  animal = ANIMALS[Math.floor(Random.fraction()*ANIMALS.length)]
+  "#{adjective} #{animal}"
+
+ANIMALS = ['Ant', 'Badger', 'Coati', 'Duck', 'Emu', 'Ferret', 'Gecko',
+  'Hamster', 'Iguana', 'Jaguar', 'Kangaroo', 'Lemming', 'Meerkat', 'Newt',
+  'Ocelot', 'Platypus', 'Quoll', 'Rhinoceros', 'Skunk', 'Tapir', 'Uakari',
+  'Vervet', 'Walrus', 'Yak', 'Zebra']
+
+ADJECTIVES = ['Adept', 'Burly', 'Crafty', 'Dapper', 'Electric', 'Feisty',
+  'Gleeful', 'Hangry', 'Icy', 'Jocular', 'Klutzy', 'Languid', 'Merry', 'Naughty',
+  'Opulent', 'Perky', 'Queasy', 'Ripped', 'Stubborn', 'Thunderous', 'Unkempt',
+  'Velvetine', 'Woozy', 'Wrathful', 'Zesty']
+

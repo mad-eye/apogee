@@ -99,7 +99,17 @@
 
       </ul>
     </li>
+
   </ul>
+
+  <div class="resizer">
+  {{#if isMaximized}}
+    <a href="{{minimizeLink}}" title="Normalize"><i class="icon-resize-small"></i></a>
+  {{else}}
+    <a href="{{maximizeLink}}" title="Maximize"><i class="icon-resize-full"></i></a>
+  {{/if}}
+  </div>
+
 </div>
 </template>
 

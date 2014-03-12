@@ -4,15 +4,19 @@ class @METerminal
   constructor: (@tty) ->
     MicroEvent.mixin this
     Reactor.mixin this
-    Reactor.define this, 'opened'
+    # initialized means the terminal has successfully connected
     Reactor.define this, 'initialized'
+    # opened means the terminal pane has been opened
+    Reactor.define this, 'opened'
 
-  connect: ({tunnelUrl, projectId}) ->
+  connect: ({tunnelUrl, projectId}, callback=->) ->
     ioResource = "tunnel/#{projectId}/socket.io"
+
     log.debug "Opening tty with resource #{ioResource}"
     @tty.open tunnelUrl, ioResource
     @tty.on 'connect', ->
       log.trace 'Connected'
+      callback()
     @tty.on 'open', ->
       log.trace 'Opened'
     @tty.on 'kill', =>
@@ -25,13 +29,15 @@ class @METerminal
     @window.on 'open', =>
       log.debug "Window opened"
       @refreshTerminalWindow()
+      @opened = true
       @emit 'focus'
       $(".window").click (e) ->
         #Keep this from triggering the body click event
         e.stopPropagation()
 
-    @window.on 'close', ->
+    @window.on 'close', =>
       log.debug 'Window closed'
+      @opened = false
 
     @window.on 'focus', =>
       @emit 'focus'
@@ -41,12 +47,12 @@ class @METerminal
 
     log.debug "Terminal window created"
 
-  reset: ->
+  shutdown: ->
     @tty.reset()
     @tty.disconnect()
     @window = null
     @initialized = false
-    @emit 'reset'
+    @opened = false
 
   _unfocus: ->
     @tty.Terminal.focus = null
