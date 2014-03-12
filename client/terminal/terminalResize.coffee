@@ -90,7 +90,7 @@ Meteor.startup ->
     newTerminalHeight = $terminalWindow.height() - terminalBorder
     newTerminalWidth = $terminalWindow.width() - terminalBorder
     numRows = Math.floor(newTerminalHeight / terminalData.characterHeight)
-    numCols = Math.floor(newTerminalWidth / terminalData.characterWidth) - 5
+    numCols = Math.floor(newTerminalWidth / terminalData.characterWidth) - 15
     MadEye.terminal.resize numCols, numRows
 
 
