@@ -44,13 +44,29 @@ Template.statusBar.events
     Workspace.setConfig "keybinding", keybinding
 
 Template.statusBar.helpers
-  tabSizeEquals: (size)->
-    return false unless MadEye.editorState?.rendered
-    MadEye.editorState?.editor.tabSize == parseInt size, 10
+  tabSizeSelected: (size) ->
+    selected = false unless MadEye.editorState?.rendered
+    selected = MadEye.editorState?.editor.tabSize == parseInt size, 10
+    return selected: selected
+
+  keybindingSelected: (binding) ->
+    keybinding = Workspace.get()?.keybinding ? 'ace'
+    return selected: (keybinding == binding)
 
   fontSizeEquals: (size)->
     return false unless MadEye.editorState?.rendered
     MadEye.editorState?.editor.fontSize == parseInt size, 10
+
+  showInvisiblesChecked: ->
+    checked: MadEye.editorState?.editor.showInvisibles
+
+  wordWrapChecked: ->
+    checked: MadEye.editorState?.editor.wordWrap
+
+  useSoftTabsChecked: ->
+    checked: MadEye.editorState?.editor.useSoftTabs
+
+
 
 Handlebars.registerHelper 'fontsize', (size) ->
   return false unless MadEye.editorState?.rendered

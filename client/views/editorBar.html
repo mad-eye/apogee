@@ -19,7 +19,7 @@
     <div class="statusBarButton pull-left">
       <!--<label class="checkbox" >-->
       <label>
-        <input type="checkbox" id="showInvisibles" {{#if editorState.editor.showInvisibles}}checked{{/if}} />
+        <input type="checkbox" id="showInvisibles" {{showInvisiblesChecked}} />
         <span title="Show Invisible Characters"><i class="icon-eye-open"></i></span>
       </label>
     </div>
@@ -28,7 +28,7 @@
     {{! Word Wrap }}
     <div class="statusBarButton pull-left">
       <label>
-        <input type="checkbox" id="wordWrap" {{#if editorState.editor.wordWrap}}checked{{/if}} />
+        <input type="checkbox" id="wordWrap" {{wordWrapChecked}} />
         <span title="Word Wrap">¬</span>
       </label>
     </div>
@@ -36,7 +36,7 @@
     {{! Soft Tabs }}
     <div class="statusBarButton pull-left">
       <label>
-        <input type="checkbox" id="useSoftTabs"  {{#if editorState.editor.useSoftTabs}}checked{{/if}} />
+        <input type="checkbox" id="useSoftTabs"  {{useSoftTabsChecked}} />
         <span title="Use Soft Tabs">→&nbsp;</span>
       </label>
     </div>
@@ -44,9 +44,9 @@
     {{! Tab Size  }}
     <div id="tabSizeButton" class="statusBarButton pull-left">
         <select id="tabSize" class="input-medium" size="1">
-          <option value="2" {{#if tabSizeEquals 2}}selected{{/if}}>Tab Size: 2</option>
-          <option value="4" {{#if tabSizeEquals 4}}selected{{/if}}>Tab Size: 4</option>
-          <option value="8" {{#if tabSizeEquals 8}}selected{{/if}}>Tab Size: 8</option>
+          <option value="2" {{tabSizeSelected 2}} >Tab Size: 2</option>
+          <option value="4" {{tabSizeSelected 4}} >Tab Size: 4</option>
+          <option value="8" {{tabSizeSelected 8}} >Tab Size: 8</option>
         </select>     
     </div>
 
@@ -55,9 +55,9 @@
       <form>
         <!--<label class="select">:</label>-->
         <select id="keybinding" class="input-small" size="1">
-          <option value="ace" {{#if keybinding 'ace'}}selected{{/if}}>Ace Keys</option>
-          <option value="vim" {{#if keybinding 'vim'}}selected{{/if}}>Vim</option>
-          <option value="emacs" {{#if keybinding 'emacs'}}selected{{/if}}>Emacs</option>
+          <option value="ace" {{keybindingSelected 'ace'}} >Ace Keys</option>
+          <option value="vim" {{keybindingSelected 'vim'}} >Vim</option>
+          <option value="emacs" {{keybindingSelected 'emacs'}} >Emacs</option>
         </select>
       </form>
     </div>
