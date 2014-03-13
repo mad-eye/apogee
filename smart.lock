@@ -1,9 +1,5 @@
 {
-  "meteor": {
-    "git": "https://github.com/meteor/meteor.git",
-    "branch": "shark",
-    "commit": "b9370da58d61e09207214540f049cfef56eb1e12"
-  },
+  "meteor": {},
   "dependencies": {
     "basePackages": {
       "accounts-anonymous": {
@@ -19,7 +15,10 @@
         "git": "git://github.com/mad-eye/meteor-mocha-web.git",
         "branch": "meteor-0.6.6"
       },
-      "blaze-layout": {}
+      "blaze-layout": {
+        "git": "git@github.com:EventedMind/blaze-layout.git",
+        "branch": "devel"
+      }
     },
     "packages": {
       "accounts-anonymous": {
@@ -43,8 +42,8 @@
         "commit": "58e6a035b74063b2ada67f572c9188e714a82daf"
       },
       "blaze-layout": {
-        "git": "https://github.com/EventedMind/blaze-layout.git",
-        "tag": "v0.2.1",
+        "git": "git@github.com:EventedMind/blaze-layout.git",
+        "branch": "devel",
         "commit": "f52f416d6277f27b11832355298553e46b8cc6fd"
       }
     }
