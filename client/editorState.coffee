@@ -126,10 +126,11 @@ class EditorState
 
   #callback: (error) ->
   loadFile: (file, callback) ->
+    #Ignore duplicate requests
+    return if file._id == @fileId
+
+    #Know what load we're doing, to bail on stale callbacks
     @currentLoadNumber = thisLoadNumber = loadNumber++
-    unless file._id
-      console.error "Null file._id for file", file
-      return callback "LoadFile called with null file._id for #{file.path}"
 
     @fileId = fileId = file._id
     log.debug "Loading file #{file.path}"
