@@ -114,7 +114,7 @@ Meteor.startup ->
   #Syntax Modes from file
   Deps.autorun ->
     @name 'syntax mode from file'
-    return unless MadEye.isRendered 'editor' and MadEye.editorState?.rendered
+    return unless MadEye.isRendered('editor') and MadEye.editorState?.rendered
     file = Files.findOne(MadEye.editorState?.fileId)
     return unless file
     workspace = Workspaces.findOne {userId: Meteor.userId()}
@@ -181,11 +181,12 @@ findShbangCmd = (contents) ->
     tokens = (firstLine[2..]).replace(/^\s+|\s+$/g,'').split(/\s+/)
     token = tokens.pop()
     while token
-      unless '-' == token[0]
+      if '-' == token[0]
+        token = tokens.pop()
+      else
         index = token.lastIndexOf '/'
         cmd = token[index+1..]
         break
-      token = tokens.pop()
     return cmd
 
 useSoftTabs = (contents) ->
