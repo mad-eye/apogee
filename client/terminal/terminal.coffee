@@ -38,7 +38,6 @@ Meteor.startup ->
 
   # MadEye.terminal should exist iff the terminal is enabled
   Deps.autorun (c) ->
-    @name 'enable terminal'
     return unless __isTerminalEnabled()
     return if MadEye.terminal
     tunnel = getProject().tunnels.terminal
@@ -52,7 +51,6 @@ Meteor.startup ->
       openTerminal()
 
   Deps.autorun ->
-    @name "Update terminal port"
     return unless __isTerminalEnabled()
     tunnel = getProject().tunnels.terminal
     return unless MadEye.terminal?.remotePort != tunnel.remotePort

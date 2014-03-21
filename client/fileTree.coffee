@@ -95,7 +95,6 @@ MadEye.fileTree = new FileTree
 
 
 Deps.autorun ->
-  @name 'filetree select'
   fileId = MadEye.fileLoader?.selectedFileId
   return unless fileId
   file = Files.findOne fileId
