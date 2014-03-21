@@ -60,7 +60,6 @@ Meteor.startup ->
 
   #TODO: Move this into internal MadEye.editorState fns
   Deps.autorun ->
-    @name 'goto cursor'
     return unless MadEye.isRendered('editor') and MadEye.editorState
     fileId = MadEye.fileLoader?.editorFileId
     return unless fileId?

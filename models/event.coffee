@@ -16,7 +16,6 @@ if Meteor.isClient
     event = new MadEye.Event(name: name)
     event.timestamp = Date.now()
     Deps.autorun (computation)->
-      @name 'save event'
       return unless Meteor.userId()
       params.userId = Meteor.userId()
       params.group = "a" if groupA()

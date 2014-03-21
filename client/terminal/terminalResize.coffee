@@ -62,7 +62,6 @@ Meteor.startup ->
 
   #Set up windowDep listening to window resize
   Deps.autorun (computation) ->
-    @name 'setup windowDep'
     $(window).resize ->
       windowDep.changed()
     computation.stop()
@@ -90,7 +89,7 @@ Meteor.startup ->
     newTerminalHeight = $terminalWindow.height() - terminalBorder
     newTerminalWidth = $terminalWindow.width() - terminalBorder
     numRows = Math.floor(newTerminalHeight / terminalData.characterHeight)
-    numCols = Math.floor(newTerminalWidth / terminalData.characterWidth) - 5
+    numCols = Math.floor(newTerminalWidth / terminalData.characterWidth) - 15
     MadEye.terminal.resize numCols, numRows
 
 
@@ -98,7 +97,6 @@ Meteor.startup ->
   #Set projectStatus.terminalSize
   Deps.autorun ->
     return unless MadEye.terminal
-    @name 'set projectStatus.terminalSize'
     #Want this to run on all pages, so that if someone leaves the editor,
     #their terminalSize is unset.
     projectId = Session.get("projectId")
@@ -111,7 +109,6 @@ Meteor.startup ->
   #set other sessions terminal sizes on resizer
   Deps.autorun ->
     return unless MadEye.terminal
-    @name 'calc leastSize'
     projectId = Session.get("projectId")
     return unless projectId
 

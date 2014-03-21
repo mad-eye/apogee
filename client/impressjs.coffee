@@ -5,7 +5,6 @@ Template.editImpressJS.events
 
 Meteor.startup ->
   Deps.autorun ->
-    @name 'impressjs lastRefreshed'
     unless Session.get "lastRefreshed"
       Session.set "lastRefreshed", 0
     project = Projects.findOne Session.get("projectId")

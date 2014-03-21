@@ -129,8 +129,7 @@ Meteor.startup ->
 
   #Syntax Modes from file
   Deps.autorun ->
-    @name 'syntax mode from file'
-    return unless MadEye.isRendered 'editor'
+    return unless MadEye.isRendered('editor') and MadEye.editorState?.rendered
     file = Files.findOne(MadEye.editorState?.fileId)
     return unless file
     workspace = Workspaces.findOne {userId: Meteor.userId()}
@@ -152,8 +151,7 @@ Meteor.startup ->
 
   #Keybinding
   Deps.autorun (computation) ->
-    @name 'keybinding'
-    return unless MadEye.isRendered('editor') and MadEye.editorState
+    return unless MadEye.isRendered('editor') and MadEye.editorState?.rendered
     workspace = Workspace.get()
     return unless workspace
     keybinding = workspace.keybinding
@@ -171,8 +169,7 @@ Meteor.startup ->
 
   #TODO: Extract this to somewhere better
   Deps.autorun (computation) ->
-    @name 'set editor from workspace'
-    return unless MadEye.isRendered('editor') and MadEye.editorState
+    return unless MadEye.isRendered('editor') and MadEye.editorState?.rendered
     workspace = Workspace.get()
     return unless workspace
     value = null
@@ -197,11 +194,12 @@ findShbangCmd = (contents) ->
     tokens = (firstLine[2..]).replace(/^\s+|\s+$/g,'').split(/\s+/)
     token = tokens.pop()
     while token
-      unless '-' == token[0]
+      if '-' == token[0]
+        token = tokens.pop()
+      else
         index = token.lastIndexOf '/'
         cmd = token[index+1..]
         break
-      token = tokens.pop()
     return cmd
 
 useSoftTabs = (contents) ->

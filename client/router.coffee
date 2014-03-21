@@ -66,17 +66,17 @@ Router.map ->
       Session.set 'terminalOnly', true
 
   @route 'scratch',
-    template: 'edit'
+    template: 'loading'
     before: ->
       Meteor.call 'registerProject',
         projectName: "New Project"
         scratch: true
-      , (err, result) ->
+      , (err, result) =>
         if err
           log.error 'Error creating scratch project', err
           #TODO: Direct to an error page?
         else
-          beforeEdit this, {projectId: result.projectId}
+          Router.go 'edit', {projectId: result.projectId}
 
   @route 'impress.js',
     template: 'editImpressJS'

@@ -15,7 +15,6 @@ Meteor.startup ->
 
   #Set up windowDep listening to window resize
   Deps.autorun (computation) ->
-    @name 'setup windowDep'
     #XXX: Is this necessary?  For terminal/editor only windows, these might not
     #be rendered.
     # Presumably it is cheaper to only do this on pages with the resizer.
@@ -26,7 +25,6 @@ Meteor.startup ->
 
   #Filetree resize
   Deps.autorun ->
-    @name 'filetree resize'
     return unless isEditorPage() and MadEye.isRendered 'fileTree'
     windowDep.depend()
     windowHeight = $(window).height()

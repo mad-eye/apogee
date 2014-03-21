@@ -6,7 +6,6 @@ Meteor.startup ->
 
   #Create one for the session
   Deps.autorun ->
-    @name 'touch projectStatus'
     projectId = Session.get("projectId")
     return unless projectId
     Meteor.call "touchProjectStatus", Session.id, projectId,
@@ -24,7 +23,6 @@ Meteor.startup ->
   , 2*1000
 
   Deps.autorun ->
-    @name 'set location'
     projectId = Session.get("projectId")
     return unless projectId and MadEye.fileLoader and MadEye.editorState
     lineNumber = MadEye.editorState.editor?.lineNumber || 1
@@ -34,7 +32,6 @@ Meteor.startup ->
       connectionId: MadEye.editorState.connectionId
 
   Deps.autorun ->
-    @name 'set sessionPaths'
     projectId = Session.get "projectId"
     sessionPaths = {}
     ProjectStatuses.find({projectId}, {fields: {sessionId:1, filePath: 1}}).forEach (status) ->
@@ -43,7 +40,6 @@ Meteor.startup ->
     MadEye.fileTree.setSessionPaths sessionPaths
 
   Deps.autorun ->
-    @name 'Follow user'
     leaderId = Session.get 'leaderId'
     return unless leaderId
     log.info "Following connectionId #{leaderId}"
