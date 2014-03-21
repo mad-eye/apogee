@@ -13,8 +13,8 @@
       "branch": "meteor-0.6.6"
     },
     "blaze-layout": {
-      "git": "git@github.com:EventedMind/blaze-layout.git",
-      "branch": "devel"
+      "git": "https://github.com/EventedMind/blaze-layout.git",
+      "branch": "master"
     }
   }
 }
