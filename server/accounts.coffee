@@ -63,10 +63,10 @@ generateRandomName = ->
 ANIMALS = ['Ant', 'Badger', 'Coati', 'Duck', 'Emu', 'Ferret', 'Gecko',
   'Hamster', 'Iguana', 'Jaguar', 'Kangaroo', 'Lemming', 'Meerkat', 'Newt',
   'Ocelot', 'Platypus', 'Quoll', 'Rhinoceros', 'Skunk', 'Tapir', 'Uakari',
-  'Vervet', 'Walrus', 'Yak', 'Zebra']
+  'Vervet', 'Walrus', 'Weasel', 'Yak', 'Zebra']
 
 ADJECTIVES = ['Adept', 'Burly', 'Crafty', 'Dapper', 'Electric', 'Feisty',
-  'Gleeful', 'Hangry', 'Icy', 'Jocular', 'Klutzy', 'Languid', 'Merry', 'Naughty',
-  'Opulent', 'Perky', 'Queasy', 'Ripped', 'Stubborn', 'Thunderous', 'Unkempt',
-  'Velvetine', 'Woozy', 'Wrathful', 'Zesty']
+  'Furtive', 'Gleeful', 'Hangry', 'Icy', 'Jocular', 'Klutzy', 'Languid', 'Merry',
+  'Naughty', 'Opulent', 'Perky', 'Queasy', 'Ripped', 'Stubborn', 'Thunderous',
+  'Unkempt', 'Velvetine', 'Woozy', 'Wrathful', 'Zesty']
 

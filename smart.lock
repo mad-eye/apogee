@@ -17,7 +17,7 @@
       "accounts-anonymous": {
         "git": "git://github.com/mad-eye/meteor-accounts-anonymous.git",
         "branch": "master",
-        "commit": "e3dbbe682dd12321a5b0b5ea66a93d8d5fde7326"
+        "commit": "203bdf509c477d76cad104d89e99c2478b1c72d8"
       },
       "iron-router": {
         "git": "https://github.com/EventedMind/iron-router.git",
