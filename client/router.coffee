@@ -7,10 +7,10 @@ Router.configure
   loadingTemplate: "loading"
 
 
-Router.before ->
+Router.onBeforeAction ->
   parseHangoutParams @params
 
-Router.before ->
+Router.onBeforeAction ->
   viewData = {}
   for k, v of @params
     #TODO: The positional arguments have numeric keys, but this makes
@@ -19,11 +19,11 @@ Router.before ->
   viewData.page = @template
   recordView viewData
 
-Router.before ->
+Router.onBeforeAction ->
   log.trace "Setting template to", @template
   Router.template = @template
 
-Router.before ->
+Router.onBeforeAction ->
   if @params.filePath and @params.filePath[@params.filePath.length-1] == '/'
     @params.filePath = @params.filePath.substr 0, @params.filePath.length-1
 
@@ -40,7 +40,7 @@ Router.map ->
       #If the subscription hasn't been set yet, return a 'false' stub.
       handle ?= ready: -> false
       return handle
-    before: ->
+    onBeforeAction: ->
       beforeEdit this,
         projectId: @params.projectId
         filePath: @params.filePath
@@ -49,7 +49,7 @@ Router.map ->
   @route 'file',
     template: 'wholeEditor'
     path: '/file/:projectId/:filePath(*)?'
-    before: ->
+    onBeforeAction: ->
       beforeEdit this,
         projectId: @params.projectId
         filePath: @params.filePath
@@ -60,14 +60,14 @@ Router.map ->
   @route 'terminal',
     template: 'terminal'
     path: '/terminal/:projectId'
-    before: ->
+    onBeforeAction: ->
       Session.set 'projectId', @params.projectId
       Session.set 'zen', true
       Session.set 'terminalOnly', true
 
   @route 'scratch',
     template: 'loading'
-    before: ->
+    onBeforeAction: ->
       Meteor.call 'registerProject',
         projectName: "New Project"
         scratch: true
@@ -76,11 +76,12 @@ Router.map ->
           log.error 'Error creating scratch project', err
           #TODO: Direct to an error page?
         else
+          log.debug 'Scratch project created, going to project.'
           Router.go 'edit', {projectId: result.projectId}
 
   @route 'impress.js',
     template: 'editImpressJS'
-    before: ->
+    onBeforeAction: ->
       Meteor.http.post "#{MadEye.azkabanUrl}/newImpressJSProject", (err, result)->
         if err
           log.error 'Error creating scratch project', err
@@ -92,7 +93,7 @@ Router.map ->
 
   @route 'editImpressJS',
     path: '/editImpressJS/:projectId/:filePath(*)?'
-    before: ->
+    onBeforeAction: ->
       beforeEdit this,
         projectId: @params.projectId
         filePath: @params.filePath
@@ -103,7 +104,7 @@ Router.map ->
 
   @route 'projectSelection',
     path: '/projectSelection'
-    before: ->
+    onBeforeAction: ->
       Session.set "isHangout", true
 
   #This is breaking IE, removing for now.
