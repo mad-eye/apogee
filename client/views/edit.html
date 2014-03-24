@@ -31,10 +31,10 @@
     <h4>
       {{editorFileName}}
       {{#if isModified}}
-        <small>(modified)</small>
+        <small>&nbsp;(modified)</small>
       {{/if}}
       {{#if isScratch}}
-        <small>(scratch)</small>
+        <small>&nbsp;(scratch)</small>
       {{/if}}
       {{#if isStandardProject}}
         <a target="terminal" href="/terminal/{{projectId}}"><img id="terminalIcon" src="{{staticPrefix}}/static/images/terminal_icon_64x64.png" alt="Open Terminal" title="Open Terminal" /></a>
@@ -45,15 +45,13 @@
 
 <template name="editorOverlay">
   {{#if editorIsLoading}}
-    {{#constant}}
       <div id="editorOverlay">
       </div>
-    {{/constant}}
   {{/if}}
 </template>
 
 <template name="editor">
-  {{#constant}}<div id="editor"></div>{{/constant}}
+  <div id="editor"></div>
 </template>
 
 <template name="editImpressJS">

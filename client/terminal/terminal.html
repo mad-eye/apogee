@@ -1,7 +1,6 @@
 <template name="terminal">
   <div id="terminalChrome">
     {{#if isTerminalEnabled}}
-      {{#constant}}
       <div id="terminal">
         <span id="measurementDiv">{{measurementChars}}</span>
         {{! <button id="minimizeTerminalButton" type="button" data-dismiss="terminal">&#x25BC;</button> }}
@@ -9,7 +8,6 @@
           <div id="readOnlyTerminalMessage">Read Only Mode</div>
         {{/if}}
       </div>
-      {{/constant}}
     {{else}}
       <div id="terminal">
         <span id="createTerminalMessage">This requires an active project to be running with the terminal flag.  Please start madeye with the flag --terminal.</span>

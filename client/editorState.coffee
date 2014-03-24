@@ -1,8 +1,24 @@
 log = new Logger 'editorState'
 
-class EditorState
+#TODO figure out a better way to share this from the ShareJS code
+cursorToRange = (editorDoc, cursor) ->
+  Range = require("ace/range").Range
+  cursor = [cursor, cursor] unless cursor instanceof Array
+  start = editorDoc.indexToPosition cursor[0]
+  end = editorDoc.indexToPosition cursor[1]
+  range = Range.fromPoints start, end
+  range.cursor = end
+  return range
+
+class @EditorState extends Reactor
+  @property 'rendered'
+  @property 'fileId'
+  @property 'loading' #if a file is loading
+  @property 'working' #if a file is saving/reverting
+  @property 'connectionId' #shareJs connection Id
+  @property 'docName' #shareJs doc name (== fileId)
+
   constructor: (@editorId)->
-    @_deps = {}
     @editor = new ReactiveAce
     @setupEvents()
     #load searchbox module so we can require it later
@@ -17,13 +33,7 @@ class EditorState
         log.trace "Enabling autocomplete."
         @editor.enableBasicAutocompletion = true
         @snippetManager = ace.require("ace/snippets")?.snippetManager
-
-  depend: (key) ->
-    @_deps[key] ?= new Deps.Dependency
-    @_deps[key].depend()
-
-  changed: (key) ->
-    @_deps[key]?.changed()
+    super()
 
   attach: ->
     @editor.attach @editorId
@@ -41,8 +51,11 @@ class EditorState
           event.stopPropagation()
           return false
 
+  markRendered: ->
+    @rendered = true
+    @changed 'rendered'
+
   getEditor: ->
-    @depend 'path'
     @editor.attach @editorId
     newEditor = @editor._getEditor()
     return newEditor
@@ -56,42 +69,6 @@ class EditorState
   gotoLine: (lineNumber) ->
     @editor.lineNumber = lineNumber
 
-  canRevert: ->
-    #It's the same logic, for now
-    return @canSave()
-
-  revertFile: (callback=->) ->
-    unless @doc and @fileId
-      log.error "revert called, but no doc selected"
-      return callback "No doc or no file"
-    return unless @canRevert()
-    return unless confirm(
-      """Are you sure you want to revert your file?
-      This will replace the editor contents with the
-      contents of the file on disk.""")
-    log.info "Reverting file", @fileId
-    Events.record 'revertFile',
-      fileId: @fileId
-      filePath: @path
-    @working = true
-    fileId = @fileId
-    #Need to pass version so we know when to add the revert op
-    Meteor.call 'revertFile', getProjectId(), fileId, @doc.version, (error, result) =>
-      @working = false
-      return callback Errors.handleError error, log if error
-      #abort if we've loaded another file
-      #XXX: Should we use loadNumber for this check?
-      return callback() unless fileId == @fileId
-      if result.warning
-        alert = result.warning
-        alert.level = 'warn'
-        displayAlert alert
-      Meteor.setTimeout =>
-        #give tests a moment more for share to set the editor value
-        callback()
-        @getEditor().navigateFileStart()
-      ,0
-
   checkDocValidity: (doc)->
     unless doc.version?
       #This seems to be a spurious case when the file is opened twice quickly.
@@ -104,18 +81,32 @@ class EditorState
       @doc.detach_ace?()
       @doc = null
 
-  attachShareDoc: (doc)->
+  attachShareDoc: (doc) ->
     fileId = @fileId
     @detachShareDoc()
     unless doc.editorAttached
       log.trace "Attaching share doc", doc.name
       @doc = doc
+      @docName = doc.name
+      @connectionId = doc.connection.id
       doc.attach_ace @editor._getEditor()
       @editor.newLineMode = "auto"
       doc.on 'warn', (data) =>
         log.warn "ShareJsError", data
       #If we don't have a position, go to the start
-      @getEditor().navigateFileStart() unless doc.cursor
+      aceEditor = @getEditor()
+      if MadEye.fileLoader.lineNumber?
+        @gotoLine MadEye.fileLoader.lineNumber
+      else if doc.cursor
+        position = cursorToRange(aceEditor.getSession().getDocument(), doc.cursor)
+        @gotoLine position.start.row
+        aceEditor.navigateTo(position.start.row, position.start.column)
+        #XXX: Do we need this timeout?
+        #Meteor.setTimeout ->
+          #aceEditor.scrollToLine(position.start.row, true)
+        #, 0
+      else
+        aceEditor.navigateFileStart()
       doc.emit "cursors"
     else
       log.warn "Editor already attached"
@@ -124,56 +115,56 @@ class EditorState
   #It allows us to bail out of stale callbacks
   loadNumber = 0
 
-  #callback: (error) ->
-  loadFile: (file, callback) ->
-    #Ignore duplicate requests
-    return if file._id == @fileId
-
-    #Know what load we're doing, to bail on stale callbacks
-    @currentLoadNumber = thisLoadNumber = loadNumber++
-
+  loadFile: (file) ->
     @fileId = fileId = file._id
-    log.debug "Loading file #{file.path}"
-    Events.record 'loadFile',
-      fileId: fileId
-      filePath: file.path
-    @loading = true
-    @detachShareDoc()
     finish = (err, doc) =>
       if err
         log.error "Error in loading file:", err
-      else if thisLoadNumber != @currentLoadNumber
-        #abort; do nothing
-        0
       else if doc
-        log.trace "Finished loading; attaching doc for", file.path
+        log.trace "Finished loading; attaching doc for", fileId
         @attachShareDoc doc
         @loading = false
       #else just abort
-      callback? err
 
-    sharejs.open fileId, "text2", "#{MadEye.bolideUrl}/channel", (error, doc) =>
-      try
-        log.trace 'Returning from share.js open'
-        return finish Errors.wrapShareError error if error
-        #abort if we've loaded another file
-        return finish() unless thisLoadNumber == @currentLoadNumber
-        return finish() unless @checkDocValidity(doc)
-        @connectionId = doc.connection.id
-        if doc.version > 0 or file.scratch
-          finish null, doc
-        else
-          Meteor.call 'requestFile', getProjectId(), fileId, (err, result) =>
-            return finish error if error
-            #abort if we've loaded another file
-            return finish() unless thisLoadNumber == @currentLoadNumber
-            if result?.warning
-              alert = result.warning
-              alert.level = 'warn'
-              displayAlert alert
+    if @docName == @fileId
+      #When we maximize/minimize the editor, the fileId hasn't changed, but
+      #the editor dom elt has been rerendered (and is thus empty).
+      #We need to reattach.  Using getEditor is nonreactive.
+      if @doc.snapshot != @getEditor().getValue()
+        log.trace "Reattaching editor."
+        finish null, @doc
+      #else it's a duplicate request, do nothing
+
+    else #@docName != @fileId
+      #We need to load things the shareJs doc
+      @loading = true
+      @detachShareDoc()
+      log.debug "Loading file #{file.path}"
+      Events.record 'loadFile', fileId: fileId, filePath: file.path
+      #Know what load we're doing, to bail on stale callbacks
+      @currentLoadNumber = thisLoadNumber = loadNumber++
+
+      sharejs.open fileId, "text2", "#{MadEye.bolideUrl}/channel", (error, doc) =>
+        try
+          log.trace 'Returning from share.js open'
+          return finish Errors.wrapShareError error if error
+          #abort if we've loaded another file
+          return unless thisLoadNumber == @currentLoadNumber
+          return unless @checkDocValidity(doc)
+          if doc.version > 0 or file.scratch
             finish null, doc
-      catch e
-        finish e
+          else
+            Meteor.call 'requestFile', getProjectId(), fileId, (err, result) =>
+              return finish error if error
+              #abort if we've loaded another file
+              return finish() unless thisLoadNumber == @currentLoadNumber
+              if result?.warning
+                alert = result.warning
+                alert.level = 'warn'
+                displayAlert alert
+              finish null, doc
+        catch e
+          finish e
 
   canSave: ->
     return false if projectIsClosed()
@@ -207,45 +198,46 @@ class EditorState
         project.save()
       callback()
       
+  canRevert: ->
+    #It's the same logic, for now
+    return @canSave()
+
+  revertFile: (callback=->) ->
+    unless @doc and @fileId
+      log.error "revert called, but no doc selected"
+      return callback "No doc or no file"
+    return unless @canRevert()
+    return unless confirm(
+      """Are you sure you want to revert your file?
+      This will replace the editor contents with the
+      contents of the file on disk.""")
+    log.info "Reverting file", @fileId
+    Events.record 'revertFile', fileId: @fileId
+    @working = true
+    fileId = @fileId
+    #Need to pass version so we know when to add the revert op
+    Meteor.call 'revertFile', getProjectId(), fileId, @doc.version, (error, result) =>
+      @working = false
+      return callback Errors.handleError error, log if error
+      #abort if we've loaded another file
+      #XXX: Should we use loadNumber for this check?
+      return callback() unless fileId == @fileId
+      if result.warning
+        alert = result.warning
+        alert.level = 'warn'
+        displayAlert alert
+      Meteor.setTimeout =>
+        #give tests a moment more for share to set the editor value
+        callback()
+        @getEditor().navigateFileStart()
+      ,0
+
   #Can we discard the file?
   canDiscard: ->
     return false if !getProject() or projectIsClosed()
     fileId = @fileId
     file = Files.findOne(fileId) if fileId?
     return !!file and file.deletedInFs
-
-
-EditorState.addProperty = (name, getter, setter) ->
-  descriptor = {}
-  if 'string' == typeof getter
-    varName = getter
-    getter = -> return @[varName]
-  if getter
-    descriptor.get = ->
-      @depend name
-      return getter.call(this)
-  if 'string' == typeof setter
-    varName = setter
-    setter = (value) -> @[varName] = value
-  if setter
-    descriptor.set = (value) ->
-      return if getter and value == getter.call this
-      setter.call this, value
-      @changed name
-  Object.defineProperty EditorState.prototype, name, descriptor
-
-EditorState.addProperty 'rendered', '_rendered', '_rendered'
-EditorState.addProperty 'path', '_path', '_path'
-EditorState.addProperty 'fileId', '_fileId', '_fileId'
-#@loading: if a file is loading
-EditorState.addProperty 'loading', '_loading', '_loading'
-#@working: if a file is saving/reverting
-EditorState.addProperty 'working', '_working', '_working'
-#shareJs connection Id
-EditorState.addProperty 'connectionId', '_connectionId', '_connectionId'
-
-
-@EditorState = EditorState
 
 Meteor.startup ->
   Meteor.autorun ->
@@ -259,3 +251,12 @@ Meteor.startup ->
     if not modified and file.fsChecksum != file.loadChecksum
       #This shouldn't happen -- let's record and consider handling it if it's common.
       log.warn "File is modified on filesystem but not modified in editor; should correct."
+
+  # Given editorFileId, make sure shareJs doc is loaded
+  Meteor.autorun ->
+    return unless MadEye.editorState?.rendered
+    fileId = MadEye.fileLoader?.editorFileId
+    return unless fileId
+    file = Files.findOne(fileId)
+    return unless file
+    MadEye.editorState.loadFile file
