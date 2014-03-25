@@ -1,12 +1,9 @@
 <template name="statusBar">
 <div id="statusBar" class="clearfix">
 
-    {{!-- XXX: This rerendering kills FF.  Re-enable after Meteor UI?
-    XXX: Remove spaces from ending braces
     <div id="position" class="statusBarButton pull-left">
-      <span>({{ editorState.editor.lineNumber } }:{{ editorState.editor.column } })</span>
+      <span>({{ editorState.editor.lineNumber }}:{{ editorState.editor.column }})</span>
     </div>
-    --}}
 
     {{! SYNTAX MODE }}
     <div id="syntaxMode" class="statusBarButton pull-left">
