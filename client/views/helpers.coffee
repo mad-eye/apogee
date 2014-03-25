@@ -32,7 +32,6 @@ Handlebars.registerHelper 'projectId', getProjectId
 ## Page/project Info
 @isEditorPage = ->
   (Router.template == 'edit') or
-    (Router.template == 'wholeEditor') or
     (Router.template == 'editImpressJS')
 
 Handlebars.registerHelper "isHangout", ->

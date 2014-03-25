@@ -6,9 +6,9 @@
         {{> fileTree}}
       </div>
     {{/if}}
-      <div id="rightColumn" class="{{editorColumnClass}}">
-        {{> wholeEditor }}
-      </div>
+    <div id="rightColumn" class="{{editorColumnClass}}">
+      {{> editor }}
+    </div>
   </div>
 </template>
 
@@ -18,13 +18,15 @@
   {{/each}}
 </template>
 
-<template name="wholeEditor">
+<template name="editor">
   {{> editorTitleBar }}
   <div id="editorChrome">
-      {{> editorMenuBar }}
-      {{> editorOverlay }}
-      {{> editor}}
-      {{> statusBar }}
+    {{> editorMenuBar }}
+    {{#if editorIsLoading}}
+      <div id="editorOverlay"></div>
+    {{/if}}
+    <div id="editor"></div>
+    {{> statusBar }}
   </div>
 </template>
 
@@ -43,17 +45,6 @@
       {{/if}}
     </h4>
   </div>
-</template>
-
-<template name="editorOverlay">
-  {{#if editorIsLoading}}
-      <div id="editorOverlay">
-      </div>
-  {{/if}}
-</template>
-
-<template name="editor">
-  <div id="editor"></div>
 </template>
 
 <template name="editImpressJS">
@@ -76,13 +67,7 @@
     </div>
 
     <div id="editorChrome" class="span7">
-      {{> editorTitleBar }}
-      <div id="editorContainer">
-        {{> editorMenuBar }}
-        {{> editorOverlay }}
-        {{> editor}}
-        {{> statusBar }}
-      </div>
+      {{> editor }}
     </div>
   </div>
 </template>
