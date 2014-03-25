@@ -1,10 +1,12 @@
 <template name="edit">
   {{> projectStatus}}
   <div id="projectContainer" class="row contentContainer">
+    {{#if showFileTree}}
       <div id="leftColumn" class="span3">
         {{> fileTree}}
       </div>
-      <div id="rightColumn" class="span9">
+    {{/if}}
+      <div id="rightColumn" class="{{editorColumnClass}}">
         {{> wholeEditor }}
       </div>
   </div>

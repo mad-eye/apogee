@@ -8,10 +8,18 @@ Template.editor.rendered = ->
     #Sometimes editorState isn't set up. Attach it when it is.
     return unless MadEye.editorState
     MadEye.editorState.attach()
+    #maybe aceAttached?
     MadEye.editorState.markRendered()
     MadEye.rendered 'editor'
     windowSizeChanged()
     c.stop()
+
+Template.edit.helpers
+  editorColumnClass: ->
+    if Session.get('fileOnly') then 'span12' else 'span9'
+    
+  showFileTree: ->
+    !Session.get('fileOnly')
 
 Template.editorTitleBar.helpers
   editorFileName: ->

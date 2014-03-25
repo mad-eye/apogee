@@ -47,8 +47,8 @@ Router.map ->
         lineNumber: @params.lineNumber
     
   @route 'file',
-    template: 'wholeEditor'
-    path: '/file/:projectId/:filePath(*)?'
+    template: 'edit'
+    path: '/file/:projectId/:filePath(*)'
     onBeforeAction: ->
       beforeEdit this,
         projectId: @params.projectId

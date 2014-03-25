@@ -12,7 +12,7 @@ cursorToRange = (editorDoc, cursor) ->
 
 class @EditorState extends Reactor
   @property 'rendered'
-  @property 'fileId'
+  @property 'fileId' #fileLoader triggers the setting of this property
   @property 'loading' #if a file is loading
   @property 'working' #if a file is saving/reverting
   @property 'connectionId' #shareJs connection Id
@@ -51,11 +51,13 @@ class @EditorState extends Reactor
           event.stopPropagation()
           return false
 
+  #Use this instead of @rendered = true
   markRendered: ->
     @rendered = true
     @changed 'rendered'
 
   getEditor: ->
+    #TODO seems like we shouldn't be attaching here..
     @editor.attach @editorId
     newEditor = @editor._getEditor()
     return newEditor
@@ -119,6 +121,7 @@ class @EditorState extends Reactor
     @fileId = fileId = file._id
     finish = (err, doc) =>
       if err
+        #TODO: Display error and set @loading = false
         log.error "Error in loading file:", err
       else if doc
         log.trace "Finished loading; attaching doc for", fileId
