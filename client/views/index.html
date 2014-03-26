@@ -18,7 +18,7 @@
 </body>
 
 <template name="layout">
-  <div id="container" class="container {{#if showTopnav }}withTopnav{{else}}noTopnav{{/if}}">
+  <div id="container" class="{{#if showTopnav }}withTopnav{{else}}noTopnav{{/if}}">
     {{> topnav }}
     <div id="alertBox"></div>{{! Will be populated by displayAlert}}
     {{> yield}}

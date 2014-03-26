@@ -23,7 +23,7 @@ Template.editor.helpers
 
 Template.edit.helpers
   editorColumnClass: ->
-    if Session.get('fileOnly') then 'span12' else 'span9'
+    if Session.get('fileOnly') then 'full' else ''
     
   showFileTree: ->
     !Session.get('fileOnly')

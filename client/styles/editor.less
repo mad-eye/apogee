@@ -8,10 +8,19 @@
 
 #leftColumn {
   height: 100%;
+  width: calc(~"30% - "2*@baseSpacing);
+  padding-right: 2*@baseSpacing;
+  float: left;
 }
 
 #rightColumn {
   height: 100%;
+  width: 70%;
+  float: left;
+
+  &.full {
+    width: 100%;
+  }
 }
 
 @titleBarHeight : 20px + 20px; //20 for span, 20 for spacing

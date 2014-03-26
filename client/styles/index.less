@@ -23,6 +23,10 @@ body {
 #container {
   height: 100%;
   position: relative; 
+  //Less requires this weird syntax
+  width: calc(~"100% - "4*@baseSpacing);
+  padding-left: 2*@baseSpacing;
+  padding-right: 2*@baseSpacing;
 }
 
 .advice {

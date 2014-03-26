@@ -1,8 +1,8 @@
 <template name="edit">
   {{> projectStatus}}
-  <div id="projectContainer" class="row contentContainer">
+  <div id="projectContainer" class="contentContainer clearfix">
     {{#if showFileTree}}
-      <div id="leftColumn" class="span3">
+      <div id="leftColumn">
         {{> fileTree}}
       </div>
     {{/if}}
