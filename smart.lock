@@ -8,16 +8,12 @@
       },
       "iron-router": {
         "git": "git@github.com:EventedMind/iron-router.git",
-        "branch": "blaze-integration"
+        "branch": "dev"
       },
       "pince": {},
       "mocha-web": {
         "git": "git://github.com/mad-eye/meteor-mocha-web.git",
         "branch": "meteor-0.6.6"
-      },
-      "blaze-layout": {
-        "git": "https://github.com/EventedMind/blaze-layout.git",
-        "branch": "master"
       }
     },
     "packages": {
@@ -28,8 +24,8 @@
       },
       "iron-router": {
         "git": "git@github.com:EventedMind/iron-router.git",
-        "branch": "blaze-integration",
-        "commit": "947991731df164e56b53cfdae8ef23802d989142"
+        "branch": "dev",
+        "commit": "1f65add04c5a83c2d8ebf750953c30e92a78d913"
       },
       "pince": {
         "git": "https://github.com/mad-eye/pince.git",
