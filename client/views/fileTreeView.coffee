@@ -53,7 +53,7 @@ Template.fileTree.helpers
         #The user's own
         iconClass = "user_selection cursor_color_00"
       else
-        shareIndex = sharejs.getIndexForConnection status.connectionId
+        shareIndex = MadEye.sharejs.getIndexForConnection status.connectionId
         iconClass = "foreign_selection foreign_selection_#{shareIndex} cursor_color_#{shareIndex}"
       # XXX: lineNumber might be too intense for FireFox before Blaze
       title = "#{status.name} in #{status.filePath}:#{status.lineNumber}"

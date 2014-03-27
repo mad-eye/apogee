@@ -147,7 +147,7 @@ class @EditorState extends Reactor
       #Know what load we're doing, to bail on stale callbacks
       @currentLoadNumber = thisLoadNumber = loadNumber++
 
-      sharejs.open fileId, "text2", "#{MadEye.bolideUrl}/channel", (error, doc) =>
+      MadEye.sharejs.open fileId, "text2", "#{MadEye.bolideUrl}/channel", (error, doc) =>
         try
           log.trace 'Returning from share.js open'
           return finish Errors.wrapShareError error if error

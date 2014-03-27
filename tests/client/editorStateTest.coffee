@@ -22,10 +22,10 @@ describe "EditorState", ->
 
   before ->
     MadEye.editorState ?= new EditorState "editor"
-    spy = sinon.spy Router, 'setTemplate'
+    #spy = sinon.spy Router, 'setTemplate'
 
   after ->
-    Router.setTemplate.restore()
+    #Router.setTemplate.restore()
 
   describe "canSave", ->
     it 'should be false when there is no project', ->
@@ -94,5 +94,36 @@ describe "EditorState", ->
       Deps.flush()
       assert.isTrue MadEye.editorState.canDiscard()
 
-  describe "save", ->
-    it "should learn the saving skill when a file is saved"
+  describe "loadFile", ->
+    projectId = fileId = null
+    editorState = null
+    before ->
+      sinon.stub(Meteor, 'call')
+      sinon.stub(MadEye.sharejs, 'open')
+      projectId = makeProject closed: false
+      fileId = makeFile projectId: projectId
+      editorState = new EditorState "editor"
+
+    after ->
+      MadEye.sharejs.open.restore()
+      Meteor.call.restore()
+
+    it "should open an existing doc if there is one", ->
+      docSnapshot = 'abcd'
+      doc =
+        name: fileId
+        version: 1
+        snapshot: docSnapshot
+        emit: ->
+        connection: id: 100
+        attach_ace: sinon.stub()
+        detach_ace: ->
+      MadEye.sharejs.open.callsArgWith(3, null, doc)
+      editorState.loadFile Files.findOne(fileId)
+      assert.ok Meteor.call.neverCalledWith('requestFile')
+      assert.ok MadEye.sharejs.open.calledWith(fileId, "text2", "#{MadEye.bolideUrl}/channel")
+      assert.ok doc.attach_ace.called
+
+    it "should open a new doc and use dementor contents if there isn't one"
+    it "should do nothing if the file is already loaded"
+    it "should reattach the share doc if the editor has been detached"
