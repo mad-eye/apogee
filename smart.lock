@@ -7,7 +7,7 @@
         "branch": "master"
       },
       "iron-router": {
-        "git": "git@github.com:EventedMind/iron-router.git",
+        "git": "https://github.com/EventedMind/iron-router.git",
         "branch": "dev"
       },
       "pince": {},
@@ -23,9 +23,9 @@
         "commit": "203bdf509c477d76cad104d89e99c2478b1c72d8"
       },
       "iron-router": {
-        "git": "git@github.com:EventedMind/iron-router.git",
+        "git": "https://github.com/EventedMind/iron-router.git",
         "branch": "dev",
-        "commit": "1f65add04c5a83c2d8ebf750953c30e92a78d913"
+        "commit": "5210a5abf4bb57acdb4ded680e243552c47ad335"
       },
       "pince": {
         "git": "https://github.com/mad-eye/pince.git",
@@ -39,8 +39,8 @@
       },
       "blaze-layout": {
         "git": "https://github.com/EventedMind/blaze-layout.git",
-        "branch": "master",
-        "commit": "2664f817844fba0fab0455a79bc62782c9091ad0"
+        "tag": "v0.2.2",
+        "commit": "8bc53798fe5965669ae67c72f91829fcfdceabfd"
       }
     }
   }
