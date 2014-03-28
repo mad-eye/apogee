@@ -123,6 +123,7 @@ class @EditorState extends Reactor
       if err
         #TODO: Display error and set @loading = false
         log.error "Error in loading file:", err
+        Errors.handleError err
       else if doc
         log.trace "Finished loading; attaching doc for", fileId
         @attachShareDoc doc
@@ -157,7 +158,7 @@ class @EditorState extends Reactor
           if doc.version > 0 or file.scratch
             finish null, doc
           else
-            Meteor.call 'requestFile', getProjectId(), fileId, (err, result) =>
+            Meteor.call 'requestFile', getProjectId(), fileId, (error, result) =>
               return finish error if error
               #abort if we've loaded another file
               return finish() unless thisLoadNumber == @currentLoadNumber

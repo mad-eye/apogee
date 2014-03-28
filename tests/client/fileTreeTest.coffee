@@ -455,7 +455,6 @@ describe "FileTree", ->
     it "should add to active directories for file selection", ->
       fileTree.open "snowden/classified/readme.txt", true
       Deps.flush()
-      console.log fileTree.openedDirs.keys
       assert.ok ActiveDirectories.findOne(path: "snowden/classified"), "gparent exists"
       assert.ok ActiveDirectories.findOne(path: "snowden"), "parent exists"
 

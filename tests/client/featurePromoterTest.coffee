@@ -46,7 +46,6 @@ Meteor.startup ->
       promo = featurePromoter.getPromo()
       promoHandle = promo.handle
       promo.onClose()
-      console.log promoHandle, featurePromoter.getLearnedSkills()
       assert promoHandle of featurePromoter.getLearnedSkills()
 
     it "should learn the terminal skill when the project includes a terminal", ->
@@ -66,7 +65,6 @@ Meteor.startup ->
       Session.set "projectId", project._id
       featurePromoter.addSkill "blades"
       Deps.flush()
-      console.log "ALL EVENTS", Events.find(projectId: project._id).fetch()
       assert Events.findOne {projectId: project._id, skill: "blades"}
 
     it 'should suggest share skill on scratch projects', ->
