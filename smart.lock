@@ -25,7 +25,7 @@
       "iron-router": {
         "git": "https://github.com/EventedMind/iron-router.git",
         "branch": "dev",
-        "commit": "5210a5abf4bb57acdb4ded680e243552c47ad335"
+        "commit": "05f34bc48c4cad9fdaa366c1ddcabe6980232ece"
       },
       "pince": {
         "git": "https://github.com/mad-eye/pince.git",
