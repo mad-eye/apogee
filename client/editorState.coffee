@@ -117,7 +117,7 @@ class @EditorState extends Reactor
   #It allows us to bail out of stale callbacks
   loadNumber = 0
 
-  loadFile: (file) ->
+  loadFile: (file, callback=->) ->
     @fileId = fileId = file._id
     finish = (err, doc) =>
       if err
@@ -129,6 +129,7 @@ class @EditorState extends Reactor
         @attachShareDoc doc
         @loading = false
       #else just abort
+      callback err
 
     if @docName == @fileId
       #When we maximize/minimize the editor, the fileId hasn't changed, but
@@ -201,7 +202,7 @@ class @EditorState extends Reactor
         project.lastUpdated = Date.now()
         project.save()
       callback()
-      
+
   canRevert: ->
     #It's the same logic, for now
     return @canSave()
