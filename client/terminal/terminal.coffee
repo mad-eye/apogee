@@ -15,7 +15,8 @@ __setInitialTerminalData = ->
 # of a type allowed
 __isTerminalEnabled = ->
   #HACK: Make a better page check
-  return false unless Router.template == 'terminal'
+  templateName = Router.current()?.route?.name
+  return false unless templateName == 'terminal'
   project = getProject()
   return false unless project and not project.closed
   terminal = project.tunnels?.terminal
