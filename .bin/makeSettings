@@ -1,41 +1,18 @@
 #! /usr/bin/env node
 fs = require('fs')
 
-LOG_PREFIX = 'MADEYE_LOGLEVEL'
-var parseSpecificLogLevels = function() {
-  specificLogLevels = {}
-  for (k in process.env) {
-    if ( k.indexOf(LOG_PREFIX+"_") != 0 ) continue;
-    if (k == LOG_PREFIX) continue;
-    name = k.substr(LOG_PREFIX.length + 1);
-    name = name.split('_').join(':')
-    specificLogLevels[name] = process.env[k]
-  }
-  return specificLogLevels
-}
+var azkabanUrl = "http://" + process.env.AZKABAN_PORT_4004_TCP_ADDR + ":" + process.env.AZKABAN_PORT_4004_TCP_PORT,
 
 settings = {
   public: {
-    bolideUrl: process.env.MADEYE_BOLIDE_URL,
-    azkabanUrl: process.env.MADEYE_AZKABAN_URL,
-    apogeeUrl: process.env.MADEYE_APOGEE_URL,
-    googleAnalyticsId: process.env.MADEYE_GOOGLE_ANALYTICS_ID,
-    mixPanelToken: process.env.MADEYE_MIXPANEL_TOKEN,
-    hangoutUrl: process.env.MADEYE_AZKABAN_URL + "/hangout/",
+    bolideUrl: "http://" + process.env.BOLIDE_PORT_3003_TCP_ADDR + ":" + process.env.BOLIDE_PORT_3003_TCP_PORT,
+    azkabanUrl: azkabanUrl,
+    apogeeUrl: process.env.MADEYE_URL,
+    hangoutUrl: azkabanUrl + "/hangout/",
     tunnelHost: process.env.MADEYE_TUNNEL_HOST,
-    stripePublicKey: process.env.MADEYE_STRIPE_PUBLIC_KEY,
-    logLevel: process.env.MADEYE_LOGLEVEL,
-    specificLogLevels: parseSpecificLogLevels(),
-    stripePublicKey: process.env.MADEYE_STRIPE_PUBLIC_KEY,
-    fullTerminal: process.env.MADEYE_FULL_TERMINAL,
     acePrefix: "/packages/reactive-ace/ace-builds/src",
-    staticPrefix: process.env.MADEYE_STATIC_PREFIX
-  },
-  googleClientId: process.env.MADEYE_GOOGLE_CLIENT_ID,
-  googleSecret: process.env.MADEYE_GOOGLE_SECRET,
-  stripeSecretKey: process.env.MADEYE_STRIPE_SECRET_KEY,
-  jsCssPrefix: process.env.MADEYE_JS_CSS_PREFIX
-
+    staticPrefix: "static"
+  }
 };
 
 fs.writeFileSync(__dirname + '/../settings.json', JSON.stringify(settings));
