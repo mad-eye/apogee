@@ -22,6 +22,7 @@ WORKDIR /build
 RUN tar zxf /app.tar.gz
 RUN rm -r /build/bundle/programs/server/node_modules/fibers
 RUN cd /build/bundle/programs/server && npm install fibers@1.0.1
-CMD node /build/bundle/main.js
+CMD METEOR_SETTINGS=`/app/.bin/makeSettings` node /build/bundle/main.js
 WORKDIR /app
-
+ENV MONGO_URL mongodb://mongo:27017/madeye
+ENV ROOT_URL http://localhost:3000

@@ -18,3 +18,5 @@ settings = {
 fs.writeFileSync(__dirname + '/../settings.json', JSON.stringify(settings));
 envVariables = "MONGO_URL=" + process.env.MADEYE_MONGO_URL + "\n"
 fs.writeFileSync(__dirname + '/../.env', envVariables);
+//stdout used by docker run command
+console.log(JSON.stringify(settings));
