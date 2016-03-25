@@ -1,11 +1,11 @@
 redis:
-  image: redis
+  image: redis:2.8.23
 
 mongo:
-  image: mongo
+  image: mongo:2.6.11
 
 nginx:
-  image: nginx
+  image: nginx:1.8.1
   links:
     - apogee
     - azkaban
