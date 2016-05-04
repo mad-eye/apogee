@@ -27,7 +27,7 @@ azkaban:
     - mongo
 
 apogee:
-  image: madeye/apogee:0.1
+  image: madeye/apogee:0.2
   links:
     - azkaban
     - bolide

@@ -16,14 +16,25 @@ class MadEye.Model
   #This is the form expected by the $unset operator
   _findMissingFields: ->
     missingFields = {}
+    hasMissingFields = false
     for k, v of @_originalData
       continue if k == '_id' or k == '_originalData'
-      missingFields[k] = true unless k of @
-    return missingFields
+      unless k of this
+        missingFields[k] = true
+        hasMissingFields = true
+    if hasMissingFields
+      return missingFields
+    else
+      return null
 
   save: ->
     if @_id
-      @collection.update @_id, {$set: @_safeJSON(), $unset: @_findMissingFields()}
+      updateInfo = {$set: @_safeJSON()}
+      missingFields = @_findMissingFields()
+      if missingFields
+        updateInfo['$unset'] = missingFields
+      # might be simpler to just do @collection.update @_id, @_safeJSON()
+      @collection.update @_id, updateInfo
     else
       @_id = @collection.insert @_safeJSON()
 
