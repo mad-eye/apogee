@@ -142,6 +142,8 @@ class @EditorState extends Reactor
 
     else #@docName != @fileId
       #We need to load things the shareJs doc
+      if @loading
+        return
       @loading = true
       @detachShareDoc()
       log.debug "Loading file #{file.path}"
